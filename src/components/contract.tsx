@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import InitCanvaSignature from "./initCanvaSignature";
 import firebase from '@/utils/firebase'; // Importez votre configuration Firebase
 import { useParams } from "next/navigation";
-import { PDFDocument, PDFFont, PDFPage, rgb, StandardFonts } from "pdf-lib";
+import { PDFDocument, PDFFont, PDFPage, RGB, rgb, StandardFonts } from "pdf-lib";
 
 interface Client {
     id: string;
@@ -27,6 +27,7 @@ interface Contract {
     freelancerName:string;
     freelancerSirets?:string;
     freelancerVAT?:string;
+    freelanceAdresse:string;
     projectTitle:string;
     projectDescription:string;
     deliverables:string;
@@ -107,11 +108,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         //if(!signingLink) return
         console.log("start fontion")
         const content = {
-            title: "CONTRAT DE PRESTATION EN DÉVELOPPEMENT WEB",
-            preambleFrom: `ENTRE: ${data.name}`,
-            preambleTo: `ET: ${data.freelancerName}`,
-            preambleFromSous:'(ci-après appelé(e) "le client")',
-            preambleToSous:'(ci-après appelée "le prestataire de services")'
+            title: "CONTRAT DE PRESTATION DE SERVICE - WEB "+data.projectTitle,
+            sousTitle: "Entre les soussignées :",
+            clientName: `${data.name}`,
+            freelanceName: `${data.freelancerName}`,
+            preambleAdresseClient:`domicilié(e) à ${data.clientAddress} ci aprés désigné par le`,
+            from:'Client,',
+            preambleAdresseFreelance:`domicilié(e) à ${data.freelanceAdresse} ci aprés désigné par le`,
+            to:"Prestataire.",
+            and:"et"
             // Ajoutez toutes les autres sections ici...
         };
         try {
@@ -137,50 +142,48 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
 
             // Titre
-            addText(content.title, margin, yPosition, 16, true,font,fontBold,page,lineHeight);
+            addText(content.title, margin, yPosition,margin, {size:16, isBold:true,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+
+            // Sous Titre
+            addText(content.sousTitle, margin, yPosition, margin, {size:9, isBold:true,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
 
             // Préambule
-            const preambleLinesFrom = addText(content.preambleFrom, margin, yPosition,11,false,font,fontBold,page,lineHeight);
-            yPosition -= lineHeight * (preambleLinesFrom + 0);
+            const final1 = addHorizontalText([{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yPosition,true,margin,{font,fontBold,page,defaultSpacing:5,lineHeight})
+            yPosition = final1.finalY - lineHeight;
+            
+            addText(content.and, margin, yPosition,margin, {size:11, isBold:true,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
 
-            //Sous title
-            const preambleLinesFromSous = addText(content.preambleFromSous, margin, yPosition, 9, false,font,fontBold,page,lineHeight);
-            yPosition -= lineHeight * (preambleLinesFromSous + 1);
-
-            // Préambule
-            const preambleLinesTo = addText(content.preambleTo, margin, yPosition,11,false,font,fontBold,page,lineHeight);
-            yPosition -= lineHeight * (preambleLinesTo + 0);
-
-            //Sous title
-            const preambleLinesFromTo = addText(content.preambleToSous, margin, yPosition, 9, false,font,fontBold,page,lineHeight);
-            yPosition -= lineHeight * (preambleLinesFromTo + 2);
-
+            const final2 = addHorizontalText([{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yPosition,true,margin,{font,fontBold,page,defaultSpacing:5,lineHeight})
+            yPosition = final2.finalY - (lineHeight * 3.5);
             // Sections du contrat (ajoutez toutes les sections nécessaires)
-            addText('1 - PRÉAMBULE', margin, yPosition, 14, true,font,fontBold,page,lineHeight);
+            addText('1 - PRÉAMBULE', margin, yPosition,margin, {size:14, isBold:true,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
             
             // ... Ajoutez toutes les autres sections du contrat ici
 
             // Signatures
             yPosition -= lineHeight * 3;
-            addText('Signature du client : ___________________________', margin, yPosition,12,false,font,fontBold,page,lineHeight);
-            addText(`Date: ${data.effectiveDate}`, width - 150, yPosition,12,false,font,fontBold,page,lineHeight);
+            addText('Signature du client : ___________________________', margin, yPosition,margin, {size:12, isBold:false,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            addText(`Date: ${data.effectiveDate}`, width - 150, yPosition,margin, {size:12, isBold:false,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
-            addText('Signature du prestataire : ___________________________', margin, yPosition,12,false,font,fontBold,page,lineHeight);
-            addText(`Date: ${data.effectiveDate}`, width - 150, yPosition,12,false,font,fontBold,page,lineHeight);
+            addText('Signature du prestataire : ___________________________', margin, yPosition,margin, {size:12, isBold:false,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            addText(`Date: ${data.effectiveDate}`, width - 150, yPosition,margin, {size:12, isBold:false,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight,isListItem:true});
 
             // Génération du PDF final
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
+            /*const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `document-signé-${data.name}.pdf`;
             link.innerText = 'Télécharger le document signé';
             setTimeout(() => {
                 document.querySelector('body form')?.appendChild(link);
             }, 0);
-            console.log("end fontion")
+            console.log("end fontion")*/
+            return URL.createObjectURL(blob);
             //return await pdfDoc.save();
         } catch (error) {
             console.error('Erreur lors de la génération du PDF:', error);
@@ -188,22 +191,211 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     }
     // Fonction utilitaire pour ajouter du texte multiligne
-    const addText = (text: string, x: number, y: number, size = 12, isBold = false,font:PDFFont,fontBold:PDFFont,page:PDFPage,lineHeight:number) => {
-        const lines = text.split('\n');
+    const addText = (
+        text: string,
+        x: number,
+        y: number,
+        rightMargin: number,
+        options: {
+          size?: number;
+          isBold?: boolean;
+          font: PDFFont;
+          fontBold: PDFFont;
+          page: PDFPage;
+          lineHeight: number;
+          isListItem?: boolean; // Nouveau : élément de liste
+          bulletSymbol?: string; // Symbole de puce (défaut: "•")
+          maxWidth?: number; // Largeur maximale avant retour automatique
+        }
+      ) => {
+        const {
+          size = 12,
+          isBold = false,
+          font,
+          fontBold,
+          page,
+          lineHeight,
+          isListItem = false,
+          bulletSymbol = "• ",
+          maxWidth = Infinity
+        } = options;
+      
         const currentFont = isBold ? fontBold : font;
-        
-        lines.forEach((line, i) => {
-            page.drawText(line, {
-                x,
-                y: y - (i * lineHeight),
+        const pageWidth = page.getSize().width;
+        const effectiveMaxWidth = Math.min(
+          maxWidth,
+          pageWidth - x - rightMargin
+        );
+        let currentY = y;
+        let totalLines = 0;
+      
+        // Gestion des puces
+        const prefix = isListItem ? bulletSymbol : "";
+        const prefixWidth = isListItem 
+          ? currentFont.widthOfTextAtSize(prefix, size) 
+          : 0;
+      
+        const processLine = (line: string, isFirstLine: boolean) => {
+          let currentX = x + (isFirstLine ? 0 : prefixWidth);
+          const words = line.split(' ');
+          let currentLine = isFirstLine ? prefix + words[0] : words[0];
+      
+          for (let i = 1; i < words.length; i++) {
+            const testLine = `${currentLine} ${words[i]}`;
+            const testWidth = currentFont.widthOfTextAtSize(testLine, size);
+      
+            if (testWidth > effectiveMaxWidth) {
+              // Dessiner la ligne actuelle
+              page.drawText(currentLine, {
+                x: currentX,
+                y: currentY,
                 size,
-                font: typeof(currentFont) !== 'string' ? currentFont : undefined,
+                font: currentFont,
                 color: rgb(0, 0, 0),
+              });
+              currentY -= lineHeight;
+              totalLines++;
+              currentX = x + prefixWidth;
+              currentLine = words[i];
+            } else {
+              currentLine = testLine;
+            }
+          }
+      
+          // Dessiner le reste de la ligne
+          if (currentLine) {
+            page.drawText(currentLine, {
+              x: currentX,
+              y: currentY,
+              size,
+              font: currentFont,
+              color: rgb(0, 0, 0),
             });
+            totalLines++;
+          }
+        };
+      
+        // Traitement des sauts de ligne manuels (\n)
+        text.split('\n').forEach((paragraph, i) => {
+          if (i > 0) {
+            currentY -= lineHeight;
+            totalLines++;
+          }
+          processLine(paragraph, i === 0);
         });
-        
-        return lines.length;
+      
+        return totalLines;
     };
+
+    const addHorizontalText = (
+        textEntries: {
+            text: string;
+            size?: number;
+            isBold?: boolean;
+            color?: RGB;
+        }[],
+        startX: number,
+        startY: number,
+        isListItem: boolean,
+        rightMargin: number,
+        context: {
+            font: PDFFont;
+            fontBold: PDFFont;
+            page: PDFPage;
+            defaultSpacing?: number;
+            maxWidth?: number;
+            bulletSymbol?: string;
+            lineHeight: number;
+        }
+        ) => {
+        const {
+            font,
+            fontBold,
+            page,
+            defaultSpacing = 2,
+            lineHeight,
+            maxWidth = Infinity,
+            bulletSymbol = "• "
+        } = context;
+
+        let currentX = startX;
+        let currentY = startY;
+        const pageWidth = page.getSize().width;
+        const effectiveRightMargin = pageWidth - rightMargin;
+
+        // Gestion de la puce (une seule fois pour tout le bloc)
+        if (isListItem) {
+            const bulletSize = textEntries[0]?.size || 12;
+            page.drawText(bulletSymbol, {
+            x: currentX,
+            y: currentY,
+            size: bulletSize,
+            font,
+            color: rgb(0, 0, 0),
+            });
+            currentX += font.widthOfTextAtSize(bulletSymbol, bulletSize) + defaultSpacing;
+        }
+
+        // Nouveau : Calcul de la largeur disponible
+        const getAvailableWidth = () => effectiveRightMargin - currentX;
+
+        textEntries.forEach((entry) => {
+            const { text, size = 12, isBold = false, color = rgb(0, 0, 0) } = entry;
+            const currentFont = isBold ? fontBold : font;
+            const words = text.split(' ');
+            let currentLine = '';
+
+            words.forEach((word) => {
+            const testLine = currentLine ? `${currentLine} ${word}` : word;
+            const testWidth = currentFont.widthOfTextAtSize(testLine, size);
+
+            // Vérification contre la marge droite ET maxWidth
+            if (testWidth > Math.min(getAvailableWidth(), maxWidth)) {
+                // Dessiner la ligne actuelle
+                page.drawText(currentLine, {
+                x: currentX,
+                y: currentY,
+                size,
+                font: currentFont,
+                color,
+                });
+
+                // Nouvelle ligne avec gestion de l'indentation
+                currentY -= lineHeight;
+                currentX = isListItem 
+                ? startX + font.widthOfTextAtSize(bulletSymbol, size) + defaultSpacing
+                : startX;
+                
+                currentLine = word;
+            } else {
+                currentLine = testLine;
+            }
+            });
+
+            // Dessiner le reste du texte
+            if (currentLine) {
+            // Vérification finale de la largeur
+            const lineWidth = currentFont.widthOfTextAtSize(currentLine, size);
+            if (currentX + lineWidth > effectiveRightMargin) {
+                currentY -= lineHeight;
+                currentX = isListItem 
+                ? startX + font.widthOfTextAtSize(bulletSymbol, size) + defaultSpacing
+                : startX;
+            }
+
+            page.drawText(currentLine, {
+                x: currentX,
+                y: currentY,
+                size,
+                font: currentFont,
+                color,
+            });
+            currentX += currentFont.widthOfTextAtSize(currentLine, size) + defaultSpacing;
+            }
+        });
+
+        return { finalX: currentX, finalY: currentY };
+        };
     useEffect(() => {
         async function getDocumentById(collectionName: string, id: string) {
             if(!id) return
@@ -219,7 +411,8 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
               console.log("Document non trouvé !");
               return null;
             }
-            await handlePdf({name:"Test Name",freelancerName:"ROD TECH SOLUTIONS",freelancerSirets:"SIRET",freelancerVAT:"",clientEmail:"test@mail.com",clientAddress:"123 rue Saint-Sébastien, Poissy 78300, France",clientSIRET:"",clientPhone:"7845 454 12",confidentiality:true,projectTitle:"SIte Web",projectDescription:"Test du site",startDate:new Date().toISOString(),endDate:new Date().toISOString(),effectiveDate:new Date().toISOString(),deliverables:"50%",totalPrice:700,paymentMethod:"Bank Transfer",paymentSchedule:"50",terminationTerms:"50",governingLaw:"French Law"})
+            const pdfUrl = await handlePdf({name:"Test Name",freelancerName:"ROD TECH SOLUTIONS",freelanceAdresse:'123 Rue Saint-Sébastien, Poissy 78300, France',freelancerSirets:"SIRET",freelancerVAT:"",clientEmail:"test@mail.com",clientAddress:"123 rue Saint-Sébastien, Poissy 78300, France",clientSIRET:"",clientPhone:"7845 454 12",confidentiality:true,projectTitle:"SIte Web",projectDescription:"Test du site",startDate:new Date().toISOString(),endDate:new Date().toISOString(),effectiveDate:new Date().toISOString(),deliverables:"50%",totalPrice:700,paymentMethod:"Bank Transfer",paymentSchedule:"50",terminationTerms:"50",governingLaw:"French Law"})
+            window.open(pdfUrl, '_blank');
         }
         getDocumentById("clients",clientId);
     }, []);
