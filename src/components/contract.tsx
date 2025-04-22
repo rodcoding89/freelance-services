@@ -115,7 +115,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             preambleAdresseClient:`domicilié(e) à ${data.clientAddress} ci aprés désigné par le`,
             from:'Client,',
             preambleAdresseFreelance:`domicilié(e) à ${data.freelanceAdresse} ci aprés désigné par le`,
-            to:"Prestataire.",
+            to:"Prestataire de services.",
             and:"et"
             // Ajoutez toutes les autres sections ici...
         };
@@ -126,8 +126,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             const page = pdfDoc.addPage([595, 842]); // Format A4
             
             // Chargement des polices
-            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-            const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+            const [fontRegular, fontBold, fontItalic, fontBoldItalic] = await Promise.all([
+                pdfDoc.embedFont('Helvetica'),               // Normal
+                pdfDoc.embedFont('Helvetica-Bold'),          // Gras
+                pdfDoc.embedFont('Helvetica-Oblique'),       // Italique
+                pdfDoc.embedFont('Helvetica-BoldOblique'),   // Gras + Italique
+            ]);
       
             // Dimensions utiles
             const { width, height } = page.getSize();
@@ -142,35 +146,52 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
 
             // Titre
-            addText(content.title, margin, yPosition,margin, {size:16, isBold:true,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            addText(content.title, margin, yPosition,margin, {size:18, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
 
             // Sous Titre
-            addText(content.sousTitle, margin, yPosition, margin, {size:9, isBold:true,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            addText(content.sousTitle, margin, yPosition, margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
 
             // Préambule
-            const final1 = addHorizontalText([{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yPosition,true,margin,{font,fontBold,page,defaultSpacing:5,lineHeight})
+            const final1 = addHorizontalText([{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yPosition,true,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
             yPosition = final1.finalY - lineHeight;
             
-            addText(content.and, margin, yPosition,margin, {size:11, isBold:true,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            addText(content.and, margin, yPosition,margin, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
 
-            const final2 = addHorizontalText([{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yPosition,true,margin,{font,fontBold,page,defaultSpacing:5,lineHeight})
-            yPosition = final2.finalY - (lineHeight * 3.5);
+            const final2 = addHorizontalText([{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yPosition,true,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
+            yPosition = final2.finalY - (lineHeight * 1.5);
+            addText('(le client et le prestataire de services ci-après collectivement appelés "les parties")', margin, yPosition,margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBoldItalic,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 4;
             // Sections du contrat (ajoutez toutes les sections nécessaires)
-            addText('1 - PRÉAMBULE', margin, yPosition,margin, {size:14, isBold:true,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            addText('1 - PRÉAMBULE', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
-            
+            const final3 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:13,isBold:true,color:rgb(0, 0, 0)},{text:'le client désire obtenir divers services informatiques de la part du prestataire de services;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
+            yPosition = final3.finalY - (lineHeight * 2.5);
+            const final4 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:13,isBold:true,color:rgb(0, 0, 0)},{text:'les parties désirent confirmer leur entente par écrit;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
+            yPosition = final4.finalY - (lineHeight * 2.5);
+            const final5 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:13,isBold:true,color:rgb(0, 0, 0)},{text:"les parties ont la capacité et la qualité d'exercer tous les droits requis pour la conclusion et l'exécution de l'entente constatée dans le présent contrat;",size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
+            yPosition = final5.finalY - (lineHeight * 2.5);
+            const spaceY = addText('EN CONSÉQUENCE DE CE QUI PRÉCÈDE, LES PARTIES CONVIENNENT DE CE QUI SUIT:', margin, yPosition,margin, {size:13, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY + 2);
             // ... Ajoutez toutes les autres sections du contrat ici
-
-            // Signatures
-            yPosition -= lineHeight * 3;
-            addText('Signature du client : ___________________________', margin, yPosition,margin, {size:12, isBold:false,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            addText(`Date: ${data.effectiveDate}`, width - 150, yPosition,margin, {size:12, isBold:false,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            addText('2 - OBJET', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
-            addText('Signature du prestataire : ___________________________', margin, yPosition,margin, {size:12, isBold:false,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            addText(`Date: ${data.effectiveDate}`, width - 150, yPosition,margin, {size:12, isBold:false,font:font,fontBold:fontBold,page:page,lineHeight:lineHeight,isListItem:true});
+            addText('2.1 - Services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            const spaceY1 = addText("Le prestataire de services s'engage envers le client à fournir les services informatiques (ci-après appelés 'les services') décrits dans les spécifications qui figurent dans la séction 'Déscription et Fonctionnalités clés du projet', ou, à défaut, dans le devis.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY1 + 2);
+
+            addText('3 - DESCRPTION ET FONCTIONNALITÉS CLES DU PROJET', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            addText(data.projectDescription, margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 4;
+            // Signatures
+            yPosition -= lineHeight * 4;
+            signatureBloc(['Signature du prestataire','Signature du client'],yPosition,page,margin,margin,11,true,fontRegular,fontBold)
+            yPosition -= lineHeight * 4;
+            signatureBloc([formatDate(data.effectiveDate)+':___________________________',formatDate(data.effectiveDate)+':___________________________'],yPosition,page,margin,margin,10,false,fontRegular,fontBold)
 
             // Génération du PDF final
             const pdfBytes = await pdfDoc.save();
@@ -287,6 +308,74 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         return totalLines;
     };
 
+    const signatureBloc = (
+        items: string[],
+        y: number,
+        page: PDFPage,
+        marginLeft: number,
+        marginRight: number,
+        size: number = 12,
+        isBold: boolean = false,
+        font: PDFFont,
+        fontBold: PDFFont
+    ) => {
+        const pageWidth = page.getWidth();
+        const availableWidth = pageWidth - marginLeft - marginRight;
+        
+        // Gestion de la police
+        const currentFont = isBold ? fontBold : font;
+        
+        // Cas particulier s'il n'y a qu'un seul élément
+        if (items.length === 1) {
+            const textWidth = currentFont.widthOfTextAtSize(items[0], size);
+            const x = marginLeft + (availableWidth - textWidth) / 2;
+            
+            page.drawText(items[0], {
+                x,
+                y,
+                size,
+                font: currentFont,
+                color: rgb(0, 0, 0),
+            });
+            return;
+        }
+        
+        // Calcul des largeurs de chaque élément
+        const textWidths = items.map(item => currentFont.widthOfTextAtSize(item, size));
+        const totalWidth = textWidths.reduce((sum, width) => sum + width, 0);
+        
+        // Calcul de l'espacement seulement si on a assez de place
+        if (availableWidth > totalWidth) {
+            const gap = (availableWidth - totalWidth) / (items.length - 1);
+            let currentX = marginLeft;
+            
+            items.forEach((item, index) => {
+                page.drawText(item, {
+                    x: currentX,
+                    y,
+                    size,
+                    font: currentFont,
+                    color: rgb(0, 0, 0),
+                });
+                currentX += textWidths[index] + gap;
+            });
+        } else {
+            // Mode "compact" si l'espace est insuffisant
+            let currentX = marginLeft;
+            const gap = 10; // Espacement minimal
+            
+            items.forEach((item, index) => {
+                page.drawText(item, {
+                    x: currentX,
+                    y,
+                    size,
+                    font: currentFont,
+                    color: rgb(0, 0, 0),
+                });
+                currentX += textWidths[index] + gap;
+            });
+        }
+    };
     const addHorizontalText = (
         textEntries: {
             text: string;
@@ -298,9 +387,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         startY: number,
         isListItem: boolean,
         rightMargin: number,
+        font: PDFFont,
+        fontBold: PDFFont,
         context: {
-            font: PDFFont;
-            fontBold: PDFFont;
             page: PDFPage;
             defaultSpacing?: number;
             maxWidth?: number;
@@ -309,8 +398,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
         ) => {
         const {
-            font,
-            fontBold,
             page,
             defaultSpacing = 2,
             lineHeight,
@@ -395,7 +482,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         });
 
         return { finalX: currentX, finalY: currentY };
-        };
+    };
     useEffect(() => {
         async function getDocumentById(collectionName: string, id: string) {
             if(!id) return
@@ -422,6 +509,17 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             setIsPopUp(contextData.value)
         }
     },[contextData])
+
+    const formatDate = (date:string)=>{
+        const fdate = new Date(date)
+        const day = fdate.getDate();
+        const month = fdate.getMonth() + 1; // Les mois commencent à 0
+        const year = fdate.getFullYear();
+        if (locale === "en") {
+            return `${year}/${String(month).padStart(2, '0')}/${day}`;
+        }
+        return `${day}/${String(month).padStart(2, '0')}/${year}`;
+    }
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
