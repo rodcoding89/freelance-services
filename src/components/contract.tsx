@@ -8,6 +8,7 @@ import InitCanvaSignature from "./initCanvaSignature";
 import firebase from '@/utils/firebase'; // Importez votre configuration Firebase
 import { useParams } from "next/navigation";
 import { PDFDocument, PDFFont, PDFPage, RGB, rgb, StandardFonts } from "pdf-lib";
+import Icon from "./Icon";
 
 interface Client {
     id: string;
@@ -30,6 +31,7 @@ interface Contract {
     freelanceAdresse:string;
     projectTitle:string;
     projectDescription:string;
+    projectFonctionList:string[];
     deliverables:string;
     startDate:string;
     endDate?:string;
@@ -52,6 +54,8 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [loading, setLoading] = useState(true);
     const {contextData} = useContext(AppContext)
     const [signingLink, setSigningLink] = useState<string | null>(null);
+    const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
+    const [fonction, setFonction] = useState<string>('')
     const [client, setClient] = useState<Client|null>(null)
     // Contenu dynamique basé sur la langue
     
@@ -167,25 +171,94 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             // Sections du contrat (ajoutez toutes les sections nécessaires)
             addText('1 - PRÉAMBULE', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
-            const final3 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:13,isBold:true,color:rgb(0, 0, 0)},{text:'le client désire obtenir divers services informatiques de la part du prestataire de services;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
+            const final3 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:'le client désire obtenir divers services informatiques de la part du prestataire de services;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
             yPosition = final3.finalY - (lineHeight * 2.5);
-            const final4 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:13,isBold:true,color:rgb(0, 0, 0)},{text:'les parties désirent confirmer leur entente par écrit;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
+            const final4 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:'les parties désirent confirmer leur entente par écrit;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
             yPosition = final4.finalY - (lineHeight * 2.5);
-            const final5 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:13,isBold:true,color:rgb(0, 0, 0)},{text:"les parties ont la capacité et la qualité d'exercer tous les droits requis pour la conclusion et l'exécution de l'entente constatée dans le présent contrat;",size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
+            const final5 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:"les parties ont la capacité et la qualité d'exercer tous les droits requis pour la conclusion et l'exécution de l'entente constatée dans le présent contrat;",size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
             yPosition = final5.finalY - (lineHeight * 2.5);
-            const spaceY = addText('EN CONSÉQUENCE DE CE QUI PRÉCÈDE, LES PARTIES CONVIENNENT DE CE QUI SUIT:', margin, yPosition,margin, {size:13, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY + 2);
+            const spaceY = addText('EN CONSÉQUENCE DE CE QUI PRÉCÈDE, LES PARTIES CONVIENNENT DE CE QUI SUIT:', margin, yPosition,margin, {size:12, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY + 4);
             // ... Ajoutez toutes les autres sections du contrat ici
+            //OBJET DU CONTRAT
             addText('2 - OBJET', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
             addText('2.1 - Services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
+            //SERVICE PROPOSE
             const spaceY1 = addText("Le prestataire de services s'engage envers le client à fournir les services informatiques (ci-après appelés 'les services') décrits dans les spécifications qui figurent dans la séction 'Déscription et Fonctionnalités clés du projet', ou, à défaut, dans le devis.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * (spaceY1 + 2);
-
+            addText('2.2 - Délai de fourniture des services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            const spaceY2 = addText("À compter du moment où le client a fourni au prestataire de services les éléments d'information et sous réserve de tout service additionnel requis par le client après la signature du présent contrat, le délai de fourniture des services par le prestataire de services est celui indiqué dans les spécifications.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY2 + 4);
+            //DESCRIPTION DU PROJET PLUS FONCTIONNALITE
             addText('3 - DESCRPTION ET FONCTIONNALITÉS CLES DU PROJET', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
             yPosition -= lineHeight * 2;
+            addText('3.1 - Déscription', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            //AJOUT DESCRIPTION DU PROJET
             addText(data.projectDescription, margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            addText('3.2 - Fonctionnalités', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 4;
+            //AJOUT FONCTIONNALITE
+            data.projectFonctionList.forEach((item)=>{
+                addText(item, margin+30, yPosition,margin, {size:11,isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight,isListItem:true})
+                yPosition -= lineHeight * 1.5;
+            })
+            //PRIX
+            addText('4 - CONSIDÉRATION', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            addText('4.1 - Prix des services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            const spaceY3 = addText("En considération de la fourniture des services, le client doit payer au prestataire de services le prix indiqué dans les spécifications, ainsi que toutes les taxes applicables.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY3 + 2);
+            addText('4.2 - Termes et conditions de paiement', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            const spaceY4 = addText("Le prix est payable par le client au prestataire de services selon les termes et conditions de paiement indiqués dans les spécifications.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY4 + 2);
+            addText('(Les modalités et coordonnées de paiement sont indiqués en annexe de ce contrat")', margin, yPosition,margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBoldItalic,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 4;
+            //DISPOSITION PARTICULIER
+            addText('5 - DISPOSITIONS PARTICULIÈRES', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            addText('5.1 - Représentants des parties', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            const spaceY5 = addText("Chacune des parties reconnaît que la personne qu'elle désigne dans les spécifications (ou toute personne remplaçant la personne désignée, après avis en ce sens donné à l'autre partie) la représente et a toute autorité pour poser les actes, prendre les décisions et donner les autorisations requises relativement à l'exécution du présent contrat.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY5 + 2);
+            addText('5.2 - Communications électroniques', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            const spaceY6 = addText("Les représentants des parties peuvent communiquer entre eux par voie électronique. Dans un tel cas, les présomptions suivantes s'appliquent:", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY6 + 2);
+            const spaceY7 = addText("la présence d'un code d'identification dans un document électronique est suffisante pour identifier la personne émettrice et pour établir l'authenticité dudit document; un document électronique contenant un code d'identification constitue un écrit signé par la personne émettrice; un document électronique ou toute sortie imprimée d'un tel document, conservée conformément aux pratiques commerciales habituelles, est considéré comme un original.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY7 + 2);
+            addText('5.3 - Obligations du client', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
+            addText("Le client s'engage et s'oblige envers le prestataire de services à ce qui suit:", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 4;
+            addText("a) Le client doit fournir au prestataire de services les éléments d'information dans la forme et à l'intérieur des délais prévus dans les spécifications;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 1;
+            const final6 = addHorizontalText([{text:"b) Les éléments d'information doivent respecter toutes les lois et tous les règlements applicables, notamment la",size:11, isBold:false}, {text:"RGPD et autres directives pour le respect de la vie privée;",size:11, isBold:true}],yPosition,margin, false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight});
+            yPosition = final6.finalY - (lineHeight * 1);
+            const spaceY8 = addText("c) La fourniture des éléments d'information par le client ne doit violer aucune obligation de confidentialité ou de non-divulgation et doit permettre au prestataire de services de les utiliser librement et sans contrainte dans le cadre de la fourniture des services;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY8 + 1);
+            const spaceY9 = addText("d) Le client doit fournir au prestataire de services, sur demande de celui-ci, la preuve de son droit, titre ou intérêt de propriété intellectuelle dans tout élément d'information;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY9 + 1);
+            const spaceY10 = addText("e) Le client doit apporter au prestataire de services toute sa collaboration et lui fournir toute l'information requise pour assurer l'exécution fidèle et complète des services à être rendus;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY10 + 1);
+            const spaceY11 = addText("f) À moins d'un motif sérieux, le client doit donner au prestataire de services, sur demande de celui-ci, son approbation du travail effectué au terme de chacune des phases de prestation de services indiquées dans les spécifications;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY11 + 1);
+            const spaceY12 = addText("g) Le client est seul responsable du contenu des équipements informatiques et des dommages pouvant découler de leur utilisation;", margin, yPosition,margin, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY12 + 1);
+            const final7 = addHorizontalText([{text:"h) Le client doit prendre fait et cause du prestataire de services si ce dernier est mis en cause ou porté partie dans une procédure judiciaire intentée par une tierce personne et alléguant une faute du prestataire de services découlant de l'utilisation des équipements informatiques ou des informations qui y sont contenues, et",size:11, isBold:false}, {text:"indemniser le prestataire de services de toute condamnation monétaire en capital et intérêts ainsi que de tous les frais judiciaires et extrajudiciaires que le prestataire de services peut encourir en conséquence;",size:11, isBold:true}],yPosition,margin, false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight});
+            yPosition = final7.finalY - (lineHeight * 1);
+            const spaceY13 = addText("i) Le client doit payer le prix des services du prestataire de services, payer le prix de tout service additionnel qu'il pourrait requérir ultérieurement à la signature du présent contrat ainsi que rembourser les dépenses encourues, conformément aux termes et conditions de paiement prévus dans les spécifications;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY13 + 1);
+            const spaceY14 = addText("j) Le client doit aviser le prestataire de services sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * (spaceY14 + 2);
+            addText('5.4 - Obligations du prestataire de services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
+            yPosition -= lineHeight * 2;
             yPosition -= lineHeight * 4;
             // Signatures
             yPosition -= lineHeight * 4;
@@ -253,7 +326,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         // Gestion des puces
         const prefix = isListItem ? bulletSymbol : "";
         const prefixWidth = isListItem 
-          ? currentFont.widthOfTextAtSize(prefix, size) 
+          ? currentFont.widthOfTextAtSize(prefix, size)
           : 0;
       
         const processLine = (line: string, isFirstLine: boolean) => {
@@ -498,7 +571,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
               console.log("Document non trouvé !");
               return null;
             }
-            const pdfUrl = await handlePdf({name:"Test Name",freelancerName:"ROD TECH SOLUTIONS",freelanceAdresse:'123 Rue Saint-Sébastien, Poissy 78300, France',freelancerSirets:"SIRET",freelancerVAT:"",clientEmail:"test@mail.com",clientAddress:"123 rue Saint-Sébastien, Poissy 78300, France",clientSIRET:"",clientPhone:"7845 454 12",confidentiality:true,projectTitle:"SIte Web",projectDescription:"Test du site",startDate:new Date().toISOString(),endDate:new Date().toISOString(),effectiveDate:new Date().toISOString(),deliverables:"50%",totalPrice:700,paymentMethod:"Bank Transfer",paymentSchedule:"50",terminationTerms:"50",governingLaw:"French Law"})
+            const pdfUrl = await handlePdf({name:"Test Name",freelancerName:"ROD TECH SOLUTIONS",freelanceAdresse:'123 Rue Saint-Sébastien, Poissy 78300, France',freelancerSirets:"SIRET",freelancerVAT:"",clientEmail:"test@mail.com",clientAddress:"123 rue Saint-Sébastien, Poissy 78300, France",clientSIRET:"",clientPhone:"7845 454 12",confidentiality:true,projectTitle:"SIte Web",projectDescription:"Test du site",startDate:new Date().toISOString(),endDate:new Date().toISOString(),effectiveDate:new Date().toISOString(),deliverables:"50%",totalPrice:700,paymentMethod:"Bank Transfer",paymentSchedule:"50",terminationTerms:"50",governingLaw:"French Law",projectFonctionList:["Fonction1","Fonction2","Fonction4","Fonction4"]})
             window.open(pdfUrl, '_blank');
         }
         getDocumentById("clients",clientId);
@@ -694,6 +767,23 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <p className="text-red-500 text-sm mt-1">{errors.projectDescription.message as string}</p>
                         )}
                     </div>
+
+                    <div className="mt-4 w-full">
+                        <label className="block text-sm font-medium text-gray-700">Ajouter une fonctionnalité*</label>
+                        <div className="flex items-center mt-2 justify-start gap-1 w-full"><input className="p-2 bg-gray-200 w-2/4 focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-1/4 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>Ajouter</span><span className="p-2 cursor-pointer w-1/4 flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>Vider la liste</span></div>
+                    </div>
+
+                    {
+                        fonctionalityList.length > 0 && (
+                            <ul className="my-4 mx-4 list-disc">
+                                {
+                                    fonctionalityList.map((item, index) => (
+                                        <li key={index} className={`${index === fonctionalityList.length - 1 ? 'mb-0' : 'mb-2'}`}>{item}</li>
+                                    ))
+                                }
+                            </ul>
+                        )
+                    }
 
                     <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">Deliverables*</label>
