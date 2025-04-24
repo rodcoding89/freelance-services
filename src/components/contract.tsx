@@ -127,7 +127,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             console.log("try fontion")
             // Création d'un nouveau document PDF
             const pdfDoc = await PDFDocument.create();
-            const page = pdfDoc.addPage([595, 842]); // Format A4
+            let page = pdfDoc.addPage([595, 842]); // Format A4
             
             // Chargement des polices
             const [fontRegular, fontBold, fontItalic, fontBoldItalic] = await Promise.all([
@@ -140,6 +140,8 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             // Dimensions utiles
             const { width, height } = page.getSize();
             const margin = 50;
+            const marginBottom = 50;
+            const marginTop = 50;
             const lineHeight = 14;
       
             //const signatureImage = await pdfDoc.embedPng(signingLink);
@@ -147,124 +149,128 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
       
             // Position initiale
             let yPosition = height - margin;
-
+            const pageRef = { current: page };
+            const yRef = { current: yPosition };
 
             // Titre
-            addText(content.title, margin, yPosition,margin, {size:18, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
+            yRef.current = addText(content.title, margin, yRef.current,margin, {size:18, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 3;
 
             // Sous Titre
-            addText(content.sousTitle, margin, yPosition, margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
+            yRef.current = addText(content.sousTitle, margin, yRef.current, margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
 
             // Préambule
-            const final1 = addHorizontalText([{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yPosition,true,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
-            yPosition = final1.finalY - lineHeight;
+            const final1 = addHorizontalText([{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,fontRegular,fontBold,{defaultSpacing:5,lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef)
+            yRef.current = final1.finalY + 2;
             
-            addText(content.and, margin, yPosition,margin, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
+            yRef.current = addText(content.and, margin, yRef.current,margin, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
 
-            const final2 = addHorizontalText([{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yPosition,true,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
-            yPosition = final2.finalY - (lineHeight * 1.5);
-            addText('(le client et le prestataire de services ci-après collectivement appelés "les parties")', margin, yPosition,margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBoldItalic,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 4;
+            const final2 = addHorizontalText([{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,fontRegular,fontBold,{defaultSpacing:5,lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef)
+            yRef.current = final2.finalY + 2;
+            yRef.current = addText('(le client et le prestataire de services ci-après collectivement appelés "les parties")', margin, yRef.current,margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBoldItalic,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 4;
             // Sections du contrat (ajoutez toutes les sections nécessaires)
-            addText('1 - PRÉAMBULE', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            const final3 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:'le client désire obtenir divers services informatiques de la part du prestataire de services;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
-            yPosition = final3.finalY - (lineHeight * 2.5);
-            const final4 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:'les parties désirent confirmer leur entente par écrit;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
-            yPosition = final4.finalY - (lineHeight * 2.5);
-            const final5 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:"les parties ont la capacité et la qualité d'exercer tous les droits requis pour la conclusion et l'exécution de l'entente constatée dans le présent contrat;",size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yPosition,false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight})
-            yPosition = final5.finalY - (lineHeight * 2.5);
-            const spaceY = addText('EN CONSÉQUENCE DE CE QUI PRÉCÈDE, LES PARTIES CONVIENNENT DE CE QUI SUIT:', margin, yPosition,margin, {size:12, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY + 4);
+            yRef.current = addText('1 - PRÉAMBULE', margin, yRef.current,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
+            const final3 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:'le client désire obtenir divers services informatiques de la part du prestataire de services;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,fontRegular,fontBold,{defaultSpacing:5,lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef)
+            yRef.current = final3.finalY + 3;
+            const final4 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:'les parties désirent confirmer leur entente par écrit;',size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,fontRegular,fontBold,{defaultSpacing:5,lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef)
+            yRef.current = final4.finalY + 3;
+            const final5 = addHorizontalText([{text:'CONSIDÉRANT QUE',size:12,isBold:true,color:rgb(0, 0, 0)},{text:"les parties ont la capacité et la qualité d'exercer tous les droits requis pour la conclusion et l'exécution de l'entente constatée dans le présent contrat;",size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,fontRegular,fontBold,{defaultSpacing:5,lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef)
+            yRef.current = final5.finalY + 3;
+            yRef.current = addText('EN CONSÉQUENCE DE CE QUI PRÉCÈDE, LES PARTIES CONVIENNENT DE CE QUI SUIT:', margin, yRef.current,margin, {size:12, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 4
             // ... Ajoutez toutes les autres sections du contrat ici
             //OBJET DU CONTRAT
-            addText('2 - OBJET', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            addText('2.1 - Services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
+            yRef.current = addText('2 - OBJET', margin, yRef.current,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
+            yRef.current = addText('2.1 - Services', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
             //SERVICE PROPOSE
-            const spaceY1 = addText("Le prestataire de services s'engage envers le client à fournir les services informatiques (ci-après appelés 'les services') décrits dans les spécifications qui figurent dans la séction 'Déscription et Fonctionnalités clés du projet', ou, à défaut, dans le devis.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY1 + 2);
-            addText('2.2 - Délai de fourniture des services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            const spaceY2 = addText("À compter du moment où le client a fourni au prestataire de services les éléments d'information et sous réserve de tout service additionnel requis par le client après la signature du présent contrat, le délai de fourniture des services par le prestataire de services est celui indiqué dans les spécifications.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY2 + 4);
+            yRef.current = addText("Le prestataire de services s'engage envers le client à fournir les services informatiques (ci-après appelés 'les services') décrits dans les spécifications qui figurent dans la séction 'Déscription et Fonctionnalités clés du projet', ou, à défaut, dans le devis.", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight
+            yRef.current = addText('2.2 - Délai de fourniture des services', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            yRef.current = addText("À compter du moment où le client a fourni au prestataire de services les éléments d'information et sous réserve de tout service additionnel requis par le client après la signature du présent contrat, le délai de fourniture des services par le prestataire de services est celui indiqué dans les spécifications.", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 4
             //DESCRIPTION DU PROJET PLUS FONCTIONNALITE
-            addText('3 - DESCRPTION ET FONCTIONNALITÉS CLES DU PROJET', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            addText('3.1 - Déscription', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
+            yRef.current = addText('3 - DESCRPTION ET FONCTIONNALITÉS CLES DU PROJET', margin, yRef.current,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
+            yRef.current = addText('3.1 - Déscription', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
             //AJOUT DESCRIPTION DU PROJET
-            addText(data.projectDescription, margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            addText('3.2 - Fonctionnalités', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 4;
+            yRef.current = addText(data.projectDescription, margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
+            yRef.current = addText('3.2 - Fonctionnalités', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
             //AJOUT FONCTIONNALITE
-            data.projectFonctionList.forEach((item)=>{
-                addText(item, margin+30, yPosition,margin, {size:11,isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight,isListItem:true})
-                yPosition -= lineHeight * 1.5;
+            data.projectFonctionList.forEach((item,index)=>{
+                yRef.current = addText(item, margin+30, yRef.current,margin, {size:11,isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,isListItem:true},pdfDoc,pageRef,yRef);
+                yRef.current -= lineHeight + 1;
+                if (index === data.projectFonctionList.length - 1) {
+                    yRef.current -= lineHeight + 4;
+                }
             })
             //PRIX
-            addText('4 - CONSIDÉRATION', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            addText('4.1 - Prix des services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            const spaceY3 = addText("En considération de la fourniture des services, le client doit payer au prestataire de services le prix indiqué dans les spécifications, ainsi que toutes les taxes applicables.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY3 + 2);
-            addText('4.2 - Termes et conditions de paiement', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            const spaceY4 = addText("Le prix est payable par le client au prestataire de services selon les termes et conditions de paiement indiqués dans les spécifications.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY4 + 2);
-            addText('(Les modalités et coordonnées de paiement sont indiqués en annexe de ce contrat")', margin, yPosition,margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBoldItalic,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 4;
+            yRef.current = addText('4 - CONSIDÉRATION', margin, yRef.current,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
+            yRef.current = addText('4.1 - Prix des services', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            yRef.current = addText("En considération de la fourniture des services, le client doit payer au prestataire de services le prix indiqué dans les spécifications, ainsi que toutes les taxes applicables.", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight
+            yRef.current = addText('4.2 - Termes et conditions de paiement', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            yRef.current = addText("Le prix est payable par le client au prestataire de services selon les termes et conditions de paiement indiqués dans les spécifications.", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1
+            yRef.current = addText('(Les modalités et coordonnées de paiement sont indiqués en annexe de ce contrat")', margin, yRef.current,margin, {size:9, isBold:true,font:fontRegular,fontBold:fontBoldItalic,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 4;
             //DISPOSITION PARTICULIER
-            addText('5 - DISPOSITIONS PARTICULIÈRES', margin, yPosition,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            addText('5.1 - Représentants des parties', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            const spaceY5 = addText("Chacune des parties reconnaît que la personne qu'elle désigne dans les spécifications (ou toute personne remplaçant la personne désignée, après avis en ce sens donné à l'autre partie) la représente et a toute autorité pour poser les actes, prendre les décisions et donner les autorisations requises relativement à l'exécution du présent contrat.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY5 + 2);
-            addText('5.2 - Communications électroniques', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            const spaceY6 = addText("Les représentants des parties peuvent communiquer entre eux par voie électronique. Dans un tel cas, les présomptions suivantes s'appliquent:", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY6 + 2);
-            const spaceY7 = addText("la présence d'un code d'identification dans un document électronique est suffisante pour identifier la personne émettrice et pour établir l'authenticité dudit document; un document électronique contenant un code d'identification constitue un écrit signé par la personne émettrice; un document électronique ou toute sortie imprimée d'un tel document, conservée conformément aux pratiques commerciales habituelles, est considéré comme un original.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY7 + 2);
-            addText('5.3 - Obligations du client', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            addText("Le client s'engage et s'oblige envers le prestataire de services à ce qui suit:", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 4;
-            addText("a) Le client doit fournir au prestataire de services les éléments d'information dans la forme et à l'intérieur des délais prévus dans les spécifications;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 1;
-            const final6 = addHorizontalText([{text:"b) Les éléments d'information doivent respecter toutes les lois et tous les règlements applicables, notamment la",size:11, isBold:false}, {text:"RGPD et autres directives pour le respect de la vie privée;",size:11, isBold:true}],yPosition,margin, false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight});
-            yPosition = final6.finalY - (lineHeight * 1);
-            const spaceY8 = addText("c) La fourniture des éléments d'information par le client ne doit violer aucune obligation de confidentialité ou de non-divulgation et doit permettre au prestataire de services de les utiliser librement et sans contrainte dans le cadre de la fourniture des services;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY8 + 1);
-            const spaceY9 = addText("d) Le client doit fournir au prestataire de services, sur demande de celui-ci, la preuve de son droit, titre ou intérêt de propriété intellectuelle dans tout élément d'information;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY9 + 1);
-            const spaceY10 = addText("e) Le client doit apporter au prestataire de services toute sa collaboration et lui fournir toute l'information requise pour assurer l'exécution fidèle et complète des services à être rendus;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY10 + 1);
-            const spaceY11 = addText("f) À moins d'un motif sérieux, le client doit donner au prestataire de services, sur demande de celui-ci, son approbation du travail effectué au terme de chacune des phases de prestation de services indiquées dans les spécifications;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY11 + 1);
-            const spaceY12 = addText("g) Le client est seul responsable du contenu des équipements informatiques et des dommages pouvant découler de leur utilisation;", margin, yPosition,margin, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY12 + 1);
-            const final7 = addHorizontalText([{text:"h) Le client doit prendre fait et cause du prestataire de services si ce dernier est mis en cause ou porté partie dans une procédure judiciaire intentée par une tierce personne et alléguant une faute du prestataire de services découlant de l'utilisation des équipements informatiques ou des informations qui y sont contenues, et",size:11, isBold:false}, {text:"indemniser le prestataire de services de toute condamnation monétaire en capital et intérêts ainsi que de tous les frais judiciaires et extrajudiciaires que le prestataire de services peut encourir en conséquence;",size:11, isBold:true}],yPosition,margin, false,margin,fontRegular,fontBold,{page,defaultSpacing:5,lineHeight});
-            yPosition = final7.finalY - (lineHeight * 1);
-            const spaceY13 = addText("i) Le client doit payer le prix des services du prestataire de services, payer le prix de tout service additionnel qu'il pourrait requérir ultérieurement à la signature du présent contrat ainsi que rembourser les dépenses encourues, conformément aux termes et conditions de paiement prévus dans les spécifications;", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY13 + 1);
-            const spaceY14 = addText("j) Le client doit aviser le prestataire de services sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne.", margin, yPosition,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * (spaceY14 + 2);
-            addText('5.4 - Obligations du prestataire de services', margin, yPosition,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,page:page,lineHeight:lineHeight});
-            yPosition -= lineHeight * 2;
-            yPosition -= lineHeight * 4;
+            yRef.current = addText('5 - DISPOSITIONS PARTICULIÈRES', margin, yRef.current,margin, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
+            yRef.current = addText('5.1 - Représentants des parties', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            yRef.current = addText("Chacune des parties reconnaît que la personne qu'elle désigne dans les spécifications (ou toute personne remplaçant la personne désignée, après avis en ce sens donné à l'autre partie) la représente et a toute autorité pour poser les actes, prendre les décisions et donner les autorisations requises relativement à l'exécution du présent contrat.", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2
+            yRef.current = addText('5.2 - Communications électroniques', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            yRef.current = addText("Les représentants des parties peuvent communiquer entre eux par voie électronique. Dans un tel cas, les présomptions suivantes s'appliquent:", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1
+            yRef.current = addText("la présence d'un code d'identification dans un document électronique est suffisante pour identifier la personne émettrice et pour établir l'authenticité dudit document; un document électronique contenant un code d'identification constitue un écrit signé par la personne émettrice; un document électronique ou toute sortie imprimée d'un tel document, conservée conformément aux pratiques commerciales habituelles, est considéré comme un original.", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2
+            yRef.current = addText('5.3 - Obligations du client', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            yRef.current = addText("Le client s'engage et s'oblige envers le prestataire de services à ce qui suit:", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 2;
+            yRef.current = addText("a) Le client doit fournir au prestataire de services les éléments d'information dans la forme et à l'intérieur des délais prévus dans les spécifications;", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            const final6 = addHorizontalText([{text:"b) Les éléments d'information doivent respecter toutes les lois et tous les règlements applicables, notamment la",size:11, isBold:false}, {text:"RGPD et autres directives pour le respect de la vie privée;",size:11, isBold:true}],yRef.current,margin, false,margin,fontRegular,fontBold,{defaultSpacing:5,lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = final6.finalY + 1;
+            yRef.current = addText("c) La fourniture des éléments d'information par le client ne doit violer aucune obligation de confidentialité ou de non-divulgation et doit permettre au prestataire de services de les utiliser librement et sans contrainte dans le cadre de la fourniture des services;", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1
+            yRef.current = addText("d) Le client doit fournir au prestataire de services, sur demande de celui-ci, la preuve de son droit, titre ou intérêt de propriété intellectuelle dans tout élément d'information;", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1
+            yRef.current = addText("e) Le client doit apporter au prestataire de services toute sa collaboration et lui fournir toute l'information requise pour assurer l'exécution fidèle et complète des services à être rendus;", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1
+            yRef.current = addText("f) À moins d'un motif sérieux, le client doit donner au prestataire de services, sur demande de celui-ci, son approbation du travail effectué au terme de chacune des phases de prestation de services indiquées dans les spécifications;", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1
+            yRef.current = addText("g) Le client est seul responsable du contenu des équipements informatiques et des dommages pouvant découler de leur utilisation;", margin, yRef.current,margin, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1
+            const final7 = addHorizontalText([{text:"h) Le client doit prendre fait et cause du prestataire de services si ce dernier est mis en cause ou porté partie dans une procédure judiciaire intentée par une tierce personne et alléguant une faute du prestataire de services découlant de l'utilisation des équipements informatiques ou des informations qui y sont contenues, et",size:11, isBold:false}, {text:"indemniser le prestataire de services de toute condamnation monétaire en capital et intérêts ainsi que de tous les frais judiciaires et extrajudiciaires que le prestataire de services peut encourir en conséquence;",size:11, isBold:true}],yRef.current,margin, false,margin,fontRegular,fontBold,{defaultSpacing:5,lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = final7.finalY + 1;
+            yRef.current = addText("i) Le client doit payer le prix des services du prestataire de services, payer le prix de tout service additionnel qu'il pourrait requérir ultérieurement à la signature du présent contrat ainsi que rembourser les dépenses encourues, conformément aux termes et conditions de paiement prévus dans les spécifications;", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            yRef.current = addText("j) Le client doit aviser le prestataire de services sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne.", margin, yRef.current,margin, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current -= lineHeight + 1;
+            yRef.current = addText('5.4 - Obligations du prestataire de services', margin, yRef.current,margin, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            
+            yRef.current -= lineHeight + 4;
             // Signatures
-            yPosition -= lineHeight * 4;
-            signatureBloc(['Signature du prestataire','Signature du client'],yPosition,page,margin,margin,11,true,fontRegular,fontBold)
-            yPosition -= lineHeight * 4;
-            signatureBloc([formatDate(data.effectiveDate)+':___________________________',formatDate(data.effectiveDate)+':___________________________'],yPosition,page,margin,margin,10,false,fontRegular,fontBold)
+            //yRef.current -= lineHeight * 4;
+            signatureBloc(['Signature du prestataire','Signature du client'],yRef.current,margin,margin,11,true,fontRegular,fontBold,pdfDoc,pageRef,yRef)
+            yRef.current -= lineHeight * 4;
+            signatureBloc([formatDate(data.effectiveDate)+':___________________________',formatDate(data.effectiveDate)+':___________________________'],yRef.current,margin,margin,10,false,fontRegular,fontBold,pdfDoc,pageRef,yRef)
 
             // Génération du PDF final
             const pdfBytes = await pdfDoc.save();
@@ -285,125 +291,160 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     }
     // Fonction utilitaire pour ajouter du texte multiligne
-    const addText = (
-        text: string,
-        x: number,
-        y: number,
-        rightMargin: number,
-        options: {
-          size?: number;
-          isBold?: boolean;
-          font: PDFFont;
-          fontBold: PDFFont;
-          page: PDFPage;
-          lineHeight: number;
-          isListItem?: boolean; // Nouveau : élément de liste
-          bulletSymbol?: string; // Symbole de puce (défaut: "•")
-          maxWidth?: number; // Largeur maximale avant retour automatique
-        }
+    const addText = (text: string,x: number,y: number,rightMargin: number,options: {size?: number;isBold?: boolean;font: PDFFont;fontBold: PDFFont;lineHeight: number;isListItem?: boolean,bulletSymbol?: string,maxWidth?:number,topMargin?: number,bottomMarginThreshold?: number},pdfDoc:PDFDocument,pageRef: { current: PDFPage },
+        yRef: { current: number }
       ) => {
-        const {
+        let {
           size = 12,
           isBold = false,
           font,
           fontBold,
-          page,
           lineHeight,
           isListItem = false,
           bulletSymbol = "• ",
-          maxWidth = Infinity
+          maxWidth = Infinity,
+          topMargin = 50,
+          bottomMarginThreshold = 50,
         } = options;
       
         const currentFont = isBold ? fontBold : font;
-        const pageWidth = page.getSize().width;
+        const pageWidth = pageRef.current.getSize().width;
+        const height = pageRef.current.getSize().height;
         const effectiveMaxWidth = Math.min(
           maxWidth,
           pageWidth - x - rightMargin
         );
-        let currentY = y;
-        let totalLines = 0;
       
         // Gestion des puces
         const prefix = isListItem ? bulletSymbol : "";
         const prefixWidth = isListItem 
           ? currentFont.widthOfTextAtSize(prefix, size)
           : 0;
-      
+        let currentY = yRef.current;
         const processLine = (line: string, isFirstLine: boolean) => {
-          let currentX = x + (isFirstLine ? 0 : prefixWidth);
-          const words = line.split(' ');
-          let currentLine = isFirstLine ? prefix + words[0] : words[0];
-      
-          for (let i = 1; i < words.length; i++) {
-            const testLine = `${currentLine} ${words[i]}`;
-            const testWidth = currentFont.widthOfTextAtSize(testLine, size);
-      
-            if (testWidth > effectiveMaxWidth) {
-              // Dessiner la ligne actuelle
-              page.drawText(currentLine, {
-                x: currentX,
-                y: currentY,
-                size,
-                font: currentFont,
-                color: rgb(0, 0, 0),
-              });
-              currentY -= lineHeight;
-              totalLines++;
-              currentX = x + prefixWidth;
-              currentLine = words[i];
-            } else {
-              currentLine = testLine;
+            if (currentY < bottomMarginThreshold) {
+                const page = pdfDoc.addPage([595, 842]); // A4 - Considérer de ne pas hardcoder
+                pageRef.current = page; // Mettre à jour la référence de la page
+                // *** CORRECTION PRINCIPALE : Réinitialisation de Y basée sur la marge haute ***
+                currentY = height - topMargin; // Réinitialiser `y` en haut de la nouvelle page
+                yRef.current = currentY; // Mettre à jour la référence globale de Y
             }
-          }
-      
-          // Dessiner le reste de la ligne
-          if (currentLine) {
-            page.drawText(currentLine, {
-              x: currentX,
-              y: currentY,
-              size,
-              font: currentFont,
-              color: rgb(0, 0, 0),
-            });
-            totalLines++;
-          }
+            let currentX = x + (isFirstLine ? 0 : prefixWidth);
+            const words = line.split(" ");
+            let currentLine = isFirstLine ? prefix + words[0] : words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                const testLine = `${currentLine} ${words[i]}`;
+                const testWidth = currentFont.widthOfTextAtSize(testLine, size);
+
+                if (testWidth > effectiveMaxWidth) {
+                    // Vérifier à nouveau le débordement avant de dessiner
+                    if (currentY < bottomMarginThreshold) {
+                        const page = pdfDoc.addPage([595, 842]);
+                        pageRef.current = page;
+                        currentY = height - topMargin;
+                        yRef.current = currentY;
+                        // Sur une nouvelle page suite à un wrap, X doit revenir à la position de la marge gauche + marge puce
+                        currentX = x + prefixWidth; // Sur une ligne wrappée (pas la première du paragraphe), on ajoute la marge puce
+                    } else {
+                         // Si pas de nouvelle page, le X reste le même pour la ligne actuelle
+                        currentX = x + (isFirstLine && !isListItem ? 0 : prefixWidth); // Ajuster X si c'est la première ligne du paragraphe non listée
+                    }
+
+                    pageRef.current.drawText(currentLine, {
+                        x: currentX,
+                        y: currentY,
+                        size,
+                        font: currentFont,
+                        color: rgb(0, 0, 0),
+                    });
+                    currentY -= lineHeight;
+                    yRef.current = currentY;
+                    currentX = x + prefixWidth;
+                    currentLine = words[i];
+                } else {
+                    currentLine = testLine;
+                }
+            }
+
+            if (currentLine) {
+                if (currentY < bottomMarginThreshold) {
+                    const page = pdfDoc.addPage([595, 842]);
+                    pageRef.current = page;
+                    currentY = height - topMargin;
+                    yRef.current = currentY;
+                    // Sur une nouvelle page, X doit revenir à la position correcte
+                    currentX = x + (isFirstLine && !isListItem ? 0 : prefixWidth); // Utiliser le X correct pour la première ligne du paragraphe ou une ligne wrappée
+                } else {
+                    currentX = x + (isFirstLine && !isListItem ? 0 : prefixWidth);
+                }
+
+                pageRef.current.drawText(currentLine, {
+                    x: currentX,
+                    y: currentY,
+                    size,
+                    font: currentFont,
+                    color: rgb(0, 0, 0),
+                });
+                currentY -= lineHeight;
+                yRef.current = currentY;
+            }
         };
       
         // Traitement des sauts de ligne manuels (\n)
-        text.split('\n').forEach((paragraph, i) => {
-          if (i > 0) {
-            currentY -= lineHeight;
-            totalLines++;
-          }
-          processLine(paragraph, i === 0);
+        const paragraphs = text.split('\n');
+        paragraphs.forEach((paragraph, i) => {
+            // Si ce n'est pas le premier paragraphe, ajouter un espace entre les paragraphes
+             if (i > 0) {
+                // *** CORRECTION PRINCIPALE : Vérification de débordement AVANT d'ajouter l'espace entre paragraphes ***
+                // Si l'espace nécessaire pour le saut de ligne plus la première ligne du nouveau paragraphe
+                // dépasse la marge basse, on change de page MAINTENANT.
+                const nextY = currentY - lineHeight; // Position après le saut de ligne entre paragraphes
+                if (nextY < bottomMarginThreshold) {
+                    const page = pdfDoc.addPage([595, 842]);
+                    pageRef.current = page;
+                    currentY = height - topMargin; // Position de départ sur la nouvelle page
+                    yRef.current = currentY;
+                 } else {
+                    currentY = nextY; // Appliquer le saut de ligne si ça ne dépasse pas
+                    yRef.current = currentY;
+                 }
+            }
+            processLine(paragraph, true); // Le second paramètre indique si c'est la première ligne du paragraphe
         });
       
-        return totalLines;
+        return yRef.current;
     };
 
     const signatureBloc = (
         items: string[],
         y: number,
-        page: PDFPage,
         marginLeft: number,
         marginRight: number,
         size: number = 12,
         isBold: boolean = false,
         font: PDFFont,
-        fontBold: PDFFont
+        fontBold: PDFFont,
+        pdfDoc:PDFDocument,pageRef: { current: PDFPage },
+        yRef: { current: number }
     ) => {
-        const pageWidth = page.getWidth();
+        const pageWidth = pageRef.current.getWidth();
         const availableWidth = pageWidth - marginLeft - marginRight;
         
         // Gestion de la police
         const currentFont = isBold ? fontBold : font;
-        
+        const height = pageRef.current.getSize().height;
         // Cas particulier s'il n'y a qu'un seul élément
         if (items.length === 1) {
             const textWidth = currentFont.widthOfTextAtSize(items[0], size);
             const x = marginLeft + (availableWidth - textWidth) / 2;
-            
-            page.drawText(items[0], {
+            if (y < x) {
+                const page = pdfDoc.addPage([595, 842]);
+                pageRef.current = page;
+                y = height - x;
+                yRef.current = y;
+            }
+            pageRef.current.drawText(items[0], {
                 x,
                 y,
                 size,
@@ -423,7 +464,13 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             let currentX = marginLeft;
             
             items.forEach((item, index) => {
-                page.drawText(item, {
+                if (y < currentX) {
+                    const page = pdfDoc.addPage([595, 842]);
+                    pageRef.current = page;
+                    y = height - currentX;
+                    yRef.current = y;
+                }
+                pageRef.current.drawText(item, {
                     x: currentX,
                     y,
                     size,
@@ -438,7 +485,13 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             const gap = 10; // Espacement minimal
             
             items.forEach((item, index) => {
-                page.drawText(item, {
+                if (y < currentX) {
+                    const page = pdfDoc.addPage([595, 842]);
+                    pageRef.current = page;
+                    y = height - currentX;
+                    yRef.current = y;
+                }
+                pageRef.current.drawText(item, {
                     x: currentX,
                     y,
                     size,
@@ -463,35 +516,42 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         font: PDFFont,
         fontBold: PDFFont,
         context: {
-            page: PDFPage;
             defaultSpacing?: number;
             maxWidth?: number;
             bulletSymbol?: string;
             lineHeight: number;
-        }
+            topMargin:number,bottomMarginThreshold:number
+        },pdfDoc:PDFDocument,
+        pageRef: { current: PDFPage },
+        yRef: { current: number }
         ) => {
         const {
-            page,
             defaultSpacing = 2,
             lineHeight,
             maxWidth = Infinity,
             bulletSymbol = "• "
         } = context;
-
+        const height = pageRef.current.getSize().height;
         let currentX = startX;
         let currentY = startY;
-        const pageWidth = page.getSize().width;
+        const pageWidth = pageRef.current.getSize().width;
         const effectiveRightMargin = pageWidth - rightMargin;
 
         // Gestion de la puce (une seule fois pour tout le bloc)
         if (isListItem) {
             const bulletSize = textEntries[0]?.size || 12;
-            page.drawText(bulletSymbol, {
-            x: currentX,
-            y: currentY,
-            size: bulletSize,
-            font,
-            color: rgb(0, 0, 0),
+            if (currentY < currentX) {
+                const page = pdfDoc.addPage([595, 842]);
+                pageRef.current = page;
+                currentY = height - currentX;
+                yRef.current = currentY;
+            }
+            pageRef.current.drawText(bulletSymbol, {
+                x: currentX,
+                y: currentY,
+                size: bulletSize,
+                font,
+                color: rgb(0, 0, 0),
             });
             currentX += font.widthOfTextAtSize(bulletSymbol, bulletSize) + defaultSpacing;
         }
@@ -506,55 +566,65 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             let currentLine = '';
 
             words.forEach((word) => {
-            const testLine = currentLine ? `${currentLine} ${word}` : word;
-            const testWidth = currentFont.widthOfTextAtSize(testLine, size);
+                const testLine = currentLine ? `${currentLine} ${word}` : word;
+                const testWidth = currentFont.widthOfTextAtSize(testLine, size);
 
-            // Vérification contre la marge droite ET maxWidth
-            if (testWidth > Math.min(getAvailableWidth(), maxWidth)) {
-                // Dessiner la ligne actuelle
-                page.drawText(currentLine, {
-                x: currentX,
-                y: currentY,
-                size,
-                font: currentFont,
-                color,
-                });
+                // Vérification contre la marge droite ET maxWidth
+                if (testWidth > Math.min(getAvailableWidth(), maxWidth)) {
+                    if (currentY < currentX) {
+                        const page = pdfDoc.addPage([595, 842]);
+                        pageRef.current = page;
+                        currentY = height - currentX;
+                        yRef.current = currentY;
+                    }
+                    // Dessiner la ligne actuelle
+                    pageRef.current.drawText(currentLine, {
+                        x: currentX,
+                        y: currentY,
+                        size,
+                        font: currentFont,
+                        color,
+                    });
 
-                // Nouvelle ligne avec gestion de l'indentation
-                currentY -= lineHeight;
-                currentX = isListItem 
-                ? startX + font.widthOfTextAtSize(bulletSymbol, size) + defaultSpacing
-                : startX;
-                
-                currentLine = word;
-            } else {
-                currentLine = testLine;
-            }
+                    // Nouvelle ligne avec gestion de l'indentation
+                    currentY -= lineHeight;
+                    currentX = isListItem 
+                    ? startX + font.widthOfTextAtSize(bulletSymbol, size) + defaultSpacing
+                    : startX;
+                    
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
             });
 
             // Dessiner le reste du texte
             if (currentLine) {
-            // Vérification finale de la largeur
-            const lineWidth = currentFont.widthOfTextAtSize(currentLine, size);
-            if (currentX + lineWidth > effectiveRightMargin) {
-                currentY -= lineHeight;
-                currentX = isListItem 
-                ? startX + font.widthOfTextAtSize(bulletSymbol, size) + defaultSpacing
-                : startX;
-            }
-
-            page.drawText(currentLine, {
-                x: currentX,
-                y: currentY,
-                size,
-                font: currentFont,
-                color,
-            });
-            currentX += currentFont.widthOfTextAtSize(currentLine, size) + defaultSpacing;
+                // Vérification finale de la largeur
+                const lineWidth = currentFont.widthOfTextAtSize(currentLine, size);
+                if (currentX + lineWidth > effectiveRightMargin) {
+                    currentY -= lineHeight;
+                    currentX = isListItem 
+                    ? startX + font.widthOfTextAtSize(bulletSymbol, size) + defaultSpacing
+                    : startX;
+                }
+                if (currentY < currentX) {
+                    const page = pdfDoc.addPage([595, 842]);
+                    pageRef.current = page;
+                    currentY = height - currentX;
+                    yRef.current = currentY;
+                }
+                pageRef.current.drawText(currentLine, {
+                    x: currentX,
+                    y: currentY,
+                    size,
+                    font: currentFont,
+                    color,
+                });
+                currentX += currentFont.widthOfTextAtSize(currentLine, size) + defaultSpacing;
             }
         });
-
-        return { finalX: currentX, finalY: currentY };
+        return { finalX: currentX, finalY: yRef.current };
     };
     useEffect(() => {
         async function getDocumentById(collectionName: string, id: string) {
