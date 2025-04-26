@@ -11,6 +11,7 @@ import Link from 'next/link';
 interface Client {
   id: string;
   name: string;
+  contractType: "service"|"maintenance";
   contractStatus: 'signed' | 'unsigned' | 'pending';
   lastContact: Date;
 }

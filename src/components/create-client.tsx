@@ -16,6 +16,7 @@ interface CreateClientProps {
 interface Client {
     id?: string;
     name:string;
+    contractType: "service"|"maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';
     lastContact: Date;
 }
@@ -41,7 +42,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     } = useForm();
 
     const onSubmit = async(data: any) => {
-        const client:Client = {name:data.clientName,contractStatus:'unsigned',lastContact:new Date()}
+        const client:Client = {name:data.clientName,contractStatus:'unsigned',lastContact:new Date(),contractType:data.contractType}
         console.log('Client Data:', data);
         const clientId = await addClient(client)
         if (clientId) {
@@ -79,7 +80,13 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                     <p className="text-red-500 text-sm mt-1">{errors.clientName.message as string}</p>
                 )}
                 </div>
-
+                <div>
+                    <select id="contractType" {...register("contractType", { required: "This field is required" })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                        <option value="service">Service</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                </div>
                 <div className='flex justify-start items-center gap-5'>
                     <button
                         type="submit"

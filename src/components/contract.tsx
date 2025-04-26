@@ -13,6 +13,7 @@ import Icon from "./Icon";
 interface Client {
     id: string;
     name: string;
+    contractType: "service"|"maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';
     lastContact: Date;
 }
@@ -108,11 +109,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         default: return 'bx bx-question-mark';
         }
     };
-    const handlePdf = async(data:Contract)=>{
+    const handlePdf = async(client:Client,data:Contract)=>{
         //if(!signingLink) return
-        console.log("start fontion")
+        console.log("client info",client)
         const content = {
-            title: "CONTRAT DE PRESTATION DE SERVICE - WEB "+data.projectTitle,
+            title: client.contractType === 'service' ? "CONTRAT DE PRESTATION DE SERVICE - "+ data.projectTitle : "CONTRAT DE MAINTENANCE - "+ data.projectTitle,
             sousTitle: "Entre les soussignées :",
             clientName: `${data.name}`,
             freelanceName: `${data.freelancerName}`,
@@ -206,7 +207,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
            // yRef.current -= lineHeight + 1;
             //AJOUT FONCTIONNALITE
             data.projectFonctionList.forEach((item,index)=>{
-                yRef.current = addText(item, margin+30, yRef.current,margin,10, {size:11,isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,isListItem:true},pdfDoc,pageRef,yRef);
+                yRef.current = addText(item, margin+30, yRef.current,margin,8, {size:11,isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,isListItem:true},pdfDoc,pageRef,yRef);
                 if (index === data.projectFonctionList.length - 1) {
                     yRef.current = addText(item, margin+30, yRef.current,margin,40, {size:11,isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,isListItem:true},pdfDoc,pageRef,yRef);
                 }
@@ -241,27 +242,121 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
            // yRef.current -= lineHeight + 1;
             yRef.current = addText("Le client s'engage et s'oblige envers le prestataire de services à ce qui suit:", margin, yRef.current,margin,20, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
            // yRef.current -= lineHeight + 2;
-            yRef.current = addText("a) Le client doit fournir au prestataire de services les éléments d'information dans la forme et à l'intérieur des délais prévus dans les spécifications;", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText("b) Les éléments d'information doivent respecter toutes les lois et tous les règlements applicables, notamment la RGPD et autres directives pour le respect de la vie privée;", margin, yRef.current,margin,10, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText("c) La fourniture des éléments d'information par le client ne doit violer aucune obligation de confidentialité ou de non-divulgation et doit permettre au prestataire de services de les utiliser librement et sans contrainte dans le cadre de la fourniture des services;", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("a) Le client doit fournir au prestataire de services les éléments d'information dans la forme et à l'intérieur des délais prévus dans les spécifications;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("b) Les éléments d'information doivent respecter toutes les lois et tous les règlements applicables, notamment la RGPD et autres directives pour le respect de la vie privée;", margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("c) La fourniture des éléments d'information par le client ne doit violer aucune obligation de confidentialité ou de non-divulgation et doit permettre au prestataire de services de les utiliser librement et sans contrainte dans le cadre de la fourniture des services;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
            // yRef.current -= lineHeight + 1
-            yRef.current = addText("d) Le client doit fournir au prestataire de services, sur demande de celui-ci, la preuve de son droit, titre ou intérêt de propriété intellectuelle dans tout élément d'information;", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("d) Le client doit fournir au prestataire de services, sur demande de celui-ci, la preuve de son droit, titre ou intérêt de propriété intellectuelle dans tout élément d'information;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
            // yRef.current -= lineHeight + 1
-            yRef.current = addText("e) Le client doit apporter au prestataire de services toute sa collaboration et lui fournir toute l'information requise pour assurer l'exécution fidèle et complète des services à être rendus;", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("e) Le client doit apporter au prestataire de services toute sa collaboration et lui fournir toute l'information requise pour assurer l'exécution fidèle et complète des services à être rendus;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
            // yRef.current -= lineHeight + 1
-            yRef.current = addText("f) À moins d'un motif sérieux, le client doit donner au prestataire de services, sur demande de celui-ci, son approbation du travail effectué au terme de chacune des phases de prestation de services indiquées dans les spécifications;", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("f) À moins d'un motif sérieux, le client doit donner au prestataire de services, sur demande de celui-ci, son approbation du travail effectué au terme de chacune des phases de prestation de services indiquées dans les spécifications;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
            // yRef.current -= lineHeight + 1
-            yRef.current = addText("g) Le client est seul responsable du contenu des équipements informatiques et des dommages pouvant découler de leur utilisation;", margin, yRef.current,margin,10, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText("h) Le client doit prendre fait et cause du prestataire de services si ce dernier est mis en cause ou porté partie dans une procédure judiciaire intentée par une tierce personne et alléguant une faute du prestataire de services découlant de l'utilisation des équipements informatiques ou des informations qui y sont contenues, et indemniser le prestataire de services de toute condamnation monétaire en capital et intérêts ainsi que de tous les frais judiciaires et extrajudiciaires que le prestataire de services peut encourir en conséquence;", margin, yRef.current,margin,10, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText("i) Le client doit payer le prix des services du prestataire de services, payer le prix de tout service additionnel qu'il pourrait requérir ultérieurement à la signature du présent contrat ainsi que rembourser les dépenses encourues, conformément aux termes et conditions de paiement prévus dans les spécifications;", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("g) Le client est seul responsable du contenu des équipements informatiques et des dommages pouvant découler de leur utilisation;", margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("h) Le client doit prendre fait et cause du prestataire de services si ce dernier est mis en cause ou porté partie dans une procédure judiciaire intentée par une tierce personne et alléguant une faute du prestataire de services découlant de l'utilisation des équipements informatiques ou des informations qui y sont contenues, et indemniser le prestataire de services de toute condamnation monétaire en capital et intérêts ainsi que de tous les frais judiciaires et extrajudiciaires que le prestataire de services peut encourir en conséquence;", margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("i) Le client doit payer le prix des services du prestataire de services, payer le prix de tout service additionnel qu'il pourrait requérir ultérieurement à la signature du présent contrat ainsi que rembourser les dépenses encourues, conformément aux termes et conditions de paiement prévus dans les spécifications;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
            // yRef.current -= lineHeight + 1;
             yRef.current = addText("j) Le client doit aviser le prestataire de services sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
            // yRef.current -= lineHeight + 1;
-            yRef.current = addText('5.4 - Obligations du prestataire de services', margin, yRef.current,margin,40, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            
-           // yRef.current -= lineHeight + 4;
-            // Signatures
-            //yRef.current -= lineHeight * 4;
+            yRef.current = addText('5.4 - Obligations du prestataire de services', margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le prestataire de services s'engage et s'oblige envers le client à ce qui suit:", margin, yRef.current,margin,20, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("a) Les services doivent être rendus de façon professionnelle, selon les règles généralement reconnues par l'industrie, et en fonction des spécifications;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("b) Le prestataire de services doit s'assurer que ses employés, fournisseurs, collaborateurs et sous-traitants, s'il y a lieu, respectent intégralement les dispositions du présent contrat, notamment en ce qui concerne la propriété intellectuelle et la confidentialité;", margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("c) Le prestataire de services doit aviser le client sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText('5.5 - Information utile', margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le client reconnaît que le prestataire de services lui a fourni, avant la signature du présent contrat, toute l’information utile relativement aux services qu'il s'engage à fournir. Remarque : Toutes autres informations pour la réalisation du service nécessitant des coups supplémentaires sont a la charge du prestataire de services.", margin, yRef.current,margin,15, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.6 - Moyens d'exécution", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Sauf quant au respect des spécifications, le prestataire de services a le libre choix des moyens d'exécution du présent contrat et il n'existe entre lui et le client aucun lien de subordination quant à son exécution.", margin, yRef.current,margin,15, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.7 - Relation entre les parties", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Les parties étant des entrepreneurs indépendants, le présent contrat ne les lie entre elles qu'aux fins qui y sont mentionnées. Par conséquent, les dispositions du présent contrat ne peuvent nullement être interprétées comme créant une quelconque association ou société entre les parties ou comme confiant un quelconque mandat de l'une à l'autre. De plus, aucune des parties ne peut lier l'autre, de quelque façon que ce soit et envers qui que ce soit, autrement qu'en conformité avec les dispositions du présent contrat.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.8 - Sous-traitance", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("À moins d'une disposition à l'effet contraire dans le présent contrat et à condition d'avoir obtenu préalablement le consentement du client, le prestataire de services peut s'adjoindre tout tiers pour exécuter ce contrat. Il conserve néanmoins la direction et la responsabilité de l'exécution.", margin, yRef.current,margin,15, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.9 - Processus de vérification, de test et d'approbation", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Sur demande formulée par le prestataire de services au terme de chacune des phases de prestation de services indiquées dans les spécifications, le client doit vérifier, réviser, tester ou autrement apprécier le résultat des services rendus jusqu'à ce moment par le prestataire de services.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Dans un délai maximal de …...... jours suivant la demande du prestataire de services, le client doit approuver ou refuser le travail effectué par le prestataire de services. Si le client approuve le travail effectué ou omet de manifester son approbation ou son refus à l'intérieur dudit délai, le travail effectué est réputé approuvé et fait conformément aux spécifications, et le prestataire de services peut continuer son travail, s'il y a lieu. Si le client refuse le travail effectué, en tout ou en partie, il doit aviser le prestataire de services à l'intérieur dudit délai et par écrit de toute erreur, omission, non-conformité aux spécifications ou autre motif de refus, en donnant les indications utiles et précisions nécessaires à une bonne compréhension des points reprochés.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le prestataire de services dispose alors d'un délai identique à celui ci-haut mentionné afin de procéder à la correction des points reprochés et de soumettre de nouveau au client le résultat de son travail. Si le prestataire de services est en désaccord avec le client sur un ou plusieurs des points soulevés dans l'avis de refus, il doit faire part de sa position par écrit au client dans un délai maximal de …...... jours suivant la réception dudit avis de refus.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.10 - Modifications demandées en cours de contrat", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Si, en cours d'exécution du présent contrat et avant l'approbation finale des services rendus par le prestataire de services, le client requiert une révision, correction, addition, substitution ou autre modification aux spécifications:", margin, yRef.current,margin,20, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("a) afin que le résultat recherché soit conforme aux éléments d'information fournis par le client à l'origine;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("b) suite à une erreur ou omission du prestataire de services; ou", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("c) qui n'entraîne pas un surcroît de travail de la part du prestataire de services;", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("alors ladite demande de modification n'est pas considérée comme une demande de services additionnels et n'entraîne donc aucun coût supplémentaire pour le client. Toute telle demande de modification de la part du client doit être formulée par écrit.", margin, yRef.current,margin,10, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Toute autre demande de modification de la part du client est considérée comme étant une demande de services additionnels.", margin, yRef.current,margin,15, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.11 - Services additionnels", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Si le client requiert des services additionnels, il doit le formuler par écrit et le faire par au prestatrice de services.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Si le prestataire de services accepte de rendre ceux-ci, le client en est informé par écrit.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Tout service additionnel est donc soumis aux dispositions du présent contrat, notamment en matière de propriété intellectuelle et de confidentialité, en faisant les adaptations qui s'imposent s'il y a lieu.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.12 - Représentations et garanties du prestataire de services", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le prestataire de services représente et garantit au client que:", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("a) il possède la capacité requise afin de s'engager en vertu du présent contrat, telle capacité n'étant nullement limitée par un quelconque engagement envers une tierce personne;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("b) il possède l'expertise et l'expérience requises afin d'exécuter et de mener à terme les obligations qui lui incombent en vertu du présent contrat;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("c) il va rendre les services de façon professionnelle et efficace, selon les règles généralement reconnues par l'industrie et à l'aide de la technologie d'arrière-plan et des outils de développement les plus récents;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("d) il va respecter toutes et chacune des spécifications relatives aux services qu'il doit rendre;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("e) il va respecter tout droit, titre ou intérêt de propriété intellectuelle appartenant à tout tiers dans tout outil de développement qu'il va utiliser et dans tout composant qu'il va concevoir à l'aide de tout tel outil;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("f) il ne va utiliser aucune information confidentielle ou secret de commerce appartenant à toute tierce personne, à moins d'avoir reçu l'autorisation de cette dernière;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("g) le client va posséder un bon et valable droit, titre ou intérêt de propriété intellectuelle dans tout contenu créé par le prestataire de services, conformément à ce qui est prévu dans le présent contrat;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("h) tout tel contenu ne violera aucun droit, titre ou intérêt de propriété intellectuelle appartenant à un tiers.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.13 - Limitation de garantie", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Sauf si autrement prévu dans le présent contrat, le prestataire de services ne donne aucune garantie, expresse ou implicite, au client relativement:", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("a) aux équipements informatiques du client, à leur fonctionnement, et à leurs composants matériels et logiciels;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("b) aux retombées, financières ou non, réelles ou appréhendées, positives ou non, résultant ou pouvant résulter de la fourniture des services.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("LES GARANTIES CONTENUES DANS LE PRÉSENT CONTRAT SONT LES SEULES GARANTIES FOURNIES EN RELATION AVEC L'OBJET DU PRÉSENT CONTRAT ET ELLES CONSTITUENT UNE GARANTIE LIMITÉE.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+3,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.14 - Limitation de responsabilité", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Sauf en cas de faute grave de sa part, le prestataire de services ne peut être tenu responsable envers le client de toute faute et de tout dommage, direct ou indirect, pouvant en découler, et le client tient le prestataire de services quitte et indemne de toute réclamation, y compris de toute réclamation sur garantie, dans l'un ou l'autre des cas suivants:", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("a) modifications apportées au contenu par une personne autre que le prestataire de services ou relevant de ce dernier;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("b) modifications ou ajouts, matériels ou logiciels, aux équipements informatiques du client, ayant un effet sur le bon fonctionnement des produits logiciels;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("c) introduction d'un virus informatique dans les équipements informatiques du client, ayant un effet sur le bon fonctionnement des produits logiciels;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("d) migration des produits logiciels dans un environnement matériel ou logiciel différent; perte d'occasions ou de revenus d'affaires reliés au fonctionnement ou à l'absence de fonctionnement, ou à l'utilisation ou à l'absence d'utilisation des produits logiciels;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("e) intrusion illégale ou non-autorisée de tout tiers dans les équipements informatiques du client.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("SAUF SI AUTREMENT PRÉVU DANS LE PRÉSENT CONTRAT, EN AUCUN CAS LE PRESTATAIRE DE SERVICES (Y COMPRIS, S'IL Y A LIEU, SES FILIALES ET SA MAISON-MÈRE AINSI QUE SES ACTIONNAIRES, DIRIGEANTS, CADRES, EMPLOYÉS, COLLABORATEURS ET SOUS-TRAITANTS) NE PEUT ÊTRE TENU RESPONSABLE ENVERS LE CLIENT OU ENVERS DES TIERS DE TOUT DOMMAGE INDIRECT, INCIDENT, SPÉCIAL, PUNITIF OU EXEMPLAIRE, Y COMPRIS DE FAÇON NON LIMITATIVE DE TOUTE PERTE DE PROFIT OU AUTRE PERTE ÉCONOMIQUE (DÉCOULANT D'UNE FAUTE CONTRACTUELLE, D'UNE FAUTE DÉLICTUELLE OU D'UNE NÉGLIGENCE) MÊME SI LE PRESTATAIRE DE SERVICES A ÉTÉ AVERTI DE LA POSSIBILITÉ QUE SURVIENNE UN TEL DOMMAGE.", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+3,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.15 - Dépôt de garantie et paiements échelonnés", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Lors de la signature du présent contrat, le client doit verser au prestataire de services le dépôt de garantie indiqué dans le devis. Ce dépôt de garantie est nécessaire pour garantir le début des travaux comme convenu.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("En outre, le paiement total des services sera effectué par échelonnement selon le calendrier suivant :", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            data.paymentSchedule.split(',').forEach((item,index)=>{
+                if (index === 0) {
+                    const final6 = addHorizontalText([{text:"Dépôt de garantie :",size:11,isBold:true,color:rgb(0,0,0)},{text:item,size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,{horizontalSpacing:5,bulletSymbol:`${index + 1}`,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
+                    yRef.current = final6.finalY   
+                }else if(index === data.paymentSchedule.split(',').length - 1){
+                    const final6 = addHorizontalText([{text:"Solde final :",size:11,isBold:true,color:rgb(0,0,0)},{text:item,size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,15,fontRegular,fontBold,{horizontalSpacing:5,bulletSymbol:`${index + 1}`,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
+                    yRef.current = final6.finalY
+                }else{
+                    const final6 = addHorizontalText([{text:`Echelon ${index} : `,size:11,isBold:true,color:rgb(0,0,0)},{text:item,size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,{horizontalSpacing:5,bulletSymbol:`${index + 1}`,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
+                    yRef.current = final6.finalY
+                }
+            })
+            yRef.current = addText("5.16 - Suspension des services en cas de non-paiement", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("En outre, le paiement total des services sera effectué par échelonnement selon le calendrier suivant :", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            const final7 = addHorizontalText([{text:`Si le client refuse sans droit de verser au prestataire de services les sommes qui sont payables ou remboursables, selon le cas, en vertu du présent contrat conformément aux termes et conditions de paiement indiqués dans les spécifications, malgré une mise en demeure du prestataire de services,`,size:11,isBold:false,color:rgb(0,0,0)},{text:"ce dernier est en droit de suspendre la prestation des services concernés,",size:11,isBold:true,color:rgb(0,0,0)},{text:"sans autre avis ni délai, sous réserve de tout autre droit que peut avoir le prestataire de services en vertu du présent contrat.",size:11,isBold:false,color:rgb(0,0,0)}],margin,yRef.current,false,margin,15,fontRegular,fontBold,{horizontalSpacing:5,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
+            yRef.current = final7.finalY
+            yRef.current = addText("5.17 - Résiliation du contrat (par le client)", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le client peut résilier le présent contrat en tout temps, sur avis envoyé au prestataire de services. Toutefois, le client demeure responsable:", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("a) du paiement du prix des services rendus;", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("b) du paiement du prix des services additionnels rendus; et", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("c) du remboursement des dépenses encourues;", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("sans aucune réduction ou remise.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("De plus, si le prestataire de services a respecté ses obligations en vertu du présent contrat jusqu'à la résiliation de ce dernier, le client doit verser au prestataire de services un montant équivalent à quatre-vingt pour cent (80%) du solde du prix du contrat, à titre de perte de profit anticipé.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.18 - Résiliation du contrat (par le prestataire de services)", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("1) Si le client ne respecte pas l'une ou l'autre de ses obligations en vertu du présent contrat,", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("2) si le client cesse ses opérations de quelque façon que ce soit, y compris en raison de la faillite, liquidation ou cession de ses biens, ou", margin, yRef.current,margin,8, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("3) si le client lui a présenté des renseignements faux ou trompeurs ou lui a fait de fausses représentations,", margin, yRef.current,margin,15, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le prestataire de services peut résilier le présent contrat par l’envoi d’un avis écrit de résiliation énonçant le motif de résiliation. S’il s’agit d’un motif de résiliation prévu au paragraphe 1, le client devra remédier au défaut énoncé dans le délai prescrit dans l’avis, à défaut de quoi le contrat sera automatiquement résilié. Le prestataire de services n'est alors tenu que de rembourser au client toute avance (ou tout solde de celle-ci) ou tout montant excédentaire reçu, sous réserve de tous ses droits et recours contre le client.", margin, yRef.current,margin,15, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("5.19 - Droits d’auteur et propriété intellectuelle", margin, yRef.current,margin,10, {size:13, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("1) Tous les contenus (textes, images, vidéos, logos, etc.) fournis par la Cliente restent la propriété exclusive de celle-ci.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,isListItem:true,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("2) Le Prestataire ne peut, en aucun cas, utiliser ou reproduire ces contenus pour ses propres besoins ou ceux d’autres clients sans une autorisation écrite du/de la Client(e).", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("3) À la livraison du site internet, la Cliente sera l’unique propriétaire du design, du code source et des contenus du site, à l’exception des éléments appartenant à des tiers (plugins, logiciels, etc.) dont les droits seront spécifiés.", margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("4) Le Prestataire pourra conserver une copie du site dans un serveur sécurisé(Controlle de version GIT EX: GitHub,GitLab) uniquement pour les besoins futurs de modification du site internet après la livraison. Le Prestation reconnait que cette copie reste la propriété de la Cliente et les contenus y figurant peuvent être utilisés ou reproduits sans l’accord de celle-ci.", margin, yRef.current,margin,40, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText('6 - DISPOSITIONS GÉNÉRALES', margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le Prestataire pourra conserver une copie du site dans un serveur sécurisé(Controlle de version GIT EX: GitHub,GitLab).", margin, yRef.current,margin+30,40, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText('7 - ENTRÉE EN VIGUEUR DU CONTRAT', margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le présent contrat entre en vigueur à la signature du présent contrat.", margin, yRef.current,margin,40, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText('8 - FIN DU CONTRAT', margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("Le présent contrat prend fin dans l'un ou l'autre des cas suivants:", margin, yRef.current,margin,40, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText('9 - RECONNAISSANCE DES PARTIES', margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("LES PARTIES RECONNAISSENT QUE:", margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("A) LE PRÉSENT CONTRAT A FAIT L'OBJET DE NÉGOCIATIONS PRÉALABLES ENTRE ELLES;", margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+2,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("B) LE PRÉSENT CONTRAT REFLÈTE VÉRITABLEMENT ET COMPLÈTEMENT L'ENTENTE INTERVENUE ENTRE ELLES;", margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+2,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText("C) TOUTES ET CHACUNE DES CLAUSES DU PRÉSENT CONTRAT SONT LISIBLES ET COMPREHENSIBLES;", margin, yRef.current,margin,40, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+2,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
+            yRef.current = addText('10 - SIGNATURES', margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
             yRef.current = signatureBloc(['Signature du prestataire','Signature du client'],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,pdfDoc,pageRef,yRef)
            // yRef.current -= lineHeight * 4;
            yRef.current = signatureBloc([formatDate(data.effectiveDate)+':___________________________',formatDate(data.effectiveDate)+':___________________________'],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,pdfDoc,pageRef,yRef)
@@ -314,6 +409,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
           ? currentFont.widthOfTextAtSize(prefix, size)
           : 0;
         let currentY = yRef.current;
+        let canAddPageNumber:boolean = true;
         const processLine = (line: string, isFirstLine: boolean) => {
             if (currentY < bottomMarginThreshold) {
                 const page = pdfDoc.addPage([595, 842]); // A4 - Considérer de ne pas hardcoder
@@ -321,6 +417,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 // *** CORRECTION PRINCIPALE : Réinitialisation de Y basée sur la marge haute ***
                 currentY = height - topMargin; // Réinitialiser `y` en haut de la nouvelle page
                 yRef.current = currentY; // Mettre à jour la référence globale de Y
+                canAddPageNumber = true;
             }
             let currentX = x + (isFirstLine ? 0 : prefixWidth);
             const words = line.split(" ");
@@ -358,6 +455,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 } else {
                     currentLine = testLine;
                 }
+                if (canAddPageNumber) {
+                    getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
+                    canAddPageNumber = false;
+                }
             }
 
             if (currentLine) {
@@ -368,6 +469,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     yRef.current = currentY;
                     // Sur une nouvelle page, X doit revenir à la position correcte
                     currentX = x + (isFirstLine && !isListItem ? 0 : prefixWidth); // Utiliser le X correct pour la première ligne du paragraphe ou une ligne wrappée
+                    canAddPageNumber = true;
                 } else {
                     currentX = x + (isFirstLine && !isListItem ? 0 : prefixWidth);
                 }
@@ -381,6 +483,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 });
                 currentY -= lineHeight;
                 yRef.current = currentY;
+                if (canAddPageNumber) {
+                    getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
+                    canAddPageNumber = false;
+                }
             }
         };
       
@@ -398,10 +504,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     pageRef.current = page;
                     currentY = height - topMargin; // Position de départ sur la nouvelle page
                     yRef.current = currentY;
-                 } else {
+                    canAddPageNumber = true;
+                } else {
                     currentY = nextY; // Appliquer le saut de ligne si ça ne dépasse pas
                     yRef.current = currentY;
-                 }
+                }
             }
             processLine(paragraph, true); // Le second paramètre indique si c'est la première ligne du paragraphe
         });
@@ -430,10 +537,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         let pageHeight = pageRef.current.getHeight();
         const availableWidth = pageWidth - marginLeft - marginRight;
         const currentFont = isBold ? fontBold : font;
-        
+        let canAddPageNumber:boolean = false;
         // Utiliser la position Y actuelle ou la position initiale si non définie
         let currentY = yRef.current !== undefined ? yRef.current : initialY;
-    
+        const height = pageRef.current.getSize().height
         const drawItem = (item: string, x: number, y: number, width: number) => {
             pageRef.current.drawText(item, {
                 x,
@@ -443,6 +550,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 color: rgb(0, 0, 0),
                 maxWidth: width, // Limite la largeur du texte
             });
+            if (canAddPageNumber) {
+                getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
+                canAddPageNumber = false;
+            }
         };
     
         // Vérifier qu'il y a exactement 2 items
@@ -461,6 +572,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             pageHeight = newPage.getHeight();
             currentY = pageHeight - topMargin;
             yRef.current = currentY;
+            canAddPageNumber = true;
         }
     
         // Largeur disponible pour chaque item (moitié de la largeur totale)
@@ -513,7 +625,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             bottomMargin
         } = context;
     
-        const pageHeight = pageRef.current.getSize().height;
+        const height = pageRef.current.getSize().height;
         const pageWidth = pageRef.current.getSize().width;
         const effectiveRightMargin = pageWidth - rightMargin;
     
@@ -521,7 +633,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         let currentX = startX;
         let currentY = yRef.current !== undefined ? yRef.current : startY;
         let lowestYInBlock = currentY; // Track the lowest Y position in this block
-    
+        let canAddPageNumber:boolean = false;
         // Helper function to handle page breaks
         const checkPageBreak = (neededHeight: number) => {
             if (currentY - neededHeight < bottomMargin) {
@@ -530,6 +642,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 currentY = newPage.getHeight() - topMargin;
                 currentX = startX;
                 lowestYInBlock = currentY;
+                canAddPageNumber = true;
                 return true;
             }
             return false;
@@ -551,6 +664,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             });
     
             currentX += font.widthOfTextAtSize(bulletSymbol, bulletSize) + horizontalSpacing;
+            if (canAddPageNumber) {
+                getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
+                canAddPageNumber = false;
+            }
         }
     
         // Process each text entry
@@ -583,6 +700,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         // Update lowest Y position
                         if (currentY < lowestYInBlock) {
                             lowestYInBlock = currentY;
+                        }
+                        if (canAddPageNumber) {
+                            getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
+                            canAddPageNumber = false;
                         }
                     }
     
@@ -624,7 +745,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     font: currentFont,
                     color,
                 });
-    
+                if (canAddPageNumber) {
+                    getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
+                    canAddPageNumber = false;
+                }
                 // Update positions
                 if (currentY < lowestYInBlock) {
                     lowestYInBlock = currentY;
@@ -638,6 +762,26 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         yRef.current = yRef.current - marginAfter;
         return { finalX: currentX, finalY: yRef.current };
     };
+    const getTextWidth = (text:string, font: PDFFont, fontSize:number) => {
+        const width = font.widthOfTextAtSize(text, fontSize);
+        return width;
+    }
+    const getPdfXCenter = (ml:number,mr:number,pdfDoc:PDFDocument,fontSize:number,font:PDFFont,page:PDFPage)=>{
+        const pageWidth = 595;
+        const currentPage = pdfDoc.getPageCount();
+        const pageNumberText = `${currentPage}`;
+        const textWidth = getTextWidth(pageNumberText, font, fontSize);
+        const usableWidth = pageWidth - ml - mr;
+        const centerX = ml + usableWidth / 2;
+        const textX = centerX - textWidth / 2;
+        page.drawText(pageNumberText, {
+            x: textX,
+            y: 25, // 30pt depuis le bas
+            size: fontSize,
+            font,
+            color: rgb(0, 0, 0),
+        });
+    }
     useEffect(() => {
         async function getDocumentById(collectionName: string, id: string) {
             if(!id) return
@@ -645,16 +789,16 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             const docSnap = await getDoc(docRef);
           
             if (docSnap.exists()) {
-              const client:any = { id: docSnap.id, ...docSnap.data() };
-              setClient(client);
-              reset(client);
-              setLoading(false);
+                const client:any = { id: docSnap.id, ...docSnap.data() };
+                setClient(client);
+                reset(client);
+                setLoading(false);
+                const pdfUrl = await handlePdf(client,{name:"Test Name",freelancerName:"ROD TECH SOLUTIONS",freelanceAdresse:'123 Rue Saint-Sébastien, Poissy 78300, France',freelancerSirets:"SIRET",freelancerVAT:"",clientEmail:"test@mail.com",clientAddress:"123 rue Saint-Sébastien, Poissy 78300, France",clientSIRET:"",clientPhone:"7845 454 12",confidentiality:true,projectTitle:"SIte Web",projectDescription:"Test du site",startDate:new Date().toISOString(),endDate:new Date().toISOString(),effectiveDate:new Date().toISOString(),deliverables:"50",totalPrice:700,paymentMethod:"Bank Transfer",paymentSchedule:"25%,25%,50%",terminationTerms:"50",governingLaw:"French Law",projectFonctionList:["Fonction1","Fonction2","Fonction4","Fonction4"]})
+                window.open(pdfUrl, '_blank');
             } else {
               console.log("Document non trouvé !");
               return null;
             }
-            const pdfUrl = await handlePdf({name:"Test Name",freelancerName:"ROD TECH SOLUTIONS",freelanceAdresse:'123 Rue Saint-Sébastien, Poissy 78300, France',freelancerSirets:"SIRET",freelancerVAT:"",clientEmail:"test@mail.com",clientAddress:"123 rue Saint-Sébastien, Poissy 78300, France",clientSIRET:"",clientPhone:"7845 454 12",confidentiality:true,projectTitle:"SIte Web",projectDescription:"Test du site",startDate:new Date().toISOString(),endDate:new Date().toISOString(),effectiveDate:new Date().toISOString(),deliverables:"50%",totalPrice:700,paymentMethod:"Bank Transfer",paymentSchedule:"50",terminationTerms:"50",governingLaw:"French Law",projectFonctionList:["Fonction1","Fonction2","Fonction4","Fonction4"]})
-            window.open(pdfUrl, '_blank');
         }
         getDocumentById("clients",clientId);
     }, []);
