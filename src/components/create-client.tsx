@@ -16,7 +16,7 @@ interface CreateClientProps {
 interface Client {
     id?: string;
     name:string;
-    contractType: "service"|"maintenance";
+    contractType: "service"|"maintenance"|"service_and_maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';
     lastContact: Date;
 }
@@ -80,12 +80,19 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                     <p className="text-red-500 text-sm mt-1">{errors.clientName.message as string}</p>
                 )}
                 </div>
-                <div>
+                <div className='my-3'>
+                    <label htmlFor="clientName" className="block text-sm font-medium text-gray-700">
+                        Choisir le type de contrat
+                    </label>
                     <select id="contractType" {...register("contractType", { required: "This field is required" })}
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                         <option value="service">Service</option>
                         <option value="maintenance">Maintenance</option>
+                        <option value="service_and_maintenance">Service plus Maintenance</option>
                     </select>
+                    {errors.clientName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.contractType?.message as string}</p>
+                    )}
                 </div>
                 <div className='flex justify-start items-center gap-5'>
                     <button
