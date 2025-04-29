@@ -674,7 +674,8 @@
                 "sec6":{
                     "title":"5.6 - Moyens d'exécution",
                     "para11":"Sauf quant au respect des spécifications,",
-                    "para12":"le prestataire de services a le libre choix des moyens d'exécution du présent contrat et il n'existe entre lui et le client aucun lien de subordination quant à son exécution."
+                    "para12":"le prestataire de services a le libre choix des moyens d'exécution du présent contrat",
+                    "para13":"et il n'existe entre lui et le client aucun lien de subordination quant à son exécution."
                 },
                 "sec7":{
                     "title":"5.7 - Relation entre les parties",
@@ -749,8 +750,9 @@
                 },
                 "sec16":{
                     "title":"5.16 - Suspension des services en cas de non-paiement",
-                    "para1":"Si le client refuse sans droit de verser au prestataire de services les sommes qui sont payables ou remboursables, selon le cas, en vertu du présent contrat conformément aux termes et conditions de paiement indiqués dans les spécifications, malgré une mise en demeure du prestataire de services,",
-                    "para2":"sans autre avis ni délai, sous réserve de tout autre droit que peut avoir le prestataire de services en vertu du présent contrat."
+                    "para11":"Si le client refuse sans droit de verser au prestataire de services les sommes qui sont payables ou remboursables, selon le cas, en vertu du présent contrat conformément aux termes et conditions de paiement indiqués dans les spécifications, malgré une mise en demeure du prestataire de services,",
+                    "para12":"ce dernier est en droit de suspendre la prestation des services concernés,",
+                    "para13":"sans autre avis ni délai, sous réserve de tout autre droit que peut avoir le prestataire de services en vertu du présent contrat."
                 },
                 "sec17":{
                     "title":"5.17 - Résiliation du contrat (par le client)",
@@ -855,7 +857,7 @@
                 "paraD":"d) en cas de résiliation prévu au présent contrat;",
                 "paraE":"e) si l'une des parties fait défaut de respecter l'une ou l'autre de ses obligations, dans un délai de {day} jours suivant la réception par la partie en défaut d'une mise en demeure d'y remédier ou dans tout autre délai plus court que prévoit le présent contrat, et qu'il y a inaction de la partie en défaut à l'intérieur dudit délai;",
                 "paraF":"f) en cas de faillite, d'insolvabilité ou de cessation des activités de l'une ou l'autre des parties.",
-                "paraCLose":"Toutefois, la fin du présent contrat n'a pas pour effet de faire perdre un droit à une partie ou de la libérer d'une obligation, notamment en ce qui concerne la confidentialité, la propriété intellectuelle, la limitation de garantie et la limitation de responsabilité. Lesdits droits et obligations survivent à la fin du présent contrat."
+                "paraClose":"Toutefois, la fin du présent contrat n'a pas pour effet de faire perdre un droit à une partie ou de la libérer d'une obligation, notamment en ce qui concerne la confidentialité, la propriété intellectuelle, la limitation de garantie et la limitation de responsabilité. Lesdits droits et obligations survivent à la fin du présent contrat."
             },
             "9":{
                 "title":"9 - RECONNAISSANCE DES PARTIES",
