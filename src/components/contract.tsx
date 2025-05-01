@@ -148,11 +148,77 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             let yPosition = height - margin;
             const pageRef = { current: page };
             const yRef = { current: yPosition };
-            const lastParam = [pdfDoc,pageRef,yRef]
-            const textHorizontalOption = {horizontalSpacing:2,lineHeight,topMargin:marginTop,bottomMargin:marginBottom}
-            const addTextOption = {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom}
-            const fonctionParam = [
-                {
+            const lastParam:[PDFDocument,any,any] = [pdfDoc,pageRef,yRef]
+            type SingleTextLayourt = {
+                size: number;
+                isBold: boolean;
+                font: PDFFont;
+                fontBold: PDFFont;
+                lineHeight: number;
+                topMargin: number;
+                bottomMarginThreshold: number;
+            };
+              
+            type HorizontalLayout = {
+                horizontalSpacing: number;
+                lineHeight: number;
+                topMargin: number;
+                bottomMargin: number;
+            };  
+            const textHorizontalOption:HorizontalLayout = {horizontalSpacing:2,lineHeight,topMargin:marginTop,bottomMargin:marginBottom}
+            const addTextOption:SingleTextLayourt = {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom}
+            type ContractSignaturData = [
+                Array<any>,
+                number,
+                number,
+                number,
+                number,
+                number,
+                number,
+                number,
+                number,
+                boolean,
+                PDFFont,
+                PDFFont,
+                PDFDocument,
+                any,
+                any
+            ]
+            
+            type DataStructureSingleText = [
+                Array<any> | string,
+                number,
+                number,
+                number,
+                number,
+                SingleTextLayourt,
+                PDFDocument,
+                any,
+                any
+            ];
+              
+            type DataStructureHorizontalText = [
+                Array<any>,
+                number,
+                number,
+                boolean,
+                number,
+                number,
+                PDFFont,
+                PDFFont,
+                HorizontalLayout,
+                PDFDocument,
+                any,
+                any
+            ];
+            type FunctionParams = {
+                [key: number]: {
+                  id: number;
+                  param: DataStructureSingleText[] | DataStructureHorizontalText[] | ContractSignaturData[];
+                };
+            };
+            const fonctionParam:FunctionParams = {
+                1:{
                     id:1,
                     param:[
                         [content.title, margin, yRef.current,margin,20,{...addTextOption,lineHeight:lineHeight+6,size:18,isBold:true},...lastParam
@@ -160,135 +226,135 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         [content.sousTitle, margin, yRef.current, margin,10,{...addTextOption,lineHeight:lineHeight,size:9,isBold:true},...lastParam]
                     ]
                 },
-                {
+                2:{
                     id:2,
                     param:[[[{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                3:{
                     id:3,
                     param:[[content.and, margin, yRef.current,margin,10,{...addTextOption,isBold:true},...lastParam]]
                 },
-                {
+                4:{
                     id:4,
                     param:[[[{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom},...lastParam]]
                 },
-                {
+                5:{
                     id:5,
                     param:[[t.contract.header.parties, margin, yRef.current,margin,40, {...addTextOption,fontBold:fontBoldItalic,isBold:true,size:9},...lastParam],[t.contract.sections["1"].title, margin, yRef.current,margin,15,{...addTextOption,isBold:true,size:16},...lastParam]]
                 },
-                {
+                6:{
                     id:6,
                     param:[[[{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para1,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam],[[{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para2,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam],[[{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para3,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                7:{
                     id:7,
                     param:[[t.contract.sections["1"].para, margin, yRef.current,margin,40, {...addTextOption,size:12,isBold:true},...lastParam],[t.contract.sections["2"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["2"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["2"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["2"].sec2.title, margin, yRef.current,margin,15, {...addTextOption,size:13},...lastParam],[t.contract.sections["2"].sec2.para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["3"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["3"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.projectDescription, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["3"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
                 },
-                {
+                8:{
                     id:8,
                     param:[]
                 },
-                {
+                9:{
                     id:9,
                     param:[[t.contract.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec3.paraService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance, margin, yRef.current,margin,15, addTextOption,...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.paraService : data.contractType === 'maintenance' ? data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour : t.contract.sections["3"].sec4.paraMaintenance.perYear : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para} ${
                     data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour : t.contract.sections["3"].sec4.paraServiceMaintenance.perYear} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}`
                     ,margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["4"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["4"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["4"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["4"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["4"].sec2.para, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["4"].sec2.paraClose, margin, yRef.current,margin,40, {...addTextOption,size:9,isBold:true},...lastParam],[t.contract.sections["5"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["5"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec2.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec2.para2, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec3.para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam]]
                 },
-                {
+                10:{
                     id:10,
                     param:[[[{text:t.contract.sections["5"].sec3.paraB1,size:11,isBold:false},{text:t.contract.sections["5"].sec3.paraB2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,
                     textHorizontalOption,...lastParam]]
                 },
-                {
+                11:{
                     id:11,
                     param:[[t.contract.sections["5"].sec3.paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraE, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraF, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraG, margin, yRef.current,margin,8, {...addTextOption,size:11,isBold:true},...lastParam]]
                 },
-                {
+                12:{
                     id:12,
                     param:[[[{text:t.contract.sections["5"].sec3.paraH1,size:11,isBold:false},{text:t.contract.sections["5"].sec3.paraH2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                13:{
                     id:13,
                     param:[[t.contract.sections["5"].sec3.paraI, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraJ, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec4.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec4.para, margin, yRef.current,margin,20, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec4.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam]]
                 },
-                {
+                14:{
                     id:14,
                     param:[[[{text:t.contract.sections["5"].sec4.paraB1,size:11,isBold:false},{text:t.contract.sections["5"].sec4.paraB2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                15:{
                     id:15,
                     param:[[t.contract.sections["5"].sec4.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec5.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec5.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec6.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
                 },
-                {
+                16:{
                     id:16,
                     param:[[[{text:t.contract.sections["5"].sec6.para11,size:11,isBold:false},{text:t.contract.sections["5"].sec6.para12,size:11,isBold:true},{text:t.contract.sections["5"].sec6.para13,size:11,isBold:false}],margin,yRef.current,false,margin,15,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                17:{
                     id:17,
                     param:[[t.contract.sections["5"].sec7.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec7.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec8.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
                 },
-                {
+                18:{
                     id:18,
                     param:[[[{text:t.contract.sections["5"].sec8.para11,size:11,isBold:false},{text:t.contract.sections["5"].sec8.para12,size:11,isBold:true},{text:t.contract.sections["5"].sec8.para13,size:11,isBold:false}],margin,yRef.current,false,margin,15,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                19:{
                     id:19,
                     param:[[t.contract.sections["5"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec9.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para3, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec10.para1, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam]]
                 },
-                {
+                20:{
                     id:20,
                     param:[[[{text:t.contract.sections["5"].sec10.para21,size:11,isBold:true},{text:t.contract.sections["5"].sec10.para22,size:11,isBold:false}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                21:{
                     id:21,
                     param:[[t.contract.sections["5"].sec10.paraClose, margin, yRef.current,margin,15,{...addTextOption,isBold:true},...lastParam],[t.contract.sections["5"].sec11.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec11.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec11.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec11.para3, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec12.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec12.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraE, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraF, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraG, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraH, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec13.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec13.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec13.paraB, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec13.paraClose, margin, yRef.current,margin,10, {...addTextOption,lineHeight:lineHeight+3,size:11},...lastParam],[t.contract.sections["5"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec14.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraE, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraClose, margin, yRef.current,margin,15, {...addTextOption,lineHeight:lineHeight+3,size:11},...lastParam],[t.contract.sections["5"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
                 },
-                {
+                22:{
                     id:22,
                     param:[[[{text:t.contract.sections["5"].sec15.para1,size:11,isBold:false},{text:t.contract.sections["5"].sec15.para2,size:11,isBold:true},{text:t.contract.sections["5"].sec15.para3,size:11,isBold:false}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                23:{
                     id:23,
                     param:[[t.contract.sections["5"].sec15.para4, margin, yRef.current,margin,15, addTextOption,...lastParam]]
                 },
-                {
+                24:{
                     id:24,
                     param:[]
                 },
-                {
+                25:{
                     id:25,
                     param:[[t.contract.sections["5"].sec16.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
                 },
-                {
+                26:{
                     id:26,
                     param:[[[{text:t.contract.sections["5"].sec16.para11,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec16.para12,size:11,isBold:true,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec16.para13,size:11,isBold:false,color:rgb(0,0,0)}],margin,yRef.current,false,margin,15,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                27:{
                     id:27,
                     param:[[t.contract.sections["5"].sec17.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec17.para1, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec17.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec17.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec17.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec17.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec17.paraClose, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec18.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec18.para1, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec18.para2, margin, yRef.current,margin,8, addTextOption,...lastParam]]
                 },
-                {
+                28:{
                     id:28,
                     param:[[[{text:`3)`,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec18.para3,size:11,isBold:true,color:rgb(0,0,0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},...lastParam]]
                 },
-                {
+                29:{
                     id:29,
                     param:[[t.contract.sections["5"].sec18.paraClose, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec19.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec19.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec19.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec19.para3, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec19.para4, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["6"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["6"].para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["6"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
                 },
-                {
+                30:{
                     id:30,
                     param:[[[{text:t.contract.sections["6"].sec2.para1,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["6"].sec2.para2,size:11,isBold:true,color:rgb(0,0,0)},{text:t.contract.sections["6"].sec2.para3,size:11,isBold:false,color:rgb(0,0,0)}],margin,yRef.current,false,margin,15,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
-                {
+                31:{
                     id:31,
                     param:[[t.contract.sections["6"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec3.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec4.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec4.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec5.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec5.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec6.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec6.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec7.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec7.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec8.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec8.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec9.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec10.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec11.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec11.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec12.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec12.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec13.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec14.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec15.para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["7"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["7"].para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["8"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["8"].para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["8"].paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraE, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraF, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["8"].paraClose, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["9"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["9"].para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["9"].paraA, margin, yRef.current,margin,8,
                     {...addTextOption,lineHeight:lineHeight+2,isBold:true},...lastParam],[t.contract.sections["9"].paraB, margin, yRef.current,margin,8, {...addTextOption,isBold:true,lineHeight:lineHeight+2},...lastParam],[t.contract.sections["9"].paraC, margin, yRef.current,margin,40, {...addTextOption,isBold:true,lineHeight:lineHeight+2},...lastParam],[t.contract.sections["10"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam]]
                 },
-                {
+                32:{
                     id:32,
                     param:[[[t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[["",t.contract.sections["10"].do+' '+formatDate(data.effectiveDate)+' '+t.contract.sections["10"].on],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
                 }
-            ]
+            }
             //console.log("fonctionParam",fonctionParam)
             //console.table("fonctionParam table "+fonctionParam)
             const functionListAndRang = [
@@ -324,6 +390,28 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 {name:"addText",count:43,id:31},
                 {name:"signatureBloc",count:2,id:32}
             ]
+            functionListAndRang.forEach((item,i)=>{
+                if (item.count) {
+                    for (let index = 0; index < item.count; index++) {
+                        const params = fonctionParam[item.id].param[index];
+                        switch (item.name) {
+                            case 'addText':
+                                
+                                //addText(...params)
+                                break;
+                            case 'addHorizontalText':
+                                
+                                break;
+                            case 'signatureBloc':
+                                
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                    }
+                }
+            })
             // Titre
             yRef.current = addText(content.title, margin, yRef.current,margin,20, {size:18, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+6,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
            // yRef.current -= lineHeight + 3;

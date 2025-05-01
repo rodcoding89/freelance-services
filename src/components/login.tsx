@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from 'next/navigation';
 import firebase from "@/utils/firebase";
@@ -15,6 +15,7 @@ const Login: React.FC<LoginProps> = ({locale}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loader, setLoader] = useState<boolean>(false);
+  const [confirmLoggin, setConfirmLooggin] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -28,18 +29,25 @@ const Login: React.FC<LoginProps> = ({locale}) => {
       expirationDate.setHours(expirationDate.getHours() + 12);
       Cookies.set('logged', 'true', { expires: expirationDate });
       setLoader(false);
-      router.push('/'+locale+'/clients-list');
+      setConfirmLooggin(true);
+      //router.push('/'+locale+'/clients-list');
     } catch (err:any) {
       setError(err.message);
       setLoader(false);
+      setConfirmLooggin(false);
     }
   };
 
-  if(Cookies.get('logged')){
-    router.push('/'+locale+'/clients-list')
-  }else{
-    console.log("cookies",Cookies.get('logged'))
-  }
+  useEffect(()=>{
+    if(Cookies.get('logged')){
+      router.push('/'+locale+'/clients-list')
+    }else{
+      console.log("cookies",Cookies.get('logged'))
+    }
+    if(confirmLoggin){
+      router.push('/'+locale+'/clients-list')
+    }
+  },[confirmLoggin,locale,router])
   return (
     <div className="flex justify-center items-center h-screen bg-white mt-[100px]">
       <div className="bg-gray-200 p-8 rounded shadow-md w-[50%] min-[250px]">
