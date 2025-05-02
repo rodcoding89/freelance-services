@@ -157,6 +157,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 lineHeight: number;
                 topMargin: number;
                 bottomMarginThreshold: number;
+                isListItem:boolean;
             };
               
             type HorizontalLayout = {
@@ -164,9 +165,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 lineHeight: number;
                 topMargin: number;
                 bottomMargin: number;
+                bulletSymbol:string;
             };  
-            const textHorizontalOption:HorizontalLayout = {horizontalSpacing:2,lineHeight,topMargin:marginTop,bottomMargin:marginBottom}
-            const addTextOption:SingleTextLayourt = {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom}
+            const textHorizontalOption:HorizontalLayout = {horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom,bulletSymbol:''}
+            const addTextOption:SingleTextLayourt = {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom,isListItem:false}
             type ContractSignaturData = [
                 Array<any>,
                 number,
@@ -186,7 +188,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             ]
             
             type DataStructureSingleText = [
-                Array<any> | string,
+                string,
                 number,
                 number,
                 number,
@@ -236,7 +238,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 },
                 4:{
                     id:4,
-                    param:[[[{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom},...lastParam]]
+                    param:[[[{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
                 5:{
                     id:5,
@@ -252,7 +254,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 },
                 8:{
                     id:8,
-                    param:[]
+                    param:[['{item}', margin+30, yRef.current,margin,8, {...addTextOption,isListItem:true},...lastParam]]
                 },
                 9:{
                     id:9,
@@ -319,7 +321,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 },
                 24:{
                     id:24,
-                    param:[]
+                    param:[[[{text:t.contract.sections["5"].sec15.item,size:11,isBold:true,color:rgb(0,0,0)},{text:"item",size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,8,fontRegular,fontBold,textHorizontalOption,...lastParam],[[{text:'title',size:11,isBold:true,color:rgb(0,0,0)},{text:"item",size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,8,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
                 25:{
                     id:25,
@@ -335,7 +337,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 },
                 28:{
                     id:28,
-                    param:[[[{text:`3)`,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec18.para3,size:11,isBold:true,color:rgb(0,0,0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},...lastParam]]
+                    param:[[[{text:`3)`,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec18.para3,size:11,isBold:true,color:rgb(0,0,0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
                 29:{
                     id:29,
@@ -352,7 +354,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 },
                 32:{
                     id:32,
-                    param:[[[t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[["",t.contract.sections["10"].do+' '+formatDate(data.effectiveDate)+' '+t.contract.sections["10"].on],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
+                    param:[[[t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[["",t.contract.sections["10"].do+' '+formatDate(data.effectiveDate)],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
                 }
             }
             //console.log("fonctionParam",fonctionParam)
@@ -390,306 +392,102 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 {name:"addText",count:43,id:31},
                 {name:"signatureBloc",count:2,id:32}
             ]
+
+            const isDataStructureSingleText = (
+            item: DataStructureSingleText | DataStructureHorizontalText | ContractSignaturData
+            ): item is DataStructureSingleText => {
+                return Array.isArray(item) && item.length === 9;
+            };
+
+            const isDataStructureHorizontalText = (
+            item: DataStructureSingleText | DataStructureHorizontalText | ContractSignaturData
+            ): item is DataStructureHorizontalText => {
+                return Array.isArray(item) && item.length === 12;
+            };
+
+            const isDataStructureSignatureText = (
+            item: DataStructureSingleText | DataStructureHorizontalText | ContractSignaturData
+            ): item is ContractSignaturData => {
+                return Array.isArray(item) && item.length === 15;
+            };
+
             functionListAndRang.forEach((item,i)=>{
                 if (item.count) {
                     for (let index = 0; index < item.count; index++) {
                         const params = fonctionParam[item.id].param[index];
                         switch (item.name) {
                             case 'addText':
-                                
-                                //addText(...params)
+                                if (isDataStructureSingleText(params)) {
+                                    yRef.current = addText(params)
+                                }
                                 break;
                             case 'addHorizontalText':
-                                
+                                if (isDataStructureHorizontalText(params)) {
+                                    const final = addHorizontalText(params)
+                                    yRef.current = final.finalY;
+                                }
                                 break;
                             case 'signatureBloc':
-                                
+                                if (isDataStructureSignatureText(params)) {
+                                  yRef.current = signatureBloc(params)  
+                                }
                                 break;
                             default:
                                 break;
                         }
                         
                     }
-                }
-            })
-            // Titre
-            yRef.current = addText(content.title, margin, yRef.current,margin,20, {size:18, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+6,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 3;
-
-            // Sous Titre
-            yRef.current = addText(content.sousTitle, margin, yRef.current, margin,10, {size:9, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-
-            // Préambule
-            const final1 = addHorizontalText([{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final1.finalY;
-            yRef.current = addText(content.and, margin, yRef.current,margin,10, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-
-            const final2 = addHorizontalText([{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final2.finalY;
-            yRef.current = addText(t.contract.header.parties, margin, yRef.current,margin,40, {size:9, isBold:true,font:fontRegular,fontBold:fontBoldItalic,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 8;
-            // Sections du contrat (ajoutez toutes les sections nécessaires)
-            yRef.current = addText(t.contract.sections["1"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-            const final3 = addHorizontalText([{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para1,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final3.finalY;
-            const final4 = addHorizontalText([{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para2,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final4.finalY;
-            const final5 = addHorizontalText([{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para3,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final5.finalY;
-            yRef.current = addText(t.contract.sections["1"].para, margin, yRef.current,margin,40, {size:12, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 4
-            // ... Ajoutez toutes les autres sections du contrat ici
-            //OBJET DU CONTRAT
-            yRef.current = addText(t.contract.sections["2"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-            yRef.current = addText(t.contract.sections["2"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            //SERVICE PROPOSE
-            yRef.current = addText(t.contract.sections["2"].sec1.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight
-            yRef.current = addText(t.contract.sections["2"].sec2.title, margin, yRef.current,margin,15, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            yRef.current = addText(t.contract.sections["2"].sec2.para, margin, yRef.current,margin,40, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 4
-            //DESCRIPTION DU PROJET PLUS FONCTIONNALITE
-            yRef.current = addText(t.contract.sections["3"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-            yRef.current = addText(t.contract.sections["3"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            //AJOUT DESCRIPTION DU PROJET
-            yRef.current = addText(data.projectDescription, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-            yRef.current = addText(t.contract.sections["3"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            //AJOUT FONCTIONNALITE
-            data.projectFonctionList.forEach((item,index)=>{
-                yRef.current = addText(item, margin+30, yRef.current,margin,8, {size:11,isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,isListItem:true},pdfDoc,pageRef,yRef);
-                if (index === data.projectFonctionList.length - 1) {
-                    yRef.current = addText(item, margin+30, yRef.current,margin,15, {size:11,isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,isListItem:true},pdfDoc,pageRef,yRef);
-                }
-            })
-            yRef.current = addText(t.contract.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(data.contractType === 'service' ? t.contract.sections["3"].sec3.paraService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            //PRIX
-            yRef.current = addText(data.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(data.contractType === 'service'
-                ? t.contract.sections["3"].sec4.paraService
-                : data.contractType === 'maintenance'
-                  ? data.maintenaceOptionPayment === 'perHour'
-                    ? t.contract.sections["3"].sec4.paraMaintenance.peerHour
-                    : t.contract.sections["3"].sec4.paraMaintenance.perYear
-                  : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para} ${
-                      data.maintenaceOptionPayment === 'perHour'
-                        ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour
-                        : t.contract.sections["3"].sec4.paraServiceMaintenance.perYear
-                    } ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1} `
-              , margin, yRef.current,margin,40, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["4"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-            yRef.current = addText(t.contract.sections["4"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            yRef.current = addText(t.contract.sections["4"].sec1.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight
-            yRef.current = addText(t.contract.sections["4"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            yRef.current = addText(t.contract.sections["4"].sec2.para, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1
-            yRef.current = addText(t.contract.sections["4"].sec2.paraClose, margin, yRef.current,margin,40, {size:9, isBold:true,font:fontRegular,fontBold:fontBoldItalic,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 4;
-            //DISPOSITION PARTICULIER
-            yRef.current = addText(t.contract.sections["5"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-            yRef.current = addText(t.contract.sections["5"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            yRef.current = addText(t.contract.sections["5"].sec1.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2
-            yRef.current = addText(t.contract.sections["5"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            yRef.current = addText(t.contract.sections["5"].sec2.para1, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1
-            yRef.current = addText(t.contract.sections["5"].sec2.para2, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2
-            yRef.current = addText(t.contract.sections["5"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            yRef.current = addText(t.contract.sections["5"].sec3.para, margin, yRef.current,margin,20, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 2;
-            yRef.current = addText(t.contract.sections["5"].sec3.paraA, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            const final9 = addHorizontalText([{text:t.contract.sections["5"].sec3.paraB1,size:11,isBold:false},{text:t.contract.sections["5"].sec3.paraB2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,{horizontalSpacing:2,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final9.finalY
-            yRef.current = addText(t.contract.sections["5"].sec3.paraC, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1
-            yRef.current = addText(t.contract.sections["5"].sec3.paraD, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1
-            yRef.current = addText(t.contract.sections["5"].sec3.paraE, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1
-            yRef.current = addText(t.contract.sections["5"].sec3.paraF, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1
-            yRef.current = addText(t.contract.sections["5"].sec3.paraG, margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            const final10 = addHorizontalText([{text:t.contract.sections["5"].sec3.paraH1,size:11,isBold:false},{text:t.contract.sections["5"].sec3.paraH2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,{horizontalSpacing:2,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final10.finalY
-            yRef.current = addText(t.contract.sections["5"].sec3.paraI, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-           // yRef.current -= lineHeight + 1;
-            yRef.current = addText(t.contract.sections["5"].sec3.paraJ, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec4.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec4.para, margin, yRef.current,margin,20, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec4.paraA, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            const final11 = addHorizontalText([{text:t.contract.sections["5"].sec4.paraB1,size:11,isBold:false},{text:t.contract.sections["5"].sec4.paraB2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,{horizontalSpacing:2,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final11.finalY
-            yRef.current = addText(t.contract.sections["5"].sec4.paraC, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec5.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec5.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec6.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            const final12 = addHorizontalText([{text:t.contract.sections["5"].sec6.para11,size:11,isBold:false},{text:t.contract.sections["5"].sec6.para12,size:11,isBold:true},{text:t.contract.sections["5"].sec6.para13,size:11,isBold:false}],margin,yRef.current,false,margin,15,fontRegular,fontBold,{horizontalSpacing:2,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final12.finalY
-            yRef.current = addText(t.contract.sections["5"].sec7.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec7.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec8.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            const final13 = addHorizontalText([{text:t.contract.sections["5"].sec8.para11,size:11,isBold:false},{text:t.contract.sections["5"].sec8.para12,size:11,isBold:true},{text:t.contract.sections["5"].sec8.para13,size:11,isBold:false}],margin,yRef.current,false,margin,15,fontRegular,fontBold,{horizontalSpacing:2,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final13.finalY
-            yRef.current = addText(t.contract.sections["5"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec9.para1, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec9.para2, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec9.para3, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec10.para1, margin, yRef.current,margin,20, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec10.paraA, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec10.paraB, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec10.paraC, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            const final14 = addHorizontalText([{text:t.contract.sections["5"].sec10.para21,size:11,isBold:true},{text:t.contract.sections["5"].sec10.para22,size:11,isBold:false}],margin,yRef.current,false,margin,10,fontRegular,fontBold,{horizontalSpacing:2,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final14.finalY
-            yRef.current = addText(t.contract.sections["5"].sec10.paraClose, margin, yRef.current,margin,15, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec11.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec11.para1, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec11.para2, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec11.para3, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.paraA, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.paraB, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.paraC, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.paraD, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.paraE, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.paraF, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.paraG, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec12.paraH, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec13.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec13.paraA, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec13.paraB, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec13.paraClose, margin, yRef.current,margin,10, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+3,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec14.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec14.paraA, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec14.paraB, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec14.paraC, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec14.paraD, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec14.paraE, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec14.paraClose, margin, yRef.current,margin,15, {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+3,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            const final15 = addHorizontalText([{text:t.contract.sections["5"].sec15.para1,size:11,isBold:false},{text:t.contract.sections["5"].sec15.para2,size:11,isBold:true},{text:t.contract.sections["5"].sec15.para3,size:11,isBold:false}],margin,yRef.current,false,margin,10,fontRegular,fontBold,{horizontalSpacing:2,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final15.finalY
-            yRef.current = addText(t.contract.sections["5"].sec15.para4, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            data.paymentSchedule.split(',').forEach((item,index)=>{
-                if (index === 0) {
-                    const final6 = addHorizontalText([{text:t.contract.sections["5"].sec15.item,size:11,isBold:true,color:rgb(0,0,0)},{text:item,size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,{horizontalSpacing:5,bulletSymbol:`${index + 1}`,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-                    yRef.current = final6.finalY   
-                }else if(index === data.paymentSchedule.split(',').length - 1){
-                    const final6 = addHorizontalText([{text:t.contract.sections["5"].sec15.itemEnd,size:11,isBold:true,color:rgb(0,0,0)},{text:item,size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,15,fontRegular,fontBold,{horizontalSpacing:5,bulletSymbol:`${index + 1}`,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-                    yRef.current = final6.finalY
                 }else{
-                    const final6 = addHorizontalText([{text:`${t.contract.sections["5"].sec15.item1} ${index} : `,size:11,isBold:true,color:rgb(0,0,0)},{text:item,size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,{horizontalSpacing:5,bulletSymbol:`${index + 1}`,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-                    yRef.current = final6.finalY
+                    switch (item.fonc) {
+                        case 'addText':
+                            if (item.id === 8) {
+                                const params = fonctionParam[item.id].param[0]
+                                data.projectFonctionList.forEach((item,index)=>{
+                                    if (isDataStructureSingleText(params)) {
+                                        params[0] = item
+                                        yRef.current = addText(params)
+                                        if (index === data.projectFonctionList.length - 1) {
+                                            params[4] = 15
+                                            yRef.current = addText(params)
+                                        }
+                                    }
+                                })
+                            }
+                            break;
+                        case 'addHorizontalText':
+                            if (item.id === 24) {
+                                const params = fonctionParam[item.id].param[0]
+                                data.paymentSchedule.split(',').forEach((item,index)=>{
+                                    if (isDataStructureHorizontalText(params)) {
+                                    params[0][1].text = item
+                                    params[8].bulletSymbol = `${index + 1} - `
+                                        if (index === 0) {
+                                            params[0][0].text = t.contract.sections["5"].sec15.item
+                                            const final = addHorizontalText(params)
+                                            yRef.current = final.finalY;
+                                        }else if(index === data.paymentSchedule.split(',').length - 1){
+                                            params[0][0].text = t.contract.sections["5"].sec15.itemEnd
+                                            params[5] = 15
+                                            const final = addHorizontalText(params)
+                                            yRef.current = final.finalY;
+                                        }else{
+                                            params[0][0].text = `${t.contract.sections["5"].sec15.item1} ${index} : `
+                                            const final = addHorizontalText(params)
+                                            yRef.current = final.finalY;
+                                        }
+                                    }
+                                })
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             })
-            yRef.current = addText(t.contract.sections["5"].sec16.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            const final7 = addHorizontalText([{text:``,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec16.para1,size:11,isBold:true,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec16.para2,size:11,isBold:false,color:rgb(0,0,0)}],margin,yRef.current,false,margin,15,fontRegular,fontBold,{horizontalSpacing:5,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final7.finalY
-            yRef.current = addText(t.contract.sections["5"].sec17.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec17.para1, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec17.paraA, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec17.paraB, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec17.paraC, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec17.para2, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec17.paraClose, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec18.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec18.para1, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec18.para2, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            const final16 = addHorizontalText([{text:`3)`,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec18.para3,size:11,isBold:true,color:rgb(0,0,0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,{horizontalSpacing:5,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final16.finalY
-            yRef.current = addText(t.contract.sections["5"].sec18.paraClose, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec19.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec19.para1, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec19.para2, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec19.para3, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["5"].sec19.para4, margin, yRef.current,margin,40, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].para, margin, yRef.current,margin,20, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec1.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            const final8 = addHorizontalText([{text:t.contract.sections["6"].sec2.para1,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["6"].sec2.para2,size:11,isBold:true,color:rgb(0,0,0)},{text:t.contract.sections["6"].sec2.para3,size:11,isBold:false,color:rgb(0,0,0)}],margin,yRef.current,false,margin,15,fontRegular,fontBold,{horizontalSpacing:5,lineHeight:lineHeight,topMargin:marginTop,bottomMargin:marginBottom},pdfDoc,pageRef,yRef)
-            yRef.current = final8.finalY
-            yRef.current = addText(t.contract.sections["6"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec3.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec4.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec4.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec5.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec5.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec6.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec6.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec7.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec7.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec8.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec8.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec9.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec10.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec11.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec11.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec12.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec12.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec13.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec14.para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["6"].sec15.para, margin, yRef.current,margin,40, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["7"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["7"].para, margin, yRef.current,margin,40, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].para, margin, yRef.current,margin,20, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].paraA, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].paraB, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].paraC, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].paraD, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].paraE, margin, yRef.current,margin,8, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].paraF, margin, yRef.current,margin,10, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["8"].paraClose, margin, yRef.current,margin,40, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["9"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["9"].para, margin, yRef.current,margin,15, addTextOption,pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["9"].paraA, margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+2,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["9"].paraB, margin, yRef.current,margin,8, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+2,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["9"].paraC, margin, yRef.current,margin,40, {size:11, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight+2,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = addText(t.contract.sections["10"].title, margin, yRef.current,margin,15, {size:16, isBold:true,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom},pdfDoc,pageRef,yRef);
-            yRef.current = signatureBloc([t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,pdfDoc,pageRef,yRef)
-           // yRef.current -= lineHeight * 4;
-           yRef.current = signatureBloc([formatDate(data.effectiveDate)+':___________________________',formatDate(data.effectiveDate)+':___________________________'],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,pdfDoc,pageRef,yRef)
 
             // Génération du PDF final
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            /*const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `document-signé-${data.name}.pdf`;
-            link.innerText = 'Télécharger le document signé';
-            setTimeout(() => {
-                document.querySelector('body form')?.appendChild(link);
-            }, 0);
-            console.log("end fontion")*/
             return URL.createObjectURL(blob);
             //return await pdfDoc.save();
         } catch (error) {
@@ -698,20 +496,34 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     }
     // Fonction utilitaire pour ajouter du texte multiligne
-    const addText = (text: string,x: number,y: number,rightMargin: number,marginAfter: number,options: {size?: number;isBold?: boolean;font: PDFFont;fontBold: PDFFont;lineHeight: number;isListItem?: boolean,bulletSymbol?: string,maxWidth?:number,topMargin?: number,bottomMarginThreshold?: number},pdfDoc:PDFDocument,pageRef: { current: PDFPage },
-        yRef: { current: number }
-      ) => {
+    const addText = ([text,x,y,rightMargin,marginAfter,options,pdfDoc,pageRef,yRef,]: [text: string,x: number,y: number,rightMargin: number,marginAfter: number,
+        options: {
+            size?: number;
+            isBold?: boolean;
+            font: PDFFont;
+            fontBold: PDFFont;
+            lineHeight: number;
+            isListItem?: boolean;
+            bulletSymbol?: string;
+            maxWidth?: number;
+            topMargin?: number;
+            bottomMarginThreshold?: number;
+        },
+        pdfDoc: PDFDocument,
+        pageRef: { current: PDFPage },
+        yRef: { current: number },
+        ]) => {
         const {
-          size = 12,
-          isBold = false,
-          font,
-          fontBold,
-          lineHeight,
-          isListItem = false,
-          bulletSymbol = "• ",
-          maxWidth = Infinity,
-          topMargin = 50,
-          bottomMarginThreshold = 50,
+            size = 11,
+            isBold = false,
+            font,
+            fontBold,
+            lineHeight,
+            isListItem = false,
+            bulletSymbol = "• ",
+            maxWidth = Infinity,
+            topMargin = 50,
+            bottomMarginThreshold = 50,
         } = options;
         
         const currentFont = isBold ? fontBold : font;
@@ -811,11 +623,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         // Traitement des sauts de ligne manuels (\n)
         const paragraphs = text.split('\n');
         paragraphs.forEach((paragraph, i) => {
-            // Si ce n'est pas le premier paragraphe, ajouter un espace entre les paragraphes
              if (i > 0) {
-                // *** CORRECTION PRINCIPALE : Vérification de débordement AVANT d'ajouter l'espace entre paragraphes ***
-                // Si l'espace nécessaire pour le saut de ligne plus la première ligne du nouveau paragraphe
-                // dépasse la marge basse, on change de page MAINTENANT.
                 const nextY = currentY - lineHeight; // Position après le saut de ligne entre paragraphes
                 if (nextY < bottomMarginThreshold) {
                     const page = pdfDoc.addPage([595, 842]);
@@ -828,29 +636,13 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     yRef.current = currentY;
                 }
             }
-            processLine(paragraph, true); // Le second paramètre indique si c'est la première ligne du paragraphe
+            processLine(paragraph, true);
         });
         yRef.current = currentY - marginAfter;
         return yRef.current;
     };
 
-    const signatureBloc = (
-        items: string[],
-        initialY: number, // Position Y initiale pour ce bloc
-        marginLeft: number,
-        marginRight: number,
-        marginAfter: number,
-        topMargin: number,
-        bottomMargin: number,
-        lineHeight: number,
-        size: number = 12,
-        isBold: boolean = false,
-        font: PDFFont,
-        fontBold: PDFFont,
-        pdfDoc: PDFDocument,
-        pageRef: { current: PDFPage },
-        yRef: { current: number } // Référence pour suivre la position Y actuelle
-    ) => {
+    const signatureBloc = ([items,initialY,marginLeft,marginRight,marginAfter,topMargin,bottomMargin,lineHeight,size,isBold,font,fontBold,pdfDoc,pageRef,yRef]: [items: string[],initialY: number,marginLeft: number,marginRight: number,marginAfter: number,topMargin: number,bottomMargin: number,lineHeight: number,size: number,isBold: boolean,font: PDFFont,fontBold: PDFFont,pdfDoc: PDFDocument,pageRef: { current: PDFPage },yRef: { current: number }]) => {
         const pageWidth = pageRef.current.getWidth();
         let pageHeight = pageRef.current.getHeight();
         const availableWidth = pageWidth - marginLeft - marginRight;
@@ -908,20 +700,13 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         return yRef.current
     };
 
-    const addHorizontalText = (
+    const addHorizontalText = ([textEntries,startX,startY,isListItem,rightMargin,marginAfter,font,fontBold,context,pdfDoc,pageRef,yRef]: [
         textEntries: {
             text: string;
             size?: number;
             isBold?: boolean;
             color?: RGB;
-        }[],
-        startX: number,
-        startY: number,
-        isListItem: boolean,
-        rightMargin: number,
-        marginAfter: number,
-        font: PDFFont,
-        fontBold: PDFFont,
+        }[],startX: number,startY: number,isListItem: boolean,rightMargin: number,marginAfter: number,font: PDFFont,fontBold: PDFFont,
         context: {
             horizontalSpacing?: number;
             maxWidth?: number;
@@ -929,11 +714,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             lineHeight: number;
             topMargin: number;
             bottomMargin: number;
-        },
-        pdfDoc: PDFDocument,
-        pageRef: { current: PDFPage },
-        yRef: { current: number }
-    ) => {
+        },pdfDoc: PDFDocument,pageRef: { current: PDFPage },yRef: { current: number }]) => {
         const {
             horizontalSpacing = 2,
             lineHeight,
@@ -942,7 +723,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             topMargin,
             bottomMargin
         } = context;
-    
+            
         const height = pageRef.current.getSize().height;
         const pageWidth = pageRef.current.getSize().width;
         const effectiveRightMargin = pageWidth - rightMargin;
@@ -1133,9 +914,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         const month = fdate.getMonth() + 1; // Les mois commencent à 0
         const year = fdate.getFullYear();
         if (locale === "en") {
-            return `${year}/${String(month).padStart(2, '0')}/${day}`;
+            return `${year}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
         }
-        return `${day}/${String(month).padStart(2, '0')}/${year}`;
+        return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
     }
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
     return (
