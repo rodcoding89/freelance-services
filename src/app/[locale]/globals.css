@@ -22,6 +22,9 @@
   --family-poppins-thin: 'Poppins Thin', sans-serif;
   --family-poppins-extrabold: 'Poppins ExtraBold', sans-serif;
 }
+html{
+  font-size: 16px;
+}
 *{
   box-sizing: border-box;
 }

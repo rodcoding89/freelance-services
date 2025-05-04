@@ -59,7 +59,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
 
     // Ouvrir le formulaire d'édition
     const openEditForm = (client: Client) => {
-        router.push('/'+locale+'/contract/'+client.id)
+        router.push('/'+locale+'/create-contract/'+client.id)
     };
 
     // Obtenir la classe CSS en fonction du statut

@@ -3,10 +3,11 @@ import { AppContext } from "@/app/context/app-context";
 import { useTranslationContext } from "@/hooks/app-hook";
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { useState, useContext, useEffect } from "react";
+import Cookies from 'js-cookie';
 import { useForm } from "react-hook-form";
 import firebase from '@/utils/firebase'; // Importez votre configuration Firebase
-import { useParams } from "next/navigation";
-import { PDFDocument, PDFFont, PDFPage, RGB, rgb, StandardFonts } from "pdf-lib";
+import { useParams, useRouter } from "next/navigation";
+
 import Icon from "./Icon";
 
 interface Client {
@@ -15,6 +16,7 @@ interface Client {
     contractType: "service"|"maintenance"|"service_and_maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';
     lastContact: Date;
+    contract:Contract
 }
 
 interface Contract {
@@ -24,40 +26,49 @@ interface Contract {
     clientEmail:string;
     clientPhone:string;
     clientSIRET?:string;
-    clientVAT?:string;
     freelancerName:string;
     freelancerSirets?:string;
-    freelancerVAT?:string;
-    freelanceAdresse:string;
+    freelanceAddress:string;
     projectTitle:string;
     projectDescription:string;
     projectFonctionList:string[];
-    deliverables:string;
     startDate:string;
     endDate?:string;
     contractType: "service"|"maintenance"|"service_and_maintenance";
+    maintenanceType:"app"|"saas"|"web"|null;
     maintenaceOptionPayment?:"perYear"|"perHour"
     totalPrice:number;
-    paymentMethod:string;
     paymentSchedule:string;
-    confidentiality:boolean;
-    terminationTerms:string;
-    governingLaw:string;
-    effectiveDate:string;
+    contractLanguage:string;
 }
 
 interface ContractProps{
     locale:string
 }
+const contractType = [
+    { value: "service", label: "Services" },
+    { value: "maintenance", label: "Maintenance" },
+    { value: "service_and_maintenance", label: "Services et Maintenance" },
+];
+
+const contractStatus = [
+    { value: "unsigned", label: "Non Signé" },
+    { value: "pending", label: "En Attente de Signature" }
+];
 
 const Contrat:React.FC<ContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
+    const [maintenaceType,setMaintenaceType] = useState<"app"|"saas"|"web"|null>(null)
     const [loading, setLoading] = useState(true);
     const {contextData} = useContext(AppContext)
     const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
     const [fonction, setFonction] = useState<string>('')
+    const router = useRouter()
     const [client, setClient] = useState<Client|null>(null)
+    const [selectedContractType, setSelectedContractType] = useState<"service"|"maintenance"|"service_and_maintenance"|null>(null);
+    const [selectedContractStatus, setSelectedContractStatus] = useState<'signed' | 'unsigned' | 'pending'|null>(null);
+    const [contractLanguage, setContractLanguage] = useState<string>('')
     // Contenu dynamique basé sur la langue
     
     const {id} = useParams()
@@ -67,16 +78,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         handleSubmit,
         reset,
         formState: { errors,isValid },
-    } = useForm();
+    } = useForm<Contract>({ mode: 'onChange'});
 
-    const onSubmit = (data:any) => {
+    const onSubmit = (data:Contract) => {
         console.log("Contract Data:", data);
+        sessionStorage.setItem('contractData', JSON.stringify({contract:{...data,projectFonctionList:fonctionalityList,maintenaceType:maintenaceType,contractLanguage:contractLanguage,contractType:selectedContractType,contractStatus:selectedContractStatus},client:{...client,contractType:selectedContractType,contractStatus:selectedContractStatus}}));
+        router.push("/"+locale+"/sign-contract/"+clientId)
         // Generate PDF or send data to backend
     };
     
-    const checkValidation = ()=>{
-        return isValid
-    }
     const getStatusText = (status: string) => {
         if(!status) return 'Statut inconnu';
         switch (status) {
@@ -105,782 +115,22 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         default: return 'bx bx-question-mark';
         }
     };
-    const handlePdf = async(client:Client,data:Contract)=>{
-        //if(!signingLink) return
-        console.log("client info",client)
-        const content = {
-            title: data.contractType === 'service' ? t.contract.header.tittleService + data.projectTitle : data.contractType === 'maintenance' ? t.contract.header.tittleMaintenance + data.projectTitle : t.contract.header.tittleServiceMaintenance + data.projectTitle,
-            sousTitle: t.contract.header.subTitle,
-            clientName: `${data.name}`,
-            freelanceName: `${data.freelancerName}`,
-            preambleAdresseClient:`${t.contract.header.home} ${data.clientAddress} ${t.contract.header.designation}`,
-            from:t.contract.header.from,
-            preambleAdresseFreelance:`${t.contract.header.home} ${data.freelanceAdresse} ${t.contract.header.designation}`,
-            to:t.contract.header.to,
-            and:t.contract.header.and
-            // Ajoutez toutes les autres sections ici...
-        };
-        try {
-            console.log("try fontion")
-            // Création d'un nouveau document PDF
-            const pdfDoc = await PDFDocument.create();
-            let page = pdfDoc.addPage([595, 842]); // Format A4
-            
-            // Chargement des polices
-            const [fontRegular, fontBold, fontItalic, fontBoldItalic] = await Promise.all([
-                pdfDoc.embedFont('Helvetica'),               // Normal
-                pdfDoc.embedFont('Helvetica-Bold'),          // Gras
-                pdfDoc.embedFont('Helvetica-Oblique'),       // Italique
-                pdfDoc.embedFont('Helvetica-BoldOblique'),   // Gras + Italique
-            ]);
-      
-            // Dimensions utiles
-            const { width, height } = page.getSize();
-            const margin = 50;
-            const marginBottom = 50+10;
-            const marginTop = 50;
-            const lineHeight = 14;
-      
-            //const signatureImage = await pdfDoc.embedPng(signingLink);
-            //page.drawImage(signatureImage, { x: 50, y: 250, width: 200, height: 80 });
-      
-            // Position initiale
-            let yPosition = height - margin;
-            const pageRef = { current: page };
-            const yRef = { current: yPosition };
-            const lastParam:[PDFDocument,any,any] = [pdfDoc,pageRef,yRef]
-            type SingleTextLayourt = {
-                size: number;
-                isBold: boolean;
-                font: PDFFont;
-                fontBold: PDFFont;
-                lineHeight: number;
-                topMargin: number;
-                bottomMarginThreshold: number;
-                isListItem:boolean;
-            };
-              
-            type HorizontalLayout = {
-                horizontalSpacing: number;
-                lineHeight: number;
-                topMargin: number;
-                bottomMargin: number;
-                bulletSymbol:string;
-            };  
-            const textHorizontalOption:HorizontalLayout = {horizontalSpacing:5,lineHeight,topMargin:marginTop,bottomMargin:marginBottom,bulletSymbol:''}
-            const addTextOption:SingleTextLayourt = {size:11, isBold:false,font:fontRegular,fontBold:fontBold,lineHeight:lineHeight,topMargin:marginTop,bottomMarginThreshold:marginBottom,isListItem:false}
-            type ContractSignaturData = [
-                Array<any>,
-                number,
-                number,
-                number,
-                number,
-                number,
-                number,
-                number,
-                number,
-                boolean,
-                PDFFont,
-                PDFFont,
-                PDFDocument,
-                any,
-                any
-            ]
-            
-            type DataStructureSingleText = [
-                string,
-                number,
-                number,
-                number,
-                number,
-                SingleTextLayourt,
-                PDFDocument,
-                any,
-                any
-            ];
-              
-            type DataStructureHorizontalText = [
-                Array<any>,
-                number,
-                number,
-                boolean,
-                number,
-                number,
-                PDFFont,
-                PDFFont,
-                HorizontalLayout,
-                PDFDocument,
-                any,
-                any
-            ];
-            type FunctionParams = {
-                [key: number]: {
-                  id: number;
-                  param: DataStructureSingleText[] | DataStructureHorizontalText[] | ContractSignaturData[];
-                };
-            };
-            const fonctionParam:FunctionParams = {
-                1:{
-                    id:1,
-                    param:[
-                        [content.title, margin, yRef.current,margin,20,{...addTextOption,lineHeight:lineHeight+6,size:18,isBold:true},...lastParam
-                        ],
-                        [content.sousTitle, margin, yRef.current, margin,10,{...addTextOption,lineHeight:lineHeight,size:9,isBold:true},...lastParam]
-                    ]
-                },
-                2:{
-                    id:2,
-                    param:[[[{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                3:{
-                    id:3,
-                    param:[[content.and, margin, yRef.current,margin,10,{...addTextOption,isBold:true},...lastParam]]
-                },
-                4:{
-                    id:4,
-                    param:[[[{text:content.freelanceName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseFreelance,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.to,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                5:{
-                    id:5,
-                    param:[[t.contract.header.parties, margin, yRef.current,margin,40, {...addTextOption,fontBold:fontBoldItalic,isBold:true,size:9},...lastParam],[t.contract.sections["1"].title, margin, yRef.current,margin,15,{...addTextOption,isBold:true,size:16},...lastParam]]
-                },
-                6:{
-                    id:6,
-                    param:[[[{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para1,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam],[[{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para2,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam],[[{text:t.contract.sections["1"].paraDef,size:12,isBold:true,color:rgb(0, 0, 0)},{text:t.contract.sections["1"].para3,size:11,isBold:false,color:rgb(0, 0, 0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                7:{
-                    id:7,
-                    param:[[t.contract.sections["1"].para, margin, yRef.current,margin,40, {...addTextOption,size:12,isBold:true},...lastParam],[t.contract.sections["2"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["2"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["2"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["2"].sec2.title, margin, yRef.current,margin,15, {...addTextOption,size:13},...lastParam],[t.contract.sections["2"].sec2.para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["3"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["3"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.projectDescription, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["3"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
-                },
-                8:{
-                    id:8,
-                    param:[['{item}', margin+30, yRef.current,margin,8, {...addTextOption,isListItem:true},...lastParam]]
-                },
-                9:{
-                    id:9,
-                    param:[[t.contract.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec3.paraService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance, margin, yRef.current,margin,15, addTextOption,...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.paraService : data.contractType === 'maintenance' ? data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour : t.contract.sections["3"].sec4.paraMaintenance.perYear : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para} ${
-                    data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour : t.contract.sections["3"].sec4.paraServiceMaintenance.perYear} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}`
-                    ,margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["4"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["4"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["4"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["4"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["4"].sec2.para, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["4"].sec2.paraClose, margin, yRef.current,margin,40, {...addTextOption,size:9,isBold:true},...lastParam],[t.contract.sections["5"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["5"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec2.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec2.para2, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec3.para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam]]
-                },
-                10:{
-                    id:10,
-                    param:[[[{text:t.contract.sections["5"].sec3.paraB1,size:11,isBold:false},{text:t.contract.sections["5"].sec3.paraB2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,
-                    textHorizontalOption,...lastParam]]
-                },
-                11:{
-                    id:11,
-                    param:[[t.contract.sections["5"].sec3.paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraE, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraF, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraG, margin, yRef.current,margin,8, {...addTextOption,size:11,isBold:true},...lastParam]]
-                },
-                12:{
-                    id:12,
-                    param:[[[{text:t.contract.sections["5"].sec3.paraH1,size:11,isBold:false},{text:t.contract.sections["5"].sec3.paraH2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                13:{
-                    id:13,
-                    param:[[t.contract.sections["5"].sec3.paraI, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraJ, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec4.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec4.para, margin, yRef.current,margin,20, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec4.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam]]
-                },
-                14:{
-                    id:14,
-                    param:[[[{text:t.contract.sections["5"].sec4.paraB1,size:11,isBold:false},{text:t.contract.sections["5"].sec4.paraB2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                15:{
-                    id:15,
-                    param:[[t.contract.sections["5"].sec4.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec5.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec5.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec6.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
-                },
-                16:{
-                    id:16,
-                    param:[[[{text:t.contract.sections["5"].sec6.para11,size:11,isBold:false},{text:t.contract.sections["5"].sec6.para12,size:11,isBold:true},{text:t.contract.sections["5"].sec6.para13,size:11,isBold:false}],margin,yRef.current,false,margin,15,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                17:{
-                    id:17,
-                    param:[[t.contract.sections["5"].sec7.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec7.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec8.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
-                },
-                18:{
-                    id:18,
-                    param:[[[{text:t.contract.sections["5"].sec8.para11,size:11,isBold:false},{text:t.contract.sections["5"].sec8.para12,size:11,isBold:true},{text:t.contract.sections["5"].sec8.para13,size:11,isBold:false}],margin,yRef.current,false,margin,15,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                19:{
-                    id:19,
-                    param:[[t.contract.sections["5"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec9.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para3, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec10.para1, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam]]
-                },
-                20:{
-                    id:20,
-                    param:[[[{text:t.contract.sections["5"].sec10.para21,size:11,isBold:true},{text:t.contract.sections["5"].sec10.para22,size:11,isBold:false}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                21:{
-                    id:21,
-                    param:[[t.contract.sections["5"].sec10.paraClose, margin, yRef.current,margin,15,{...addTextOption,isBold:true},...lastParam],[t.contract.sections["5"].sec11.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec11.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec11.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec11.para3, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec12.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec12.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraE, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraF, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraG, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec12.paraH, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec13.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec13.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec13.paraB, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec13.paraClose, margin, yRef.current,margin,10, {...addTextOption,lineHeight:lineHeight+3,size:11},...lastParam],[t.contract.sections["5"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec14.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraE, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec14.paraClose, margin, yRef.current,margin,15, {...addTextOption,lineHeight:lineHeight+3,size:11},...lastParam],[t.contract.sections["5"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
-                },
-                22:{
-                    id:22,
-                    param:[[[{text:t.contract.sections["5"].sec15.para1,size:11,isBold:false},{text:t.contract.sections["5"].sec15.para2,size:11,isBold:true},{text:t.contract.sections["5"].sec15.para3,size:11,isBold:false}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                23:{
-                    id:23,
-                    param:[[t.contract.sections["5"].sec15.para4, margin, yRef.current,margin,15, addTextOption,...lastParam]]
-                },
-                24:{
-                    id:24,
-                    param:[[[{text:t.contract.sections["5"].sec15.item,size:11,isBold:true,color:rgb(0,0,0)},{text:"item",size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,8,fontRegular,fontBold,textHorizontalOption,...lastParam],[[{text:'title',size:11,isBold:true,color:rgb(0,0,0)},{text:"item",size:11,isBold:false,color:rgb(0,0,0)}],margin+30,yRef.current,true,margin,8,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                25:{
-                    id:25,
-                    param:[[t.contract.sections["5"].sec16.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
-                },
-                26:{
-                    id:26,
-                    param:[[[{text:t.contract.sections["5"].sec16.para11,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec16.para12,size:11,isBold:true,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec16.para13,size:11,isBold:false,color:rgb(0,0,0)}],margin,yRef.current,false,margin,15,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                27:{
-                    id:27,
-                    param:[[t.contract.sections["5"].sec17.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec17.para1, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec17.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec17.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec17.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec17.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec17.paraClose, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec18.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec18.para1, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec18.para2, margin, yRef.current,margin,8, addTextOption,...lastParam]]
-                },
-                28:{
-                    id:28,
-                    param:[[[{text:`3)`,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["5"].sec18.para3,size:11,isBold:true,color:rgb(0,0,0)}],margin,yRef.current,false,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                29:{
-                    id:29,
-                    param:[[t.contract.sections["5"].sec18.paraClose, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec19.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec19.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec19.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec19.para3, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec19.para4, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["6"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["6"].para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["6"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam]]
-                },
-                30:{
-                    id:30,
-                    param:[[[{text:t.contract.sections["6"].sec2.para1,size:11,isBold:false,color:rgb(0,0,0)},{text:t.contract.sections["6"].sec2.para2,size:11,isBold:true,color:rgb(0,0,0)},{text:t.contract.sections["6"].sec2.para3,size:11,isBold:false,color:rgb(0,0,0)}],margin,yRef.current,false,margin,15,fontRegular,fontBold,textHorizontalOption,...lastParam]]
-                },
-                31:{
-                    id:31,
-                    param:[[t.contract.sections["6"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec3.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec4.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec4.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec5.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec5.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec6.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec6.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec7.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec7.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec8.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec8.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec9.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec10.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec11.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec11.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec12.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec12.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec13.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec14.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec15.para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["7"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["7"].para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["8"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["8"].para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["8"].paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraE, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraF, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["8"].paraClose, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["9"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["9"].para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["9"].paraA, margin, yRef.current,margin,8,
-                    {...addTextOption,lineHeight:lineHeight+2,isBold:true},...lastParam],[t.contract.sections["9"].paraB, margin, yRef.current,margin,8, {...addTextOption,isBold:true,lineHeight:lineHeight+2},...lastParam],[t.contract.sections["9"].paraC, margin, yRef.current,margin,40, {...addTextOption,isBold:true,lineHeight:lineHeight+2},...lastParam],[t.contract.sections["10"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam]]
-                },
-                32:{
-                    id:32,
-                    param:[[[t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[["",t.contract.sections["10"].do+' '+formatDate(data.effectiveDate)],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
-                }
-            }
-            //console.log("fonctionParam",fonctionParam)
-            //console.table("fonctionParam table "+fonctionParam)
-            const functionListAndRang = [
-                {name:"addText",count:2,id:1},{name:"addHorizontalText",count:1,id:2},
-                {name:"addText",count:1,id:3},
-                {name:"addHorizontalText",count:1,id:4},
-                {name:"addText",count:2,id:5},
-                {name:"addHorizontalText",count:3,id:6},
-                {name:"addText",count:10,id:7},
-                {name:"foreach",fonc:"addText",id:8},
-                {name:"addText",count:19,id:9},
-                {name:"addHorizontalText",count:1,id:10},
-                {name:"addText",count:5,id:11},
-                {name:"addHorizontalText",count:1,id:12},
-                {name:"addText",count:5,id:13},
-                {name:"addHorizontalText",count:1,id:14},
-                {name:"addText",count:4,id:15},
-                {name:"addHorizontalText",count:1,id:16},
-                {name:"addText",count:3,id:17},
-                {name:"addHorizontalText",count:1,id:18},
-                {name:"addText",count:9,id:19},
-                {name:"addHorizontalText",count:1,id:20},
-                {name:"addText",count:29,id:21},
-                {name:"addHorizontalText",count:1,id:22},
-                {name:"addText",count:1,id:23},
-                {name:"foreach",fonc:"addHorizontalText",id:24},
-                {name:"addText",count:1,id:25},
-                {name:"addHorizontalText",count:1,id:26},
-                {name:"addText",count:10,id:27},
-                {name:"addHorizontalText",count:1,id:28},
-                {name:"addText",count:11,id:29},
-                {name:"addHorizontalText",count:1,id:30},
-                {name:"addText",count:43,id:31},
-                {name:"signatureBloc",count:2,id:32}
-            ]
-
-            const isDataStructureSingleText = (
-            item: DataStructureSingleText | DataStructureHorizontalText | ContractSignaturData
-            ): item is DataStructureSingleText => {
-                return Array.isArray(item) && item.length === 9;
-            };
-
-            const isDataStructureHorizontalText = (
-            item: DataStructureSingleText | DataStructureHorizontalText | ContractSignaturData
-            ): item is DataStructureHorizontalText => {
-                return Array.isArray(item) && item.length === 12;
-            };
-
-            const isDataStructureSignatureText = (
-            item: DataStructureSingleText | DataStructureHorizontalText | ContractSignaturData
-            ): item is ContractSignaturData => {
-                return Array.isArray(item) && item.length === 15;
-            };
-
-            functionListAndRang.forEach((item,i)=>{
-                if (item.count) {
-                    for (let index = 0; index < item.count; index++) {
-                        const params = fonctionParam[item.id].param[index];
-                        switch (item.name) {
-                            case 'addText':
-                                if (isDataStructureSingleText(params)) {
-                                    yRef.current = addText(params)
-                                }
-                                break;
-                            case 'addHorizontalText':
-                                if (isDataStructureHorizontalText(params)) {
-                                    const final = addHorizontalText(params)
-                                    yRef.current = final.finalY;
-                                }
-                                break;
-                            case 'signatureBloc':
-                                if (isDataStructureSignatureText(params)) {
-                                  yRef.current = signatureBloc(params)  
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        
-                    }
-                }else{
-                    switch (item.fonc) {
-                        case 'addText':
-                            if (item.id === 8) {
-                                const params = fonctionParam[item.id].param[0]
-                                data.projectFonctionList.forEach((item,index)=>{
-                                    if (isDataStructureSingleText(params)) {
-                                        params[0] = item
-                                        yRef.current = addText(params)
-                                        if (index === data.projectFonctionList.length - 1) {
-                                            params[4] = 15
-                                            yRef.current = addText(params)
-                                        }
-                                    }
-                                })
-                            }
-                            break;
-                        case 'addHorizontalText':
-                            if (item.id === 24) {
-                                const params = fonctionParam[item.id].param[0]
-                                data.paymentSchedule.split(',').forEach((item,index)=>{
-                                    if (isDataStructureHorizontalText(params)) {
-                                    params[0][1].text = item
-                                    params[8].bulletSymbol = `${index + 1} - `
-                                        if (index === 0) {
-                                            params[0][0].text = t.contract.sections["5"].sec15.item
-                                            const final = addHorizontalText(params)
-                                            yRef.current = final.finalY;
-                                        }else if(index === data.paymentSchedule.split(',').length - 1){
-                                            params[0][0].text = t.contract.sections["5"].sec15.itemEnd
-                                            params[5] = 15
-                                            const final = addHorizontalText(params)
-                                            yRef.current = final.finalY;
-                                        }else{
-                                            params[0][0].text = `${t.contract.sections["5"].sec15.item1} ${index} : `
-                                            const final = addHorizontalText(params)
-                                            yRef.current = final.finalY;
-                                        }
-                                    }
-                                })
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            })
-
-            // Génération du PDF final
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            return URL.createObjectURL(blob);
-            //return await pdfDoc.save();
-        } catch (error) {
-            console.error('Erreur lors de la génération du PDF:', error);
-            alert('Une erreur est survenue.');
-        }
+    
+    const chooseMaintenance = (type:"app"|"saas"|"web")=>{
+        setMaintenaceType((prev)=>{
+            if(prev === type) return null
+            return type
+        })
     }
-    // Fonction utilitaire pour ajouter du texte multiligne
-    const addText = ([text,x,y,rightMargin,marginAfter,options,pdfDoc,pageRef,yRef,]: [text: string,x: number,y: number,rightMargin: number,marginAfter: number,
-        options: {
-            size?: number;
-            isBold?: boolean;
-            font: PDFFont;
-            fontBold: PDFFont;
-            lineHeight: number;
-            isListItem?: boolean;
-            bulletSymbol?: string;
-            maxWidth?: number;
-            topMargin?: number;
-            bottomMarginThreshold?: number;
-        },
-        pdfDoc: PDFDocument,
-        pageRef: { current: PDFPage },
-        yRef: { current: number },
-        ]) => {
-        const {
-            size = 11,
-            isBold = false,
-            font,
-            fontBold,
-            lineHeight,
-            isListItem = false,
-            bulletSymbol = "• ",
-            maxWidth = Infinity,
-            topMargin = 50,
-            bottomMarginThreshold = 50,
-        } = options;
-        
-        const currentFont = isBold ? fontBold : font;
-        const pageWidth = pageRef.current.getSize().width;
-        const height = pageRef.current.getSize().height;
-        const effectiveMaxWidth = Math.min(
-          maxWidth,
-          pageWidth - x - rightMargin
-        );
-        // Gestion des puces
-        const prefix = isListItem ? bulletSymbol : "";
-        const prefixWidth = isListItem 
-          ? currentFont.widthOfTextAtSize(prefix, size)
-          : 0;
-        let currentY = yRef.current;
-        let canAddPageNumber:boolean = true;
-        const processLine = (line: string, isFirstLine: boolean) => {
-            if (currentY < bottomMarginThreshold) {
-                const page = pdfDoc.addPage([595, 842]); // A4 - Considérer de ne pas hardcoder
-                pageRef.current = page; // Mettre à jour la référence de la page
-                // *** CORRECTION PRINCIPALE : Réinitialisation de Y basée sur la marge haute ***
-                currentY = height - topMargin; // Réinitialiser `y` en haut de la nouvelle page
-                yRef.current = currentY; // Mettre à jour la référence globale de Y
-                canAddPageNumber = true;
-            }
-            let currentX = x + (isFirstLine ? 0 : prefixWidth);
-            const words = line.split(" ");
-            let currentLine = isFirstLine ? prefix + words[0] : words[0];
 
-            for (let i = 1; i < words.length; i++) {
-                const testLine = `${currentLine} ${words[i]}`;
-                const testWidth = currentFont.widthOfTextAtSize(testLine, size);
-
-                if (testWidth > effectiveMaxWidth) {
-                    // Vérifier à nouveau le débordement avant de dessiner
-                    if (currentY < bottomMarginThreshold) {
-                        const page = pdfDoc.addPage([595, 842]);
-                        pageRef.current = page;
-                        currentY = height - topMargin;
-                        yRef.current = currentY;
-                        // Sur une nouvelle page suite à un wrap, X doit revenir à la position de la marge gauche + marge puce
-                        currentX = x + prefixWidth; // Sur une ligne wrappée (pas la première du paragraphe), on ajoute la marge puce
-                    } else {
-                         // Si pas de nouvelle page, le X reste le même pour la ligne actuelle
-                        currentX = x + (isFirstLine && !isListItem ? 0 : prefixWidth); // Ajuster X si c'est la première ligne du paragraphe non listée
-                    }
-
-                    pageRef.current.drawText(currentLine, {
-                        x: currentX,
-                        y: currentY,
-                        size,
-                        font: currentFont,
-                        color: rgb(0, 0, 0),
-                    });
-                    currentY -= lineHeight;
-                    yRef.current = currentY;
-                    currentX = x + prefixWidth;
-                    currentLine = words[i];
-                } else {
-                    currentLine = testLine;
-                }
-                if (canAddPageNumber) {
-                    getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
-                    canAddPageNumber = false;
-                }
-            }
-
-            if (currentLine) {
-                if (currentY < bottomMarginThreshold) {
-                    const page = pdfDoc.addPage([595, 842]);
-                    pageRef.current = page;
-                    currentY = height - topMargin;
-                    yRef.current = currentY;
-                    // Sur une nouvelle page, X doit revenir à la position correcte
-                    currentX = x + (isFirstLine && !isListItem ? 0 : prefixWidth); // Utiliser le X correct pour la première ligne du paragraphe ou une ligne wrappée
-                    canAddPageNumber = true;
-                } else {
-                    currentX = x + (isFirstLine && !isListItem ? 0 : prefixWidth);
-                }
-
-                pageRef.current.drawText(currentLine, {
-                    x: currentX,
-                    y: currentY,
-                    size,
-                    font: currentFont,
-                    color: rgb(0, 0, 0),
-                });
-                currentY -= lineHeight;
-                yRef.current = currentY;
-                if (canAddPageNumber) {
-                    getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
-                    canAddPageNumber = false;
-                }
-            }
-        };
-      
-        // Traitement des sauts de ligne manuels (\n)
-        const paragraphs = text.split('\n');
-        paragraphs.forEach((paragraph, i) => {
-             if (i > 0) {
-                const nextY = currentY - lineHeight; // Position après le saut de ligne entre paragraphes
-                if (nextY < bottomMarginThreshold) {
-                    const page = pdfDoc.addPage([595, 842]);
-                    pageRef.current = page;
-                    currentY = height - topMargin; // Position de départ sur la nouvelle page
-                    yRef.current = currentY;
-                    canAddPageNumber = true;
-                } else {
-                    currentY = nextY; // Appliquer le saut de ligne si ça ne dépasse pas
-                    yRef.current = currentY;
-                }
-            }
-            processLine(paragraph, true);
-        });
-        yRef.current = currentY - marginAfter;
-        return yRef.current;
-    };
-
-    const signatureBloc = ([items,initialY,marginLeft,marginRight,marginAfter,topMargin,bottomMargin,lineHeight,size,isBold,font,fontBold,pdfDoc,pageRef,yRef]: [items: string[],initialY: number,marginLeft: number,marginRight: number,marginAfter: number,topMargin: number,bottomMargin: number,lineHeight: number,size: number,isBold: boolean,font: PDFFont,fontBold: PDFFont,pdfDoc: PDFDocument,pageRef: { current: PDFPage },yRef: { current: number }]) => {
-        const pageWidth = pageRef.current.getWidth();
-        let pageHeight = pageRef.current.getHeight();
-        const availableWidth = pageWidth - marginLeft - marginRight;
-        const currentFont = isBold ? fontBold : font;
-        let canAddPageNumber:boolean = false;
-        // Utiliser la position Y actuelle ou la position initiale si non définie
-        let currentY = yRef.current !== undefined ? yRef.current : initialY;
-        const height = pageRef.current.getSize().height
-        const drawItem = (item: string, x: number, y: number, width: number) => {
-            pageRef.current.drawText(item, {
-                x,
-                y,
-                size,
-                font: currentFont,
-                color: rgb(0, 0, 0),
-                maxWidth: width, // Limite la largeur du texte
-            });
-            if (canAddPageNumber) {
-                getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
-                canAddPageNumber = false;
-            }
-        };
-    
-        // Vérifier qu'il y a exactement 2 items
-        if (items.length !== 2) {
-            throw new Error("Cette fonction ne supporte que exactement 2 items");
-        }
-    
-        // Hauteur totale requise pour le bloc (une seule ligne dans ce cas)
-        const totalBlockHeight = lineHeight;
-    
-        // Vérifier si le bloc tient sur la page actuelle
-        if (currentY - totalBlockHeight < bottomMargin) {
-            // Ajouter une nouvelle page si nécessaire
-            const newPage = pdfDoc.addPage([595, 842]);
-            pageRef.current = newPage;
-            pageHeight = newPage.getHeight();
-            currentY = pageHeight - topMargin;
-            yRef.current = currentY;
-            canAddPageNumber = true;
-        }
-    
-        // Largeur disponible pour chaque item (moitié de la largeur totale)
-        const itemWidth = availableWidth / 2;
-    
-        // Dessiner le premier item (aligné à gauche)
-        drawItem(items[0], marginLeft, currentY, itemWidth);
-    
-        // Dessiner le deuxième item (juste après le premier)
-        drawItem(items[1], marginLeft + itemWidth, currentY, itemWidth);
-    
-        // Mettre à jour la position Y pour les prochains dessins
-        currentY -= lineHeight;
-        yRef.current = currentY - marginAfter;
-        return yRef.current
-    };
-
-    const addHorizontalText = ([textEntries,startX,startY,isListItem,rightMargin,marginAfter,font,fontBold,context,pdfDoc,pageRef,yRef]: [
-        textEntries: {
-            text: string;
-            size?: number;
-            isBold?: boolean;
-            color?: RGB;
-        }[],startX: number,startY: number,isListItem: boolean,rightMargin: number,marginAfter: number,font: PDFFont,fontBold: PDFFont,
-        context: {
-            horizontalSpacing?: number;
-            maxWidth?: number;
-            bulletSymbol?: string;
-            lineHeight: number;
-            topMargin: number;
-            bottomMargin: number;
-        },pdfDoc: PDFDocument,pageRef: { current: PDFPage },yRef: { current: number }]) => {
-        const {
-            horizontalSpacing = 2,
-            lineHeight,
-            maxWidth = Infinity,
-            bulletSymbol = "• ",
-            topMargin,
-            bottomMargin
-        } = context;
-            
-        const height = pageRef.current.getSize().height;
-        const pageWidth = pageRef.current.getSize().width;
-        const effectiveRightMargin = pageWidth - rightMargin;
-    
-        // Initialize positions
-        let currentX = startX;
-        let currentY = yRef.current !== undefined ? yRef.current : startY;
-        let lowestYInBlock = currentY; // Track the lowest Y position in this block
-        let canAddPageNumber:boolean = false;
-        // Helper function to handle page breaks
-        const checkPageBreak = (neededHeight: number) => {
-            if (currentY - neededHeight < bottomMargin) {
-                const newPage = pdfDoc.addPage([595, 842]);
-                pageRef.current = newPage;
-                currentY = newPage.getHeight() - topMargin;
-                currentX = startX;
-                lowestYInBlock = currentY;
-                canAddPageNumber = true;
-                return true;
-            }
-            return false;
-        };
-    
-        // Handle bullet point if it's a list item
-        if (isListItem) {
-            const bulletSize = textEntries[0]?.size || 12;
-            
-            // Check if we need a new page before drawing bullet
-            checkPageBreak(lineHeight);
-    
-            pageRef.current.drawText(bulletSymbol, {
-                x: currentX,
-                y: currentY,
-                size: bulletSize,
-                font,
-                color: rgb(0, 0, 0),
-            });
-    
-            currentX += font.widthOfTextAtSize(bulletSymbol, bulletSize) + horizontalSpacing;
-            if (canAddPageNumber) {
-                getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
-                canAddPageNumber = false;
-            }
-        }
-    
-        // Process each text entry
-        textEntries.forEach((entry) => {
-            const { text, size = 12, isBold = false, color = rgb(0, 0, 0) } = entry;
-            const currentFont = isBold ? fontBold : font;
-            const words = text.split(' ');
-            let currentLine = '';
-    
-            // Split text into lines that fit within available width
-            words.forEach((word) => {
-                const testLine = currentLine ? `${currentLine} ${word}` : word;
-                const testWidth = currentFont.widthOfTextAtSize(testLine, size);
-                const availableWidth = Math.min(effectiveRightMargin - currentX, maxWidth);
-    
-                if (testWidth > availableWidth) {
-                    // Draw the current line if it's not empty
-                    if (currentLine) {
-                        // Check if we need a new page before drawing this line
-                        checkPageBreak(lineHeight);
-    
-                        pageRef.current.drawText(currentLine, {
-                            x: currentX,
-                            y: currentY,
-                            size,
-                            font: currentFont,
-                            color,
-                        });
-    
-                        // Update lowest Y position
-                        if (currentY < lowestYInBlock) {
-                            lowestYInBlock = currentY;
-                        }
-                        if (canAddPageNumber) {
-                            getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
-                            canAddPageNumber = false;
-                        }
-                    }
-    
-                    // Move to next line
-                    currentY -= lineHeight;
-                    currentX = isListItem 
-                        ? startX + font.widthOfTextAtSize(bulletSymbol, size) + horizontalSpacing 
-                        : startX;
-    
-                    // Reset current line with the new word
-                    currentLine = word;
-    
-                    // Check page break again after moving to new line
-                    checkPageBreak(lineHeight);
-                } else {
-                    currentLine = testLine;
-                }
-            });
-    
-            // Draw the remaining text in currentLine
-            if (currentLine) {
-                const lineWidth = currentFont.widthOfTextAtSize(currentLine, size);
-                const availableWidth = Math.min(effectiveRightMargin - currentX, maxWidth);
-    
-                // If line doesn't fit, move to next line
-                if (lineWidth > availableWidth) {
-                    currentY -= lineHeight;
-                    currentX = isListItem 
-                        ? startX + font.widthOfTextAtSize(bulletSymbol, size) + horizontalSpacing 
-                        : startX;
-                    checkPageBreak(lineHeight);
-                }
-    
-                // Draw the line
-                pageRef.current.drawText(currentLine, {
-                    x: currentX,
-                    y: currentY,
-                    size,
-                    font: currentFont,
-                    color,
-                });
-                if (canAddPageNumber) {
-                    getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
-                    canAddPageNumber = false;
-                }
-                // Update positions
-                if (currentY < lowestYInBlock) {
-                    lowestYInBlock = currentY;
-                }
-                currentX += currentFont.widthOfTextAtSize(currentLine, size) + horizontalSpacing;
-            }
-        });
-    
-        // Update yRef to the lowest position in this block minus lineHeight
-        yRef.current = lowestYInBlock - lineHeight;
-        yRef.current = yRef.current - marginAfter;
-        return { finalX: currentX, finalY: yRef.current };
-    };
-    const getTextWidth = (text:string, font: PDFFont, fontSize:number) => {
-        const width = font.widthOfTextAtSize(text, fontSize);
-        return width;
+    const checkFormValidation = ()=>{
+        return isValid && maintenaceType !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && contractLanguage !== '' && contractLanguage !== 'default'
     }
-    const getPdfXCenter = (ml:number,mr:number,pdfDoc:PDFDocument,fontSize:number,font:PDFFont,page:PDFPage)=>{
-        const pageWidth = 595;
-        const currentPage = pdfDoc.getPageCount();
-        const pageNumberText = `${currentPage}`;
-        const textWidth = getTextWidth(pageNumberText, font, fontSize);
-        const usableWidth = pageWidth - ml - mr;
-        const centerX = ml + usableWidth / 2;
-        const textX = centerX - textWidth / 2;
-        page.drawText(pageNumberText, {
-            x: textX,
-            y: 25, // 30pt depuis le bas
-            size: fontSize,
-            font,
-            color: rgb(0, 0, 0),
-        });
-    }
+
+    const handleContractLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setContractLanguage(e.target.value);
+    };
+    
     useEffect(() => {
         async function getDocumentById(collectionName: string, id: string) {
             if(!id) return
@@ -888,19 +138,51 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             const docSnap = await getDoc(docRef);
           
             if (docSnap.exists()) {
-                const client:any = { id: docSnap.id, ...docSnap.data() };
-                setClient(client);
-                reset(client);
-                setLoading(false);
-                const pdfUrl = await handlePdf(client,{name:"Test Name",freelancerName:"ROD TECH SOLUTIONS",freelanceAdresse:'123 Rue Saint-Sébastien, Poissy 78300, France',freelancerSirets:"SIRET",freelancerVAT:"",clientEmail:"test@mail.com",clientAddress:"123 rue Saint-Sébastien, Poissy 78300, France",clientSIRET:"",clientPhone:"7845 454 12",confidentiality:true,projectTitle:"SIte Web",projectDescription:"Test du site",startDate:new Date().toISOString(),endDate:new Date().toISOString(),effectiveDate:new Date().toISOString(),deliverables:"50",totalPrice:700,paymentMethod:"Bank Transfer",paymentSchedule:"25%,25%,50%",terminationTerms:"50",governingLaw:"French Law",projectFonctionList:["Fonction1","Fonction2","Fonction4","Fonction4"],contractType:"service_and_maintenance",maintenaceOptionPayment:"perHour"})
-                window.open(pdfUrl, '_blank');
+                const client = { id: docSnap.id, ...docSnap.data() } as Client;
+                const contract = client.contract
+                if (contract) {
+                    setClient(client);
+                    reset(contract);
+                    setFonctionalityList(contract.projectFonctionList)
+                    setMaintenaceType(contract.maintenanceType)
+                    setContractLanguage(contract.contractLanguage);
+                    setSelectedContractStatus(client.contractStatus)
+                    setSelectedContractType(client.contractType)
+                    setFonctionalityList(contract.projectFonctionList)
+                    setLoading(false);
+                }else{
+                    loadContractFromCache()
+                }
             } else {
               console.log("Document non trouvé !");
               return null;
             }
         }
+        const loadContractFromCache = () => {
+            const contractData = sessionStorage.getItem('contractData');
+            if (contractData) {
+                const parsedData = JSON.parse(contractData);
+                reset(parsedData.contract);
+                setClient(parsedData.client);
+                setContractLanguage(parsedData.contract.contractLanguage)
+                setMaintenaceType(parsedData.contract.maintenanceType)
+                setSelectedContractStatus(parsedData.client.contractStatus)
+                setSelectedContractType(parsedData.client.contractType)
+                setFonctionalityList(parsedData.contract.projectFonctionList)
+                setLoading(false);
+            }
+        }
         getDocumentById("clients",clientId);
     }, []);
+    console.log("selectedContractStatus",selectedContractStatus,"maintenaceType",maintenaceType)
+    const handleContractStatusChange = (value: "signed" | "unsigned" | "pending") => {
+        setSelectedContractStatus(value as 'signed' | 'unsigned' | 'pending');
+    };
+
+    const handleContractTypeChange = (value: "service"|"maintenance"|"service_and_maintenance") => {
+        setSelectedContractType(value as "service"|"maintenance"|"service_and_maintenance");
+    };
+
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
             console.log("inside contextData",contextData)
@@ -908,32 +190,26 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     },[contextData])
 
-    const formatDate = (date:string)=>{
-        const fdate = new Date(date)
-        const day = fdate.getDate();
-        const month = fdate.getMonth() + 1; // Les mois commencent à 0
-        const year = fdate.getFullYear();
-        if (locale === "en") {
-            return `${year}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
-        }
-        return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+    if (client?.contractStatus === 'signed' || (client?.contractStatus === 'unsigned' && !Cookies.get('logged'))) {
+        router.push("/"+locale)
+        return null
     }
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["contrat"]}</h1>
             <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-                <h1 className="text-2xl font-bold mb-6 flex justify-start items-center gap-2">Freelance Web Development Contract <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(client?.contractStatus ?? '')}`}><i className={`${getStatusIcon(client?.contractStatus ?? '')} mr-1`}></i>{getStatusText(client?.contractStatus ?? '')}</span></h1>
+                <h1 className="text-2xl font-bold mb-6 flex justify-start items-center gap-2">Contrat de prestation de service/maintenace<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(client?.contractStatus ?? '')}`}><i className={`${getStatusIcon(client?.contractStatus ?? '')} mr-1`}></i>{getStatusText(client?.contractStatus ?? '')}</span></h1>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* === Client Information === */}
                     <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold mb-4">Client Information</h2>
+                    <h2 className="text-xl font-semibold mb-4">Information sur le client</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                         <label className="block text-sm font-medium text-gray-700">
-                            Full Name / Business Name*
+                            Nom complet / Nom de l'entreprise <em>*</em>
                         </label>
                         <input
                             {...register("name", { required: "This field is required" })}
@@ -946,7 +222,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                         <div>
                         <label className="block text-sm font-medium text-gray-700">
-                            Postal Address*
+                            Adresse <em>*</em>
                         </label>
                         <input
                             {...register("clientAddress", { required: "This field is required" })}
@@ -960,7 +236,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                     <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">
-                        Billing Address (if different)
+                        Adresse de facturation (si différente)
                         </label>
                         <input
                         {...register("clientBillingAddress")}
@@ -970,111 +246,91 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">Email*</label>
-                        <input
-                            type="email"
-                            {...register("clientEmail", {
-                            required: "Email is required",
-                            pattern: {
-                                value: /^\S+@\S+$/i,
-                                message: "Invalid email format",
-                            },
-                            })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.clientEmail && (
-                            <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
-                        )}
+                            <label className="block text-sm font-medium text-gray-700">Adresse email <em>*</em></label>
+                            <input
+                                type="email"
+                                {...register("clientEmail", {
+                                required: "Email is required",
+                                pattern: {
+                                    value: /^\S+@\S+$/i,
+                                    message: "Invalid email format",
+                                },
+                                })}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            />
+                            {errors.clientEmail && (
+                                <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
+                            )}
                         </div>
 
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">Phone*</label>
-                        <input
-                            type="tel"
-                            {...register("clientPhone", { required: "Phone is required" })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.clientPhone && (
-                            <p className="text-red-500 text-sm mt-1">{errors.clientPhone.message as string}</p>
-                        )}
+                            <label className="block text-sm font-medium text-gray-700">Numéro de téléphone <em>*</em></label>
+                            <input
+                                type="tel"
+                                {...register("clientPhone", { required: "Phone is required" })}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            />
+                            {errors.clientPhone && (
+                                <p className="text-red-500 text-sm mt-1">{errors.clientPhone.message as string}</p>
+                            )}
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                            SIRET/SIREN (if applicable)
-                        </label>
-                        <input
-                            {...register("clientSIRET")}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">
+                                    SIRET/SIREN (le cas échéant)
+                                </label>
+                                <input
+                                    {...register("clientSIRET")}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
+                            </div>
                         </div>
-
-                        <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                            VAT Number (EU)
-                        </label>
-                        <input
-                            {...register("clientVAT")}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        </div>
-                    </div>
                     </section>
 
                     {/* === Freelancer Information === */}
                     <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold mb-4">Freelancer Information</h2>
+                    <h2 className="text-xl font-semibold mb-4">Information sur le prestataire de service</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">Full Name*</label>
+                        <label className="block text-sm font-medium text-gray-700">Nom complet / Nom de l'entreprise <em>*</em></label>
                         <input
                             {...register("freelancerName", { required: "This field is required" })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'KWAYEP KOUENGA Rodrigue'}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'ROD TECH SOLUTIONS'} disabled={true}
                         />
                         </div>
 
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">Address*</label>
+                        <label className="block text-sm font-medium text-gray-700">Adresse <em>*</em></label>
                         <input
-                            {...register("freelancerAddress", { required: "This field is required" })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'123 rue Saint-Sébastien, Poissy 78300, France'}
+                            {...register("freelanceAddress", { required: "This field is required" })}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'123 rue Saint-Sébastien, Poissy 78300, France'} disabled={true}
                         />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div>
-                        <label className="block text-sm font-medium text-gray-700">SIRET*</label>
-                        <input
-                            {...register("freelancerSIRET", { required: "This field is required" })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'SIRET'}
-                        />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">SIRET <em>*</em></label>
+                                <input
+                                    {...register("freelancerSirets", { required: "This field is required" })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'SIRET'} disabled={true}
+                                />
+                            </div>
                         </div>
-
-                        <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                            VAT Number (if applicable)
-                        </label>
-                        <input
-                            {...register("freelancerVAT")}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        </div>
-                    </div>
                     </section>
 
                     {/* === Project Details === */}
                     <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold mb-4">Project Details</h2>
+                    <h2 className="text-xl font-semibold mb-4">Détailles du projet</h2>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Project Title*</label>
+                        <label className="block text-sm font-medium text-gray-700">Nom du projet <em>*</em></label>
                         <input
                         {...register("projectTitle", { required: "This field is required" })}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
                         />
                         {errors.projectTitle && (
                         <p className="text-red-500 text-sm mt-1">{errors.projectTitle.message as string}</p>
@@ -1082,24 +338,28 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     </div>
 
                     <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">Description*</label>
+                        <label className="block text-sm font-medium text-gray-700">Déscription du projet <em>*</em></label>
                         <textarea
-                        {...register("projectDescription", { required: "This field is required" })}
+                        {...register("projectDescription", { required: "Ce champ est requis" })}
                         rows={4}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
                         />
                         {errors.projectDescription && (
                         <p className="text-red-500 text-sm mt-1">{errors.projectDescription.message as string}</p>
                         )}
                     </div>
 
-                    <div className="mt-4 w-full">
-                        <label className="block text-sm font-medium text-gray-700">Ajouter une fonctionnalité*</label>
-                        <div className="flex items-center mt-2 justify-start gap-1 w-full"><input className="p-2 bg-gray-200 w-2/4 focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-1/4 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>Ajouter</span><span className="p-2 cursor-pointer w-1/4 flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>Vider la liste</span></div>
-                    </div>
+                    {
+                        Cookies.get('logged') && (<div className="my-4 w-full">
+                            <label className="block text-sm font-medium text-gray-700">Ajouter des fonctionnalités *</label>
+                            <div className="flex items-center mt-2 justify-start gap-1 w-full"><input className="p-2 bg-gray-200 w-2/4 focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-1/4 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{fonction !== '' && setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>Ajouter</span><span className="p-2 cursor-pointer w-1/4 flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>Vider la liste</span></div>
+                        </div>)
+                    }
 
                     {
                         fonctionalityList.length > 0 && (
+                            <>
+                            <label className="block text-sm font-medium text-gray-700 py-3">Liste des fonctionnalités principales</label>
                             <ul className="my-4 mx-4 list-disc">
                                 {
                                     fonctionalityList.map((item, index) => (
@@ -1107,155 +367,165 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     ))
                                 }
                             </ul>
+                            </>
                         )
                     }
 
-                    <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">Deliverables*</label>
-                        <textarea
-                        {...register("deliverables", { required: "This field is required" })}
-                        rows={3}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.deliverables && (
-                        <p className="text-red-500 text-sm mt-1">{errors.deliverables.message as string}</p>
-                        )}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">Start Date*</label>
-                        <input
-                            type="date"
-                            {...register("startDate", { required: "This field is required" })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.startDate && (
-                            <p className="text-red-500 text-sm mt-1">{errors.startDate.message as string}</p>
-                        )}
+                            <label className="block text-sm font-medium text-gray-700">Date de début du contrat <em>*</em></label>
+                            <input
+                                type="date"
+                                {...register("startDate", { required: "This field is required" })}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
+                            />
+                            {errors.startDate && (
+                                <p className="text-red-500 text-sm mt-1">{errors.startDate.message as string}</p>
+                            )}
                         </div>
 
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                            End Date (or estimated)
-                        </label>
-                        <input
-                            type="date"
-                            {...register("endDate")}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
+                            <label className="block text-sm font-medium text-gray-700">
+                                Date de fin du contrat (estimation)
+                            </label>
+                            <input
+                                type="date"
+                                {...register("endDate")}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
+                            />
                         </div>
                     </div>
                     </section>
 
                     {/* === Payment Terms === */}
                     <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold mb-4">Payment Terms</h2>
+                        <h2 className="text-xl font-semibold mb-4">Conditions de paiement</h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                        <label className="block text-sm font-medium text-gray-700">Total Price (€)*</label>
-                        <input
-                            type="number"
-                            {...register("totalPrice", {
-                            required: "Price is required",
-                            min: { value: 0, message: "Price must be positive" },
-                            })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.totalPrice && (
-                            <p className="text-red-500 text-sm mt-1">{errors.totalPrice.message as string}</p>
-                        )}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Prix ​​total (€) <em>*</em></label>
+                                <input
+                                    type="number"
+                                    {...register("totalPrice", {
+                                    required: "Price is required",
+                                    min: { value: 0, message: "Price must be positive" },
+                                    })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
+                                />
+                                {errors.totalPrice && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.totalPrice.message as string}</p>
+                                )}
+                            </div>
                         </div>
 
-                        <div>
-                        <label className="block text-sm font-medium text-gray-700">Payment Method*</label>
-                        <select
-                            {...register("paymentMethod", { required: "This field is required" })}
+                        <div className="mt-4">
+                            <label className="block text-sm font-medium text-gray-700">Échéancier de paiement <em>*</em></label>
+                            <textarea
+                            {...register("paymentSchedule", { required: "Ce champ est requis",pattern: {
+                                value: /^\d+%(?:,\d+%)*$/i,
+                                message: "Structure invalide",
+                            }, })}
+                            rows={2}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        >
-                            <option value="">Select...</option>
-                            <option value="Bank Transfer">Bank Transfer</option>
-                            <option value="PayPal">PayPal</option>
-                            <option value="Check">Check</option>
-                        </select>
-                        {errors.paymentMethod && (
-                            <p className="text-red-500 text-sm mt-1">{errors.paymentMethod.message as string}</p>
-                        )}
+                            placeholder="50% au début, 50% a la livraison" disabled={client && client.contractStatus === 'pending' ? true : false}
+                            />
+                            {errors.paymentSchedule && (
+                            <p className="text-red-500 text-sm mt-1">{errors.paymentSchedule.message as string}</p>
+                            )}
                         </div>
-                    </div>
-
-                    <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">Payment Schedule*</label>
-                        <textarea
-                        {...register("paymentSchedule", { required: "This field is required" })}
-                        rows={2}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        placeholder="50% au début, 50% a la livraison"
-                        />
-                        {errors.paymentSchedule && (
-                        <p className="text-red-500 text-sm mt-1">{errors.paymentSchedule.message as string}</p>
-                        )}
-                    </div>
                     </section>
 
-                    {/* === Legal Clauses === */}
-                    <section className="pb-6">
-                    <h2 className="text-xl font-semibold mb-4">Legal Clauses</h2>
-
-                    <div className="flex items-start">
-                        <div className="flex items-center h-5">
-                        <input
-                            type="checkbox"
-                            {...register("confidentiality")}
-                            defaultChecked
-                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                        />
-                        </div>
-                        <div className="ml-3 text-sm">
-                        <label className="font-medium text-gray-700">Confidentiality Agreement</label>
-                        <p className="text-gray-500">
-                            The freelancer agrees not to disclose any confidential information.
-                        </p>
-                        </div>
-                    </div>
-
-                    <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">
-                        Termination Terms*
-                        </label>
-                        <textarea
-                        {...register("terminationTerms", { required: "This field is required" })}
-                        rows={3}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        placeholder="Example: Either party may terminate with 14 days' notice."
-                        />
-                        {errors.terminationTerms && (
-                        <p className="text-red-500 text-sm mt-1">{errors.terminationTerms.message as string}</p>
-                        )}
-                    </div>
-
-                    <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">Governing Law*</label>
-                        <select
-                        {...register("governingLaw", { required: "This field is required" })}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        >
-                        <option value="French Law">French Law</option>
-                        <option value="EU Law">EU Law</option>
-                        <option value="Other">Other</option>
-                        </select>
-                    </div>
+                    <section className="border-b pb-6">
+                        <h2 className="text-xl font-semibold mb-4">Services maintenace</h2>
+                        {
+                            Cookies.get('logged') && (<div className="flex gap-5 justify-start items-center">
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'web' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${client?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('web')}>Web</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenaceType === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${client?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('app')}>Application mobile</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${client?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('saas')}>Application métier / SaaS</span>
+                            </div>)
+                        }
+                        
+                        {
+                            maintenaceType === null && (<p className="text-red-500 text-sm mt-1">Indiquer le type de maintenance</p>)
+                        }
+                        {
+                            maintenaceType !== null && (<div className="mt-4">
+                                {
+                                    maintenaceType === "app" ? (
+                                        <div className="flex gap-2 justify-start items-center">
+                                            <input type="checkbox" name="app" id="app" />
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="app">Maintenance pour une application mobile</label>
+                                        </div>
+                                    ) : maintenaceType === "saas" ? (<div className="flex gap-2 justify-start items-center">
+                                        <input type="checkbox" name="saas" id="saas" />
+                                        <label className="block text-sm font-medium text-gray-700" htmlFor="saas">Maintenance pour une application métier / SaaS</label>
+                                    </div>) : (<div className="flex gap-5 justify-start items-center flex-wrap">
+                                        <div className="flex gap-2 justify-start items-center">
+                                            <input type="checkbox" name="hour" id="hour" />
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="hour">Facturation à l'heure (50€)/heure</label>
+                                        </div>
+                                        <div className="flex gap-2 justify-start items-center">
+                                            <input type="checkbox" name="year" id="year" />
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="year">Facturation annuélle (500€)/An</label>
+                                        </div>
+                                    </div>)
+                                }
+                            </div>)
+                        }
                     </section>
+                    {
+                        Cookies.get('logged') && (
+                            <>
+                            <section className="border-b pb-6">
+                                <h2 className="text-xl font-semibold mb-4">Choisir la langue pour le contrat <em>*</em></h2>
+                                <select value={contractLanguage} onChange={handleContractLanguageChange}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                                    <option value="default">---Choisir une langue---</option>
+                                    <option value="fr">Français</option>
+                                    <option value="en">English</option>
+                                    <option value="en">Allemand</option>
+                                </select>
+                                {
+                                    contractLanguage === 'default' || contractLanguage === '' && (<p className="text-red-500 text-sm mt-1">Veuillez choisir une langue</p>)
+                                }
+                            </section>
+                            <section className="border-b pb-6">
+                                <h2 className="text-xl font-semibold mb-4">Modifier le type de contrat</h2>
+                                <select value={selectedContractType as "service"|"maintenance"|"service_and_maintenance"} onChange={(e:any)=>handleContractTypeChange(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                                {
+                                    contractType.map((item, index) => (
+                                        <option key={index} value={item.value} >{item.label}</option>
+                                    ))
+                                }  
+                                </select>
+                            </section>
+                            <section className="border-b pb-6">
+                                <h2 className="text-xl font-semibold mb-4">Modifier le status du contrat</h2>
+                                <select value={selectedContractStatus as "pending"|"unsigned"|"signed"} onChange={(e:any)=>handleContractStatusChange(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                                {
+                                    contractStatus.map((item, index) => (
+                                        <option key={index} value={item.value} >{item.label}</option>
+                                    ))
+                                }
+                                </select>
+                            </section>
+                            </>
+                        )
+                    }
                     
                     {/* Submit Button */}
                     <div className="flex justify-end gap-3">
-                        <a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Liste client</a>
+                        {
+                            Cookies.get('logged')  && (<a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Liste client</a>)
+                        }
+                        
                         <button
                             type="submit"
-                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkValidation() ? 'opacity-1' : 'opacity-50'}`} disabled={!checkValidation()}
+                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}
                         >
-                            Generate Contract
+                            Générer le contrat
                         </button>
                     </div>
                 </form>
