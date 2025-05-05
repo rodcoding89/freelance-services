@@ -102,7 +102,7 @@ const InitCanvaSignature:React.FC<InitCanvaSignatureProps> = ({locale,emit}) => 
                         Enregistré
                     </button>
                 </div>
-                {signatureLink !== null && <p className='flex-1 flex justify-start items-center gap-2'>{signatureLink} <em className='flex justify-center items-center cursor-pointer h-8 w-8 rounded-full bg-primary text-white'><CloseButton onClose={clearAll} size='medium' color='text-[#fff]' className=''/></em></p>}
+                {signatureLink !== null && <p className='flex-1 flex justify-start items-center gap-2'>{signatureLink} <em className='flex justify-center items-center cursor-pointer h-8 w-8 rounded-full bg-primary text-white'><CloseButton onClose={clearAll} size='medium' color='!text-white' className=''/></em></p>}
             </div>
         </div>
     );

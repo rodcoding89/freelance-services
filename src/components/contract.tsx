@@ -6,7 +6,7 @@ import { useState, useContext, useEffect } from "react";
 import Cookies from 'js-cookie';
 import { useForm } from "react-hook-form";
 import firebase from '@/utils/firebase'; // Importez votre configuration Firebase
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import Icon from "./Icon";
 
@@ -64,13 +64,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const {contextData} = useContext(AppContext)
     const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
     const [fonction, setFonction] = useState<string>('')
-    const router = useRouter()
+    const router = useRouter();
+    
     const [client, setClient] = useState<Client|null>(null)
     const [selectedContractType, setSelectedContractType] = useState<"service"|"maintenance"|"service_and_maintenance"|null>(null);
     const [selectedContractStatus, setSelectedContractStatus] = useState<'signed' | 'unsigned' | 'pending'|null>(null);
     const [contractLanguage, setContractLanguage] = useState<string>('')
     // Contenu dynamique basé sur la langue
-    
+    const searchParams = useSearchParams();
+    const edit = searchParams.get('edit');
     const {id} = useParams()
     const clientId = id as string
     const {
@@ -140,18 +142,20 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             if (docSnap.exists()) {
                 const client = { id: docSnap.id, ...docSnap.data() } as Client;
                 const contract = client.contract
-                if (contract) {
+                console.log("contract",contract)
+                if (edit === 'true') {
+                    loadContractFromCache()
+                }else{
                     setClient(client);
-                    reset(contract);
-                    setFonctionalityList(contract.projectFonctionList)
-                    setMaintenaceType(contract.maintenanceType)
-                    setContractLanguage(contract.contractLanguage);
+                    if (contract) {
+                        setFonctionalityList(contract.projectFonctionList)
+                        reset(contract);
+                        setMaintenaceType(contract.maintenanceType)
+                        setContractLanguage(contract.contractLanguage);
+                    }
                     setSelectedContractStatus(client.contractStatus)
                     setSelectedContractType(client.contractType)
-                    setFonctionalityList(contract.projectFonctionList)
                     setLoading(false);
-                }else{
-                    loadContractFromCache()
                 }
             } else {
               console.log("Document non trouvé !");
@@ -173,7 +177,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             }
         }
         getDocumentById("clients",clientId);
-    }, []);
+    }, [edit,clientId]);
     console.log("selectedContractStatus",selectedContractStatus,"maintenaceType",maintenaceType)
     const handleContractStatusChange = (value: "signed" | "unsigned" | "pending") => {
         setSelectedContractStatus(value as 'signed' | 'unsigned' | 'pending');

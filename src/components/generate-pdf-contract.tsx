@@ -1,7 +1,7 @@
 "use client"
 import { useTranslationContext } from '@/hooks/app-hook';
 import React, { useEffect } from 'react';
-import { PDFDocument, PDFFont, PDFPage, RGB, rgb, StandardFonts } from "pdf-lib";
+import { PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, StandardFonts } from "pdf-lib";
 
 type SingleTextLayourt = {
     size: number;
@@ -23,6 +23,7 @@ type HorizontalLayout = {
 };
 
 type ContractSignaturData = [
+    Array<any>,
     Array<any>,
     number,
     number,
@@ -148,7 +149,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
         {name:"addText",count:11,id:29},
         {name:"addHorizontalText",count:1,id:30},
         {name:"addText",count:43,id:31},
-        {name:"signatureBloc",count:2,id:32}
+        {name:"signatureBloc",count:3,id:32}
     ]
     const isDataStructureSingleText = (
     item: DataStructureSingleText | DataStructureHorizontalText | ContractSignaturData): item is DataStructureSingleText => {
@@ -162,7 +163,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
 
     const isDataStructureSignatureText = (
     item: DataStructureSingleText | DataStructureHorizontalText | ContractSignaturData): item is ContractSignaturData => {
-        return Array.isArray(item) && item.length === 15;
+        return Array.isArray(item) && item.length === 16;
     };
 
     const formatDate = (date:string)=>{
@@ -359,11 +360,11 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
                 },
                 32:{
                     id:32,
-                    param:[[[t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[["",t.contract.sections["10"].do+' '+formatDate(data.startDate)],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
+                    param:[[[t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],[],yRef.current,margin,15,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[[],[],yRef.current,margin,10,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam],[["",t.contract.sections["10"].do+' '+formatDate(data.startDate)],[],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
                 }
             }
 
-            functionListAndRang.forEach((item,i)=>{
+            functionListAndRang.forEach(async(item,i)=>{
                 if (item.count) {
                     for (let index = 0; index < item.count; index++) {
                         const params = fonctionParam[item.id].param[index];
@@ -381,7 +382,12 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
                                 break;
                             case 'signatureBloc':
                                 if (isDataStructureSignatureText(params)) {
-                                yRef.current = signatureBloc(params)  
+                                    if (index === 1) {
+                                        if(!signingLink) break;
+                                        params[1] = [{img:await pdfDoc.embedPng(signingLink),width:250,height:80},{img:await pdfDoc.embedPng(signingLink),width:250,height:80}]
+                                    }
+                                    yRef.current = signatureBloc(params);
+                                
                                 }
                                 break;
                             default:
@@ -400,7 +406,6 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
                                         yRef.current = addText(params)
                                         if (index === data.projectFonctionList.length - 1) {
                                             params[4] = 15
-                                            yRef.current = addText(params)
                                         }
                                     }
                                 })
@@ -447,6 +452,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
             alert('Une erreur est survenue.');
         }
     }
+    
     // Fonction utilitaire pour ajouter du texte multiligne
     const addText = ([text,x,y,rightMargin,marginAfter,options,pdfDoc,pageRef,yRef,]: [text: string,x: number,y: number,rightMargin: number,marginAfter: number,
         options: {
@@ -594,7 +600,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
         return yRef.current;
     };
 
-    const signatureBloc = ([items,initialY,marginLeft,marginRight,marginAfter,topMargin,bottomMargin,lineHeight,size,isBold,font,fontBold,pdfDoc,pageRef,yRef]: [items: string[],initialY: number,marginLeft: number,marginRight: number,marginAfter: number,topMargin: number,bottomMargin: number,lineHeight: number,size: number,isBold: boolean,font: PDFFont,fontBold: PDFFont,pdfDoc: PDFDocument,pageRef: { current: PDFPage },yRef: { current: number }]) => {
+    const signatureBloc = ([items,imgBloc,initialY,marginLeft,marginRight,marginAfter,topMargin,bottomMargin,lineHeight,size,isBold,font,fontBold,pdfDoc,pageRef,yRef]: [items: string[],imgBloc: {img:PDFImage,width:number,height:number}[],initialY: number,marginLeft: number,marginRight: number,marginAfter: number,topMargin: number,bottomMargin: number,lineHeight: number,size: number,isBold: boolean,font: PDFFont,fontBold: PDFFont,pdfDoc: PDFDocument,pageRef: { current: PDFPage },yRef: { current: number }]) => {
         const pageWidth = pageRef.current.getWidth();
         let pageHeight = pageRef.current.getHeight();
         const availableWidth = pageWidth - marginLeft - marginRight;
@@ -603,6 +609,13 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
         // Utiliser la position Y actuelle ou la position initiale si non définie
         let currentY = yRef.current !== undefined ? yRef.current : initialY;
         const height = pageRef.current.getSize().height
+        const drawImgItem = (signatureImage: PDFImage, x: number, y: number, width: number, height: number) => {
+            pageRef.current.drawImage(signatureImage, { x: x, y: y, width: width, height: height });
+            if (canAddPageNumber) {
+                getPdfXCenter(50,50,pdfDoc,10,font,pageRef.current)
+                canAddPageNumber = false;
+            }
+        };
         const drawItem = (item: string, x: number, y: number, width: number) => {
             pageRef.current.drawText(item, {
                 x,
@@ -617,11 +630,6 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
                 canAddPageNumber = false;
             }
         };
-    
-        // Vérifier qu'il y a exactement 2 items
-        if (items.length !== 2) {
-            throw new Error("Cette fonction ne supporte que exactement 2 items");
-        }
     
         // Hauteur totale requise pour le bloc (une seule ligne dans ce cas)
         const totalBlockHeight = lineHeight;
@@ -639,12 +647,19 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
     
         // Largeur disponible pour chaque item (moitié de la largeur totale)
         const itemWidth = availableWidth / 2;
-    
-        // Dessiner le premier item (aligné à gauche)
-        drawItem(items[0], marginLeft, currentY, itemWidth);
-    
-        // Dessiner le deuxième item (juste après le premier)
-        drawItem(items[1], marginLeft + itemWidth, currentY, itemWidth);
+        
+        if (items.length > 0) {
+            // Dessiner le premier item (aligné à gauche)
+            drawItem(items[0], marginLeft, currentY, itemWidth);
+        
+            // Dessiner le deuxième item (juste après le premier)
+            drawItem(items[1], marginLeft + itemWidth, currentY, itemWidth);
+        }
+
+        if (imgBloc.length > 0) {
+            drawImgItem(imgBloc[0].img,marginLeft - 80,currentY - 25,imgBloc[0].width,imgBloc[0].height)
+            drawImgItem(imgBloc[1].img,marginLeft + itemWidth - 80 ,currentY - 25,imgBloc[1].width,imgBloc[1].height)
+        }
     
         // Mettre à jour la position Y pour les prochains dessins
         currentY -= lineHeight;
@@ -835,20 +850,15 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
     }
     useEffect(()=>{
         const generedPdf = async()=>{ 
-            const pdfUrl = await handlePdf(client,{name:"Test Name",freelancerName:"ROD TECH SOLUTIONS",freelanceAddress:'123 Rue Saint-Sébastien, Poissy 78300, France',freelancerSirets:"SIRET",clientEmail:"test@mail.com",clientAddress:"123 rue Saint-Sébastien, Poissy 78300, France",clientSIRET:"",clientPhone:"7845 454 12",projectTitle:"SIte Web",projectDescription:"Test du site",startDate:new Date().toISOString(),endDate:new Date().toISOString(),totalPrice:700,paymentSchedule:"25%,25%,50%",projectFonctionList:["Fonction1","Fonction2","Fonction4","Fonction4"],contractType:"service_and_maintenance",maintenaceOptionPayment:"perHour",maintenanceType:"web",contractLanguage:"fr"})
+            const pdfUrl = await handlePdf(client,data)
             if (pdfUrl) {
+                window.open(pdfUrl, '_blank')
                 setPdfUrl(pdfUrl)
             }
         }
-        generedPdf()    
-    },[])
-    return (
-        <>
-        {
-           pdfUrl !== '' && window.open(pdfUrl, '_blank')
-        }
-        </>
-    )
+        generedPdf()   
+    },[data,client,signingLink,locale])
+    return null;
 };
 
 export default GeneratePdfContract;

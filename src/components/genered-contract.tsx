@@ -7,6 +7,7 @@ import InitCanvaSignature from "./initCanvaSignature";
 import { useParams, useRouter } from "next/navigation";
 import { AppContext } from "@/app/context/app-context";
 import Cookies from 'js-cookie';
+import GeneratePdfContract from "./generate-pdf-contract";
 
 interface Client {
     id: string;
@@ -48,6 +49,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [contract, setContract] = useState<Contract|null>(null)
     const [client, setClient] = useState<Client|null>(null)
+    const [contractData, setContractData] = useState<Contract|null>(null)
     const router = useRouter()
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const [loading, setLoading] = useState(true);
@@ -82,6 +84,10 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
 
     if (client?.contractStatus === 'signed' || (client?.contractStatus === 'unsigned' && !Cookies.get('logged'))) {
         router.push("/"+locale)
+    }
+    const uploadContract = ()=>{
+        if(!contract || !signingLink || !client) return
+        setContractData(contract)
     }
     const checkContractValidation = ()=>{
         return signingLink !== null
@@ -277,6 +283,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                     <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraB}</p>
                     <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraC}</p>
                 </div>
+                <GeneratePdfContract data={contractData} signingLink={signingLink} client={client} locale={locale}/>
             </section>
             <span className="block italic my-4">Si vous êtes d'accord avec ces termes, signé en dessous. Dans le cas contraire,indiquez nous les raisons de votre rétition.</span>
             <section className="signing">
@@ -284,7 +291,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
             </section>
             <div className="flex justify-end items-center mt-5 gap-4">
                 <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" href={`/${locale}/create-contract/${clientId}/?edit=true`}>Modifier le contrat</a>
-                <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkContractValidation()}>Télecharger le contrat</button>
+                <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkContractValidation()} onClick={uploadContract}>Télecharger le contrat</button>
             </div>
         </main>
     )
