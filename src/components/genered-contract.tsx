@@ -32,7 +32,7 @@ interface Contract {
     projectDescription:string;
     projectFonctionList:string[];
     startDate:string;
-    endDate?:string;
+    endDate:string;
     contractType: "service"|"maintenance"|"service_and_maintenance";
     maintenanceType:"app"|"saas"|"web"|null;
     maintenaceOptionPayment?:"perYear"|"perHour"
@@ -54,14 +54,16 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const [loading, setLoading] = useState(true);
     const {contextData} = useContext(AppContext)
-    const [signingLink, setSigningLink] = useState<string | null>(null);
+    const [clientSignatureLink, setClientSignatureLink] = useState<string | null>(null);
+    const [freelanceSignatureLink, setFreelanceSignatureLink] = useState<string | null>(null);
 
     const {id} = useParams()
     const clientId = id as string
 
     const handleSignatureChange = (data:any)=>{
         console.log("data",data)
-        setSigningLink(data)
+        setClientSignatureLink(data.clientSignatureLink)
+        setFreelanceSignatureLink(data.freelanceSignature)
     }
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
@@ -86,11 +88,11 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
         router.push("/"+locale)
     }
     const uploadContract = ()=>{
-        if(!contract || !signingLink || !client) return
+        if(!contract || !clientSignatureLink || !freelanceSignatureLink || !client) return
         setContractData(contract)
     }
     const checkContractValidation = ()=>{
-        return signingLink !== null
+        return clientSignatureLink !== null && freelanceSignatureLink !== null
     }
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
     return (
@@ -283,7 +285,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                     <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraB}</p>
                     <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraC}</p>
                 </div>
-                <GeneratePdfContract data={contractData} signingLink={signingLink} client={client} locale={locale}/>
+                <GeneratePdfContract data={contractData} clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} client={client} locale={locale}/>
             </section>
             <span className="block italic my-4">Si vous êtes d'accord avec ces termes, signé en dessous. Dans le cas contraire,indiquez nous les raisons de votre rétition.</span>
             <section className="signing">

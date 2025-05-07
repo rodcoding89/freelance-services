@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Icon from './Icon';
 
 interface Client {
   id: string;
@@ -55,11 +56,6 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
             console.error("Erreur de suppression:", error);
         }
         }
-    };
-
-    // Ouvrir le formulaire d'édition
-    const openEditForm = (client: Client) => {
-        router.push('/'+locale+'/create-contract/'+client.id)
     };
 
     // Obtenir la classe CSS en fonction du statut
@@ -137,13 +133,8 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                                 {client.lastContact?.toLocaleDateString() || 'N/A'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <button
-                                onClick={() => openEditForm(client)}
-                                className="text-blue-600 hover:text-blue-900 mr-4"
-                                title="Modifier"
-                                >
-                                <i className="bx bx-edit"></i>
-                                </button>
+                                <a title="Modifier" href={`/${locale}/create-contract/${client.id}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-edit" size="1rem"/></a>
+                                <a title="Générer une facture" href={`/${locale}/bill/${client.id}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-receipt" size="1rem"/></a>
                                 <button
                                 onClick={() => handleDelete(client.id)}
                                 className="text-red-600 hover:text-red-900"

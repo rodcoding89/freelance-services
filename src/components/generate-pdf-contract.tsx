@@ -96,11 +96,12 @@ interface Contract {
     projectDescription:string;
     projectFonctionList:string[];
     startDate:string;
-    endDate?:string;
+    endDate:string;
     contractType: "service"|"maintenance"|"service_and_maintenance";
     maintenanceType:"app"|"saas"|"web"|null;
     maintenaceOptionPayment?:"perYear"|"perHour"
     totalPrice:number;
+    mprice?:number;
     paymentSchedule:string;
     contractLanguage:string;
 }
@@ -109,13 +110,14 @@ interface Contract {
 interface GeneredContractProps {
   client:Client|null;
   data:Contract|null;
-  signingLink:string|null;
+  clientSignatureLink:string|null;
+  freelanceSignatureLink:string|null;
   locale:string
 }
 
 
-const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signingLink,locale}) => {
-    if (client === null || data === null || signingLink === null) return
+const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelanceSignatureLink,clientSignatureLink,locale}) => {
+    if (client === null || data === null || clientSignatureLink === null || freelanceSignatureLink === null) return
     const t:any = useTranslationContext();
     const [pdfUrl,setPdfUrl] = React.useState<string>('');
     const functionListAndRang = [
@@ -264,8 +266,8 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
                 },
                 9:{
                     id:9,
-                    param:[[t.contract.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec3.paraService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance, margin, yRef.current,margin,15, addTextOption,...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.paraService : data.contractType === 'maintenance' ? data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour : t.contract.sections["3"].sec4.paraMaintenance.perYear : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para} ${
-                    data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour : t.contract.sections["3"].sec4.paraServiceMaintenance.perYear} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}`
+                    param:[[t.contract.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",formatDate(data.startDate)).replace("{endDate}",formatDate(data.endDate)) : data.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance.paraService.replace("{startDate}",formatDate(data.startDate)).replace("{endDate}",formatDate(data.endDate)) : t.contract.sections["3"].sec3.paraServiceMaintenance.paraService.replace("{startDate}",formatDate(data.startDate)).replace("{endDate}",formatDate(data.endDate)), margin, yRef.current,margin,15, addTextOption,...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",data.totalPrice) : data.contractType === 'maintenance' ? data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",data.mprice) : t.contract.sections["3"].sec4.paraMaintenance.perYear.replace("{mprice}",data.mprice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",data.totalPrice)} ${
+                    data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",data.mprice) : t.contract.sections["3"].sec4.paraServiceMaintenance.perYear.replace("{mprice}",data.mprice)} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}`
                     ,margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["4"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["4"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["4"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["4"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["4"].sec2.para, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["4"].sec2.paraClose, margin, yRef.current,margin,40, {...addTextOption,size:9,isBold:true},...lastParam],[t.contract.sections["5"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["5"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec2.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec2.para2, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec3.para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam]]
                 },
                 10:{
@@ -383,11 +385,11 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
                             case 'signatureBloc':
                                 if (isDataStructureSignatureText(params)) {
                                     if (index === 1) {
-                                        if(!signingLink) break;
-                                        params[1] = [{img:await pdfDoc.embedPng(signingLink),width:250,height:80},{img:await pdfDoc.embedPng(signingLink),width:250,height:80}]
+                                        
+                                        params[1] = [{img:await pdfDoc.embedPng(freelanceSignatureLink),width:250,height:80},{img:await pdfDoc.embedPng(clientSignatureLink),width:250,height:80}]
+                                           
                                     }
                                     yRef.current = signatureBloc(params);
-                                
                                 }
                                 break;
                             default:
@@ -857,8 +859,9 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,signing
             }
         }
         generedPdf()   
-    },[data,client,signingLink,locale])
-    return null;
+    },[data,client,clientSignatureLink,freelanceSignatureLink,locale])
+      
+    return null
 };
 
 export default GeneratePdfContract;
