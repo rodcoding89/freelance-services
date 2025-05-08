@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslationContext } from '@/hooks/app-hook';
 import { AppContext } from '@/app/context/app-context';
 import  firebase  from "@/utils/firebase";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs,query, orderBy, limit } from "firebase/firestore";
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
@@ -18,22 +18,15 @@ interface Client {
     name:string;
     contractType: "service"|"maintenance"|"service_and_maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';
-    lastContact: Date;
-}
-
-export async function addClient(clientData:Client) {
-    try {
-      const docRef = await addDoc(collection(firebase.db, "clients"), clientData);
-      return docRef.id;
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
+    dateCreation: Date;
+    clientNumber:number;
 }
 
 const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
+    const [lastClient,setLastClient] = useState<Client|null>(null)
     const router = useRouter();
     const {
         register,
@@ -41,8 +34,17 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         formState: { errors },
     } = useForm();
 
+    const addClient = async(clientData:Client) =>{
+        try {
+          const docRef = await addDoc(collection(firebase.db, "clients"), clientData);
+          return docRef.id;
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+    }
+
     const onSubmit = async(data: any) => {
-        const client:Client = {name:data.clientName,contractStatus:'unsigned',lastContact:new Date(),contractType:data.contractType}
+        const client:Client = {name:data.clientName,contractStatus:'unsigned',dateCreation:new Date(),contractType:data.contractType,clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000}
         console.log('Client Data:', data);
         const clientId = await addClient(client)
         if (clientId) {
@@ -57,6 +59,30 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
             setIsPopUp(contextData.value)
         }
     },[contextData])
+
+    useEffect(()=>{
+        const getLastClient = async()=>{
+            const collectionRef = collection(firebase.db, "clients");
+            const q = query(
+                collectionRef,
+                orderBy("dateCreation", "desc"), // Champ de date/timestamp
+                limit(1)
+            );
+            
+            const querySnapshot = await getDocs(q);
+            
+            if (!querySnapshot.empty) {
+                const latestDoc = querySnapshot.docs[0];
+                console.log("Dernier document:", latestDoc.data());
+                setLastClient(latestDoc.data() as Client)
+            } else {
+                console.log("Aucun document trouvé");
+                return null;
+            }
+        }
+        getLastClient();
+    },[])
+
     if(!Cookies.get('logged')){
         router.push('/'+locale+'/login')
     }

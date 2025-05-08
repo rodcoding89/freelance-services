@@ -2,26 +2,31 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { PDFDocument, PDFFont, rgb, StandardFonts } from 'pdf-lib';
 
+interface clientInfo {
+  name: string;
+  email: string;
+  address: string;
+}
+
+interface invoiceInfo {
+  number: string;
+  date: string;
+  dueDate: string;
+}
+
+interface features {
+  id: number;
+  description: string;
+  quantity: number;
+  price: number;
+};
+
 type FormValues = {
-  clientInfo: {
-    name: string;
-    email: string;
-    address: string;
-  };
-  invoiceInfo: {
-    number: string;
-    date: string;
-    dueDate: string;
-  };
-  features: {
-    id: string;
-    description: string;
-    quantity: number;
-    price: number;
-  }[];
+  clientInfo: clientInfo;
+  invoiceInfo: invoiceInfo;
+  features: features[];
   taxEnabled: boolean;
   taxRate: number;
   discount: number;
@@ -34,45 +39,54 @@ interface InvoiceFormProps {
 const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const {
-    control,
-    handleSubmit,
-    register,
-    watch,
-    formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: {
-      clientInfo: {
-        name: '',
-        email: '',
-        address: '',
-      },
-      invoiceInfo: {
-        number: '',
-        date: new Date().toISOString().split('T')[0],
-        dueDate: '',
-      },
-      features: [
-        { id: '1', description: 'Développement frontend', quantity: 1, price: 500 },
-      ],
-      taxEnabled: false,
-      taxRate: 20,
-      discount: 0,
-    },
+
+  const [clientInfo, setClientInfo] = useState<clientInfo>({
+    name: '',
+    email: '',
+    address: '',
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'features',
+  const [invoiceInfo, setInvoiceInfo] = useState<invoiceInfo>({
+    number: '',
+    date: new Date().toISOString().split('T')[0],
+    dueDate: '',
   });
 
-  const taxEnabled = watch('taxEnabled');
-  const taxRate = watch('taxRate');
-  const discount = watch('discount');
-  const features = watch('features');
+  const [features, setFeatures] = useState<features[]>([]);
+
+  const [taxEnabled, setTaxEnabled] = useState(false);
+  const [taxRate, setTaxRate] = useState(20);
+  const [discount, setDiscount] = useState(0);
+
+  const addFeature = () => {
+    setFeatures([
+      ...features,
+      {
+        id: Date.now(),
+        description: '',
+        quantity: 1,
+        price: 0,
+      },
+    ]);
+  };
+
+  const removeFeature = (id: number) => {
+    setFeatures(features.filter((feature) => feature.id !== id));
+  };
+
+  const updateFeature = (id: number, field: string, value: string | number) => {
+    setFeatures(
+      features.map((feature) =>
+        feature.id === id ? { ...feature, [field]: value } : feature
+      )
+    );
+  };
 
   const calculateSubtotal = () => {
-    return features.reduce((sum, feature) => sum + feature.quantity * feature.price, 0);
+    return features.reduce(
+      (sum, feature) => sum + feature.quantity * feature.price,
+      0
+    );
   };
 
   const calculateTax = () => {
@@ -86,7 +100,6 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     const discountAmount = subtotal * (discount / 100);
     return subtotal + tax - discountAmount;
   };
-
   const generatePdf = async (data: FormValues) => {
     // Création d'un nouveau document PDF
     const pdfDoc = await PDFDocument.create();
@@ -278,30 +291,47 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     return URL.createObjectURL(blob);
     //saveAs(blob, `facture-${data.invoiceInfo.number}.pdf`);
   };
-
-  const onSubmit = async (data: FormValues) => {
-    console.log('Données du formulaire:', data)
-    try {
-        const pdfUrl = await generatePdf(data);
-        console.log('PDF URL:', pdfUrl)
-        if (pdfUrl) {
-            window.open(pdfUrl, '_blank')
-            //setPdfUrl(pdfUrl)
-        }
-    } catch (error) {
-      console.error('Erreur lors de la génération du PDF:', error);
-      alert('Une erreur est survenue lors de la génération du PDF');
+  const handleSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    // Ici vous pourriez envoyer les données à une API ou générer un PDF
+    const data = {clientInfo,invoiceInfo,features,taxEnabled,taxRate,discount} as FormValues
+    const pdfUrl = await generatePdf(data)
+    if (pdfUrl) {
+      window.open(pdfUrl, '_blank')
+        //setPdfUrl(pdfUrl)
     }
+    console.log({
+      clientInfo,
+      invoiceInfo,
+      features,
+      taxEnabled,
+      taxRate,
+      discount,
+      total: calculateTotal(),
+    });
   };
+  
+  const canSendBill = () => {
+    return (
+      clientInfo.name &&
+      clientInfo.email &&
+      clientInfo.address &&
+      invoiceInfo.number &&
+      invoiceInfo.date &&
+      invoiceInfo.dueDate &&
+      features.length > 0
+    );
+  };
+
   if(!Cookies.get('logged')){
     router.push('/'+locale+'/login')
   }
   if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-[110px] w-[85%]">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Facturation Freelance</h1>
+      <h1 className="text-2xl font-bold text-primary mb-6">Facturation pour le client ...</h1>
       
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
             <h2 className="text-lg font-semibold mb-4">Informations Client</h2>
@@ -309,40 +339,36 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
               <div>
                 <label className="block text-sm font-medium text-gray-700">Nom</label>
                 <input
-                  {...register('clientInfo.name', { required: 'Ce champ est requis' })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                    errors.clientInfo?.name ? 'border-red-500' : ''
-                  }`}
+                  type="text"
+                  className="mt-1 block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                  value={clientInfo.name}
+                  onChange={(e) =>
+                    setClientInfo({ ...clientInfo, name: e.target.value })
+                  }
+                  required
                 />
-                {errors.clientInfo?.name && (
-                  <p className="mt-1 text-sm text-red-600">{errors.clientInfo.name.message}</p>
-                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Email</label>
                 <input
                   type="email"
-                  {...register('clientInfo.email', {
-                    required: 'Ce champ est requis',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Email invalide',
-                    },
-                  })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                    errors.clientInfo?.email ? 'border-red-500' : ''
-                  }`}
+                  className="mt-1 block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                  value={clientInfo.email}
+                  onChange={(e) =>
+                    setClientInfo({ ...clientInfo, email: e.target.value })
+                  }
+                  required
                 />
-                {errors.clientInfo?.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.clientInfo.email.message}</p>
-                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Adresse</label>
                 <textarea
-                  {...register('clientInfo.address')}
+                  className="mt-1 block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
                   rows={3}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  value={clientInfo.address}
+                  onChange={(e) =>
+                    setClientInfo({ ...clientInfo, address: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -354,33 +380,37 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
               <div>
                 <label className="block text-sm font-medium text-gray-700">Numéro</label>
                 <input
-                  {...register('invoiceInfo.number', { required: 'Ce champ est requis' })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                    errors.invoiceInfo?.number ? 'border-red-500' : ''
-                  }`}
+                  type="text"
+                  className="mt-1 block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                  value={invoiceInfo.number}
+                  onChange={(e) =>
+                    setInvoiceInfo({ ...invoiceInfo, number: e.target.value })
+                  }
+                  required
                 />
-                {errors.invoiceInfo?.number && (
-                  <p className="mt-1 text-sm text-red-600">{errors.invoiceInfo.number.message}</p>
-                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Date</label>
                 <input
                   type="date"
-                  {...register('invoiceInfo.date', { required: 'Ce champ est requis' })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                    errors.invoiceInfo?.date ? 'border-red-500' : ''
-                  }`}
+                  className="mt-1 block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                  value={invoiceInfo.date}
+                  onChange={(e) =>
+                    setInvoiceInfo({ ...invoiceInfo, date: e.target.value })
+                  }
+                  required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Date d'échéance</label>
                 <input
                   type="date"
-                  {...register('invoiceInfo.dueDate', { required: 'Ce champ est requis' })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                    errors.invoiceInfo?.dueDate ? 'border-red-500' : ''
-                  }`}
+                  className="mt-1 block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                  value={invoiceInfo.dueDate}
+                  onChange={(e) =>
+                    setInvoiceInfo({ ...invoiceInfo, dueDate: e.target.value })
+                  }
+                  required
                 />
               </div>
             </div>
@@ -411,72 +441,51 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {fields.map((field, index) => (
-                  <tr key={field.id}>
+                {features.map((feature) => (
+                  <tr key={feature.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input
-                        {...register(`features.${index}.description`, {
-                          required: 'Description requise',
-                        })}
-                        className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                          errors.features?.[index]?.description ? 'border-red-500' : ''
-                        }`}
+                        type="text"
+                        className="block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                        value={feature.description}
+                        onChange={(e) =>
+                          updateFeature(feature.id, 'description', e.target.value)
+                        }
+                        required
                       />
-                      {errors.features?.[index]?.description && (
-                        <p className="mt-1 text-xs text-red-600">
-                          {errors.features[index]?.description?.message}
-                        </p>
-                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input
                         type="number"
                         min="1"
-                        {...register(`features.${index}.quantity`, {
-                          required: 'Quantité requise',
-                          valueAsNumber: true,
-                          min: { value: 1, message: 'Minimum 1' },
-                        })}
-                        className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                          errors.features?.[index]?.quantity ? 'border-red-500' : ''
-                        }`}
+                        className="block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                        value={feature.quantity}
+                        onChange={(e) =>
+                          updateFeature(feature.id, 'quantity', parseInt(e.target.value) || 0)
+                        }
+                        required
                       />
-                      {errors.features?.[index]?.quantity && (
-                        <p className="mt-1 text-xs text-red-600">
-                          {errors.features[index]?.quantity?.message}
-                        </p>
-                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input
                         type="number"
                         min="0"
                         step="0.01"
-                        {...register(`features.${index}.price`, {
-                          required: 'Prix requis',
-                          valueAsNumber: true,
-                          min: { value: 0, message: 'Minimum 0' },
-                        })}
-                        className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                          errors.features?.[index]?.price ? 'border-red-500' : ''
-                        }`}
+                        className="block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                        value={feature.price}
+                        onChange={(e) =>
+                          updateFeature(feature.id, 'price', parseFloat(e.target.value) || 0)
+                        }
+                        required
                       />
-                      {errors.features?.[index]?.price && (
-                        <p className="mt-1 text-xs text-red-600">
-                          {errors.features[index]?.price?.message}
-                        </p>
-                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {(
-                        (features[index]?.quantity || 0) * (features[index]?.price || 0)
-                      ).toFixed(2)}{' '}
-                      €
+                      {(feature.quantity * feature.price).toFixed(2)} €
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         type="button"
-                        onClick={() => remove(index)}
+                        onClick={() => removeFeature(feature.id)}
                         className="text-red-600 hover:text-red-900"
                       >
                         Supprimer
@@ -489,7 +498,7 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
           </div>
           <button
             type="button"
-            onClick={() => append({ id: Date.now().toString(), description: '', quantity: 1, price: 0 })}
+            onClick={addFeature}
             className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Ajouter une fonctionnalité
@@ -499,17 +508,11 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div>
             <label className="flex items-center">
-              <Controller
-                name="taxEnabled"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    type="checkbox"
-                    className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    checked={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
+              <input
+                type="checkbox"
+                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                checked={taxEnabled}
+                onChange={(e) => setTaxEnabled(e.target.checked)}
               />
               <span className="ml-2 text-sm text-gray-700">Ajouter TVA</span>
             </label>
@@ -520,17 +523,10 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
                   type="number"
                   min="0"
                   step="0.1"
-                  {...register('taxRate', {
-                    valueAsNumber: true,
-                    min: { value: 0, message: 'Minimum 0%' },
-                  })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                    errors.taxRate ? 'border-red-500' : ''
-                  }`}
+                  className="mt-1 px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+                  value={taxRate}
+                  onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
                 />
-                {errors.taxRate && (
-                  <p className="mt-1 text-sm text-red-600">{errors.taxRate.message}</p>
-                )}
               </div>
             )}
           </div>
@@ -541,18 +537,10 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
               type="number"
               min="0"
               max="100"
-              {...register('discount', {
-                valueAsNumber: true,
-                min: { value: 0, message: 'Minimum 0%' },
-                max: { value: 100, message: 'Maximum 100%' },
-              })}
-              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                errors.discount ? 'border-red-500' : ''
-              }`}
+              className="mt-1 block px-[.95rem] py-[.525rem] text-[.775rem] w-full rounded-[.4rem] bg-gray-100 focus:outline-gray-200"
+              value={discount}
+              onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
             />
-            {errors.discount && (
-              <p className="mt-1 text-sm text-red-600">{errors.discount.message}</p>
-            )}
           </div>
         </div>
 
@@ -579,10 +567,13 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
           </div>
         </div>
 
-        <div className="flex justify-end">
-          <button
+        <div className="flex items-center justify-end gap-4">
+          <a href={'/'+locale+'/clients-list'} className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Liste client</a>
+          <button disabled={!canSendBill()}
             type="submit"
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+              loading || !canSendBill() ? 'cursor-not-allowed opacity-50' : 'cursor-pointer opacity-1'
+            }`}
           >
             Générer la facture
           </button>
