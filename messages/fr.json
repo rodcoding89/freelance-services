@@ -873,6 +873,32 @@
                 "do":"Fait à Poissy, le "
             }
         }
+    },
+    "invoice":{
+       "Adress":"Adresse:",
+       "postalCode":"Code Postal:",
+       "city":"Ville:",
+       "country":"Pays:",
+       "wsite":"Référence Internet:",
+       "billNr":"FACTURE N°:",
+       "billDate":"Date:",
+       "customerNr":"Numéro de client:",
+       "dueDate":"Date d'échéance:",
+       "billTo":"Facturé à :",
+       "features":{
+        "description":"Description",
+        "quantity":"Quantité",
+        "singlePriceWithoutTax":"Prix unitaire HT",
+        "totalPriceWithoutTax":"Prix total HT"
+       },
+        "subtotal":"Sous-total HT:",
+        "tax":"TVA {tax}%:",
+        "discount":"Remise {discount}%:",
+        "totalWithTax":"Total TTC:",
+        "end1":"Bonne réception.",
+        "end2":"Cordialement,",
+        "footer":"Ce montant à déjà été déduit de votre compte, vous n'avez donc rien a faire. Cet facture est a titre de preuve de paiement reçu consernant les services realisés.",
+        "page":"Page {page} sur {total}"
     }
 }
     

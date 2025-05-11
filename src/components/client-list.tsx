@@ -10,11 +10,12 @@ import Link from 'next/link';
 import Icon from './Icon';
 
 interface Client {
-  id: string;
-  name: string;
-  contractType: "service"|"maintenance"|"service_and_maintenance";
-  contractStatus: 'signed' | 'unsigned' | 'pending';
-  lastContact: Date;
+    id: string;
+    name:string;
+    contractType: "service"|"maintenance"|"service_and_maintenance";
+    contractStatus: 'signed' | 'unsigned' | 'pending';
+    dateCreation: Date;
+    clientNumber:number;
 }
 interface CLientsListProps {
     locale:string
@@ -33,7 +34,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
             const clientsData = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
-            lastContact: doc.data().lastContact?.toDate()
+            dateCreation: doc.data().dateCreation?.toDate()
             })) as Client[];
             setClients(clientsData);
         } catch (error) {
@@ -130,7 +131,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                                 </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {client.lastContact?.toLocaleDateString() || 'N/A'}
+                                {client.dateCreation?.toLocaleDateString() || 'N/A'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a title="Modifier" href={`/${locale}/create-contract/${client.id}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-edit" size="1rem"/></a>

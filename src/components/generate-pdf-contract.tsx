@@ -76,10 +76,11 @@ type FunctionParams = {
 
 interface Client {
     id: string;
-    name: string;
+    name:string;
     contractType: "service"|"maintenance"|"service_and_maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';
-    lastContact: Date;
+    dateCreation: Date;
+    clientNumber:number;
 }
 
 interface Contract {
