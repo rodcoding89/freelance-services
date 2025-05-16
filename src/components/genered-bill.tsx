@@ -1,8 +1,8 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import { cmyk, PDFDocument, PDFFont, rgb, StandardFonts } from 'pdf-lib';
+import { CMYK, cmyk, PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, StandardFonts } from 'pdf-lib';
 import { useTranslationContext } from '@/hooks/app-hook';
 
 interface clientInfo {
@@ -42,6 +42,59 @@ type FormValues = {
 
 interface InvoiceFormProps {
   locale:string
+}
+type drawImage = [
+  x:number,
+  y:number,
+  width:number,
+  height:number,
+  page:PDFPage,
+  logoImage:any,
+  afterMargin:number,
+  ref:{current:number}
+]
+type drawRectangle = [
+  x:number,
+  y:number,
+  width:number,
+  height:number,
+  color:RGB|CMYK,
+  page:PDFPage,
+  afterMargin:number,
+  ref:{current:number}
+]
+
+type drawLine = [
+  start:{x:number,y:number},
+  end:{x:number,y:number},
+  thickness:number,
+  color:RGB|CMYK,
+  page:PDFPage,
+  afterMargin:number,
+  ref:{current:number}
+]
+
+type drawText = [
+  x:number,
+  y:number,
+  size:number,
+  font:PDFFont,
+  text:string,
+  page:PDFPage,
+  color:RGB|CMYK,
+  afterMargin:number,
+  ref:{current:number},
+  maxWidth?:number,
+  lineHeight?:number,
+  width?:number,
+  margin?:number,
+]
+
+type pdfContent = {
+  [key: number]: {
+    isConditional:boolean,
+    params: drawText[] | drawImage[] | drawRectangle[] | drawLine[];
+  };
 }
 
 const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
@@ -136,6 +189,91 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     return width + kerningAdjustment + spacingAdjustment;
   }
  
+  const isDataAddText = (
+    item: drawText | drawLine | drawRectangle | drawImage): item is drawText => {
+        return Array.isArray(item) && item.length === 9 || item.length === 11;
+  };
+
+  const isDataAddImage = (
+    item: drawText | drawLine | drawRectangle | drawImage): item is drawImage => {
+    return Array.isArray(item) && item.length === 8;
+  };
+
+  const isDataAddRectangle = (
+    item: drawText | drawLine | drawRectangle | drawImage): item is drawRectangle => {
+    return Array.isArray(item) && item.length === 8;
+  };
+
+  const isDataAddLine = (
+    item: drawText | drawLine | drawRectangle | drawImage): item is drawLine => {
+    return Array.isArray(item) && item.length === 7;
+  };
+
+  const addNewText = ([x,y,size,font,text,page,color,afterMargin,ref,maxWidth,lineHeight,width,margin]:drawText)=>{
+    const currentY = ref.current;
+    if (maxWidth && width && margin) {
+      page.drawText(text, {
+        x: x,
+        y: currentY - y,
+        size: size,
+        font: font,
+        color: color,
+        maxWidth: width - margin * 2,
+        lineHeight: lineHeight ?? 12
+      });
+    } else {
+      page.drawText(text, {
+        x: x,
+        y: currentY - y,
+        size: size,
+        font: font,
+        color: color
+      });
+    }
+    ref.current = currentY - afterMargin
+    console.log("currentY",currentY,"aftermargin",afterMargin,"diff",ref.current,text)
+    return ref.current
+  }
+
+  const addLine = ([start,end,thickness,color,page,afterMargin,ref]:drawLine)=>{
+    page.drawLine({
+      start: start,
+      end: end,
+      thickness: thickness,
+      color: color,
+    });
+    ref.current = end.y - afterMargin
+    return ref.current
+  }
+
+  const addRectangle = ([x,y,width,height,color,page,afterMargin,ref]:drawRectangle)=>{
+    const currentY = ref.current;
+    page.drawRectangle({
+      x: x,
+      y: currentY - y,
+      width: width,
+      height: height,
+      color: color,
+    });
+    ref.current = currentY - afterMargin
+    console.log("currentY rectancle adding",currentY,"ref.current",ref.current)
+    return ref.current
+  }
+
+  const addImage = ([x,y,width,height,page,logoImage,afterMargin,ref]:drawImage)=>{
+    const currentY = ref.current;
+    page.drawImage(logoImage, {
+      x: x,
+      y: currentY - y,
+      width: width,
+      height: height,
+    });
+    ref.current = currentY - afterMargin;
+    console.log("currentY image adding",currentY,"ref.current",ref.current)
+    return ref.current
+  }
+
+
   const generatePdf = async (data : FormValues,logoUrl:string ) => {
     if (!process.env.NEXT_PUBLIC_COMPANY_NAME || !process.env.NEXT_PUBLIC_COMPANY_STREET || !process.env.NEXT_PUBLIC_COMPANY_POSTAL_CODE || !process.env.NEXT_PUBLIC_COMPANY_CITY || !process.env.NEXT_PUBLIC_COMPANY_COUNTRY || !process.env.NEXT_PUBLIC_WEB_LINK) return 
     // Import necessary functions from pdf-lib
@@ -157,116 +295,344 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
   
     const { width, height } = page.getSize();
     const margin = 40; // Increased margin slightly
-    let yPosition = height - margin;
-  
+    const yRef = height - margin;
+    const yPosition = { current: yRef };
+    console.log("yPosition",yPosition)
     // === En-tête ===
     const logoImageBytes = await fetch(logoUrl).then(res => res.arrayBuffer());
     const logoImage = await pdfDoc.embedPng(logoImageBytes);
-    page.drawImage(logoImage, {
+    /*page.drawImage(logoImage, {
       x: margin,
-      y: yPosition - 100, // Ajuster la position et la taille
+      y: yPosition.current - 100, // Ajuster la position et la taille
       width: 100,
       height: 100,
-    });
+    });*/
     
     let labelX = width - margin - 257.5;
     // Textes du logo si pas d'image
-    page.drawText(process.env.NEXT_PUBLIC_COMPANY_NAME, {
+    let invoiceInfoX = width - margin - 257.5;
+    const yPositionLeft = yPosition;
+    const yPositionRigth = yPosition;
+    const yClientInfoBox = (height - margin - 75 - 30) - 120 - margin;
+    const clientInfoBoxY = {current : yClientInfoBox}
+    // === Lignes de produits/services (Tableau) ===
+    const tableTopY = yPosition.current;
+    const tableWidth = width - margin * 2;
+    const colX = tableWidth / 4
+    const col1X = margin; //Description
+    const col2X = col1X + colX; // Quantité
+    const col3X = col2X + colX; // Prix unitaire
+    const col4X = col3X + colX; // Prix Total
+    const totalsXKey = width - margin - 150;
+    const totalsXValue = width - margin - 70;
+    const yColR = 50
+    const yColT = 50
+    const pdfContent:pdfContent = {
+      1:{
+        isConditional:false,
+        params:[[margin,100,100,100,page,null,0,yPosition]]
+      },
+      2:{
+        isConditional:false,
+        params:[[labelX,45,20,helveticaBoldFont,process.env.NEXT_PUBLIC_COMPANY_NAME,page,greyColor,120,yPosition],[margin,0,11,helveticaBoldFont,t.invoice.Adress,page,blackColor,0,yPosition],[margin + calculateAccurateTextWidth(t.invoice.Adress, helveticaBoldFont, 11),0,10,helveticaFont,process.env.NEXT_PUBLIC_COMPANY_STREET,page,blackColor,18,yPosition],[margin,0,11,helveticaBoldFont,t.invoice.postalCode,page,blackColor,0,yPosition],[margin + calculateAccurateTextWidth(t.invoice.postalCode, helveticaBoldFont, 11),0,10,helveticaFont,process.env.NEXT_PUBLIC_COMPANY_POSTAL_CODE,page,blackColor,18,yPosition],[margin,0,11,helveticaBoldFont,t.invoice.city,page,blackColor,0,yPosition],[margin + calculateAccurateTextWidth(t.invoice.city, helveticaBoldFont, 11),0,10,helveticaFont,process.env.NEXT_PUBLIC_COMPANY_CITY,page,blackColor,18,yPosition],[margin,0,11,helveticaBoldFont,t.invoice.country,page,blackColor,0,yPosition],[margin + calculateAccurateTextWidth(t.invoice.country, helveticaBoldFont, 11),0,10,helveticaFont,process.env.NEXT_PUBLIC_COMPANY_COUNTRY,page,blackColor,18,yPosition],[margin,0,11,helveticaBoldFont,t.invoice.wsite,page,blackColor,0,yPosition],[margin + calculateAccurateTextWidth(t.invoice.wsite, helveticaBoldFont, 11),0,10,helveticaFont,process.env.NEXT_PUBLIC_WEB_LINK.replace("{locale}",locale),page,primaryColor,18,yPosition]]
+      },
+      3:{
+        isConditional:false,
+        params:[[invoiceInfoX,0,width / 2 - margin,100,primaryColor,page,0,yPositionLeft]]
+      },
+      4:{
+        isConditional:false,
+        params:[[invoiceInfoX + 20,-15,18,helveticaBoldFont,`${t.invoice.billNr} ${data.clientInfo.biilCount ? data.clientInfo.biilCount + 1 : 1}`,page,whiteColor,50,yPositionLeft],[invoiceInfoX,20,11,helveticaBoldFont,t.invoice.billDate,page,blackColor,0,yPositionLeft],[invoiceInfoX + calculateAccurateTextWidth(t.invoice.billDate, helveticaBoldFont, 11),20,10,helveticaFont,` ${data.invoiceInfo.date}`,page,blackColor,18,yPositionLeft],[invoiceInfoX,20,11,helveticaBoldFont,t.invoice.customerNr,page,blackColor,0,yPositionLeft],[invoiceInfoX + calculateAccurateTextWidth(t.invoice.customerNr, helveticaBoldFont, 11),20,10,helveticaFont,` ${data.clientInfo.clientNumber}`,page,blackColor,18,yPositionLeft]]
+      },
+      5:{
+        isConditional:true,
+        params:[[invoiceInfoX,20,11,helveticaBoldFont,t.invoice.dueDate,page,blackColor,0,yPositionLeft],[invoiceInfoX + calculateAccurateTextWidth(t.invoice.dueDate, helveticaBoldFont, 11),20,10,helveticaFont,` ${data.invoiceInfo.dueDate}`,page,blackColor,18,yPositionLeft]]
+      },
+      6:{
+        isConditional:false,
+        params:[[margin,0,14,helveticaBoldFont,t.invoice.billTo,page,blackColor,20,clientInfoBoxY],[margin,0,10,helveticaFont,`${data.clientInfo.name}`,page,blackColor,18,clientInfoBoxY],[margin,0,10,helveticaFont,data.clientInfo.address,page,blackColor,18,clientInfoBoxY],[margin,0,10,helveticaFont,data.clientInfo.email,page,blackColor,60,clientInfoBoxY]]
+      },
+      7:{
+        isConditional:true,
+        params:[[margin,0,10,helveticaFont,data.invoiceItemDescription ?? '',page,blackColor,30,yPosition,width - margin * 2,12,width,margin]]
+      },
+      8:{
+        isConditional:false,
+        params:[[margin,15,width - margin * 2,20,primaryColor,page,60,yPosition]]
+      },
+      9:{
+        isConditional:false,
+        params:[[col1X + 5,-50,10,helveticaBoldFont,t.invoice.features.description,page,whiteColor,0,yPosition],[col2X + 5,-50,10,helveticaBoldFont,t.invoice.features.quantity,page,whiteColor,0,yPosition],[col3X + 5,-50,10,helveticaBoldFont,t.invoice.features.singlePriceWithoutTax,page,whiteColor,0,yPosition],[col4X + 5,-50,10,helveticaBoldFont,t.invoice.features.totalPriceWithoutTax,page,whiteColor,30,yPosition]] 
+      },
+      10:{
+        isConditional:true,
+        params:[[margin,-yColR,width - margin * 2,20,cmyk(0,0,0,0.03),page,0,yPosition]]
+      },
+      11:{
+        isConditional:true,
+        params:[[margin,-yColR,width - margin * 2,20,whiteColor,page,0,yPosition]]
+      },
+      12:{
+        isConditional:false,
+        params:[[col1X + 5,-(yColT + 5),9,helveticaFont,"{description}",page,blackColor,0,yPosition],[col1X + colX + 5,-(yColT + 5),9,helveticaFont,"{quantity}",page,blackColor,0,yPosition],[col2X + colX + 5,-(yColT + 5),9,helveticaFont,"{price}",page,blackColor,0,yPosition],[col3X + colX + 5,-(yColT + 5),9,helveticaFont,"{lineTotal}",page,blackColor,38,yPosition]]
+      },
+      13:{
+        isConditional:false,
+        params:[[{ x: margin + (width - margin * 2) * 0.6, y: yPosition.current },{ x: width - margin, y: yPosition.current },0.5,greyColor,page,15,yPosition]]
+      },
+      14:{
+        isConditional:true,
+        params:[[totalsXKey,0,10,helveticaFont,t.invoice.subtotal,page,blackColor,0,yPosition],[totalsXValue,0,10,helveticaFont,'{subtotal}',page,blackColor,data.taxEnabled !== false && data.taxRate > 0 ? 20:25,yPosition]]
+      },
+      15:{
+        isConditional:true,
+        params:[[totalsXKey,0,10,helveticaFont,t.invoice.tax.replace("{tax}", data.taxRate.toString()),page,blackColor,0,yPosition],[totalsXValue,0,10,helveticaFont,'{tax}',page,blackColor,25,yPosition]]
+      },
+      16:{
+        isConditional:true,
+        params:[[totalsXKey,0,10,helveticaFont,t.invoice.discount.replace("{discount}", data.taxRate.toString()),page,blackColor,0,yPosition],[totalsXValue,0,10,helveticaFont,'{discount}',page,blackColor,18,yPosition]]
+      },
+      17:{
+        isConditional:false,
+        params:[[totalsXKey - 10,5,(width - margin) - (totalsXKey -10) ,22,primaryColor,page,0,yPosition]]
+      },
+      18:{
+        isConditional:false,
+        params:[[totalsXKey,0,11,helveticaBoldFont,t.invoice.totalWithTax,page,whiteColor,0,yPosition],[totalsXValue,0,11,helveticaBoldFont,'{total}',page,whiteColor,30,yPosition],[margin,0,13,helveticaFont,t.invoice.end1,page,blackColor,20,yPosition],[margin,0,13,helveticaFont,t.invoice.end2,page,blackColor,25,yPosition],[margin,0,8,helveticaFont,t.invoice.footer,page,blackColor,0,yPosition,width - margin * 2,12,width,margin]]
+      }
+    };
+
+    const functionListAndRang = [
+      {name:"addImg",count:1,id:1},
+      {name:"addText",count:11,id:2},
+      {name:"addRectangle",count:1,id:3},
+      {name:"addText",count:5,id:4,changeRef:true},
+      {name:"addText",count:2,id:5,isConditional:true,changeRef:true},
+      {name:"addText",count:4,id:6,changeRef:true},
+      {name:"addText",count:1,id:7,isConditional:true},
+      {name:"addRectangle",count:1,id:8},
+      {name:"addText",count:4,id:9},
+      {name:"addRectangle",call:1,id:10,isConditional:true},
+      {name:"addRectangle",call:1,id:11,isConditional:true},
+      {name:"addText",call:4,id:12,isLoop:true},
+      {name:"addLine",count:1,id:13},
+      {name:"addText",call:2,id:14},
+      {name:"addText",call:2,id:15,isConditional:true},
+      /*{name:"addText",call:2,id:16,isConditional:true},
+      {name:"addRectangle",count:1,id:17},
+      {name:"addText",call:5,id:18}*/
+    ];
+    
+    functionListAndRang.forEach((item,index)=>{
+      if (item.count) {
+        for (let index = 0; index < item.count; index++) {
+          const params = pdfContent[item.id].params[index];
+          switch (item.name) {
+            case "addText":
+              if (isDataAddText(params)) {
+                if (item.isConditional && ((item.id === 5 && !data.invoiceInfo.dueDate) || (item.id === 7 && !data.invoiceItemDescription) || (item.id === 15 && !data.taxEnabled) || (item.id === 16 && !data.discount))) {
+
+                }else{
+                  if (item.id === 4 || item.id === 5) {
+                    yPositionLeft.current = addNewText(params)
+                  }else if(item.id === 6){
+                    clientInfoBoxY.current = addNewText(params)
+                    yPosition.current = clientInfoBoxY.current
+                  }else{
+                    yPosition.current = addNewText(params)
+                    console.log("after added",yPosition.current)
+                  }
+                }
+              }
+              break;
+            case "addImg":
+              if (isDataAddImage(params)) {
+                params[5] = logoImage
+                yPosition.current = addImage(params)
+              }
+              break;
+            case "addRectangle":
+              if (isDataAddRectangle(params)) {
+                yPosition.current = addRectangle(params)
+              }
+              break;
+            case "addLine":
+              if (isDataAddLine(params)) {
+                yPosition.current = addLine(params)
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      }else if(item.call){
+        let discountAmount = 0;
+        let taxAmount = 0;
+        let subtotal = 0;
+        if (item.id === 12) {
+          data.features.forEach((feature:features, index) => {
+            if (index % 2 !== 0) {
+              const params = pdfContent[10].params[0];
+              if (isDataAddRectangle(params)) {
+                yPosition.current = addRectangle(params)
+              }
+            }else{
+              const params = pdfContent[11].params[0];
+              if (isDataAddRectangle(params)) {
+                yPosition.current = addRectangle(params)
+              }
+            }
+            for (let index = 0; index < item.call; index++) {
+              const params = pdfContent[item.id].params[index];
+              const lineTotal = feature.quantity * feature.price;
+              subtotal += lineTotal;
+              if (index === 0) {
+                params[4] = feature.description 
+              }else if(index === 1){
+                params[4] = feature.quantity.toString();
+              }else if(index === 2){
+                params[4] = feature.price.toFixed(2) + " €";
+              }else{
+                params[4] = lineTotal.toFixed(2) + " €";
+              }
+              console.log("new param",params,"feature",feature)
+              if (isDataAddText(params)) {
+                yPosition.current = addNewText(params)
+              }
+            }
+          })
+        }else{
+          if (item.isConditional) {
+            if (data.discount > 0 && item.id === 16) {
+              discountAmount = (subtotal + taxAmount) * (data.discount / 100);
+              for (let index = 0; index < item.call; index++){
+                const params = pdfContent[item.id].params[index];
+                if (isDataAddText(params)) {
+                  if (index === 1) {
+                    params[4] = `${discountAmount.toFixed(2)} €`;
+                  }
+                  yPosition.current = addNewText(params)
+                }
+              }
+            }
+            if (data.taxEnabled !== false && data.taxRate > 0 && item.id === 15) {
+              taxAmount = subtotal * (data.taxRate / 100);
+              for (let index = 0; index < item.call; index++){
+                const params = pdfContent[item.id].params[index];
+                if (isDataAddText(params)) {
+                  if (index === 1) {
+                    params[4] = `${taxAmount.toFixed(2)} €`;
+                  }
+                  yPosition.current = addNewText(params)
+                }
+              }
+            }
+          }else{
+            for (let index = 0; index < item.call; index++) {
+              const params = pdfContent[item.id].params[index];
+              if (isDataAddText(params)) {
+                if (index === 1) {
+                  const total = subtotal + taxAmount - discountAmount;
+                  params[4] = `${total.toFixed(2)} €`;
+                }
+                yPosition.current = addNewText(params)
+              }
+            }
+          }
+        }
+      }
+    })
+
+    /*page.drawText(process.env.NEXT_PUBLIC_COMPANY_NAME, {
       x: labelX,
-      y: yPosition - 45,
+      y: yPosition.current - 45,
       size: 20,
       font: helveticaBoldFont,
       color: greyColor, // Couleur exemple
     });
-    yPosition -= 120; // Ajuster en fonction de la hauteur du logo
+    yPosition.current -= 120; // Ajuster en fonction de la hauteur du logo
   
   
     // Informations de l'entreprise (colonne de gauche)
     let companyInfoX = margin;
     page.drawText(t.invoice.Adress, {
       x: companyInfoX,
-      y: yPosition,
+      y: yPosition.current,
       size: 11,
       font: helveticaBoldFont,
       color: blackColor,
     });
     page.drawText(" " +process.env.NEXT_PUBLIC_COMPANY_STREET, {
       x: companyInfoX + calculateAccurateTextWidth(t.invoice.Adress, helveticaBoldFont, 11),
-      y: yPosition,
+      y: yPosition.current,
       size: 10,
       font: helveticaFont,
       color: blackColor,
     });
-    yPosition -= 18;
+    yPosition.current -= 18;
     page.drawText(t.invoice.postalCode, {
       x: companyInfoX,
-      y: yPosition,
+      y: yPosition.current,
       size: 11,
       font: helveticaBoldFont,
       color: blackColor,
     });
     page.drawText(" "+process.env.NEXT_PUBLIC_COMPANY_POSTAL_CODE, {
       x: companyInfoX + calculateAccurateTextWidth(t.invoice.postalCode, helveticaBoldFont, 11),
-      y: yPosition,
+      y: yPosition.current,
       size: 10,
       font: helveticaFont,
       color: blackColor,
     });
-    yPosition -= 18;
+    yPosition.current -= 18;
     page.drawText(t.invoice.city, {
       x: companyInfoX,
-      y: yPosition,
+      y: yPosition.current,
       size: 11,
       font: helveticaBoldFont,
       color: blackColor,
     });
     page.drawText(" "+process.env.NEXT_PUBLIC_COMPANY_CITY, {
       x: companyInfoX + calculateAccurateTextWidth(t.invoice.city, helveticaBoldFont, 11),
-      y: yPosition,
+      y: yPosition.current,
       size: 10,
       font: helveticaFont,
       color: blackColor,
     });
-    yPosition -= 18;
+    yPosition.current -= 18;
     page.drawText(t.invoice.country, {
       x: companyInfoX,
-      y: yPosition,
+      y: yPosition.current,
       size: 11,
       font: helveticaBoldFont,
       color: blackColor,
     });
     page.drawText(" " +process.env.NEXT_PUBLIC_COMPANY_COUNTRY, {
       x: companyInfoX + calculateAccurateTextWidth(t.invoice.country, helveticaBoldFont, 11),
-      y: yPosition,
+      y: yPosition.current,
       size: 10,
       font: helveticaFont,
       color: blackColor,
     });
-    yPosition -= 18;
+    yPosition.current -= 18;
     page.drawText(t.invoice.wsite, {
       x: companyInfoX,
-      y: yPosition,
+      y: yPosition.current,
       size: 11,
       font: helveticaBoldFont,
       color: blackColor, // Lien souvent en couleur
     });
     page.drawText(process.env.NEXT_PUBLIC_WEB_LINK.replace("{locale}",locale), {
       x: companyInfoX + calculateAccurateTextWidth(t.invoice.wsite, helveticaBoldFont, 11),
-      y: yPosition,
+      y: yPosition.current,
       size: 10,
       font: helveticaFont,
       color: primaryColor, // Lien souvent en couleur
     });
-  
-    // Informations de la facture (colonne de droite)
-    let invoiceInfoX = width - margin - 257.5; // Adjust for right alignment
-    let yPositionRight = height - margin - 75; // Align with top of company info after logo
-
-    // En-tête du tableau
-    const tableBillHeaderY = yPosition;
+    
     page.drawRectangle({
       x: invoiceInfoX,
-      y: tableBillHeaderY - 15,
+      y: yPositionLeft.current - 15,
       width: width / 2 - margin,
       height: 100,
       color: primaryColor, // Couleur de fond pour l'en-tête
@@ -274,125 +640,108 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
   
     page.drawText(`${t.invoice.billNr} ${data.clientInfo.biilCount ? data.clientInfo.biilCount + 1 : 1}`, { // Traduit de "RECHNUNG"
       x: invoiceInfoX + 20,
-      y: tableBillHeaderY, // Un peu plus haut
+      y: yPositionLeft.current, // Un peu plus haut
       size: 18,
       font: helveticaBoldFont,
       color: whiteColor,
     });
-    yPositionRight -= 30;
+    yPositionLeft.current -= 30;
   
-    yPositionRight = yPositionRight - 140 - margin;
+    yPositionLeft.current = clientInfoBoxY.current - 20;
+
     page.drawText(t.invoice.billDate, {
       x: invoiceInfoX,
-      y: yPositionRight,
+      y: yPositionLeft.current,
       size: 11,
       font: helveticaBoldFont,
     });
     page.drawText(` ${data.invoiceInfo.date}`, {
       x: invoiceInfoX + calculateAccurateTextWidth(t.invoice.billDate, helveticaBoldFont, 11),
-      y: yPositionRight,
+      y: yPositionLeft.current,
       size: 10,
       font: helveticaFont,
     });
-    yPositionRight -= 18;
+    yPositionLeft.current -= 18;
     page.drawText(t.invoice.customerNr, {
       x: invoiceInfoX,
-      y: yPositionRight,
+      y: yPositionLeft.current,
       size: 11,
       font: helveticaBoldFont,
     });
     page.drawText(` ${data.clientInfo.clientNumber}`, {
       x: invoiceInfoX + calculateAccurateTextWidth(t.invoice.customerNr, helveticaBoldFont, 11),
-      y: yPositionRight,
+      y: yPositionLeft.current,
       size: 10,
       font: helveticaFont,
     });
-    yPositionRight -= 18;
+    yPositionLeft.current -= 18;
     if (data.invoiceInfo.dueDate) {
       page.drawText(t.invoice.dueDate, {
         x: invoiceInfoX,
-        y: yPositionRight,
+        y: yPositionLeft.current,
         size: 11,
         font: helveticaBoldFont,
       });
       page.drawText(` ${data.invoiceInfo.dueDate}`, {
         x: invoiceInfoX + calculateAccurateTextWidth(t.invoice.dueDate, helveticaBoldFont, 11),
-        y: yPositionRight,
+        y: yPositionLeft.current,
         size: 10,
         font: helveticaFont,
       });
-      yPositionRight -= 18;
+      yPositionLeft.current -= 18;
     }
   
-  
-    //yPosition = Math.min(yPosition, yPositionRight) -36; // Reset yPosition to below both columns
-  
-    // === Informations client ===
-    let yPositionRight2 = height - margin - 75 - 30;
-    let clientInfoBoxY = yPositionRight2 - 120 - margin
     page.drawText(t.invoice.billTo, { // Plus formel
       x: margin,
-      y: clientInfoBoxY,
+      y: clientInfoBoxY.current,
       size: 14,
       font: helveticaBoldFont,
       color: blackColor,
     });
-    clientInfoBoxY -= 20;
+    clientInfoBoxY.current -= 20;
   
     page.drawText(`${data.clientInfo.name}`, {
       x: margin,
-      y: clientInfoBoxY,
+      y: clientInfoBoxY.current,
       size: 10,
       font: helveticaFont,
     });
-    clientInfoBoxY -= 18;
+    clientInfoBoxY.current -= 18;
   
-    if (data.clientInfo.address) {
-      page.drawText(data.clientInfo.address, {
-          x: margin,
-          y: clientInfoBoxY,
-          size: 10,
-          font: helveticaFont,
-      });
-      clientInfoBoxY -= 18;
-    }
+    page.drawText(data.clientInfo.address, {
+      x: margin,
+      y: clientInfoBoxY.current,
+      size: 10,
+      font: helveticaFont,
+    });
+    clientInfoBoxY.current -= 18;
   
     page.drawText(data.clientInfo.email, {
       x: margin,
-      y: clientInfoBoxY,
+      y: clientInfoBoxY.current,
       size: 10,
       font: helveticaFont,
     });
-    yPosition = clientInfoBoxY - 60;
+    yPosition.current = clientInfoBoxY.current - 60;
   
   
     // Description générale de l'article (si présente dans le PDF)
     if (data.invoiceItemDescription) {
       page.drawText(data.invoiceItemDescription, {
           x: margin,
-          y: yPosition,
+          y: yPosition.current,
           size: 10,
           font: helveticaFont,
           color: blackColor,
           maxWidth: width - margin * 2,
           lineHeight: 12
       });
-      yPosition -= 30;
+      yPosition.current -= 30;
     }
-  
-  
-    // === Lignes de produits/services (Tableau) ===
-    const tableTopY = yPosition;
-    const tableWidth = width - margin * 2;
-    const colX = tableWidth / 4
-    const col1X = margin; //Description
-    const col2X = col1X + colX; // Quantité
-    const col3X = col2X + colX; // Prix unitaire
-    const col4X = col3X + colX; // Prix Total
     
   
     // En-tête du tableau
-    const tableHeaderY = yPosition;
+    const tableHeaderY = yPosition.current;
     page.drawRectangle({
       x: margin,
       y: tableHeaderY - 15,
@@ -405,14 +754,14 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     page.drawText(t.invoice.features.quantity, { x: col2X + 5, y: tableHeaderY - 10, size: 10, font: helveticaBoldFont, color: whiteColor });
     page.drawText(t.invoice.features.singlePriceWithoutTax, { x: col3X + 5, y: tableHeaderY - 10, size: 10, font: helveticaBoldFont, color: whiteColor });
     page.drawText(t.invoice.features.totalPriceWithoutTax, { x: col4X + 5, y: tableHeaderY - 10, size: 10, font: helveticaBoldFont, color: whiteColor });
-    yPosition -= 30; // Espace après l'en-tête
+    yPosition.current -= 30; // Espace après l'en-tête
   
     // Lignes de produits
     let subtotal = 0;
     data.features.forEach((feature:features, index) => {
       const lineTotal = feature.quantity * feature.price;
       subtotal += lineTotal;
-      const itemY = yPosition;
+      const itemY = yPosition.current;
   
       // Alternating row colors (optional)
       if (index % 2 !== 0) {
@@ -457,58 +806,58 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
         size: 9,
         font: helveticaFont,
       });
-      yPosition -= 18; // Hauteur de ligne
+      yPosition.current -= 18; // Hauteur de ligne
     });
     
-    yPosition = yPosition - 20;
+    yPosition.current = yPosition.current - 20;
 
     // Ligne de séparation avant les totaux
-     page.drawLine({
-      start: { x: margin + (width - margin * 2) * 0.6, y: yPosition },
-      end: { x: width - margin, y: yPosition },
+    page.drawLine({
+      start: { x: margin + (width - margin * 2) * 0.6, y: yPosition.current },
+      end: { x: width - margin, y: yPosition.current },
       thickness: 0.5,
       color: greyColor,
     });
-    yPosition -= 5;
+    yPosition.current -= 5;
   
   
     // === Totaux ===
-    yPosition -= 10; // Espace avant les totaux
-    const totalsXKey = width - margin - 150;
-    const totalsXValue = width - margin - 70;
+    yPosition.current -= 10; // Espace avant les totaux
+    //const totalsXKey = width - margin - 150;
+    //const totalsXValue = width - margin - 70;
   
     page.drawText(t.invoice.subtotal, {
       x: totalsXKey,
-      y: yPosition,
+      y: yPosition.current,
       size: 10,
       font: helveticaFont,
     });
     page.drawText(`${subtotal.toFixed(2)} €`, {
       x: totalsXValue,
-      y: yPosition,
+      y: yPosition.current,
       size: 10,
       font: helveticaFont,
     });
   
     let taxAmount = 0;
     if (data.taxEnabled !== false && data.taxRate > 0) { // default to tax enabled if not specified
-      yPosition -= 20;
+      yPosition.current -= 20;
       taxAmount = subtotal * (data.taxRate / 100);
       page.drawText(t.invoice.tax.replace("{tax}", data.taxRate.toString()), {
         x: totalsXKey,
-        y: yPosition,
+        y: yPosition.current,
         size: 10,
         font: helveticaFont,
       });
       page.drawText(`${taxAmount.toFixed(2)} €`, {
         x: totalsXValue,
-        y: yPosition,
+        y: yPosition.current,
         size: 10,
         font: helveticaFont,
       });
-      yPosition -= 25;
+      yPosition.current -= 25;
     }else{
-      yPosition -= 25;
+      yPosition.current -= 25;
     }
   
     let discountAmount = 0;
@@ -516,64 +865,64 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
       discountAmount = (subtotal + taxAmount) * (data.discount / 100); // Discount on total with tax
       page.drawText(t.invoice.discount.replace("{discount}", data.discount.toString()), {
         x: totalsXKey,
-        y: yPosition,
+        y: yPosition.current,
         size: 10,
         font: helveticaFont,
       });
       page.drawText(`-${discountAmount.toFixed(2)} €`, {
         x: totalsXValue,
-        y: yPosition,
+        y: yPosition.current,
         size: 10,
         font: helveticaFont,
       });
-      yPosition -= 18;
+      yPosition.current -= 18;
     }
   
     const total = subtotal + taxAmount - discountAmount;
     page.drawRectangle({
       x: totalsXKey - 10,
-      y: yPosition -5,
+      y: yPosition.current -5,
       width: (width - margin) - (totalsXKey -10) ,
       height: 22,
       color: primaryColor,
     });
     page.drawText(t.invoice.totalWithTax, {
       x: totalsXKey,
-      y: yPosition,
+      y: yPosition.current,
       size: 11,
       font: helveticaBoldFont,
       color: whiteColor
     });
     page.drawText(`${total.toFixed(2)} €`, {
       x: totalsXValue,
-      y: yPosition,
+      y: yPosition.current,
       size: 11,
       font: helveticaBoldFont,
       color: whiteColor
     });
-    yPosition -= 30;
+    yPosition.current -= 30;
   
     page.drawText(t.invoice.end1, { // Traduit de "Guter Empfang"
       x: margin,
-      y: yPosition,
+      y: yPosition.current,
       size: 13,
       font: helveticaFont,
     });
-    yPosition -= 20;
+    yPosition.current -= 20;
     page.drawText(t.invoice.end2, { // Traduit de "Mit freundlichen Grüßen"
       x: margin,
-      y: yPosition,
+      y: yPosition.current,
       size: 13,
       font: helveticaFont,
     });
-    yPosition -= 25;
+    yPosition.current -= 25;*/
     
-    if (yPosition < margin + 30) { // Add new page if not enough space
+    if (yPosition.current < margin + 30) { // Add new page if not enough space
       page = pdfDoc.addPage([595, 842]);
-      yPosition = height - margin;
+      yPosition.current = height - margin;
     }
 
-    const footY = margin + 30;
+    /*const footY = margin + 30;
     
 
     page.drawText(t.invoice.footer, { // Traduit de "Mit freundlichen Grüßen"
@@ -584,7 +933,7 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
       color: rgb(0.3, 0.3, 0.3),
       maxWidth: width - margin * 2,
       lineHeight: 12
-    });
+    });*/
   
     // === Pied de page (numéro de page, etc.) ===
     const pageCount = pdfDoc.getPageCount();
