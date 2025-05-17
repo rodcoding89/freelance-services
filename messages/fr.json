@@ -881,10 +881,12 @@
        "country":"Pays:",
        "wsite":"Référence Internet:",
        "billNr":"FACTURE N°:",
+       "identificationNumber":"Numéro d’identification (EIN)",
        "billDate":"Date:",
        "customerNr":"Numéro de client:",
        "dueDate":"Date d'échéance:",
        "billTo":"Facturé à :",
+       "prestation":"Prestations",
        "features":{
         "description":"Description",
         "quantity":"Quantité",
@@ -899,6 +901,7 @@
         "end2":"Cordialement,",
         "footer":"Ce montant à déjà été déduit de votre compte, vous n'avez donc rien a faire. Cet facture est a titre de preuve de paiement reçu consernant les services realisés.",
         "page":"Page {page} sur {total}"
-    }
+    },
+    "enterpriceLocation":"Siège social"
 }
     

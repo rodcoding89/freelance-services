@@ -10,19 +10,33 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import Icon from "./Icon";
 
+interface Services {
+  serviceId:string;
+  clientId:string;
+  name:string;
+  serviceType: "service"|"maintenance"|"service_and_maintenance";
+  contractStatus: 'signed' | 'unsigned' | 'pending';
+  contract?:Contract;
+}
+
 interface Client {
     id: string;
     name:string;
-    contractType: "service"|"maintenance"|"service_and_maintenance";
-    contractStatus: 'signed' | 'unsigned' | 'pending';
+    email?:string;
     dateCreation: Date;
     clientNumber:number;
+    invoiceCount?:number;
     contract?:Contract
 }
 
 interface Contract {
     name:string;
-    clientAddress:string;
+    adresse:{
+        street:string;
+        postalCode:string;
+        city:string;
+        country:string;
+    }
     clientBillingAddress?:string;
     clientEmail:string;
     clientPhone:string;
@@ -66,16 +80,18 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
     const [fonction, setFonction] = useState<string>('')
     const router = useRouter();
-    
+    const [selectedCountry,setSelectedCountry] = useState<string>('test')
     const [client, setClient] = useState<Client|null>(null)
+    const [service, setService] = useState<Services|null>(null)
     const [selectedContractType, setSelectedContractType] = useState<"service"|"maintenance"|"service_and_maintenance"|null>(null);
     const [selectedContractStatus, setSelectedContractStatus] = useState<'signed' | 'unsigned' | 'pending'|null>(null);
     const [contractLanguage, setContractLanguage] = useState<string>('')
     // Contenu dynamique basé sur la langue
     const searchParams = useSearchParams();
     const edit = searchParams.get('edit');
-    const {id} = useParams()
+    const {id,serviceId} = useParams()
     const clientId = id as string
+    const clientServiceId = serviceId as string;
     const {
         register,
         handleSubmit,
@@ -135,27 +151,36 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     };
     
     useEffect(() => {
-        async function getDocumentById(collectionName: string, id: string) {
-            if(!id) return
-            const docRef = doc(firebase.db, collectionName, id);
-            const docSnap = await getDoc(docRef);
+        async function getDocumentById(collectionName: string, id: string,serviceId:string) {
+            if(!id || !serviceId) return
+            const docClientRef = doc(firebase.db, collectionName, id);
+            const docServiceRef = doc(firebase.db, 'services', serviceId);
+            const allRequest = [
+            await getDoc(docClientRef),
+            await getDoc(docServiceRef)
+            ]
+    
+            const [clientSnap,serviceSnap] = await Promise.all(allRequest)
           
-            if (docSnap.exists()) {
-                const client = { id: docSnap.id, ...docSnap.data() } as Client;
-                const contract = client.contract
-                console.log("contract",contract)
+            if (clientSnap.exists() && serviceSnap.exists()) {
+                const client = { id: clientSnap.id, ...clientSnap.data() } as Client;
+                const service = { serviceId: serviceSnap.id, clientId: clientSnap.data().clientId,name: serviceSnap.data().name, serviceType: serviceSnap.data().serviceType,contractStatus: serviceSnap.data().contractStatus,contract:serviceSnap.data().contract ?? null } as Services;
+                const contract = service.contract
+                setService(service)
+                console.log("service",service,"client",client)
                 if (edit === 'true') {
                     loadContractFromCache()
                 }else{
                     setClient(client);
+                    reset(client)
                     if (contract) {
                         setFonctionalityList(contract.projectFonctionList)
                         reset(contract);
                         setMaintenaceType(contract.maintenanceType)
                         setContractLanguage(contract.contractLanguage);
                     }
-                    setSelectedContractStatus(client.contractStatus)
-                    setSelectedContractType(client.contractType)
+                    setSelectedContractStatus(service.contractStatus)
+                    setSelectedContractType(service.serviceType)
                     setLoading(false);
                 }
             } else {
@@ -177,7 +202,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 setLoading(false);
             }
         }
-        getDocumentById("clients",clientId);
+        getDocumentById("clients",clientId,clientServiceId);
     }, [edit,clientId]);
     console.log("selectedContractStatus",selectedContractStatus,"maintenaceType",maintenaceType)
     const handleContractStatusChange = (value: "signed" | "unsigned" | "pending") => {
@@ -195,7 +220,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     },[contextData])
 
-    if (client?.contractStatus === 'signed' || (client?.contractStatus === 'unsigned' && !Cookies.get('logged'))) {
+    if (service?.contractStatus === 'signed' || (service?.contractStatus === 'unsigned' && !Cookies.get('logged'))) {
         router.push("/"+locale)
         return null
     }
@@ -204,41 +229,78 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["contrat"]}</h1>
             <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-                <h1 className="text-2xl font-bold mb-6 flex justify-start items-center gap-2">Contrat de prestation de service/maintenace<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(client?.contractStatus ?? '')}`}><i className={`${getStatusIcon(client?.contractStatus ?? '')} mr-1`}></i>{getStatusText(client?.contractStatus ?? '')}</span></h1>
+                <h1 className="text-2xl font-bold mb-6 flex justify-start items-center gap-2">Contrat de prestation de service/maintenace<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(service?.contractStatus ?? '')}`}><i className={`${getStatusIcon(service?.contractStatus ?? '')} mr-1`}></i>{getStatusText(service?.contractStatus ?? '')}</span></h1>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* === Client Information === */}
                     <section className="border-b pb-6">
                     <h2 className="text-xl font-semibold mb-4">Information sur le client</h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                            Nom complet / Nom de l'entreprise <em>*</em>
-                        </label>
-                        <input
-                            {...register("name", { required: "This field is required" })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.name && (
-                            <p className="text-red-500 text-sm mt-1">{errors.name.message as string}</p>
-                        )}
+                            <label className="block text-sm font-medium text-gray-700">
+                                Nom complet / Nom de l'entreprise <em>*</em>
+                            </label>
+                            <input
+                                {...register("name", { required: "This field is required" })}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            />
+                            {errors.name && (
+                                <p className="text-red-500 text-sm mt-1">{errors.name.message as string}</p>
+                            )}
                         </div>
-
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                            <label className="block text-sm font-medium text-gray-700">
                             Adresse <em>*</em>
-                        </label>
-                        <input
-                            {...register("clientAddress", { required: "This field is required" })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.clientAddress && (
-                            <p className="text-red-500 text-sm mt-1">{errors.clientAddress.message as string}</p>
-                        )}
+                            </label>
+                            <div>Select Countrye</div>
                         </div>
                     </div>
-
+                    {
+                        selectedCountry && (
+                            <div className="flex justify-start items-center gap-3 flex-wrap w-full">
+                            <div className="min-w-[16.875rem] w-max max-w-1/3">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Rue <em>*</em>
+                                </label>
+                                <input
+                                    {...register("adresse.street", { required: "This field is required" })}
+                                    placeholder="Street"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
+                                {errors.adresse?.street && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.adresse.street.message as string}</p>
+                                )}
+                            </div>
+                            <div className="min-w-[16.875rem] w-max max-w-1/3">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Ville <em>*</em>
+                                </label>
+                                <input
+                                    {...register("adresse.city", { required: "This field is required" })}
+                                    placeholder="City"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
+                                {errors.adresse?.city && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.adresse.city.message as string}</p>
+                                )}
+                            </div>
+                            <div className="min-w-[16.875rem] w-max max-w-1/3">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Code Postale <em>*</em>
+                                </label>
+                                <input
+                                    {...register("adresse.postalCode", { required: "This field is required" })}
+                                    placeholder="Code Postal"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
+                                {errors.adresse?.postalCode && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.adresse.postalCode.message as string}</p>
+                                )}
+                            </div>
+                            </div>
+                        )
+                    }
                     <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">
                         Adresse de facturation (si différente)
@@ -318,10 +380,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">SIRET <em>*</em></label>
+                                <label className="block text-sm font-medium text-gray-700">{t.invoice.identificationNumber} <em>*</em></label>
                                 <input
                                     {...register("freelancerSirets", { required: "This field is required" })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'SIRET'} disabled={true}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={process.env.NEXT_PUBLIC_TAX_ID} disabled={true}
                                 />
                             </div>
                         </div>
@@ -335,7 +397,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <label className="block text-sm font-medium text-gray-700">Nom du projet <em>*</em></label>
                         <input
                         {...register("projectTitle", { required: "This field is required" })}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                         />
                         {errors.projectTitle && (
                         <p className="text-red-500 text-sm mt-1">{errors.projectTitle.message as string}</p>
@@ -347,7 +409,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <textarea
                         {...register("projectDescription", { required: "Ce champ est requis" })}
                         rows={4}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                         />
                         {errors.projectDescription && (
                         <p className="text-red-500 text-sm mt-1">{errors.projectDescription.message as string}</p>
@@ -382,7 +444,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <input
                                 type="date"
                                 {...register("startDate", { required: "This field is required" })}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                             />
                             {errors.startDate && (
                                 <p className="text-red-500 text-sm mt-1">{errors.startDate.message as string}</p>
@@ -396,7 +458,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <input
                                 type="date"
                                 {...register("endDate")}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                             />
                         </div>
                     </div>
@@ -415,7 +477,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     required: "Price is required",
                                     min: { value: 0, message: "Price must be positive" },
                                     })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={client && client.contractStatus === 'pending' ? true : false}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                                 />
                                 {errors.totalPrice && (
                                     <p className="text-red-500 text-sm mt-1">{errors.totalPrice.message as string}</p>
@@ -432,7 +494,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             }, })}
                             rows={2}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                            placeholder="50% au début, 50% a la livraison" disabled={client && client.contractStatus === 'pending' ? true : false}
+                            placeholder="50% au début, 50% a la livraison" disabled={service && service.contractStatus === 'pending' ? true : false}
                             />
                             {errors.paymentSchedule && (
                             <p className="text-red-500 text-sm mt-1">{errors.paymentSchedule.message as string}</p>
@@ -444,9 +506,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <h2 className="text-xl font-semibold mb-4">Services maintenace</h2>
                         {
                             Cookies.get('logged') && (<div className="flex gap-5 justify-start items-center">
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'web' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${client?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('web')}>Web</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenaceType === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${client?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('app')}>Application mobile</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${client?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('saas')}>Application métier / SaaS</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'web' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('web')}>Web</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenaceType === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('app')}>Application mobile</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('saas')}>Application métier / SaaS</span>
                             </div>)
                         }
                         

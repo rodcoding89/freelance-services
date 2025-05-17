@@ -12,10 +12,12 @@ import GeneratePdfContract from "./generate-pdf-contract";
 interface Client {
     id: string;
     name:string;
+    email?:string;
     contractType: "service"|"maintenance"|"service_and_maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';
     dateCreation: Date;
     clientNumber:number;
+    invoiceCount?:number;
     contract:Contract
 }
 

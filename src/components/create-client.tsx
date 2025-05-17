@@ -16,11 +16,19 @@ interface CreateClientProps {
 interface Client {
     id?: string;
     name:string;
-    contractType: "service"|"maintenance"|"service_and_maintenance";
-    contractStatus: 'signed' | 'unsigned' | 'pending';
+    email?:string;
     dateCreation: Date;
     clientNumber:number;
+    invoiceCount?:number;
 }
+
+interface Services {
+    clientId:string;
+    name:string;
+    serviceType: "service"|"maintenance"|"service_and_maintenance";
+    contractStatus: 'signed' | 'unsigned' | 'pending';
+}
+
 
 const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     const t:any = useTranslationContext();
@@ -34,6 +42,21 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         formState: { errors },
     } = useForm();
 
+    const addService = async(id:string,serviceName:string,serviceType:"service"|"maintenance"|"service_and_maintenance") =>{
+        try {
+            const service:Services = {
+                clientId:id,
+                name:serviceName,
+                contractStatus:'unsigned',
+                serviceType:serviceType
+            }
+            const docRef = await addDoc(collection(firebase.db, "services"), service);
+            return docRef.id;
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        }
+    }
+
     const addClient = async(clientData:Client) =>{
         try {
           const docRef = await addDoc(collection(firebase.db, "clients"), clientData);
@@ -44,11 +67,16 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     }
 
     const onSubmit = async(data: any) => {
-        const client:Client = {name:data.clientName,contractStatus:'unsigned',dateCreation:new Date(),contractType:data.contractType,clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000}
+        const client:Client = {name:data.clientName,dateCreation:new Date(),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000}
         console.log('Client Data:', data);
-        const clientId = await addClient(client)
+
+        const clientId = await addClient(client);
+        
         if (clientId) {
-            router.push('/'+locale+'/clients-list')
+            const serviceId = await addService(clientId,data.serviceType,data.serviceType)
+            if (serviceId) {
+                router.push('/'+locale+'/clients-list')
+            }
         }
         console.log("clientId",clientId)
     };
@@ -110,21 +138,21 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                     <label htmlFor="clientName" className="block text-sm font-medium text-gray-700">
                         Choisir le type de contrat
                     </label>
-                    <select id="contractType" {...register("contractType", { required: "This field is required" })}
+                    <select id="serviceType" {...register("serviceType", { required: "This field is required" })}
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                         <option value="service">Service</option>
                         <option value="maintenance">Maintenance</option>
                         <option value="service_and_maintenance">Service plus Maintenance</option>
                     </select>
-                    {errors.clientName && (
-                        <p className="text-red-500 text-sm mt-1">{errors.contractType?.message as string}</p>
+                    {errors.serviceType && (
+                        <p className="text-red-500 text-sm mt-1">{errors.serviceType?.message as string}</p>
                     )}
                 </div>
                 <div className='flex justify-start items-center gap-5'>
                     <button
                         type="submit"
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                        Validater
+                        Créer le client
                     </button>
                     <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/clients-list'}>Liste de clients</Link>
                 </div>
