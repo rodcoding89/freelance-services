@@ -102,7 +102,7 @@ const InitCanvaSignature:React.FC<InitCanvaSignatureProps> = ({locale,emit}) => 
         signaturePadRef.current?.clear();
         setSignatureLink(null);
         setIsSigned(false);
-        emit(null)
+        emit({clientSignatureLink:null,freelanceSignature:null})
     }
     async function downloadImage(imageUrl:string, fileName:string) {
         try {

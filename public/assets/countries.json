@@ -1,0 +1,20 @@
+{"countries":
+    [
+    {"name":"Afrique du Sud","taxB2C":15,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"turnover":"general","currency":"USD"},
+    {"name":"Allemagne","taxB2C":19,"taxB2B":0,"groupe":"ue","threshold_before_tax":10000,"turnover":"ue","currency":"EUR"},
+    {"name":"Australie","taxB2C":10,"taxB2B":0,"threshold_before_tax":0,"turnover":"general","currency":"USD"},
+    {"name":"Autriche","taxB2C":20,"taxB2B":0,"groupe":"ue","threshold_before_tax":10000,"turnover":"ue","currency":"EUR"},
+    {"name":"Belgique","taxB2C":21,"taxB2B":0,"groupe":"ue","threshold_before_tax":10000,"turnover":"ue","currency":"EUR"},
+    {"name":"Canada","taxB2C":5,"state":[{"name":"Alberta"}],"taxB2B":0,"threshold_before_tax":0,"turnover":"general","currency":"USD"},
+    {"name":"Cameroun","taxB2C":19.25,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"turnover":"general","currency":"XFA"},
+    {"name":"Congo (Brazzaville)","taxB2C":18,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"turnover":"general","currency":"XAF"},{"name":"Congo-Kinshasa","taxB2C":16,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"turnover":"general","currency":"USD"},
+    {"name":"Côte d'Ivoire","taxB2C":18,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"turnover":"general","currency":"USD"},
+    {"name":"Espagne","taxB2C":21,"taxB2B":0,"groupe":"ue","threshold_before_tax":10000,"turnover":"ue","currency":"EUR"},
+    {"name":"États-Unis","taxB2C":0,"state":[{"name":"Alabama"}],"taxB2B":0,"threshold_before_tax":0,"turnover":"general","currency":"USD"},
+    {"name":"France","taxB2C":20,"taxB2B":0,"groupe":"ue","threshold_before_tax":10000,"turnover":"ue","currency":"EUR"},
+    {"name":"Gabon","taxB2C":18,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"turnover":"general","currency":"USD"},
+    {"name":"Italie","taxB2C":22,"taxB2B":0,"groupe":"ue","threshold_before_tax":10000,"turnover":"ue","currency":"EUR"},
+    {"name":"Nigéria","taxB2C":7.5,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"turnover":"general","currency":"USD"},
+    {"name":"Pays-Bas","taxB2C":21,"taxB2B":0,"groupe":"ue","threshold_before_tax":10000,"turnover":"ue","currency":"EUR"},
+    {"name":"Royaume-Uni","taxB2C":20,"taxB2B":0,"threshold_before_tax":0,"turnover":"general","currency":"USD"},{"name":"Suisse","taxB2C":8.1,"taxB2B":0,"turnover":"general","threshold_before_tax":100000,"currency":"CHF"},{"name":"Sénégal","taxB2C":18,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"turnover":"general","currency":"USD"}]
+}

@@ -9,6 +9,7 @@ import firebase from '@/utils/firebase'; // Importez votre configuration Firebas
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import Icon from "./Icon";
+import { loadCountries } from "@/utils/fonction";
 
 interface Services {
   serviceId:string;
@@ -37,12 +38,13 @@ interface Contract {
         city:string;
         country:string;
     }
+    particular:boolean;
+    company:boolean;
     clientBillingAddress?:string;
     clientEmail:string;
     clientPhone:string;
-    clientSIRET?:string;
     freelancerName:string;
-    freelancerSirets?:string;
+    freelancerTaxId?:string;
     freelanceAddress:string;
     projectTitle:string;
     projectDescription:string;
@@ -80,11 +82,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
     const [fonction, setFonction] = useState<string>('')
     const router = useRouter();
-    const [selectedCountry,setSelectedCountry] = useState<string>('test')
+    const [selectedCountry,setSelectedCountry] = useState<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number,turnover:number}|null>(null)
     const [client, setClient] = useState<Client|null>(null)
     const [service, setService] = useState<Services|null>(null)
     const [selectedContractType, setSelectedContractType] = useState<"service"|"maintenance"|"service_and_maintenance"|null>(null);
     const [selectedContractStatus, setSelectedContractStatus] = useState<'signed' | 'unsigned' | 'pending'|null>(null);
+    const [countries, setCountries] = useState<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number,turnover:number}[]>([])
     const [contractLanguage, setContractLanguage] = useState<string>('')
     // Contenu dynamique basé sur la langue
     const searchParams = useSearchParams();
@@ -92,10 +95,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const {id,serviceId} = useParams()
     const clientId = id as string
     const clientServiceId = serviceId as string;
+    
     const {
         register,
         handleSubmit,
         reset,
+        setValue,
         formState: { errors,isValid },
     } = useForm<Contract>({ mode: 'onChange'});
 
@@ -144,6 +149,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
     const checkFormValidation = ()=>{
         return isValid && maintenaceType !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && contractLanguage !== '' && contractLanguage !== 'default'
+    }
+
+    const clearAdresse = () => {
+        setValue('adresse.street', '');
+        setValue('adresse.city', '');
+        setValue('adresse.postalCode', '');
     }
 
     const handleContractLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -204,6 +215,18 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
         getDocumentById("clients",clientId,clientServiceId);
     }, [edit,clientId]);
+    useEffect(()=>{
+        const loadCountrieData = async () => {
+            try {
+            const countries = await loadCountries();
+            setCountries(countries.countries)
+            } catch (error) {
+                console.error('Erreur lors du chargement des pays :', error);
+                return
+            }
+        }
+        loadCountrieData();
+    },[])
     console.log("selectedContractStatus",selectedContractStatus,"maintenaceType",maintenaceType)
     const handleContractStatusChange = (value: "signed" | "unsigned" | "pending") => {
         setSelectedContractStatus(value as 'signed' | 'unsigned' | 'pending');
@@ -234,29 +257,86 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* === Client Information === */}
                     <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold mb-4">Information sur le client</h2>
+                        <h2 className="text-xl font-semibold mb-4">Information sur le client</h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                                Nom complet / Nom de l'entreprise <em>*</em>
-                            </label>
-                            <input
-                                {...register("name", { required: "This field is required" })}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                            />
-                            {errors.name && (
-                                <p className="text-red-500 text-sm mt-1">{errors.name.message as string}</p>
-                            )}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Nom complet / Nom de l'entreprise <em>*</em>
+                                </label>
+                                <input
+                                    {...register("name", { required: "This field is required" })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
+                                {errors.name && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.name.message as string}</p>
+                                )}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Type de client <em>*</em></label>
+                                <div className="flex items-center justify-start gap-2 flex-wrap w-full mt-3">
+                                    <div className="flex items-center gap-2">
+                                        <input type="checkbox" id="particular" {...register("particular")}/>
+                                        <label htmlFor="particular" className="ml-2 block text-sm font-medium text-gray-700">
+                                            Particuler</label>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <input type="checkbox" id="company" {...register("company")}/>
+                                        <label htmlFor="company" className="ml-2 block text-sm font-medium text-gray-700">
+                                            Entreprise</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Adresse email <em>*</em></label>
+                                <input
+                                    type="email"
+                                    {...register("clientEmail", {
+                                    required: "Email is required",
+                                    pattern: {
+                                        value: /^\S+@\S+$/i,
+                                        message: "Invalid email format",
+                                    },
+                                    })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
+                                {errors.clientEmail && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Numéro de téléphone <em>*</em></label>
+                                <input
+                                    type="tel"
+                                    {...register("clientPhone", { required: "Phone is required" })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
+                                {errors.clientPhone && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.clientPhone.message as string}</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="my-4 w-full">
                             <label className="block text-sm font-medium text-gray-700">
                             Adresse <em>*</em>
                             </label>
-                            <div>Select Countrye</div>
+                            <div>
+                                <select name="" id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={(e:any)=>{e.target.value !== 'default' ? setSelectedCountry(JSON.parse(e.target.value)):setSelectedCountry(null);clearAdresse()}}>
+                                    <option value="default">---Choisir un pays---</option>
+                                    {
+                                        countries.map((item, index) => ( 
+                                            <option key={index} value={JSON.stringify(item)}>{item.name}</option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    {
+                        {
                         selectedCountry && (
                             <div className="flex justify-start items-center gap-3 flex-wrap w-full">
                             <div className="min-w-[16.875rem] w-max max-w-1/3">
@@ -310,50 +390,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                         />
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Adresse email <em>*</em></label>
-                            <input
-                                type="email"
-                                {...register("clientEmail", {
-                                required: "Email is required",
-                                pattern: {
-                                    value: /^\S+@\S+$/i,
-                                    message: "Invalid email format",
-                                },
-                                })}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                            />
-                            {errors.clientEmail && (
-                                <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Numéro de téléphone <em>*</em></label>
-                            <input
-                                type="tel"
-                                {...register("clientPhone", { required: "Phone is required" })}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                            />
-                            {errors.clientPhone && (
-                                <p className="text-red-500 text-sm mt-1">{errors.clientPhone.message as string}</p>
-                            )}
-                        </div>
-                    </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">
-                                    SIRET/SIREN (le cas échéant)
-                                </label>
-                                <input
-                                    {...register("clientSIRET")}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                                />
-                            </div>
-                        </div>
                     </section>
 
                     {/* === Freelancer Information === */}
@@ -382,7 +418,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">{t.invoice.identificationNumber} <em>*</em></label>
                                 <input
-                                    {...register("freelancerSirets", { required: "This field is required" })}
+                                    {...register("freelancerTaxId", { required: "This field is required" })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={process.env.NEXT_PUBLIC_TAX_ID} disabled={true}
                                 />
                             </div>

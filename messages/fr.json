@@ -902,6 +902,20 @@
         "footer":"Ce montant à déjà été déduit de votre compte, vous n'avez donc rien a faire. Cet facture est a titre de preuve de paiement reçu consernant les services realisés.",
         "page":"Page {page} sur {total}"
     },
-    "enterpriceLocation":"Siège social"
+    "enterpriceLocation":"Siège social",
+    "payment":{
+        "title":"Paiement et Echeance",
+        "pagePara11":"Vous trouverez sur ce document les modalité de paiement pour la prestation {title}",
+        "pagePara12":"à réaliser.",
+        "pagePara13":"Ce paiement se fera par échelonement dans le but d'établir une relation de confiance entre vous (client) et nous (prestataire), car notre objectif dans nos prestations est la sasisfation du client.",
+        "pagePara2":"Nous vous recommandons d'effectuer tous vos virements dans le cadre de cette prestation en devise locale afin d'éviter des surcoups lors des virements.",
+        "beforeStart":"Depot de garantie",
+        "afterDelively":"Paiement après la livraison du projet",
+        "intermediarePaiement":"Paiement après {nr} validation.",
+        "singleEchelon":"Pour cette prestation, il ni aura aucun echelonnement. Le prix dela prestation est donc de :",
+        "multipleEchelon":"Cette prestation se fera en plusieurs échelonement.",
+        "bySigning":"à effectué dès signature du contrat.",
+        "pagePara3":"Pour faire le virement, cliquer sur le lien en dessous ou copier et coller le sur un navigateur, puis suivez les instructions. Aprés la transaction, faite une photo de votre compte montrant le virement éffectué, et envoyer nous cela afin qu'on puisse demarré avec votre prestation, si non elle débutera uniquement lorsque le virement sera reçu. Cela peut prendre plusieurs jours."
+    }
 }
     
