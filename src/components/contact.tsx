@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import CloseButton from './close-btn';
 import { useTranslationContext } from '@/hooks/app-hook';
-import  sendEmail  from '../server/services'
+import  {sendEmail}  from '../server/services'
 interface Email{
     from:string;
     name:string;

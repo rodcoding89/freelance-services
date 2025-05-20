@@ -50,11 +50,12 @@ interface Contract {
     projectDescription:string;
     projectFonctionList:string[];
     startDate:string;
-    endDate?:string;
+    endDate:string;
     contractType: "service"|"maintenance"|"service_and_maintenance";
     maintenanceType:"app"|"saas"|"web"|null;
     maintenaceOptionPayment?:"perYear"|"perHour"
     totalPrice:number;
+    mprice?:number;
     paymentSchedule:string;
     contractLanguage:string;
 }
@@ -107,7 +108,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const onSubmit = (data:Contract) => {
         console.log("Contract Data:", data);
         sessionStorage.setItem('contractData', JSON.stringify({contract:{...data,projectFonctionList:fonctionalityList,maintenaceType:maintenaceType,contractLanguage:contractLanguage,contractType:selectedContractType,contractStatus:selectedContractStatus},client:{...client,contractType:selectedContractType,contractStatus:selectedContractStatus}}));
-        router.push("/"+locale+"/sign-contract/"+clientId)
+        router.push("/"+locale+"/sign-contract/"+clientId+'/'+clientServiceId)
         // Generate PDF or send data to backend
     };
     

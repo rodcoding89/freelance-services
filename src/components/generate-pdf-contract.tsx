@@ -2,6 +2,7 @@
 import { useTranslationContext } from '@/hooks/app-hook';
 import React, { useEffect } from 'react';
 import { PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, StandardFonts } from "pdf-lib";
+import { sendContract } from '@/server/services';
 
 type SingleTextLayourt = {
     size: number;
@@ -85,13 +86,19 @@ interface Client {
 
 interface Contract {
     name:string;
-    clientAddress:string;
+    adresse:{
+        street:string;
+        postalCode:string;
+        city:string;
+        country:string;
+    }
+    particular:boolean;
+    company:boolean;
     clientBillingAddress?:string;
     clientEmail:string;
     clientPhone:string;
-    clientSIRET?:string;
     freelancerName:string;
-    freelancerSirets?:string;
+    freelancerTaxId?:string;
     freelanceAddress:string;
     projectTitle:string;
     projectDescription:string;
@@ -265,10 +272,28 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
             yRef.current = addText([payingLink,margin,margin,margin,20,{...addTextOption,size:11,isBold:false},...lastParam,rgb(0, 0, 0.55)])
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            return URL.createObjectURL(blob);
+            return blob;
         } catch (error) {
             console.error(error)
         }
+    }
+
+    async function blobToBase64(blob:Blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                // Ensure the result is a string (from readAsDataURL)
+                if (typeof reader.result === 'string') {
+                    // Extract just the Base64 part (after the comma)
+                    const base64Data = reader.result.split(',')[1];
+                    resolve(base64Data);
+                } else {
+                    reject(new Error('Failed to convert blob to base64.'));
+                }
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
     }
 
     const handlePdf = async(client:Client,data:Contract)=>{
@@ -280,7 +305,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
             sousTitle: t.contract.header.subTitle,
             clientName: `${data.name}`,
             freelanceName: `${data.freelancerName}`,
-            preambleAdresseClient:`${t.contract.header.home} ${data.clientAddress} ${t.contract.header.designation}`,
+            preambleAdresseClient:`${t.contract.header.home} ${data.adresse.street} ${data.adresse.postalCode} ${data.adresse.city} ${data.adresse.country} ${t.contract.header.designation}`,
             from:t.contract.header.from,
             preambleAdresseFreelance:`${t.contract.header.home} ${data.freelanceAddress} ${t.contract.header.designation}`,
             to:t.contract.header.to,
@@ -359,7 +384,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
                 },
                 9:{
                     id:9,
-                    param:[[t.contract.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",formatDate(data.startDate)).replace("{endDate}",formatDate(data.endDate)) : data.contractType === 'maintenance' ? t.contract.sections["3"].sec3.paraMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",formatDate(data.endDate)), margin, yRef.current,margin,15, addTextOption,...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",data.totalPrice) : data.contractType === 'maintenance' ? data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",data.mprice) : t.contract.sections["3"].sec4.paraMaintenance.perYear.replace("{mprice}",data.mprice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",data.totalPrice)} ${
+                    param:[[t.contract.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",formatDate(data.startDate)).replace("{endDate}",formatDate(data.endDate)) : data.contractType === 'maintenance' ? t.contract.sections["3"].sec3.paraMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",formatDate(data.endDate)), margin, yRef.current,margin,15, addTextOption,...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : data.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[data.contractType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",data.totalPrice) : data.contractType === 'maintenance' ? data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",data.mprice) : t.contract.sections["3"].sec4.paraMaintenance.peerYear.replace("{mprice}",data.mprice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",data.totalPrice)} ${
                     data.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",data.mprice) : t.contract.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",data.mprice)} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}`
                     ,margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["4"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["4"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["4"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["4"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["4"].sec2.para, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["4"].sec2.paraClose, margin, yRef.current,margin,40, {...addTextOption,size:9,isBold:true},...lastParam],[t.contract.sections["5"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.contract.sections["5"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec2.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec2.para2, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec3.para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec3.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam]]
                 },
@@ -402,7 +427,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
                 },
                 19:{
                     id:19,
-                    param:[[t.contract.sections["5"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec9.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para2, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para3, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec10.para1, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam]]
+                    param:[[t.contract.sections["5"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec9.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para2.replace("{sday}",3).replace("{day}",7), margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para3.replace("{sday}",3), margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec10.para1, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam]]
                 },
                 20:{
                     id:20,
@@ -450,7 +475,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
                 },
                 31:{
                     id:31,
-                    param:[[t.contract.sections["6"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec3.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec4.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec4.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec5.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec5.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec6.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec6.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec7.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec7.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec8.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec8.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec9.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec10.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec11.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec11.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec12.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec12.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec13.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec14.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec15.para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["7"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["7"].para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["8"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["8"].para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["8"].paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraE, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraF, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["8"].paraClose, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["9"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["9"].para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["9"].paraA, margin, yRef.current,margin,8,
+                    param:[[t.contract.sections["6"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec3.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec4.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec4.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec5.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec5.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec6.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec6.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec7.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec7.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec8.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec8.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec9.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec10.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec11.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec11.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec12.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec12.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec13.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec14.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["6"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["6"].sec15.para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["7"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["7"].para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["8"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["8"].para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["8"].paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraE.replace("{day}",7), margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["8"].paraF, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["8"].paraClose, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.contract.sections["9"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.contract.sections["9"].para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["9"].paraA, margin, yRef.current,margin,8,
                     {...addTextOption,lineHeight:lineHeight+2,isBold:true},...lastParam],[t.contract.sections["9"].paraB, margin, yRef.current,margin,8, {...addTextOption,isBold:true,lineHeight:lineHeight+2},...lastParam],[t.contract.sections["9"].paraC, margin, yRef.current,margin,40, {...addTextOption,isBold:true,lineHeight:lineHeight+2},...lastParam],[t.contract.sections["10"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam]]
                 },
                 32:{
@@ -540,11 +565,11 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
             // Génération du PDF final
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            return URL.createObjectURL(blob);
+            return blob;
             //return await pdfDoc.save();
         } catch (error) {
             console.error('Erreur lors de la génération du PDF:', error);
-            alert('Une erreur est survenue.');
+            return null;
         }
     }
     
@@ -945,15 +970,30 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
     }
     useEffect(()=>{
         const generedPdf = async()=>{
-            const pdfUrl = await handlePdf(client,data)
-            if (pdfUrl) {
-                window.open(pdfUrl, '_blank')
-                setPdfUrl(pdfUrl)
-            }
-            const pdfUrl1 = await generePaiementDoc(data)
-            if (pdfUrl1) {
-                window.open(pdfUrl1, '_blank')
-                //setPdfUrl(pdfUrl)
+            const allRequest = [
+                handlePdf(client,data),
+                generePaiementDoc(data)
+            ]
+            const [blobContract,blobPayment] = await Promise.all(allRequest)
+            
+            if (blobContract && blobPayment) {
+                const contractLink = URL.createObjectURL(blobContract)
+                const paymentLink = URL.createObjectURL(blobPayment)
+                window.open(contractLink, '_blank')
+                setPdfUrl(contractLink)
+                window.open(paymentLink, '_blank')
+                const contractBase64 = await blobToBase64(blobContract) as string;
+                const paymentBase64 = await blobToBase64(blobPayment) as string;
+                
+                const email = {
+                    to:data.clientEmail,
+                    name:data.name,
+                    subject:`${locale === 'fr' ? 'Contrat de prestation de service/maintenace' : locale === 'de' ? "" : 'Contract of service/maintenance'}`,
+                    base64Contrat:contractBase64,
+                    base64Payement:paymentBase64
+                }
+                const response = await sendContract(email,data.contractLanguage)
+                console.log(response)
             }
         }
         generedPdf()   
