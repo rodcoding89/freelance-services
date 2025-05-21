@@ -8,6 +8,8 @@ import { useParams, useRouter } from "next/navigation";
 import { AppContext } from "@/app/context/app-context";
 import Cookies from 'js-cookie';
 import GeneratePdfContract from "./generate-pdf-contract";
+import Success from "./success";
+import Echec from "./echec";
 
 interface Client {
     id: string;
@@ -59,6 +61,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [contract, setContract] = useState<Contract|null>(null)
     const [client, setClient] = useState<Client|null>(null)
+    const [contractStatus, setContractStatus] = useState<{contractLink:string;paymentLink:string;status:"success"|"error"}|null>(null)
     const [contractData, setContractData] = useState<Contract|null>(null)
     const router = useRouter()
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
@@ -107,211 +110,230 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
         return clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature
     }
     console.log("totalPrice",contract?.totalPrice, contract)
+    const handleContractStatus = (data: { contractLink: string; paymentLink: string; status: "success" | "error"; }): void =>{
+        setContractStatus(data)
+    }
+    const handleEmit = (data: string): void =>{
+        setContractStatus(null)
+    }
     if (!contract && loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
-            <section className="py-5">
-                <h1 className="text-left text-[2.5rem] text-thirty uppercase mb-5">Terme du contrat</h1>
-                <div className="">
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["1"].title}</h2>
-                    <p className="text-[1rem] mb-3"><strong>{t.contract.sections["1"].paraDef}</strong> {t.contract.sections["1"].para1}</p>
-                    <p className="text-[1rem] mb-3"><strong>{t.contract.sections["1"].paraDef}</strong> {t.contract.sections["1"].para2}</p>
-                    <p className="text-[1rem] mb-3"><strong>{t.contract.sections["1"].paraDef}</strong> {t.contract.sections["1"].para3}</p>
-                    <p className="text-[1rem] mb-5"><strong>{t.contract.sections["1"].para}</strong></p>
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["2"].title}</h2>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["2"].sec1.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["2"].sec1.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["2"].sec2.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["2"].sec2.para}</p>
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["3"].title}</h2>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["3"].sec1.title}</h3>
-                    <p className="text-[1rem] mb-5">{contract?.projectDescription}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["3"].sec2.title}</h3>
-                    <ul className="list-disc ml-10 mb-5">
-                        {
-                            contract?.projectFonctionList.map((item, index) => (
-                                <li className="text-[1rem] mb-1" key={index}>{item}</li>
-                            ))
-                        }
-                    </ul>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["3"].sec3.title}</h3>
-                    <p className="text-[1rem] mb-3">{
-                        contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",contract.startDate).replace("{endDate}",contract.endDate) : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",contract.endDate) : ''
-                    }</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{
-                        contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance : ''
-                    }</h3>
-                    <p className="text-[1rem] mb-5">{
-                        contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",contract.totalPrice) : contract.contractType === 'maintenance' ? contract.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraMaintenance.perYear.replace("{mprice}",contract.mprice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.totalPrice)} ${
-                            contract.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract.mprice)} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}` : ''
-                    }</p>
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["4"].title}</h2>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["4"].sec1.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["4"].sec1.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["4"].sec2.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["4"].sec2.para}</p>
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["5"].title}</h2>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec1.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec1.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec2.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec2.para1}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec2.para2}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec3.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec3.para}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraB1} <strong>{t.contract.sections["5"].sec3.paraB2}</strong></p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraC}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraD}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraE}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraF}</p>
-                    <p className="text-[1rem] mb-2"><strong>{t.contract.sections["5"].sec3.paraG}</strong></p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraH1} <strong>{t.contract.sections["5"].sec3.paraH2}</strong></p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraI}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec3.paraJ}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec4.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec4.para}</p>
-                    <p  className="text-[1rem] mb-2">{t.contract.sections["5"].sec4.paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec4.paraB1} <strong>{t.contract.sections["5"].sec4.paraB2}</strong></p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec4.paraC}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec5.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec5.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec6.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec6.para11} <strong>{t.contract.sections["5"].sec6.para12}</strong> {t.contract.sections["5"].sec6.para13}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec7.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec7.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec8.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec8.para11} <strong>{t.contract.sections["5"].sec8.para12}</strong> {t.contract.sections["5"].sec8.para13}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec8.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec9.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec9.para1}</p>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec9.para2.replace("{sday}",3)}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec9.para3.replace("{day}",7).replace("{sday}",3)}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec10.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec10.para1}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec10.paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec10.paraB}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec10.paraC}</p>
-                    <p className="text-[1rem] mb-3"><strong>{t.contract.sections["5"].sec10.para21}</strong> {t.contract.sections["5"].sec10.para22}</p>
-                    <p className="text-[1rem] mb-5"><strong>{t.contract.sections["5"].sec10.paraClose}</strong></p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec11.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec11.para1}</p>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec11.para2}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec11.para3}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec12.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec12.para}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraB}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraC}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraD}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraE}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraF}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraG}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec12.paraH}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec13.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec13.para}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec13.paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec13.paraB}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec13.paraClose}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec14.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec14.para}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraB}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraC}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraD}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraE}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec14.paraClose}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec15.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec15.para11} <strong>{t.contract.sections["5"].sec15.para12}</strong> {t.contract.sections["5"].sec15.para13}</p>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec15.para4}</p>
-                    <ol className="list-decimal ml-10 mb-5">
-                        {
-                            contract?.paymentSchedule.split(',').map((item, index) => (
-                                <li className="text-[1rem] mb-1" key={index}><strong>{index === 0 ? t.contract.sections["5"].sec15.item : index === contract?.paymentSchedule.split(',').length - 1 ? t.contract.sections["5"].sec15.itemEnd : t.contract.sections["5"].sec15.item1 + (index + 1) + ': '}</strong> {item}</li>
-                            ))
-                        }
-                    </ol>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec16.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec16.para11} <strong>{t.contract.sections["5"].sec16.para12}</strong> {t.contract.sections["5"].sec16.para13}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec17.title}</h3>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec17.para1}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec17.paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec17.paraB}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec17.paraC}</p>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec17.para2}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec17.paraClose}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec18.title}</h3>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec18.para1}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec18.para2}</p>
-                    <p className="text-[1rem] mb-2">3) <strong>{t.contract.sections["5"].sec18.para3}</strong></p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec18.paraClose}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec19.title}</h3>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec19.para1}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec19.para2}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec19.para3}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec19.para4}</p>
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["6"].title}</h2>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec1.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec1.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec2.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec2.para11} <strong>{t.contract.sections["6"].sec2.para12}</strong> {t.contract.sections["6"].sec2.para13}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec3.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec3.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec4.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec4.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec5.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec5.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec6.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec6.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec7.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec7.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec8.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec8.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec9.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec9.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec10.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec10.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec11.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec11.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec12.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec12.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec13.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec13.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec14.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec14.para}</p>
-                    <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec15.title}</h3>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec15.para}</p>
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["7"].title}</h2>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["7"].para}</p>
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["8"].title}</h2>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["8"].para}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraB}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraC}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraD}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraE.replace("{day}",7)}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraF}</p>
-                    <p className="text-[1rem] mb-5">{t.contract.sections["8"].paraClose}</p>
-                    <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["9"].title}</h2>
-                    <p className="text-[1rem] mb-3">{t.contract.sections["9"].para}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraA}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraB}</p>
-                    <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraC}</p>
-                </div>
-                <GeneratePdfContract data={contractData} clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} client={client} locale={locale}/>
-            </section>
-            <span className="block italic my-4">Si vous êtes d'accord avec ces termes, signé en dessous. Dans le cas contraire, indiquez nous les raisons de votre rétition.</span>
-            <section className="signing">
-                <InitCanvaSignature locale={locale} emit={handleSignatureChange}/>
-            </section>
-            <div className="flex justify-start items-center mt-5 gap-2">
-                <input type="checkbox" name="" id="confirmElectronicSignature" onChange={(e:any)=>setConfirmElectronicSignature(e.target.checked)}/>
-                <label htmlFor="confirmElectronicSignature">Cocher pour approuver la signature électronique du contrat</label>
-            </div>
-            <div className="flex justify-end items-center mt-5 gap-4">
-                <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" href={`/${locale}/create-contract/${clientId}/?edit=true`}>Modifier le contrat</a>
-                <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkContractValidation()} onClick={uploadContract}>Télecharger le contrat</button>
-            </div>
+            {
+                contractStatus === null ? (
+                    <>
+                    <section className="py-5">
+                        <h1 className="text-left text-[2.5rem] text-thirty uppercase mb-5">Terme du contrat</h1>
+                        <div className="">
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["1"].title}</h2>
+                            <p className="text-[1rem] mb-3"><strong>{t.contract.sections["1"].paraDef}</strong> {t.contract.sections["1"].para1}</p>
+                            <p className="text-[1rem] mb-3"><strong>{t.contract.sections["1"].paraDef}</strong> {t.contract.sections["1"].para2}</p>
+                            <p className="text-[1rem] mb-3"><strong>{t.contract.sections["1"].paraDef}</strong> {t.contract.sections["1"].para3}</p>
+                            <p className="text-[1rem] mb-5"><strong>{t.contract.sections["1"].para}</strong></p>
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["2"].title}</h2>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["2"].sec1.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["2"].sec1.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["2"].sec2.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["2"].sec2.para}</p>
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["3"].title}</h2>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["3"].sec1.title}</h3>
+                            <p className="text-[1rem] mb-5">{contract?.projectDescription}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["3"].sec2.title}</h3>
+                            <ul className="list-disc ml-10 mb-5">
+                                {
+                                    contract?.projectFonctionList.map((item, index) => (
+                                        <li className="text-[1rem] mb-1" key={index}>{item}</li>
+                                    ))
+                                }
+                            </ul>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["3"].sec3.title}</h3>
+                            <p className="text-[1rem] mb-3">{
+                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",contract.startDate).replace("{endDate}",contract.endDate) : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",contract.endDate) : ''
+                            }</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{
+                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance : ''
+                            }</h3>
+                            <p className="text-[1rem] mb-5">{
+                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",contract.totalPrice) : contract.contractType === 'maintenance' ? contract.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraMaintenance.perYear.replace("{mprice}",contract.mprice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.totalPrice)} ${
+                                    contract.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract.mprice)} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}` : ''
+                            }</p>
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["4"].title}</h2>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["4"].sec1.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["4"].sec1.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["4"].sec2.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["4"].sec2.para}</p>
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["5"].title}</h2>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec1.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec1.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec2.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec2.para1}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec2.para2}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec3.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec3.para}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraB1} <strong>{t.contract.sections["5"].sec3.paraB2}</strong></p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraC}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraD}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraE}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraF}</p>
+                            <p className="text-[1rem] mb-2"><strong>{t.contract.sections["5"].sec3.paraG}</strong></p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraH1} <strong>{t.contract.sections["5"].sec3.paraH2}</strong></p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraI}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec3.paraJ}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec4.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec4.para}</p>
+                            <p  className="text-[1rem] mb-2">{t.contract.sections["5"].sec4.paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec4.paraB1} <strong>{t.contract.sections["5"].sec4.paraB2}</strong></p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec4.paraC}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec5.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec5.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec6.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec6.para11} <strong>{t.contract.sections["5"].sec6.para12}</strong> {t.contract.sections["5"].sec6.para13}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec7.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec7.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec8.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec8.para11} <strong>{t.contract.sections["5"].sec8.para12}</strong> {t.contract.sections["5"].sec8.para13}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec8.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec9.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec9.para1}</p>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec9.para2.replace("{sday}",3)}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec9.para3.replace("{day}",7).replace("{sday}",3)}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec10.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec10.para1}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec10.paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec10.paraB}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec10.paraC}</p>
+                            <p className="text-[1rem] mb-3"><strong>{t.contract.sections["5"].sec10.para21}</strong> {t.contract.sections["5"].sec10.para22}</p>
+                            <p className="text-[1rem] mb-5"><strong>{t.contract.sections["5"].sec10.paraClose}</strong></p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec11.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec11.para1}</p>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec11.para2}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec11.para3}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec12.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec12.para}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraB}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraC}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraD}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraE}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraF}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec12.paraG}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec12.paraH}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec13.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec13.para}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec13.paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec13.paraB}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec13.paraClose}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec14.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec14.para}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraB}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraC}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraD}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec14.paraE}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec14.paraClose}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec15.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec15.para11} <strong>{t.contract.sections["5"].sec15.para12}</strong> {t.contract.sections["5"].sec15.para13}</p>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec15.para4}</p>
+                            <ol className="list-decimal ml-10 mb-5">
+                                {
+                                    contract?.paymentSchedule.split(',').map((item, index) => (
+                                        <li className="text-[1rem] mb-1" key={index}><strong>{index === 0 ? t.contract.sections["5"].sec15.item : index === contract?.paymentSchedule.split(',').length - 1 ? t.contract.sections["5"].sec15.itemEnd : t.contract.sections["5"].sec15.item1 + (index + 1) + ': '}</strong> {item}</li>
+                                    ))
+                                }
+                            </ol>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec16.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec16.para11} <strong>{t.contract.sections["5"].sec16.para12}</strong> {t.contract.sections["5"].sec16.para13}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec17.title}</h3>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec17.para1}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec17.paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec17.paraB}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec17.paraC}</p>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec17.para2}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec17.paraClose}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec18.title}</h3>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec18.para1}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec18.para2}</p>
+                            <p className="text-[1rem] mb-2">3) <strong>{t.contract.sections["5"].sec18.para3}</strong></p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec18.paraClose}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["5"].sec19.title}</h3>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec19.para1}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec19.para2}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec19.para3}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec19.para4}</p>
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["6"].title}</h2>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec1.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec1.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec2.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec2.para11} <strong>{t.contract.sections["6"].sec2.para12}</strong> {t.contract.sections["6"].sec2.para13}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec3.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec3.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec4.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec4.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec5.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec5.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec6.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec6.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec7.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec7.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec8.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec8.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec9.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec9.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec10.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec10.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec11.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec11.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec12.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec12.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec13.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec13.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec14.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec14.para}</p>
+                            <h3 className="text-[1.8rem] leading-9 mb-3">{t.contract.sections["6"].sec15.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec15.para}</p>
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["7"].title}</h2>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["7"].para}</p>
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["8"].title}</h2>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["8"].para}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraB}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraC}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraD}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraE.replace("{day}",7)}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraF}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["8"].paraClose}</p>
+                            <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["9"].title}</h2>
+                            <p className="text-[1rem] mb-3">{t.contract.sections["9"].para}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraA}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraB}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraC}</p>
+                        </div>
+                        <GeneratePdfContract data={contractData} clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} client={client} locale={locale} onEmit={handleContractStatus}/>
+                    </section>
+                    <span className="block italic my-4">Si vous êtes d'accord avec ces termes, signé en dessous. Dans le cas contraire, indiquez nous les raisons de votre rétition.</span>
+                    <section className="signing">
+                        <InitCanvaSignature locale={locale} emit={handleSignatureChange}/>
+                    </section>
+                    <div className="flex justify-start items-center mt-5 gap-2">
+                        <input type="checkbox" name="" id="confirmElectronicSignature" onChange={(e:any)=>setConfirmElectronicSignature(e.target.checked)}/>
+                        <label htmlFor="confirmElectronicSignature">Cocher pour approuver la signature électronique du contrat</label>
+                    </div>
+                    <div className="flex justify-end items-center mt-5 gap-4">
+                        <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" href={`/${locale}/create-contract/${clientId}/?edit=true`}>Modifier le contrat</a>
+                        <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkContractValidation()} onClick={uploadContract}>Télecharger le contrat</button>
+                    </div>
+                    </>
+            ) : (
+                contractStatus.status === 'success' ? (
+                    <div className="pt-9 pb-1"><Success contractLink={contractStatus.contractLink} paymentLink={contractStatus.paymentLink} locale={contract?.contractLanguage ?? 'en'}/></div>
+                ) : (
+                    <div className="pt-9 pb-1"><Echec locale={contract?.contractLanguage ?? 'en'} onEmit={handleEmit}/></div>
+                )
+            )
+        }
         </main>
     )
 }

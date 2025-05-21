@@ -120,14 +120,14 @@ interface GeneredContractProps {
   data:Contract|null;
   clientSignatureLink:string|null;
   freelanceSignatureLink:string|null;
-  locale:string
+  locale:string;
+  onEmit:(data:{contractLink:string,paymentLink:string,status:"success"|"error"})=>void;
 }
 
 
-const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelanceSignatureLink,clientSignatureLink,locale}) => {
+const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelanceSignatureLink,clientSignatureLink,locale,onEmit}) => {
     if (client === null || data === null || clientSignatureLink === null || freelanceSignatureLink === null) return
     const t:any = useTranslationContext();
-    const [pdfUrl,setPdfUrl] = React.useState<string>('');
     const functionListAndRang = [
         {name:"addText",count:2,id:1},{name:"addHorizontalText",count:1,id:2},
         {name:"addText",count:1,id:3},
@@ -979,9 +979,8 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
             if (blobContract && blobPayment) {
                 const contractLink = URL.createObjectURL(blobContract)
                 const paymentLink = URL.createObjectURL(blobPayment)
-                window.open(contractLink, '_blank')
-                setPdfUrl(contractLink)
-                window.open(paymentLink, '_blank')
+                /*window.open(contractLink, '_blank')
+                window.open(paymentLink, '_blank')*/
                 const contractBase64 = await blobToBase64(blobContract) as string;
                 const paymentBase64 = await blobToBase64(blobPayment) as string;
                 
@@ -992,8 +991,18 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
                     base64Contrat:contractBase64,
                     base64Payement:paymentBase64
                 }
-                const response = await sendContract(email,data.contractLanguage)
-                console.log(response)
+                //const response = await sendContract(email,data.contractLanguage);
+                const emitData:{
+                    contractLink:string,
+                    paymentLink:string,
+                    status:"success" | "error"
+                } = {
+                    contractLink:contractLink ?? 'test',
+                    paymentLink:paymentLink ?? 'test',
+                    status:"success"
+                }
+                onEmit(emitData)
+                //console.log(response)
             }
         }
         generedPdf()   
