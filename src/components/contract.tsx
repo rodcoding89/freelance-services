@@ -113,12 +113,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     };
     
     const getStatusText = (status: string) => {
-        if(!status) return 'Statut inconnu';
+        if(!status) return t.unknownStatus;
         switch (status) {
-        case 'signed': return 'Contrat signé';
-        case 'pending': return 'En cours de signature';
-        case 'unsigned': return 'Contrat non signé';
-        default: return 'Statut inconnu';
+        case 'signed': return t.signedContract;
+        case 'pending': return t.pendingContract;
+        case 'unsigned': return t.unsignedContract;
+        default: return t.unknownStatus;
         }
     };
     const getStatusClass = (status: string) => {
@@ -248,7 +248,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         router.push("/"+locale)
         return null
     }
-    if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+    if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["contrat"]}</h1>
@@ -455,7 +455,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                     {
                         Cookies.get('logged') && (<div className="my-4 w-full">
-                            <label className="block text-sm font-medium text-gray-700">Ajouter des fonctionnalités *</label>
+                            <label className="block text-sm font-medium text-gray-700">Ajouter des fonctionnalités <em>*</em></label>
                             <div className="flex items-center mt-2 justify-start gap-1 w-full"><input className="p-2 bg-gray-200 w-2/4 focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-1/4 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{fonction !== '' && setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>Ajouter</span><span className="p-2 cursor-pointer w-1/4 flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>Vider la liste</span></div>
                         </div>)
                     }
@@ -509,10 +509,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Prix ​​total (€) <em>*</em></label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     {...register("totalPrice", {
-                                    required: "Price is required",
-                                    min: { value: 0, message: "Price must be positive" },
+                                    required: "Price is required"
                                     })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                                 />
@@ -520,22 +519,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     <p className="text-red-500 text-sm mt-1">{errors.totalPrice.message as string}</p>
                                 )}
                             </div>
-                        </div>
-
-                        <div className="mt-4">
-                            <label className="block text-sm font-medium text-gray-700">Échéancier de paiement <em>*</em></label>
-                            <textarea
-                            {...register("paymentSchedule", { required: "Ce champ est requis",pattern: {
-                                value: /^\d+%(?:,\d+%)*$/i,
-                                message: "Structure invalide",
-                            }, })}
-                            rows={2}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                            placeholder="50% au début, 50% a la livraison" disabled={service && service.contractStatus === 'pending' ? true : false}
-                            />
-                            {errors.paymentSchedule && (
-                            <p className="text-red-500 text-sm mt-1">{errors.paymentSchedule.message as string}</p>
-                            )}
                         </div>
                     </section>
 

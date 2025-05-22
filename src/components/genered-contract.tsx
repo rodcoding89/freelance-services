@@ -124,7 +124,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                 contractStatus === null ? (
                     <>
                     <section className="py-5">
-                        <h1 className="text-left text-[2.5rem] text-thirty uppercase mb-5">Terme du contrat</h1>
+                        <h1 className="text-left text-[2.5rem] text-thirty uppercase mb-5">{t.contractTerme}</h1>
                         <div className="">
                             <h2 className="text-[2.1rem] leading-9 mb-5">{t.contract.sections["1"].title}</h2>
                             <p className="text-[1rem] mb-3"><strong>{t.contract.sections["1"].paraDef}</strong> {t.contract.sections["1"].para1}</p>
@@ -313,17 +313,17 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                         </div>
                         <GeneratePdfContract data={contractData} clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} client={client} locale={locale} onEmit={handleContractStatus}/>
                     </section>
-                    <span className="block italic my-4">Si vous êtes d'accord avec ces termes, signé en dessous. Dans le cas contraire, indiquez nous les raisons de votre rétition.</span>
+                    <span className="block italic my-4">{t.contractConfirm}</span>
                     <section className="signing">
                         <InitCanvaSignature locale={locale} emit={handleSignatureChange}/>
                     </section>
                     <div className="flex justify-start items-center mt-5 gap-2">
                         <input type="checkbox" name="" id="confirmElectronicSignature" onChange={(e:any)=>setConfirmElectronicSignature(e.target.checked)}/>
-                        <label htmlFor="confirmElectronicSignature">Cocher pour approuver la signature électronique du contrat</label>
+                        <label htmlFor="confirmElectronicSignature">{t.confirmElectronicSignature}</label>
                     </div>
                     <div className="flex justify-end items-center mt-5 gap-4">
-                        <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" href={`/${locale}/create-contract/${clientId}/?edit=true`}>Modifier le contrat</a>
-                        <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkContractValidation()} onClick={uploadContract}>Télecharger le contrat</button>
+                        <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" href={`/${locale}/create-contract/${clientId}/?edit=true`}>{t.updateContract}</a>
+                        <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkContractValidation()} onClick={uploadContract}>{t.uploadContract}</button>
                     </div>
                     </>
             ) : (
