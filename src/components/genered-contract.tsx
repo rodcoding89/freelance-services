@@ -29,7 +29,7 @@ interface Contract {
         street:string;
         postalCode:string;
         city:string;
-        country:string;
+        country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
     }
     particular:boolean;
     company:boolean;
@@ -116,7 +116,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const handleEmit = (data: string): void =>{
         setContractStatus(null)
     }
-    if (!contract && loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+    if (!contract && loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
 
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>

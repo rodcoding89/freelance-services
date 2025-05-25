@@ -36,7 +36,7 @@ interface Contract {
         street:string;
         postalCode:string;
         city:string;
-        country:string;
+        country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
     }
     particular:boolean;
     company:boolean;
@@ -83,7 +83,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
     const [fonction, setFonction] = useState<string>('')
     const router = useRouter();
-    const [selectedCountry,setSelectedCountry] = useState<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number,turnover:number}|null>(null)
+    const [selectedCountry,setSelectedCountry] = useState<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number}|null>(null)
     const [client, setClient] = useState<Client|null>(null)
     const [service, setService] = useState<Services|null>(null)
     const [selectedContractType, setSelectedContractType] = useState<"service"|"maintenance"|"service_and_maintenance"|null>(null);
@@ -253,20 +253,20 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["contrat"]}</h1>
             <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-                <h1 className="text-2xl font-bold mb-6 flex justify-start items-center gap-2">Contrat de prestation de service/maintenace<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(service?.contractStatus ?? '')}`}><i className={`${getStatusIcon(service?.contractStatus ?? '')} mr-1`}></i>{getStatusText(service?.contractStatus ?? '')}</span></h1>
+                <h1 className="text-2xl font-bold mb-6 flex justify-start items-center gap-2">{t.contractPrestation}<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(service?.contractStatus ?? '')}`}><i className={`${getStatusIcon(service?.contractStatus ?? '')} mr-1`}></i>{getStatusText(service?.contractStatus ?? '')}</span></h1>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* === Client Information === */}
                     <section className="border-b pb-6">
-                        <h2 className="text-xl font-semibold mb-4">Information sur le client</h2>
+                        <h2 className="text-xl font-semibold mb-4">{t.clientInfo}</h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
-                                    Nom complet / Nom de l'entreprise <em>*</em>
+                                    {t.clientName} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                    {...register("name", { required: "This field is required" })}
+                                    {...register("name", { required: t.fileRequirer })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
                                 {errors.name && (
@@ -274,17 +274,17 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 )}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Type de client <em>*</em></label>
+                                <label className="block text-sm font-medium text-gray-700">{t.clientType} <em className="text-red-700">*</em></label>
                                 <div className="flex items-center justify-start gap-2 flex-wrap w-full mt-3">
                                     <div className="flex items-center gap-2">
                                         <input type="checkbox" id="particular" {...register("particular")}/>
                                         <label htmlFor="particular" className="ml-2 block text-sm font-medium text-gray-700">
-                                            Particuler</label>
+                                            {t.particular}</label>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <input type="checkbox" id="company" {...register("company")}/>
                                         <label htmlFor="company" className="ml-2 block text-sm font-medium text-gray-700">
-                                            Entreprise</label>
+                                            {t.company}</label>
                                     </div>
                                 </div>
                             </div>
@@ -292,11 +292,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Adresse email <em>*</em></label>
+                                <label className="block text-sm font-medium text-gray-700">{t.email} <em className="text-red-700">*</em></label>
                                 <input
                                     type="email"
                                     {...register("clientEmail", {
-                                    required: "Email is required",
+                                    required: t.errorEmail,
                                     pattern: {
                                         value: /^\S+@\S+$/i,
                                         message: "Invalid email format",
@@ -310,10 +310,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Numéro de téléphone <em>*</em></label>
+                                <label className="block text-sm font-medium text-gray-700">{t.tel} <em className="text-red-700">*</em></label>
                                 <input
                                     type="tel"
-                                    {...register("clientPhone", { required: "Phone is required" })}
+                                    {...register("clientPhone", { required: t.errorTel })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
                                 {errors.clientPhone && (
@@ -324,14 +324,14 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                         <div className="my-4 w-full">
                             <label className="block text-sm font-medium text-gray-700">
-                            Adresse <em>*</em>
+                            {t.adresse.title} <em className="text-red-700">*</em>
                             </label>
                             <div>
                                 <select name="" id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={(e:any)=>{e.target.value !== 'default' ? setSelectedCountry(JSON.parse(e.target.value)):setSelectedCountry(null);clearAdresse()}}>
-                                    <option value="default">---Choisir un pays---</option>
+                                    <option value="default">{t.adresse.default}</option>
                                     {
                                         countries.map((item, index) => ( 
-                                            <option key={index} value={JSON.stringify(item)}>{item.name}</option>
+                                            <option key={index} value={JSON.stringify(item)}>{t.adresse[item.name]}</option>
                                         ))
                                     }
                                 </select>
@@ -342,11 +342,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <div className="flex justify-start items-center gap-3 flex-wrap w-full">
                             <div className="min-w-[16.875rem] w-max max-w-1/3">
                                 <label className="block text-sm font-medium text-gray-700">
-                                    Rue <em>*</em>
+                                    {t.adresse.street} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                    {...register("adresse.street", { required: "This field is required" })}
-                                    placeholder="Street"
+                                    {...register("adresse.street", { required: t.fileRequirer })}
+                                    placeholder={t.adresse.street}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
                                 {errors.adresse?.street && (
@@ -355,11 +355,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             </div>
                             <div className="min-w-[16.875rem] w-max max-w-1/3">
                                 <label className="block text-sm font-medium text-gray-700">
-                                    Ville <em>*</em>
+                                    {t.adresse.city} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                    {...register("adresse.city", { required: "This field is required" })}
-                                    placeholder="City"
+                                    {...register("adresse.city", { required: t.fileRequirer })}
+                                    placeholder={t.adresse.city}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
                                 {errors.adresse?.city && (
@@ -368,11 +368,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             </div>
                             <div className="min-w-[16.875rem] w-max max-w-1/3">
                                 <label className="block text-sm font-medium text-gray-700">
-                                    Code Postale <em>*</em>
+                                    {t.adresse.codePostal} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                    {...register("adresse.postalCode", { required: "This field is required" })}
-                                    placeholder="Code Postal"
+                                    {...register("adresse.postalCode", { required: t.fileRequirer })}
+                                    placeholder={t.adresse.codePostal}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
                                 {errors.adresse?.postalCode && (
@@ -384,7 +384,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     }
                     <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">
-                        Adresse de facturation (si différente)
+                        {t.diffAdresse}
                         </label>
                         <input
                         {...register("clientBillingAddress")}
@@ -395,19 +395,19 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                     {/* === Freelancer Information === */}
                     <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold mb-4">Information sur le prestataire de service</h2>
+                    <h2 className="text-xl font-semibold mb-4">{t.freelancerInfo}</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">Nom complet / Nom de l'entreprise <em>*</em></label>
+                        <label className="block text-sm font-medium text-gray-700">{t.freelancerCompanyName} <em className="text-red-700">*</em></label>
                         <input
-                            {...register("freelancerName", { required: "This field is required" })}
+                            {...register("freelancerName", { required: t.fileRequirer })}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'ROD TECH SOLUTIONS'} disabled={true}
                         />
                         </div>
 
                         <div>
-                        <label className="block text-sm font-medium text-gray-700">Adresse <em>*</em></label>
+                        <label className="block text-sm font-medium text-gray-700">{t.freelancerCompanyAdresse} <em className="text-red-700">*</em></label>
                         <input
                             {...register("freelanceAddress", { required: "This field is required" })}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'123 rue Saint-Sébastien, Poissy 78300, France'} disabled={true}
@@ -417,7 +417,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">{t.invoice.identificationNumber} <em>*</em></label>
+                                <label className="block text-sm font-medium text-gray-700">{t.invoice.identificationNumber} <em className="text-red-700">*</em></label>
                                 <input
                                     {...register("freelancerTaxId", { required: "This field is required" })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={process.env.NEXT_PUBLIC_TAX_ID} disabled={true}
@@ -428,12 +428,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                     {/* === Project Details === */}
                     <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold mb-4">Détailles du projet</h2>
+                    <h2 className="text-xl font-semibold mb-4">{t.projetInfo}</h2>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Nom du projet <em>*</em></label>
+                        <label className="block text-sm font-medium text-gray-700">{t.projetTitle} <em className="text-red-700">*</em></label>
                         <input
-                        {...register("projectTitle", { required: "This field is required" })}
+                        {...register("projectTitle", { required: t.fileRequirer })}
                         className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                         />
                         {errors.projectTitle && (
@@ -442,9 +442,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     </div>
 
                     <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">Déscription du projet <em>*</em></label>
+                        <label className="block text-sm font-medium text-gray-700">{t.projetDescription} <em className="text-red-700">*</em></label>
                         <textarea
-                        {...register("projectDescription", { required: "Ce champ est requis" })}
+                        {...register("projectDescription", { required: t.fileRequirer })}
                         rows={4}
                         className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                         />
@@ -455,15 +455,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                     {
                         Cookies.get('logged') && (<div className="my-4 w-full">
-                            <label className="block text-sm font-medium text-gray-700">Ajouter des fonctionnalités <em>*</em></label>
-                            <div className="flex items-center mt-2 justify-start gap-1 w-full"><input className="p-2 bg-gray-200 w-2/4 focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-1/4 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{fonction !== '' && setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>Ajouter</span><span className="p-2 cursor-pointer w-1/4 flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>Vider la liste</span></div>
+                            <label className="block text-sm font-medium text-gray-700">{t.projetFonctionality} <em className="text-red-700">*</em></label>
+                            <div className="flex items-center mt-2 justify-start gap-1 w-full"><input className="p-2 bg-gray-200 w-2/4 focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-1/4 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{fonction !== '' && setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>{t.add}</span><span className="p-2 cursor-pointer w-1/4 flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>{t.clearListe}</span></div>
                         </div>)
                     }
 
                     {
                         fonctionalityList.length > 0 && (
                             <>
-                            <label className="block text-sm font-medium text-gray-700 py-3">Liste des fonctionnalités principales</label>
+                            <label className="block text-sm font-medium text-gray-700 py-3">{t.principalFonctionality}</label>
                             <ul className="my-4 mx-4 list-disc">
                                 {
                                     fonctionalityList.map((item, index) => (
@@ -477,10 +477,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Date de début du contrat <em>*</em></label>
+                            <label className="block text-sm font-medium text-gray-700">{t.beginContract} <em className="text-red-700">*</em></label>
                             <input
                                 type="date"
-                                {...register("startDate", { required: "This field is required" })}
+                                {...register("startDate", { required: t.fileRequirer })}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                             />
                             {errors.startDate && (
@@ -490,7 +490,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700">
-                                Date de fin du contrat (estimation)
+                                {t.endContract}
                             </label>
                             <input
                                 type="date"
@@ -503,15 +503,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
                     {/* === Payment Terms === */}
                     <section className="border-b pb-6">
-                        <h2 className="text-xl font-semibold mb-4">Conditions de paiement</h2>
+                        <h2 className="text-xl font-semibold mb-4">{t.paymentCondition}</h2>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Prix ​​total (€) <em>*</em></label>
+                        <div className="flex justify-start items-center gap-3 flex-wrap w-full">
+                            <div className="min-w-[16.875rem] w-full max-w-[calc(50%-1.5rem)]">
+                                <label className="block text-sm font-medium text-gray-700">{t.totalPrice} (€) <em className="text-red-700">*</em></label>
                                 <input
                                     type="text"
                                     {...register("totalPrice", {
-                                    required: "Price is required"
+                                    required: t.priceError
                                     })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
                                 />
@@ -519,21 +519,34 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     <p className="text-red-500 text-sm mt-1">{errors.totalPrice.message as string}</p>
                                 )}
                             </div>
+                            <div className="min-w-[16.875rem] w-full max-w-[calc(50%-1.5rem)]">
+                                <label className="block text-sm font-medium text-gray-700">{t.paymentSchedule} (€) <em className="text-red-700">*</em></label>
+                                <input
+                                    type="text"
+                                    {...register("paymentSchedule", {
+                                    required: t.fileRequirer
+                                    })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={service && service.contractStatus === 'pending' ? true : false}
+                                />
+                                {errors.paymentSchedule && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.paymentSchedule.message as string}</p>
+                                )}
+                            </div>
                         </div>
                     </section>
 
                     <section className="border-b pb-6">
-                        <h2 className="text-xl font-semibold mb-4">Services maintenace</h2>
+                        <h2 className="text-xl font-semibold mb-4">{t.maintenanceService.title}</h2>
                         {
                             Cookies.get('logged') && (<div className="flex gap-5 justify-start items-center">
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'web' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('web')}>Web</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenaceType === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('app')}>Application mobile</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('saas')}>Application métier / SaaS</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'web' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('web')}>{t.maintenanceService.web}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenaceType === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('app')}>{t.maintenanceService.app}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenaceType === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('saas')}>{t.maintenanceService.saas}</span>
                             </div>)
                         }
                         
                         {
-                            maintenaceType === null && (<p className="text-red-500 text-sm mt-1">Indiquer le type de maintenance</p>)
+                            maintenaceType === null && (<p className="text-red-500 text-sm mt-1">{t.maintenanceService.maintenanceError}</p>)
                         }
                         {
                             maintenaceType !== null && (<div className="mt-4">
@@ -541,19 +554,19 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     maintenaceType === "app" ? (
                                         <div className="flex gap-2 justify-start items-center">
                                             <input type="checkbox" name="app" id="app" />
-                                            <label className="block text-sm font-medium text-gray-700" htmlFor="app">Maintenance pour une application mobile</label>
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="app">{t.maintenanceService.maintenanceApp}</label>
                                         </div>
                                     ) : maintenaceType === "saas" ? (<div className="flex gap-2 justify-start items-center">
                                         <input type="checkbox" name="saas" id="saas" />
-                                        <label className="block text-sm font-medium text-gray-700" htmlFor="saas">Maintenance pour une application métier / SaaS</label>
+                                        <label className="block text-sm font-medium text-gray-700" htmlFor="saas">{t.maintenanceService.maintenanceSaas}</label>
                                     </div>) : (<div className="flex gap-5 justify-start items-center flex-wrap">
                                         <div className="flex gap-2 justify-start items-center">
                                             <input type="checkbox" name="hour" id="hour" />
-                                            <label className="block text-sm font-medium text-gray-700" htmlFor="hour">Facturation à l'heure (50€)/heure</label>
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="hour">{t.maintenanceService.pricePerHour.replace("{price}",50)}</label>
                                         </div>
                                         <div className="flex gap-2 justify-start items-center">
                                             <input type="checkbox" name="year" id="year" />
-                                            <label className="block text-sm font-medium text-gray-700" htmlFor="year">Facturation annuélle (500€)/An</label>
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="year">{t.maintenanceService.pricePerYear.replace("{price}",500)}</label>
                                         </div>
                                     </div>)
                                 }
@@ -564,20 +577,20 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         Cookies.get('logged') && (
                             <>
                             <section className="border-b pb-6">
-                                <h2 className="text-xl font-semibold mb-4">Choisir la langue pour le contrat <em>*</em></h2>
+                                <h2 className="text-xl font-semibold mb-4">{t.contractLanguage.title} <em className="text-red-700">*</em></h2>
                                 <select value={contractLanguage} onChange={handleContractLanguageChange}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2">
-                                    <option value="default">---Choisir une langue---</option>
-                                    <option value="fr">Français</option>
-                                    <option value="en">English</option>
-                                    <option value="en">Allemand</option>
+                                    <option value="default">{t.contractLanguage.defaultLang}</option>
+                                    <option value="fr">{t.contractLanguage.french}</option>
+                                    <option value="en">{t.contractLanguage.english}</option>
+                                    <option value="en">{t.contractLanguage.germany}</option>
                                 </select>
                                 {
-                                    contractLanguage === 'default' || contractLanguage === '' && (<p className="text-red-500 text-sm mt-1">Veuillez choisir une langue</p>)
+                                    contractLanguage === 'default' || contractLanguage === '' && (<p className="text-red-500 text-sm mt-1">{t.contractLanguage.errorLang}</p>)
                                 }
                             </section>
                             <section className="border-b pb-6">
-                                <h2 className="text-xl font-semibold mb-4">Modifier le type de contrat</h2>
+                                <h2 className="text-xl font-semibold mb-4">{t.contractType}</h2>
                                 <select value={selectedContractType as "service"|"maintenance"|"service_and_maintenance"} onChange={(e:any)=>handleContractTypeChange(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                                 {
@@ -588,7 +601,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 </select>
                             </section>
                             <section className="border-b pb-6">
-                                <h2 className="text-xl font-semibold mb-4">Modifier le status du contrat</h2>
+                                <h2 className="text-xl font-semibold mb-4">{t.contractStatus}</h2>
                                 <select value={selectedContractStatus as "pending"|"unsigned"|"signed"} onChange={(e:any)=>handleContractStatusChange(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                                 {
@@ -605,14 +618,14 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     {/* Submit Button */}
                     <div className="flex justify-end gap-3">
                         {
-                            Cookies.get('logged')  && (<a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Liste client</a>)
+                            Cookies.get('logged')  && (<a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">{t.clientList}</a>)
                         }
                         
                         <button
                             type="submit"
                             className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}
                         >
-                            Générer le contrat
+                            {t.generedContract}
                         </button>
                     </div>
                 </form>

@@ -90,7 +90,7 @@ interface Contract {
         street:string;
         postalCode:string;
         city:string;
-        country:string;
+        country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
     }
     particular:boolean;
     company:boolean;
@@ -191,6 +191,36 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
         return (totalPrice * rate / 100).toFixed(2)
     }
 
+    const getCA = (currency:string)=>{
+        return 0
+    }
+
+    const calculTotalPriceWithTva = (tax:number,price:number,limitBeforeTax:number,groupe:string,currency:string):string =>{
+        const realTax = tax > 0 ? tax : 100;
+        if (groupe === 'ue') {
+            if (limitBeforeTax > getCA(currency)) {
+                const taxPrice = price * realTax / 100
+                return (price + taxPrice).toFixed(2)
+            } else {
+                return price.toFixed(2);
+            }
+        }else if(groupe === 'other'){
+            const taxPrice = price * realTax / 100
+            return (price + taxPrice).toFixed(2)
+        }else if(groupe === 'sw'){
+            if (limitBeforeTax > getCA(currency)) {
+                const taxPrice = price * realTax / 100
+                return (price + taxPrice).toFixed(2)
+            } else {
+                return price.toFixed(2);
+            }
+        }else if(groupe === 'state'){
+            return price.toFixed(2);
+        }else{
+            return price.toFixed(2);
+        }
+    }
+
     const generePaiementDoc = async(data:Contract) =>{
         const pdfDoc = await PDFDocument.create();
         let page = pdfDoc.addPage([595, 842]); // Format A4
@@ -237,10 +267,14 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
             let pageEchelonement;
             const bayingSchedule = [beforeStart];
             const priceSchedule:string[] = [];
+            const tax = data.company ? parseInt(data.adresse.country.taxB2B) : parseInt(data.adresse.country.taxB2C);
+            const groupe = data.adresse.country.groupe;
+            const currency = data.adresse.country.currency;
+            const limitBeforeTax = data.adresse.country.threshold_before_tax;
+            const ttPrice = calculTotalPriceWithTva(tax,data.totalPrice,limitBeforeTax,groupe,currency);
             if (echelonement.length === 0) {
                 pageEchelonement = t.payment.singleEchelon;
-                price = data.totalPrice;
-                const final = addHorizontalText([[{text:pageEchelonement,size:11,isBold:false},{text:price.toString(),size:14,isBold:true},{text:'EUR',size:11,isBold:false}],margin,yRef.current,false,margin,30,fontRegular,fontBold,textHorizontalOption,...lastParam])
+                const final = addHorizontalText([[{text:pageEchelonement,size:11,isBold:false},{text:ttPrice.toString(),size:14,isBold:true},{text:'EUR',size:11,isBold:false}],margin,yRef.current,false,margin,30,fontRegular,fontBold,textHorizontalOption,...lastParam])
                 yRef.current = final.finalY
             } else {
                 pageEchelonement = t.payment.multipleEchelon;
@@ -248,7 +282,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
                 echelonement.forEach((item,index)=>{
                     const nitem = item.split('%');
                     const rate = parseInt(nitem[0])
-                    const nprice = calculPrice(data.totalPrice,rate);
+                    const nprice = calculPrice(parseInt(ttPrice),rate);
                     priceSchedule.push(nprice)
                     if (index === echelonement.length - 1) {
                         bayingSchedule.push(afterDelively);
@@ -991,7 +1025,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
                     base64Contrat:contractBase64,
                     base64Payement:paymentBase64
                 }
-                //const response = await sendContract(email,data.contractLanguage);
+                const response = await sendContract(email,data.contractLanguage);
                 const emitData:{
                     contractLink:string,
                     paymentLink:string,
@@ -999,7 +1033,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
                 } = {
                     contractLink:contractLink ?? 'test',
                     paymentLink:paymentLink ?? 'test',
-                    status:"success"
+                    status:response
                 }
                 onEmit(emitData)
                 //console.log(response)
