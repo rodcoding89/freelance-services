@@ -12,9 +12,13 @@
     "@types/signature_pad": "^4.0.0",
     "boxicons": "^2.1.4",
     "firebase": "^11.6.0",
+<<<<<<< HEAD
     "googleapis": "^149.0.0",
     "js-cookie": "^3.0.5",
     "mime": "^4.0.7",
+=======
+    "js-cookie": "^3.0.5",
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
     "motion": "^12.6.5",
     "next": "15.3.0",
     "next-intl": "^4.0.2",

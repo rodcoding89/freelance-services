@@ -54,7 +54,6 @@ type FormValues = {
   invoiceDescription:string;
   locale:string
 };
-
 interface InvoiceFormProps {
   locale:string
 }

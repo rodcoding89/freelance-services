@@ -551,8 +551,15 @@
     "ecommerceItem1TaksPara8":"Tests final",
     "ecommerceItem1TaksPara9":"Déploiement (mise en ligne)",
     "ecommerceItem2TaksPara5":"Mise en place du template (pages/panier/services...)",
+<<<<<<< HEAD
     "termsOfSale":"Conditions Générale de Vente",
     "budget":"Quel est votre budget ?",
+=======
+    "termsOfUse":"Conditions Générale d'utilisation",
+    "budget":"Quel est votre budget ?",
+
+
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
     "contract":{
         "header":{
             "tittleService":"CONTRAT DE PRESTATION DE SERVICE - ",
@@ -604,6 +611,7 @@
                     "titleService":"3.4 - Prix",
                     "titleMaintenance":"3.4 - Prix",
                     "titleServiceMaintenance":"3.4 - Prix",
+<<<<<<< HEAD
                     "paraService":"Le prix pour la prestation de services est de {price} € TTC selon conclu dans le devis. Les modalités de paiement se trouvent en annexe de ce contrat.",
                     "paraMaintenance":{
                         "peerHour":"Le tarif horaire pour la prestation de maintenance est de {mprice} € TTC selon conclu dans le devis. Les heures travaillées seront consignées dans un rapport mensuel et facturées à la fin de chaque mois. Les modalités de paiement se trouvent en annexe de ce contrat.",
@@ -614,6 +622,18 @@
                         "para1":"Les modalités de paiement se trouvent en annexe de ce contrat.",
                         "peerHour":"le tarif horaire est de {mprice} € TTC. Les heures travaillées seront consignées dans un rapport mensuel et facturées à la fin de chaque mois.",
                         "peerYear":"le forfait annuel est de {mprice} € TTC. Le paiement sera effectué en une seule fois au début de chaque période contractuelle."
+=======
+                    "paraService":"Le prix pour la prestation de services est de {price} € selon conclu dans le devis. Les modalités de paiement se trouvent en annexe de ce contrat.",
+                    "paraMaintenance":{
+                        "peerHour":"Le tarif horaire pour la prestation de maintenance est de {mprice} € selon conclu dans le devis. Les heures travaillées seront consignées dans un rapport mensuel et facturées à la fin de chaque mois. Les modalités de paiement se trouvent en annexe de ce contrat.",
+                        "peerYear":"Le forfait annuel pour la prestation de maintenance est de {mprice} € selon conclu dans le devis. Le paiement sera effectué en une seule fois au début de chaque période contractuelle. Les modalités de paiement se trouvent en annexe de ce contrat."
+                    },
+                    "paraServiceMaintenance":{
+                        "para":"Le prix pour la prestation de services est de {price} € selon conclu dans le devis. Pour la prestation de maintenance,",
+                        "para1":"Les modalités de paiement se trouvent en annexe de ce contrat.",
+                        "peerHour":"le tarif horaire est de {mprice} €. Les heures travaillées seront consignées dans un rapport mensuel et facturées à la fin de chaque mois.",
+                        "peerYear":"le forfait annuel est de {mprice} €. Le paiement sera effectué en une seule fois au début de chaque période contractuelle."
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
                     }
                 }
             },
@@ -904,11 +924,17 @@
     "payment":{
         "title":"Paiement et Echeance",
         "pagePara11":"Vous trouverez sur ce document les modalité de paiement pour la prestation {title}",
+<<<<<<< HEAD
         "totalPrice":"Prix total",
         "pagePara12":"à réaliser.",
         "pagePara13":"Ce paiement se fera par échelonement dans le but d'établir une relation de confiance entre vous (client) et nous (prestataire), car notre objectif dans nos prestations est la sasisfation du client.",
         "pagePara2":"Nous vous recommandons d'effectuer tous vos virements dans le cadre de cette prestation en devise locale afin d'éviter des surcoups lors des virements.",
         "ttc":"TTC",
+=======
+        "pagePara12":"à réaliser.",
+        "pagePara13":"Ce paiement se fera par échelonement dans le but d'établir une relation de confiance entre vous (client) et nous (prestataire), car notre objectif dans nos prestations est la sasisfation du client.",
+        "pagePara2":"Nous vous recommandons d'effectuer tous vos virements dans le cadre de cette prestation en devise locale afin d'éviter des surcoups lors des virements.",
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
         "beforeStart":"Depot de garantie",
         "afterDelively":"Paiement après la livraison du projet",
         "intermediarePaiement":"Paiement après {nr} validation.",
@@ -918,7 +944,11 @@
         "pagePara3":"Pour faire le virement, cliquer sur le lien en dessous ou copier et coller le sur un navigateur, puis suivez les instructions. Aprés la transaction, faite une photo de votre compte montrant le virement éffectué, et envoyer nous cela afin qu'on puisse demarré avec votre prestation, si non elle débutera uniquement lorsque le virement sera reçu. Cela peut prendre plusieurs jours."
     },
     "contractTerme":"Terme du contrat",
+<<<<<<< HEAD
     "contractConfirm":"Si vous êtes d'accord avec ces termes, coché la case pour approuver la signature éléctronique du contrat, puis signé en dessous. Dans le cas contraire, indiquez nous les raisons de votre rétition.",
+=======
+    "contractConfirm":"Si vous êtes d'accord avec ces termes, signé en dessous. Dans le cas contraire, indiquez nous les raisons de votre rétition.",
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
     "confirmElectronicSignature":"Cocher pour approuver la signature électronique du contrat",
     "updateContract":"Modifier le contrat",
     "uploadContract":"Télecharger le contrat",
@@ -981,7 +1011,11 @@
     "endContract":"Date de fin du contrat (estimation)",
     "paymentCondition":"Information de paiement",
     "totalPrice":"Prix ​total",
+<<<<<<< HEAD
     "paymentSchedule":"Échéancier de paiement",
+=======
+    "paymentSchedule":"Modalité de paiement",
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
     "priceError":"Price is required",
     "maintenanceService":{
         "title":"Services maintenace",
@@ -1005,6 +1039,7 @@
     "contractType":"Modifier le type de contrat",
     "contractStatus":"Modifier le status du contrat",
     "clientList":"Liste client",
+<<<<<<< HEAD
     "generedContract":"Générer le contrat",
     "legalNotices":{
 		"content_0": "Cette page est la traduction d’un document en français. Cette traduction est uniquement fournie à titre d’information. La version définitive est celle en français.",
@@ -1180,5 +1215,8 @@
         "content_23":"Nous contacter",
         "content_24":"Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter à : {link}"
     }
+=======
+    "generedContract":"Générer le contrat"
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
 }
     

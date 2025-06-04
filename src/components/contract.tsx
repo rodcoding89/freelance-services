@@ -229,7 +229,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
         getDocumentById("clients",clientId,clientServiceId);
     }, [edit,clientId]);
-
     useEffect(()=>{
         const loadCountrieData = async () => {
             try {
