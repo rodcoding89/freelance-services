@@ -130,9 +130,15 @@ const InitCanvaSignature:React.FC<InitCanvaSignatureProps> = ({locale,emit,enabl
     return (
         <div className="border rounded p-2">
             <h5 className='my-3'>Signature <em>*</em></h5>
+<<<<<<< HEAD
             <canvas 
                 ref={canvasRef}
                 className={`w-full h-60 bg-gray-100 border`} style={{touchAction: "none"}}
+=======
+            <canvas
+                ref={canvasRef}
+                className="w-full h-60 bg-gray-100 border" style={{touchAction: "none"}}
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
             />
            <canvas
                 ref={canvasRef1}
@@ -140,7 +146,11 @@ const InitCanvaSignature:React.FC<InitCanvaSignatureProps> = ({locale,emit,enabl
             />
             
             <div className='flex justify-between items-center gap-3 w-full'>
+<<<<<<< HEAD
                 <div className={`flex justify-start items-center gap-3 w-full`}>
+=======
+                <div className='flex justify-start items-center gap-3 w-full'>
+>>>>>>> ae84fb98f9b7a19b44d783208ed25037a54b9bcd
                     <button
                     type="button"
                     onClick={clearSignature}

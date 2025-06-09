@@ -28,9 +28,9 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
             setIsPopUp(contextData.value)
         }
     },[contextData])
+<<<<<<< HEAD
     const replaceContent = (key: string,replaceText: string | string[],replaceValue: string | string[]): string => {
     if (Array.isArray(replaceText) && Array.isArray(replaceValue)) {
-        replaceText.forEach((text, index) => {
         key = key.replace(text, replaceValue[index]);
         });
         return key;
@@ -143,8 +143,8 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
                 ></p>
             </div>
 
-        </main>
-    )
-}
+=======
+    return (
+        <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
 
 export default LegalNotice
