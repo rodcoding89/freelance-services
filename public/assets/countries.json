@@ -1,0 +1,28 @@
+{"countries":
+    [
+    {"name":"Afrique du Sud","taxB2C":0,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"currency":"USD","vat":"VAT"},
+    {"name":"Allemagne","taxB2C":19,"taxB2B":19,"groupe":"ue","threshold_before_tax":10000,"currency":"EUR","vat":"MwSt"},
+    {"name":"Australie","taxB2C":0,"taxB2B":0,"threshold_before_tax":0,"currency":"USD","groupe":"other","vat":"GST"},
+    {"name":"Autriche","taxB2C":20,"taxB2B":20,"groupe":"ue","threshold_before_tax":10000,"currency":"EUR","vat":"MwSt"},
+    {"name":"Belgique","taxB2C":21,"taxB2B":20,"groupe":"ue","threshold_before_tax":10000,"currency":"EUR","vat":"TVA"},
+    {"name":"Canada","taxB2C":0,"state":[{"name":"Alberta","tax":5,"vat":"TPS"},{"name":"Colombie-Britannique","tax":12,"vat":"TPS + TVP"},{"name":"Île-du-Prince-Édouard","tax":15,"vat":"TVH"},{"name":"Manitoba","tax":12,"vat":"TPS + TVP"},{"name":"Nouveau-Brunswick","tax":15,"vat":"TPH"},{"name":"Nouvelle-Écosse","tax":14,"vat":"TPH"},{"name":"Nunavut","tax":5,"vat":"TPS"},{"name":"Ontario","tax":13,"vat":"TPH"},{"name":"Québec","tax":14.975,"vat":"TPS + TVQ"},{"name":"Saskatchewan","tax":11,"vat":"TPS + TVP"},{"name":"Terre-Neuve-et-Labrador","tax":15,"vat":"TVH"},{"name":"Territoires du Nord-Ouest","tax":5,"vat":"TPS"},{"name":"Yukon","tax":5,"vat":"TPS"}],"taxB2B":0,"threshold_before_tax":30000,"currency":"USD","groupe":"state","vat":"GST/HST"},
+    {"name":"Cameroun","taxB2C":0,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"currency":"XFA","vat":"TVA"},
+    {"name":"Congo (Brazzaville)","taxB2C":0,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"currency":"XAF","vat":"TVA"},
+    {"name":"Congo-Kinshasa","taxB2C":0,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"currency":"USD","vat":"TVA"},
+    {"name":"Côte d'Ivoire","taxB2C":0,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"currency":"USD","vat":"TVA"},
+    {"name":"Espagne","taxB2C":21,"taxB2B":21,"groupe":"ue","threshold_before_tax":10000,"currency":"EUR","vat":"IVA"},
+    {"name":"États-Unis","taxB2C":0,"state":[{"name":"Alabama","tax":9.29,"vat":"Sales Tax"},{"name":"Alaska","tax":1.82,"vat":"Sales Tax"},{"name":"Arizona","tax":8.38,"vat":"Sales Tax"},{"name":"Arkansas","tax":9.45,"vat":"Sales Tax"},{"name":"Colorado","tax":7.81,"vat":"Sales Tax"},{"name":"Connecticut","tax":6.35,"vat":"Sales Tax"},{"name":"District of Columbia","tax":6,"vat":"Sales Tax"},{"name":"Georgia","tax":7.38,"vat":"Sales Tax"},{"name":"Hawaii","tax":4.50,"vat":"Sales Tax"},
+    {"name":"Idaho","tax":6.03,"vat":"Sales Tax"},{"name":"Illinois","tax":6.86,"vat":"Sales Tax"},{"name":"Indiana","tax":7,"vat":"Sales Tax"},
+    {"name":"Iowa","tax":6.94,"vat":"Sales Tax"},
+    {"name":"Kansas","tax":8.65,"vat":"Sales Tax"},{"name":"Kentucky","tax":6,"vat":"Sales Tax"},{"name":"Louisiana","tax":9.56,"vat":"Sales Tax"},{"name":"Maine","tax":5.5,"vat":"Sales Tax"},{"name":"Maryland","tax":6,"vat":"Sales Tax"},{"name":"Massachusetts","tax":6.25,"vat":"Sales Tax"},{"name":"Michigan","tax":6,"vat":"Sales Tax"},{"name":"Minnesota","tax":8.07,"vat":"Sales Tax"},{"name":"Mississippi","tax":7.06,"vat":"Sales Tax"},{"name":"Nebraska","tax":6.97,"vat":"Sales Tax"},{"name":"New Jersey","tax":6.60,"vat":"Sales Tax"},
+    {"name":"New Mexico","tax":7.62,"vat":"Sales Tax"},{"name":"New York","tax":8.53,"vat":"Sales Tax"},{"name":"North Carolina","tax":7,"vat":"Sales Tax"},{"name":"North Dakota","tax":6,"vat":"Sales Tax"},{"name":"Ohio","tax":5.75,"vat":"Sales Tax"},{"name":"Oklahoma","tax":9.45,"vat":"Sales Tax"},{"name":"Oregon","tax":0.0,"vat":"Sales Tax"},{"name":"Pennsylvania","tax":6.0,"vat":"Sales Tax"},{"name":"Rhode Island","tax":7,"vat":"Sales Tax"},{"name":"South Carolina","tax":6,"vat":"Sales Tax"},{"name":"South Dakota","tax":4,"vat":"Sales Tax"},{"name":"Tennessee","tax":9.75,"vat":"Sales Tax"},{"name":"Texas","tax":6.25,"vat":"Sales Tax"},{"name":"Utah","tax":6.1,"vat":"Sales Tax"},{"name":"Vermont","tax":0.0,"vat":"Sales Tax"},{"name":"Virginia","tax":5.3,"vat":"Sales Tax"},{"name":"Washington","tax":9.25,"vat":"Sales Tax"},{"name":"West Virginia","tax":6.5,"vat":"Sales Tax"},{"name":"Wisconsin","tax":5.3,"vat":"Sales Tax"},{"name":"Wyoming","tax":4,"vat":"Sales Tax"}],"taxB2B":0,"threshold_before_tax":0,"currency":"USD","groupe":"state","vat":"Sales Tax"},
+    {"name":"France","taxB2C":20,"taxB2B":20,"groupe":"ue","threshold_before_tax":10000,"currency":"EUR","vat":"TVA"},
+    {"name":"Gabon","taxB2C":0,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"currency":"USD","vat":"TVA"},
+    {"name":"Italie","taxB2C":22,"taxB2B":22,"groupe":"ue","threshold_before_tax":10000,"currency":"EUR","vat":"IVA"},
+    {"name":"Nigéria","taxB2C":0,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"currency":"USD","vat":"VAT"},
+    {"name":"Pays-Bas","taxB2C":21,"taxB2B":21,"groupe":"ue","threshold_before_tax":10000,"currency":"EUR","vat":"BTW"},
+    {"name":"Royaume-Uni","taxB2C":0,"taxB2B":0,"threshold_before_tax":0,"currency":"USD","groupe":"other","vat":"VAT"},
+    {"name":"Suisse","taxB2C":8.1,"taxB2B":8.1,"threshold_before_tax":100000,"currency":"CHF","groupe":"sw","vat":"TVA"},
+    {"name":"Sénégal","taxB2C":0,"taxB2B":0,"groupe":"Afrique","threshold_before_tax":0,"currency":"USD","vat":"TVA"}
+    ]
+}
