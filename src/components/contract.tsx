@@ -266,7 +266,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["contrat"]}</h1>
             <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-                <h1 className="text-2xl font-bold mb-6 flex justify-start items-center gap-2">{t.contractPrestation}<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(service?.contractStatus ?? '')}`}><i className={`${getStatusIcon(service?.contractStatus ?? '')} mr-1`}></i>{getStatusText(service?.contractStatus ?? '')}</span></h1>
+                <div className="flex justify-start items-center gap-2 mb-6 flex-wrap">
+                    <h1 className="text-2xl font-bold">{t.contractPrestation}</h1>
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(service?.contractStatus ?? '')}`}><i className={`${getStatusIcon(service?.contractStatus ?? '')} mr-1`}></i>{getStatusText(service?.contractStatus ?? '')}</span>
+                </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* === Client Information === */}
@@ -353,7 +356,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         {
                         selectedCountry && (
                             <div className="flex justify-start items-center gap-3 flex-wrap w-full">
-                            <div className="min-w-[16.875rem] w-max max-w-1/3">
+                            <div className="w-max max-w-1/3 min-w-[14rem]">
                                 <label className="block text-sm font-medium text-gray-700">
                                     {t.adresse.street} <em className="text-red-700">*</em>
                                 </label>
@@ -366,7 +369,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     <p className="text-red-500 text-sm mt-1">{errors.adresse.street.message as string}</p>
                                 )}
                             </div>
-                            <div className="min-w-[16.875rem] w-max max-w-1/3">
+                            <div className="min-w-[14rem] w-max max-w-1/3">
                                 <label className="block text-sm font-medium text-gray-700">
                                     {t.adresse.city} <em className="text-red-700">*</em>
                                 </label>
@@ -379,7 +382,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     <p className="text-red-500 text-sm mt-1">{errors.adresse.city.message as string}</p>
                                 )}
                             </div>
-                            <div className="min-w-[16.875rem] w-max max-w-1/3">
+                            <div className="min-w-[14rem] w-max max-w-1/3">
                                 <label className="block text-sm font-medium text-gray-700">
                                     {t.adresse.codePostal} <em className="text-red-700">*</em>
                                 </label>
@@ -396,7 +399,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         )
                     }
                     <div className="flex justify-start items-center gap-3 flex-wrap w-full">
-                        <div className="min-w-[16.875rem] w-max max-w-1/3">
+                        <div className="min-w-[14rem] w-max max-w-1/3">
                             <label className="block text-sm font-medium text-gray-700">
                             {t.diffAdresse}
                             </label>
@@ -406,7 +409,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             />
                         </div>
                         {
-                            (company && selectedCountry) && <div className="min-w-[16.875rem] w-max max-w-1/3">
+                            (company && selectedCountry) && <div className="min-w-[14rem] w-max max-w-1/3">
                                 <label className="block text-sm font-medium text-gray-700">
                                 {t.diffAdresse}
                                 </label>
@@ -482,7 +485,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     {
                         Cookies.get('logged') && (<div className="my-4 w-full">
                             <label className="block text-sm font-medium text-gray-700">{t.projetFonctionality} <em className="text-red-700">*</em></label>
-                            <div className="flex items-center mt-2 justify-start gap-1 w-full"><input className="p-2 bg-gray-200 w-2/4 focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-1/4 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{fonction !== '' && setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>{t.add}</span><span className="p-2 cursor-pointer w-1/4 flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>{t.clearListe}</span></div>
+                            <div className="flex items-center mt-2 justify-start gap-1 w-full flex-wrap"><input className="p-2 bg-gray-200 w-3/5 min-w-[14rem] focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-fit bg-slate-800 text-white rounded-[.2em]" onClick={()=>{fonction !== '' && setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>{t.add}</span><span className="p-2 cursor-pointer w-fit flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>{t.clearListe}</span></div>
                         </div>)
                     }
 
@@ -534,7 +537,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <h2 className="text-xl font-semibold mb-4">{t.paymentCondition}</h2>
 
                         <div className="flex justify-start items-center gap-3 flex-wrap w-full">
-                            <div className="min-w-[16.875rem] w-full max-w-[calc(50%-1.5rem)]">
+                            <div className="min-w-[14rem] w-full max-w-[calc(50%-1.5rem)]">
                                 <label className="block text-sm font-medium text-gray-700">{t.totalPrice} (€) <em className="text-red-700">*</em></label>
                                 <input
                                     type="text"
@@ -547,7 +550,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     <p className="text-red-500 text-sm mt-1">{errors.totalPrice.message as string}</p>
                                 )}
                             </div>
-                            <div className="min-w-[16.875rem] w-full max-w-[calc(50%-1.5rem)]">
+                            <div className="min-w-[14rem] w-full max-w-[calc(50%-1.5rem)]">
                                 <label className="block text-sm font-medium text-gray-700">{t.paymentSchedule} <em className="text-red-700">*</em></label>
                                 <textarea
                                 {...register("paymentSchedule", { required: "Ce champ est requis",pattern: {
@@ -569,8 +572,8 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     <section className="border-b pb-6">
                         <h2 className="text-xl font-semibold mb-4">{t.maintenanceService.title}</h2>
                         {
-                            Cookies.get('logged') && (<div className="flex gap-5 justify-start items-center">
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceType === 'web' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('web')}>{t.maintenanceService.web}</span>
+                            Cookies.get('logged') && (<div className="flex gap-5 justify-start items-center flex-wrap">
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceType === 'web' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('web')}>{t.maintenanceService.web}</span>
                                 <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenanceType === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('app')}>{t.maintenanceService.app}</span>
                                 <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceType === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} ${service?.contractStatus === 'pending' ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto cursor-pointer'}`} onClick={()=>chooseMaintenance('saas')}>{t.maintenanceService.saas}</span>
                             </div>)
@@ -647,14 +650,14 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     }
                     
                     {/* Submit Button */}
-                    <div className="flex justify-end gap-3">
+                    <div className="flex justify-end gap-3 flex-wrap">
                         {
-                            Cookies.get('logged')  && (<a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">{t.clientList}</a>)
+                            Cookies.get('logged')  && (<a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center">{t.clientList}</a>)
                         }
                         
                         <button
                             type="submit"
-                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}
+                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}
                         >
                             {t.generedContract}
                         </button>

@@ -13,14 +13,14 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
     console.log("main",contextData)
-    const companyName = 'LovSid';
-    const companyAdresse = '123 rue Saint Sebastient 78300 Poissy';
-    const companyEinNumber = '123456789';
-    const companyAuthor = 'Rodrigue Test'
-    const hostingProviderName = 'Google';
-    const hostingProviderAdresse = '123 rue Saint Sebastient 78300 Poissy';
-    const hostingProviderTel = '+33 78 45 45 45';
-    const hostingProviderLink = 'https://www.google.com';
+    const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME ?? '';
+    const companyAdresse = `${process.env.NEXT_PUBLIC_COMPANY_STREET ?? ''}, ${process.env.NEXT_PUBLIC_COMPANY_POSTAL_CODE ?? ''} ${process.env.NEXT_PUBLIC_COMPANY_CITY ?? ''} ${process.env.NEXT_PUBLIC_COMPANY_COUNTRY ?? ''}`;
+    const companyEinNumber = process.env.NEXT_PUBLIC_TAX_ID ?? '';
+    const companyAuthor = process.env.NEXT_PUBLIC_COMPANY_AUTHOR ?? '';
+    const hostingProviderName = process.env.NEXT_PUBLIC_HOSTING_PROVIDER ?? '';
+    const hostingProviderAdresse = process.env.NEXT_PUBLIC_HOSTING_PROVIDER_ADRESSE ?? ''
+    const hostingProviderTel = process.env.NEXT_PUBLIC_HOSTING_PROVIDER_TEL ?? '';
+    const hostingProviderLink = process.env.NEXT_PUBLIC_HOSTING_PROVIDER_URL ?? '';
 
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
@@ -126,6 +126,13 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
                 <p
                     dangerouslySetInnerHTML={{
                     __html: replaceContent(t.legalNotices.content_19, '{companyName}', companyName),
+                    }}
+                ></p>
+
+                <h3 className="my-3 text-[1.5rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.legalNotices.content_20, '', '') }}></h3>
+                <p
+                    dangerouslySetInnerHTML={{
+                    __html: replaceContent(t.legalNotices.content_21, '{companyName}', companyName),
                     }}
                 ></p>
 

@@ -70,15 +70,13 @@ const Footer:React.FC<FooterProps> = ({locale,date})=>{
                     </div>
                 </div>
             </div>
-            <div className='w-full flex justify-between items-center gap-x-[13vw] gap-y-4 flex-wrap'>
+            <div className='w-full flex justify-start items-center gap-x-[13vw] gap-y-4 flex-wrap'>
                 <div className='flex items-center justify-start gap-2 flex-wrap'>
                     <Link href={`/${locale}/legal-notice`} className='text-fifty underline hover:text-link text-left'>{t["legalNotice"]}</Link>
                     <Link href={`/${locale}/privacy-policies`} className='text-fifty underline hover:text-link text-left'>{t["privacyPolicies"]}</Link>
                     <Link href={`/${locale}/terms-of-sale`} className='text-fifty underline hover:text-link text-left'>{t["termsOfSale"]}</Link>
                 </div>
-                <div className='flex items-center justify-end gap-2 flex-1'>
-                    <p className='text-fifty text-right'>© Copyright {date} {t["right"]}</p>
-                </div>
+                <p className='text-fifty text-letf'>© Copyright {date} {t["right"]}</p>
             </div>
         </footer>
     )

@@ -149,13 +149,14 @@ export const services = [
     }
 ]
 
-export const serviceDetail = {
+export const serviceDetails = {
     1:{
         title:"serviceSiteVitrineTitle",
         info:"serviceSiteVitrineDescrip",
         subtitle:"serviceSiteVitrineSubTitle",
-        category:["WORDPRESS (CMS)","ofHand","hybride"],
+        category:["cms","ofHand","hybride"],
         img:'/assets/images/neue-groupe.png',
+        avdisav:'avdistage',
         content:{
             title:"serviceSiteVitrineDef",
             para:"serviceWebsite",
@@ -195,7 +196,8 @@ export const serviceDetail = {
         info:"serviceReworkWebsiteDescrip",
         subtitle:"serviceReworkWebsiteSubTitle",
         img:'/assets/images/graphicon.png',
-        category:["WORDPRESS (CMS)","ofHand","hybride"],
+        category:["cms","ofHand","hybride"],
+        avdisav:'avdistage',
         content:{
             title:"serviceReworkWebsiteDef",
             para:"serviceWebsiteRework",
@@ -234,7 +236,8 @@ export const serviceDetail = {
         info:"serviceEcommerceWebsiteDescrip",
         subtitle:"serviceEcommerceWebsiteSubTitle",
         img:'/assets/images/chicken-grill.png',
-        category:["WORDPRESS (CMS)","ofHand","hybride"],
+        category:["cms","ofHand","hybride"],
+        avdisav:'avdistage',
         content:{
             title:"serviceEcommerceWebsiteDef",
             para:"serviceEcommerce",
@@ -274,6 +277,7 @@ export const serviceDetail = {
         subtitle:"serviceSaasSubTitle",
         img:'/assets/images/lovsid.png',
         category:["ofHand","progiciel"],
+        avdisav:'avdistageSaas',
         content:{
             title:"serviceSaasDef",
             para:"serviceSaas",
@@ -308,6 +312,7 @@ export const serviceDetail = {
         subtitle:"serviceAppSubTitle",
         img:'/assets/images/fieger.png',
         category:["apphybride","appcross","appnative"],
+        avdisav:'avdistageApp',
         content:{
             title:"serviceAppDef",
             para:"serviceApp",

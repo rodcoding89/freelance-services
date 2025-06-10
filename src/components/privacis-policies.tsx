@@ -75,7 +75,7 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
 
             <section className="mb-8">
                 <h2 dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_19 ,'','' )}} className="text-2xl font-semibold mb-4"></h2>
-                <p dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_20 ,'','' )}} className=""></p>
+                <p dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_20 ,'{rodcodingSupport}','<a href="mailto:support@rodcoding.com" class="underline text-blue-500">support&#64;rodcoding.com</a>' )}} className=""></p>
             </section>
 
             <section className="mb-8">

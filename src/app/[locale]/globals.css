@@ -72,6 +72,17 @@ ul{
     display: block;
   }
 }
+h1{
+  @media(max-width:620px){
+    font-size: 35px !important;
+  }
+  @media(max-width:420px){
+    font-size: 30px !important;
+  }
+  @media(max-width:360px){
+    font-size: 25px !important;
+  }
+}
 h1,h2,h3,h4,h5,h6{
   font-family: var(--family-poppins-bold);
   font-weight: bold;
@@ -269,7 +280,8 @@ h1 {
 .dropping-texts > div {
   text-transform: uppercase;
   color: #0000;
-  font-size: 35px;
+  height: 2.25rem;
+  font-size: 1.5em;
   font-weight: bold;
   background: 
     repeating-radial-gradient(#000 0 0.0001%,#fff 0 0.0002%) 50% 0/2500px 2500px,
@@ -289,19 +301,18 @@ h1 {
 
 @media (max-width:743px){
   .dropping-texts > div {
-    font-size: 30px;
+    font-size: 1.2em;
   }
 }
 @media (max-width:627px){
   .dropping-texts > div {
-    font-size: 20px;
+    font-size: 1em;
   }
 }
 @media (max-width:443px){
   .dropping-texts > div {
     color: #fff;
     font-family: inherit;
-    font-size: 15px;
   }
 }
 @media (max-width:421px){

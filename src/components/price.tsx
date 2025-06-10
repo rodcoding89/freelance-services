@@ -82,16 +82,15 @@ const Price:React.FC<PriceProps> = ({locale})=>{
                                                     }
                                                 </ul>
                                                 <span className='cursor-pointer px-6 mt-3 py-3 text-fifty bg-thirty hover:text-thirty hover:bg-white flex items-center justify-center transition-hover duration-500 ease-in mx-4 w-[calc(100%-32px)]'>
-                                                <Link
-                                                activeClass="active"
-                                                className='text-center'
-                                                spy={true} 
-                                                smooth={true} 
-                                                offset={-65} 
-                                                duration={500} 
-                                                to={`contact`} 
-                                                >{t["devi"]}
-                                                </Link>
+                                                    <Link
+                                                        activeClass="active"
+                                                        spy={true} 
+                                                        smooth={true} 
+                                                        offset={-100} 
+                                                        duration={500} 
+                                                        to={`contact`} 
+                                                        >{t["devi"]}
+                                                    </Link>
                                                 </span>
                                             </div>
                                         ) : (
@@ -129,14 +128,13 @@ const Price:React.FC<PriceProps> = ({locale})=>{
                                                                 </div>
                                                                 <span className='cursor-pointer px-6 mt-3 py-3 text-fifty bg-thirty hover:text-thirty hover:bg-white flex items-center justify-center transition-hover duration-500 ease-in mx-4 w-[calc(100%-32px)]'>
                                                                 <Link
-                                                                activeClass="active"
-                                                                className='text-center'
-                                                                spy={true} 
-                                                                smooth={true} 
-                                                                offset={-65} 
-                                                                duration={500} 
-                                                                to={`contact`} 
-                                                                >{t["devi"]}
+                                                                    activeClass="active"
+                                                                    spy={true} 
+                                                                    smooth={true} 
+                                                                    offset={-100} 
+                                                                    duration={500} 
+                                                                    to={`contact`} 
+                                                                    >{t["devi"]}
                                                                 </Link>
                                                                 </span>
                                                             </div>
@@ -196,13 +194,13 @@ const Price:React.FC<PriceProps> = ({locale})=>{
                             }
                             <span className='cursor-pointer px-6 mt-3 py-3 text-fifty bg-thirty hover:text-thirty hover:bg-white flex items-center justify-center transition-hover duration-500 ease-in mx-4'>
                                 <Link
-                                activeClass="active"
-                                spy={true} 
-                                smooth={true} 
-                                offset={-65} 
-                                duration={500} 
-                                to={`contact`} 
-                                >{t["contactMe"]}
+                                    activeClass="active"
+                                    spy={true} 
+                                    smooth={true} 
+                                    offset={-100} 
+                                    duration={500} 
+                                    to={`contact`} 
+                                    >{t["contactMe"]}
                                 </Link>
                             </span>
                         </div>
@@ -218,13 +216,13 @@ const Price:React.FC<PriceProps> = ({locale})=>{
                             </div>
                             <span className='cursor-pointer px-6 mt-3 py-3 text-fifty bg-thirty hover:text-thirty hover:bg-white flex items-center justify-center transition-hover duration-500 ease-in mx-4'>
                                 <Link
-                                activeClass="active"
-                                spy={true} 
-                                smooth={true} 
-                                offset={-65} 
-                                duration={500} 
-                                to={`contact`} 
-                                >{t["contactMe"]}
+                                    activeClass="active"
+                                    spy={true} 
+                                    smooth={true} 
+                                    offset={-100} 
+                                    duration={500} 
+                                    to={`contact`} 
+                                    >{t["contactMe"]}
                                 </Link>
                             </span>
                         </div>
