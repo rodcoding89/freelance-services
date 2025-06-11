@@ -89,6 +89,8 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [selectedContractType, setSelectedContractType] = useState<"service"|"maintenance"|"service_and_maintenance"|null>(null);
     const [selectedContractStatus, setSelectedContractStatus] = useState<'signed' | 'unsigned' | 'pending'|null>(null);
     const [countries, setCountries] = useState<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number,turnover:number}[]>([])
+    const companyAdress = `${process.env.NEXT_PUBLIC_COMPANY_ADRESS_STREET} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_CITY} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_POSTAL_CODE} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_COUNTRY}`
+    const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
     const [contractLanguage, setContractLanguage] = useState<string>('')
     // Contenu dynamique basé sur la langue
     const searchParams = useSearchParams();
@@ -315,7 +317,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                         required: t.errorEmail,
                                         pattern: {
                                             value: /^\S+@\S+$/i,
-                                            message: "Invalid email format",
+                                            message: t.invalidEmail,
                                         },
                                     })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
@@ -431,15 +433,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <label className="block text-sm font-medium text-gray-700">{t.freelancerCompanyName} <em className="text-red-700">*</em></label>
                         <input
                             {...register("freelancerName", { required: t.fileRequirer })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'ROD TECH SOLUTIONS'} disabled={true}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={companyName} disabled={true}
                         />
                         </div>
 
                         <div>
                         <label className="block text-sm font-medium text-gray-700">{t.freelancerCompanyAdresse} <em className="text-red-700">*</em></label>
                         <input
-                            {...register("freelanceAddress", { required: "This field is required" })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={'123 rue Saint-Sébastien, Poissy 78300, France'} disabled={true}
+                            {...register("freelanceAddress", { required: t.fileRequirer })}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={companyAdress} disabled={true}
                         />
                         </div>
                     </div>
@@ -448,7 +450,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">{t.invoice.identificationNumber} <em className="text-red-700">*</em></label>
                                 <input
-                                    {...register("freelancerTaxId", { required: "This field is required" })}
+                                    {...register("freelancerTaxId", { required: t.fileRequirer })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={process.env.NEXT_PUBLIC_TAX_ID} disabled={true}
                                 />
                             </div>
@@ -552,12 +554,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             </div>
                             <div className="min-w-[14rem] w-full max-w-[calc(50%-1.5rem)]">
                                 <label className="block text-sm font-medium text-gray-700">{t.paymentSchedule} <em className="text-red-700">*</em></label>
-                                <textarea
+                                <input type="text"
                                 {...register("paymentSchedule", { required: "Ce champ est requis",pattern: {
                                     value: /^\d+%(?:,\d+%)*$/i,
-                                    message: "Structure invalide",
+                                    message: t.errorPaymentShedule,
                                 }, })}
-                                rows={2}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 placeholder="50% au début, 50% a la livraison" disabled={service && service.contractStatus === 'pending' ? true : false}
                                 />

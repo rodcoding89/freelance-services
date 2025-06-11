@@ -125,14 +125,14 @@ const sendContract = async(data:Contrat,locale:string)=>{
         <div>
             <h3>${locale === 'fr' ? 'Bonjour Cher ' + data.name : locale === 'de' ? 'Hallo Lieber ' + data.name : 'Hello Dear ' + data.name},</h3>
             <p>
-            ${locale === 'fr' ? "Vous recevez cet email car vous venez de signer un contrat avec la société <strong>ROD TECH SOLUTIONS</strong> pour une prestation de service ou de maintenance. Nous vous en remercions chaleureusement." :
-            locale === 'de' ? "Sie erhalten diese E-Mail, weil Sie gerade einen Vertrag mit der Firma <strong>ROD TECH SOLUTIONS</strong> für eine Dienstleistung oder Wartung unterzeichnet haben. Dafür danken wir Ihnen herzlich." :
-            "You are receiving this email because you have just signed a contract with <strong>ROD TECH SOLUTIONS</strong> for a service or maintenance. We thank you for that."}
+            ${locale === 'fr' ? "Vous recevez cet email car vous venez de signer un contrat avec la société <strong>ROD TECH SOLUTIONS</strong> pour une prestation de service ou de maintenance informatique <strong>(Développement Web)</strong>. Nous vous en remercions chaleureusement." :
+            locale === 'de' ? "Sie erhalten diese E-Mail, weil Sie gerade einen Vertrag mit der Firma <strong>ROD TECH SOLUTIONS</strong> für eine Dienstleistung oder Wartung im Bereich der Informationstechnologie <strong>(Webentwicklung)</strong> unterzeichnet haben. Wir danken Ihnen herzlich dafür." :
+            "You are receiving this email because you have just signed a contract with the company <strong>ROD TECH SOLUTIONS</strong> for an IT service or maintenance <strong>(Web Development)</strong>. We warmly thank you for this."}
             </p>
             <p>
-            ${locale === 'fr' ? "Vous trouverez en pièce jointe votre contrat signé par les deux parties." :
-            locale === 'de' ? "Anbei finden Sie Ihren von beiden Parteien unterzeichneten Vertrag." :
-            "You will find attached your contract signed by both parties."}
+            ${locale === 'fr' ? "Vous trouverez en pièce jointe votre contrat signé par les deux parties et un document contenant les instructions de paiement." :
+            locale === 'de' ? "Im Anhang finden Sie Ihren von beiden Parteien unterzeichneten Vertrag und ein Dokument mit den Zahlungsanweisungen." :
+            "You will find attached your contract signed by both parties and a document containing the payment instructions."}
             </p>
             <p>
             ${locale === 'fr' ? "Nous vous remercions pour votre confiance et nous nous attacherons à satisfaire vos exigences." :
@@ -183,7 +183,7 @@ function htmlSquelette(body:string,title:string,lang:string){
     </head>
     <body>
       ${body}
-      <p style="text-align:right;">L'équipe Rod Coding</p>
+      <p style="text-align:right;">${lang === 'fr' ? 'L\'équipe Rod Coding' : lang === 'de' ? 'Die Rod Coding-Team' : 'The Rod Coding Team'}</p>
     </body>
     </html>`
 }

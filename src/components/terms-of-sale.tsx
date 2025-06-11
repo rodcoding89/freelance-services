@@ -49,6 +49,7 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                 </ul>
                 <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_7, '', '') }} />
                 <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_8, '', '') }} />
+                <h4 className="my-3 text-[1.2rem]">{t.termSale.content_9}</h4>
                 <div className="content">
                     <nav className="flex justify-start items-start gap-2 flex-col mb-10">
                         <a className="text-blue-600 font-medium" href={`/${locale}/terms-of-sale#chapitre1`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_10, '', '') }} />
@@ -135,6 +136,27 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                         <div id="article14">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_94, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_95, '', '') }} />
+                            <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_212, '', '') }} />
+                            <ul className="ml-10 list-disc flex flex-col gap-2">
+                                <li>
+                                    {t.termSale.content_213}
+                                    <ul className="ml-10 list-disc">
+                                        <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32011L0083" className="text-blue-600 font-medium" target="_blank">{t.termSale.content_214}</a></li>
+                                        <li><a href="https://www.legislation.gov.uk/uksi/2013/3134/contents" className="text-blue-600 font-medium" target="_blank">{t.termSale.content_215}</a></li>
+                                        <li><a href="https://www.fedlex.admin.ch/eli/cc/27/317_321_377/en" className="text-blue-600 font-medium" target="_blank">{t.termSale.content_216}</a></li>
+                                        <li><a href="https://www.gov.za/documents/consumer-protection-act" className="text-blue-600 font-medium" target="_blank">{t.termSale.content_217}</a></li>
+                                        <li><a href="https://www.legislation.gov.au/Series/C2004A03712" className="text-blue-600 font-medium" target="_blank">{t.termSale.content_218}</a></li>
+                                        <li><a href="https://www.legisquebec.gouv.qc.ca/en/document/cs/P-40.1" className="text-blue-600 font-medium" target="_blank">{t.termSale.content_219}</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    {t.termSale.content_220}
+                                    <ul className="ml-10 list-disc">
+                                        <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_221, '', '') }}/>
+                                        <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_222, '', '') }}/>
+                                    </ul>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div id="chapitre4">
@@ -142,6 +164,11 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                         <div id="article15">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_97, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_98, '', '') }} />
+                            <ul className="ml-10 list-disc">
+                                <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_200, '', '') }}></li>
+                                <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_201, '', '') }}></li>
+                                <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_202, '', '') }}></li>
+                            </ul>
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_99, '', '') }} />
                         </div>
                         <div id="article16">
@@ -151,6 +178,18 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                         <div id="article17">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_103, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_104, '', '') }} />
+                            <ul className="ml-10 list-disc">
+                                <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_203, '{supportEmail}', '<a className="text-blue-600 font-medium" href="mailto:support@rodcoding.com" style="color:#39699d;font-size:1rem;">support@rodcoding.com</a>') }}/>
+                                <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_204, '', '') }}/>
+                            </ul>
+                            <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_205, '', '') }} />
+                            <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_206, '', '') }} />
+                            <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_207, '', '') }} />
+                            <ul className="ml-10 list-disc">
+                                <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_209, '', '') }}></li>
+                                <li dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_210, '', '') }}></li>
+                            </ul>
+                            <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_211, '', '') }} />
                         </div>
                     </div>
                     <div id="chapitre5">

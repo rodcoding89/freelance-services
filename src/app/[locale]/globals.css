@@ -74,14 +74,34 @@ ul{
 }
 h1{
   @media(max-width:620px){
-    font-size: 35px !important;
+    font-size: 2.1875rem !important;
   }
   @media(max-width:420px){
-    font-size: 30px !important;
+    font-size: 1.875rem !important;
   }
   @media(max-width:360px){
-    font-size: 25px !important;
+    font-size: 1.5625rem !important;
   }
+}
+h2{
+  @media(max-width:620px){
+    font-size: 1.875rem !important;
+  }
+  @media(max-width:420px){
+    font-size: 1.575rem !important;
+  }
+  @media(max-width:360px){
+    font-size: 1.1625rem !important;
+  }
+}
+.success{
+  @media(max-width:500px){
+    padding: 0;
+    background-color: white;
+  }
+}
+.lineBreak{
+  line-break: anywhere;
 }
 h1,h2,h3,h4,h5,h6{
   font-family: var(--family-poppins-bold);

@@ -64,7 +64,7 @@ const Footer:React.FC<FooterProps> = ({locale,date})=>{
                             <Icon name='bx-envelope' size='1.3em' color='var(--color-fifty)'/>
                             <div className="w-full">
                                 <h5 className='text-fifty uppercase font-semibold text-[13px]'>{t["perEmail"]}</h5>
-                                <a href="mailto:rodriguekwayep.freelance@hotmail.com" className='hover:text-link text-fifty text-[13px]'>rodriguekwayep.freelance@hotmail.com</a>
+                                <a href="mailto:rodriguekwayep.freelance@hotmail.com" className='hover:text-link text-fifty text-[13px] lineBreak'>rodriguekwayep.freelance@hotmail.com</a>
                             </div>
                         </div>
                     </div>
