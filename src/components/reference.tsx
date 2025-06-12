@@ -84,7 +84,7 @@ const Reference:React.FC<ReferenceProps> = ({locale})=>{
                               <h4 className='text-secondary font-semibold text-[18px] mb-2 text-ellipsis whitespace-nowrap w-fit uppercase group-hover:text-fifty relative before:w-2/5 before:h-1 before:bg-secondary before:bottom-[-4px] before:left-[1px] before:block before:group-hover:bg-fifty before:absolute'>{card.projet}</h4>
                               <span className='text-[11px] text-[#aaa]'>{t[card.mode]}</span>
                             </div>
-                            <p className='uppercase text-[14px] font-medium mx-4 mt-1 text-primary group-hover:text-fifty'>{card.name}</p>
+                            <p className='uppercase text-[14px] font-medium mx-4 mt-1 text-primary group-hover:text-fifty'>{t[card.name]}</p>
                             <p className='mx-4 mt-1 text-[13px] text-primary group-hover:text-fifty'>{card.shortText}</p>
                           </div>
                       </motion.div>

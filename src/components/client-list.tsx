@@ -225,6 +225,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
             </div>
             <div className='w-full flex items-end justify-end mt-5'>
                 <div className='flex justify-start items-center gap-3 w-full'>
+                    <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/web-config'}>Configurer le site</Link>
                     <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/create-client'}>Créer un client</Link>
                     <span className='text-white py-2 px-4 bg-blue-600 hover:bg-blue-900 rounded-[.2em] cursor-pointer' onClick={logout}>Déconnexion</span>
                 </div>

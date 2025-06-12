@@ -2,6 +2,8 @@
 import { AppContext } from '@/app/context/app-context';
 import { useTranslationContext } from '@/hooks/app-hook';
 import { useContext, useEffect, useState } from 'react';
+import  firebase  from "@/utils/firebase";
+import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
 
 interface PrivacyPoliciesProps {
   locale: string;
@@ -12,6 +14,8 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
+    const [configDate,setConfigDate] = useState<string>('')
+    const [loading, setLoading] = useState(true);
     console.log("main",contextData)
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
@@ -20,9 +24,29 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
         }
     },[contextData])
 
+    useEffect(()=>{
+        const fetchWebConfig = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(firebase.db, 'webconfig'));
+                for (const doc of querySnapshot.docs) {
+                    const data = doc.data();
+                    if (data.type === 'privacie-policies') {
+                        setConfigDate(data.date)
+                    }
+                }
+            } catch (error) {
+                console.error("Erreur de chargement des clients:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchWebConfig();
+    },[locale])
+
     const replaceContent = (key: string,replaceText: string,replaceValue: string): string => {
         return key.replace(replaceText, replaceValue);
     };
+    if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
     return (
     <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[130px] mx-auto`}>
         <div className="container mx-auto px-4 py-8">
@@ -32,7 +56,7 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
                     <p className="my-3 p-2 px-4 bg-blue-500 text-white rounded-300" dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_0, '', '') }} />
                 </div>
             )}
-            <p className="my-5 font-bold text-[1.8rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_1, '{date}', '16 janvier 2025') }} />
+            <p className="font-bold" dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_1, '{date}', new Date(configDate).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)) }} />
             <section className="mb-8">
                 <h2 dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_2,'','' )}} className="text-2xl font-semibold mb-4"></h2>
                 <p dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_3,'','' )}} className="">
