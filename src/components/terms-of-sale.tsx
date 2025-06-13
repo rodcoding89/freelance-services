@@ -78,26 +78,26 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                         <a className="text-blue-600 font-medium" href={`/${locale}/terms-of-sale#chapitre1`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_10, '', '') }} />
                         <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#chapitre2`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_11, '', '') }} />
                         <nav className="flex justify-start items-start gap-2 flex-col ml-10">
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_12, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_13, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_14, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_15, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_16, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article1`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_12, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article2`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_13, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article3`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_14, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article4`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_15, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article5`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_16, '', '') }} />
                         </nav>
                         <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#chapitre3`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_20, '', '') }} />
                         <nav className="flex justify-start items-start gap-2 flex-col ml-10">
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_21, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_22, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_23, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_24, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_25, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_26, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article6`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_21, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article7`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_22, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article8`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_23, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article9`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_24, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article10`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_25, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article11`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_26, '', '') }} />
                         </nav>
                         <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#chapitre4`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_27, '', '') }} />
                         <nav className="flex justify-start items-start gap-2 flex-col ml-10">
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_28, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_29, '', '') }} />
-                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_30, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article12`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_28, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article13`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_29, '', '') }} />
+                            <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#article14`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_30, '', '') }} />
                         </nav>
                         <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#chapitre5`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_31, '', '') }} />
                         <a className="text-blue-600 font-medium"  href={`/${locale}/terms-of-sale#chapitre6`} dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_32, '', '') }} />
@@ -133,19 +133,23 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                     </div>
                     <div id="chapitre3">
                         <h3 className="my-3 text-[1.5rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_55, '', '') }} />
-                        <div id="article9">
+                        <div id="article6">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_56, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_57, '', '') }} />
                         </div>
-                        <div id="article10">
+                        <div id="article7">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_60, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_61, '', '') }} />
-                            <h5 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_63, '', '') }}/>
+                        </div>
+                        <div id="article8">
+                            <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_63, '', '') }}/>
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_64, '', '') }} />
-                            <h5 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_65, '', '') }}/>
+                        </div>
+                        <div id="article9">
+                            <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_65, '', '') }}/>
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_66, '', '') }} />
                         </div>
-                        <div id="article12">
+                        <div id="article10">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_84, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_85, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_86, '', '') }} />
@@ -156,7 +160,7 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                             </ul>
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_90, '', '') }} />
                         </div>
-                        <div id="article14">
+                        <div id="article11">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_94, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_95, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_212, '', '') }} />
@@ -184,7 +188,7 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                     </div>
                     <div id="chapitre4">
                         <h3 className="my-3 text-[1.5rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_96, '', '') }} />
-                        <div id="article15">
+                        <div id="article12">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_97, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_98, '', '') }} />
                             <ul className="ml-10 list-disc">
@@ -194,11 +198,11 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                             </ul>
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_99, '', '') }} />
                         </div>
-                        <div id="article16">
+                        <div id="article13">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_100, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_101, '{termServiceTag}', '<a className="text-blue-600 font-medium" target="_blank" href={`/${locale}/terms-of-services`} style="color:#39699d;font-size:1rem;">CGU</a>') }} />
                         </div>
-                        <div id="article17">
+                        <div id="article14">
                             <h4 className="my-3 text-[1.2rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_103, '', '') }} />
                             <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_104, '', '') }} />
                             <ul className="ml-10 list-disc">

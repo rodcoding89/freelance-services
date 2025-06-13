@@ -29,8 +29,7 @@ interface Contract {
         city:string;
         country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
     }
-    particular:boolean;
-    company:boolean;
+    typeClient:"company"|"particular";
     clientBillingAddress?:string;
     clientEmail:string;
     clientPhone:string;
@@ -51,6 +50,9 @@ interface Contract {
     paymentSchedule:string;
     contractLanguage:string;
     tax:number;
+    saleTermeConditionValided:boolean;
+    electronicContractSignatureAccepted:boolean;
+    rigthRetractionLostAfterServiceBegin:boolean;
 }
 
 interface Services {
@@ -79,6 +81,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const [freelanceSignatureLink, setFreelanceSignatureLink] = useState<string | null>(null);
     const [service, setService] = useState<Services|null>(null);
     const [acceptSaleTerm,setAcceptSaleTerm] = useState<boolean>(false)
+    const [confirmAcceptBackAmountCondition,setConfirmAcceptBackAmountCondition] = useState<boolean>(false)
     const {id,serviceId} = useParams()
     const clientId = id as string
     const clientServiceId = serviceId as string;
@@ -117,7 +120,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
         setContractData(contract)
     }
     const checkContractValidation = ()=>{
-        return clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature
+        return clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition
     }
     //console.log("totalPrice",contract?.totalPrice, contract)
     const handleContractStatus = (data: { contractLink: string; paymentLink: string; status: "success" | "error"; }): void =>{
@@ -125,9 +128,6 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     }
     const handleEmit = (data: string): void =>{
         setContractStatus(null)
-    }
-    const confirmAcceptingSaleTerms = (checked: any) =>{
-        setAcceptSaleTerm(checked)
     }
     if (!contract && loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
 
@@ -347,10 +347,14 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                         <label htmlFor="confirmElectronicSignature">{t.confirmElectronicSignature}</label>
                     </div>
                     <div className="flex justify-start items-center my-5 gap-2">
-                        <input type="checkbox" name="" id="acceptSaleTerms" onChange={(e:any)=>confirmAcceptingSaleTerms(e.target.checked)}/>
+                        <input type="checkbox" name="" id="acceptSaleTerms" onChange={(e:any)=>setAcceptSaleTerm(e.target.checked)}/>
                         <label htmlFor="acceptSaleTerms" dangerouslySetInnerHTML={{ __html: t.acceptSaleTerm.replace('{GTS}','<a href="/'+locale+'/terms-of-sale" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t["termsOfSale"]+'</a>') }}/>
                     </div>
-                    <section className={`signing ${confirmElectronicSignature && acceptSaleTerm ? 'opacity-100 pointer-events-auto' : 'opacity-50 pointer-events-none'}`}>
+                    <div className="flex justify-start items-center my-5 gap-2">
+                        <input type="checkbox" name="" id="backAmountCondition" onChange={(e:any)=>setConfirmAcceptBackAmountCondition(e.target.checked)}/>
+                        <label htmlFor="backAmountCondition" dangerouslySetInnerHTML={{ __html: t.backAmountConditionText.replace('{GTS}','<a href="/'+locale+'/terms-of-sale#article13" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t.backAmountCondition+'</a>') }}/>
+                    </div>
+                    <section className={`signing ${confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition ? 'opacity-100 pointer-events-auto' : 'opacity-50 pointer-events-none'}`}>
                         <InitCanvaSignature locale={locale} emit={handleSignatureChange} enable={confirmElectronicSignature}/>
                     </section>
                     <div className="flex justify-end items-center mt-5 gap-4 flex-wrap">

@@ -493,7 +493,7 @@ interface siteInterface {
     title:string,
     proprio:string,
     img:string,
-    description : {title:string,para:string[]},
+    description : {title:string,para:string},
     infoSite:{title:string,year:string,cat:string,techno:string[],mode:string,link:string},
     task:string[]
 }
@@ -524,7 +524,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/fieger.png',
             description:{
                 title:'acivityDomaine',
-                para:['Création du site internet de {name}, spécialisée dans la {open}co-écriture de livres pour entrepreneurs et particuliers{close}. Elle accompagne ses clients dans la réalisation de leurs projets littéraires, transformant leurs idées en ouvrages aboutis.\n','Ce site vitrine personnalisé met en avant ses différentes formules de {open}co-écriture{close}, adaptées aux besoins spécifiques de chaque auteur en devenir. Il détaille le processus collaboratif, de la conception à la publication, offrant une transparence totale sur les étapes clés de la création d\'un livre.\n',"Ce site vitrine sur mesure contient une interface d'administration ainsi qu'une expérience de navigation optimale sur tous types d'appareils.\n","Ce site internet renforce la visibilité et la crédibilité de {name} en tant que {open}co-écrivaine{close}, mettant en avant son expertise, son parcours littéraire ainsi que les témoignages de clients satisfaits. Cette plateforme reflète son engagement à aider les auteurs à concrétiser leurs rêves d'écriture.\n"]
+                para:'websiteItem1Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -542,7 +542,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/neue-groupe.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'websiteItem2Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -560,7 +560,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/avlis.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'websiteItem3Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -578,7 +578,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/charlotte-consulting.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'websiteItem4Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -589,6 +589,24 @@ export const refDetailContent:refContent = {
                 link:'https://charlottekoona.com/'
             },
             task:['websiteItem4TaksPara1','websiteItem4TaksPara2','websiteItem4TaksPara3','websiteItem4TaksPara4','websiteItem4TaksPara5','websiteItem4TaksPara6']
+        },
+        5:{
+            title:"reworkedItemTitle",
+            proprio:"reworkedItemProprio",
+            img: '/assets/images/graphicon.png',
+            description:{
+                title:'acivityDomaine',
+                para:'reworkedWebSiteItem1Para'
+            },
+            infoSite:{
+                title:'infoProjet',
+                year:"2019",
+                cat:"devModeOfHand",
+                techno:['HTML5','Angular +2','JavaScirpt','CSS3(SCSS)','External Module'],
+                mode:'devModeOfHand',
+                link:'https://www.graphicon.de/'
+            },
+            task:['reworkedItemTaksPara1','reworkedItemTaksPara2','reworkedItemTaksPara3','reworkedItemTaksPara4','reworkedItemTaksPara5']
         }
     },
     reworked:{
@@ -599,7 +617,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/graphicon.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'reworkedWebSiteItem1Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -620,7 +638,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/chicken-grill.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'ecommerceWebSiteItem1Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -628,17 +646,17 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['PHP','JavaScirpt','JQuery','MySQL','HTML5','CSS3','Bootstrap','External Module'],
                 mode:'devModeOfHand',
-                link:'https://www.kebab-gare.com/'
+                link:''
             },
             task:['ecommerceItem1TaksPara1','ecommerceItem1TaksPara2','ecommerceItem1TaksPara3','ecommerceItem1TaksPara4','ecommerceItem1TaksPara5','ecommerceItem1TaksPara6','ecommerceItem1TaksPara7','ecommerceItem1TaksPara8','ecommerceItem1TaksPara9']
         },
         2:{
             title:"ecommerceItemTitle",
             proprio:"ecommerceItem1Proprio",
-            img: '/assets/images/chicken-grill.png',
+            img: '/assets/images/kebab-gare.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'ecommerceWebSiteItem2Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -659,7 +677,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/lovsid.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'saasItem1Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -677,7 +695,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/reservation-salle.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'saasItem2Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -695,7 +713,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/avlis-gestion.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'saasItem3Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -713,7 +731,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/avlis-formation.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'saasItem4Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -734,7 +752,7 @@ export const refDetailContent:refContent = {
             img: '/assets/images/avlis.png',
             description:{
                 title:'acivityDomaine',
-                para:[]
+                para:'appItem1Para'
             },
             infoSite:{
                 title:'infoProjet',
@@ -759,7 +777,7 @@ export const reference: Reference = {
           index:1,
           name:"websiteItem1Proprio",
           mode:"devModeWordpress",
-          shortText:"",
+          shortText:"websiteVitrineShortText1",
           cat:'website'
         },
         {
@@ -769,7 +787,7 @@ export const reference: Reference = {
           index:2,
           name:"websiteItem2Proprio",
           mode:"devModeOfHand",
-          shortText:"",
+          shortText:"websiteVitrineShortText2",
           cat:'website'
         },
         {
@@ -779,7 +797,7 @@ export const reference: Reference = {
             index:3,
             name:"websiteItem3Proprio",
             mode:"devModeOfHand",
-            shortText:"Site pour un centre de formation médical",
+            shortText:"websiteVitrineShortText3",
             cat:'website'
         },
         {
@@ -789,25 +807,20 @@ export const reference: Reference = {
             index:4,
             name:"websiteItem4Proprio",
             mode:"devModeOfHand",
-            shortText:"Site de présentation de services + blog",
+            shortText:"websiteVitrineShortText4",
             cat:'website'
-        }
-      ]
-    },
-    2: {
-        title: "websiteReworkReferenceTitle",
-        referenceContent: [
-          {
+        },
+        {
             img: '/assets/images/graphicon.png',
             projet: 'Graphicon',
-            refId: 1,
+            refId: 5,
             index:5,
             name:"reworkedItemProprio",
             mode:"devModeOfHand",
-            shortText:".",
+            shortText:"websiteReworkShortText1",
             cat:'website'
-          }
-        ]
+        }
+      ]
     },
     3: {
         title: "websiteEcommerReferenceTitle",
@@ -815,21 +828,21 @@ export const reference: Reference = {
             {
                 img: '/assets/images/kebab-gare.png',
                 projet: 'Kebab 78',
-                refId: 1,
+                refId: 2,
                 index:7,
                 name:"ecommerceItem1Proprio",
                 mode:"devModeOfHand",
-                shortText:"Site E-commerce pour un restaurant faisant des livraisons à domicile",
+                shortText:"websiteEcommerShortText1",
                 cat:'ecommerce'
             },
             {
                 img: '/assets/images/chicken-grill.png',
                 projet: 'Chicken grill',
                 name:"ecommerceItem1Proprio",
-                refId: 2,
+                refId: 1,
                 index:8,
                 mode:"devModeOfHand",
-                shortText:"Site E-commerce pour un restaurant multi point de vente faisant des commandes en ligne",
+                shortText:"websiteEcommerShortText2",
                 cat:'ecommerce'
             }
         ]
@@ -844,7 +857,7 @@ export const reference: Reference = {
             index:11,
             name:"saasItem1Proprio",
             mode:"devModeOfHand",
-            shortText:"Site de rencontre",
+            shortText:"saasShortText1",
             cat:'saas'
           },
           {
@@ -854,7 +867,7 @@ export const reference: Reference = {
             index:12,
             name:"saasItem2Proprio",
             mode:"devModeOfHand",
-            shortText:"Site de reservation de sale",
+            shortText:"saasShortText2",
             cat:'saas'
           },
           {
@@ -864,7 +877,7 @@ export const reference: Reference = {
             index:13,
             name:"saasItem3Proprio",
             mode:"devModeOfHand",
-            shortText:"Backoffice pour gestion des édutiants et administration du site",
+            shortText:"saasShortText3",
             cat:'saas'
           },
           {
@@ -874,7 +887,7 @@ export const reference: Reference = {
             index:14,
             name:"saasItem3Proprio",
             mode:"devModeOfHand",
-            shortText:"Espace dédié aux étudiant pour la gestion des devoirs et échange avec les formateurs.",
+            shortText:"saasShortText4",
             cat:'saas'
           }
         ]
@@ -889,7 +902,7 @@ export const reference: Reference = {
             index:11,
             name:"appItem1Proprio",
             mode:"devModeOfHand",
-            shortText:"Application mobile du site de rencontre LovSid",
+            shortText:"appShortText1",
             cat:'app'
           }
         ]

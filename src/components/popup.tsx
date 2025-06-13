@@ -271,7 +271,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                                         <div key={index} className={` relative w-full group`} style={{width:`${100 / serviceSiteReference?.referenceContent.length!}%`}} onClick={()=>openRefDetail(item.refId,item.cat)}>
                                                             <div className='relative aspect-[15/9] w-full overflow-hidden group'>
                                                                 <img className='h-full object-cover cursor-pointer w-full' src={item.img} alt={item.projet} />
-                                                                <div className='h-full cursor-pointer w-full bg-[rgba(142,22,22,.5)] absolute top-0 left-0 flex justify-center items-center transition-transform duration-500 ease-in-out translate-y-[350px] group-hover:translate-y-0'><Icon name='bx-show' size='4em' color='#fff'/></div>
+                                                                <div className='h-full cursor-pointer w-full bg-[rgba(142,22,22,.5)] absolute top-0 left-0 flex justify-center items-center transition-transform duration-500 ease-in-out translate-y-[100%] group-hover:translate-y-0'><Icon name='bx-show' size='4em' color='#fff'/></div>
                                                             </div>
                                                             <div className={`bg-fifty group-hover:bg-secondary py-2`}>
                                                                 <div className='flex justify-between items-start gap-2 mx-4'>
@@ -344,18 +344,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                     <h4 className="text-[1.4em] font-semibold text-thirty uppercase mb-3">{t[refDetail?.description.title] + ' '+t[refDetail?.proprio]}</h4>
                                     <hr  className="border-thirty mb-5"/>
                                     <div className="mt-4">
-                                        {
-                                            refDetail?.description.para.map((item:any, index:number) => {
-                                                const modifiedItem = item
-                                                  .replace(/{name}/g, t[refDetail?.proprio])
-                                                  .replace(/{open}/g, '<strong>')
-                                                  .replace(/{close}/g, '</strong>');
-                                        
-                                                return (
-                                                  <p className="whitespace-pre-wrap mb-3" key={index} dangerouslySetInnerHTML={{ __html: modifiedItem }}></p>
-                                                );
-                                            })
-                                        }
+                                        <p className="whitespace-pre-wrap mb-3" dangerouslySetInnerHTML={{ __html: t[refDetail?.description.para] }}></p>
                                     </div>
                                 </div>
                                 <div className="mt-10">

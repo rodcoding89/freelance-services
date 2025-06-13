@@ -95,8 +95,7 @@ interface Contract {
         city:string;
         country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
     }
-    particular:boolean;
-    company:boolean;
+    typeClient:"company"|"particular";
     clientBillingAddress?:string;
     clientEmail:string;
     clientPhone:string;
@@ -117,6 +116,9 @@ interface Contract {
     paymentSchedule:string;
     contractLanguage:string;
     tax:number;
+    saleTermeConditionValided:boolean;
+    electronicContractSignatureAccepted:boolean;
+    rigthRetractionLostAfterServiceBegin:boolean;
 }
 
 interface Services {
@@ -297,7 +299,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
             let pageEchelonement;
             const bayingSchedule = [beforeStart];
             const priceSchedule:string[] = [];
-            const tax = data.company ? parseInt(data.adresse.country.taxB2B) : parseInt(data.adresse.country.taxB2C);
+            const tax = data.typeClient === 'company' ? parseInt(data.adresse.country.taxB2B) : parseInt(data.adresse.country.taxB2C);
             const groupe = data.adresse.country.groupe;
             const currency = data.adresse.country.currency;
             const limitBeforeTax = data.adresse.country.threshold_before_tax;
@@ -1073,7 +1075,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,data,freelan
                 window.open(paymentLink, '_blank')*/
                 const contractBase64 = await blobToBase64(blobContract) as string;
                 const paymentBase64 = await blobToBase64(blobPayment) as string;
-                const contract = {...data,tax:tax}
+                const contract = {...data,tax:tax,saleTermeConditionValided:true,electronicContractSignatureAccepted:true,rigthRetractionLostAfterServiceBegin:true}
                 const parsedService = {...service,contract:contract}
                 const contractData = {service:parsedService,blobPdf:blobContract}
                 const result = await saveContractDoc(contractData,client,`${client.name.replaceAll(" ","-")}_signed-contract`,clientServiceId)

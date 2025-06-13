@@ -1,6 +1,7 @@
 "use client"
 import {Element, Link } from 'react-scroll';
 import { useTranslationContext } from '@/hooks/app-hook';
+import Image from 'next/image';
 
 interface HomeProps{
     locale:string
@@ -12,7 +13,7 @@ const Home:React.FC<HomeProps> = ({locale})=>{
         <Element className="mt-[100px]" name="home">
             <div className='w-full bg-secondary'>
                 <div className='w-full flex gap-[40px] justify-center items-start relative'>
-                    <div className='flex flex-col justify-center items-center self-stretch ml-[calc(15%/2)] max-920:absolute max-920:bg-[rgba(0,0,0,.5)] max-920:ml-0 max-920:w-full max-920:h-full max-920:top-[50%] max-920:translate-y-[-50%] max-920:left-0 max-920:px-[10%]'>
+                    <div className='flex flex-col justify-center items-center self-stretch w-1/2 ml-[calc(15%/2)] max-920:absolute max-920:bg-[rgba(0,0,0,.5)] max-920:ml-0 max-920:w-full max-920:h-full max-920:top-[50%] max-920:translate-y-[-50%] max-920:left-0 max-920:px-[10%]'>
                         <h1 className='text-fifty mb-3 uppercase text-[3em] max-420:text-[25px] max-485:mb-5 line-break'>{t["devTitle"]}</h1>
                         <p className='mb-3 text-fifty'>{t["devDescription"]}</p>
                         <div className='flex justify-center items-center gap-2 h-[86px] w-full mb-4 bg-primary p-4 flex-col'>
@@ -49,7 +50,11 @@ const Home:React.FC<HomeProps> = ({locale})=>{
                             </span>
                         </div>
                     </div>
-                    <img className='w-1/2 rounded-tl-[100px] rounded-bl-[100px] h-[550px] max-920:w-full max-920:rounded-none' src='/assets/images/home.jpg' alt="home" />
+                    <picture className='w-1/2 max-920:w-full h-[500px]'>
+                        <source srcSet='/assets/images/home.webp' type='image/webp'/>
+                        <source srcSet='/assets/images/home.jpg' type='image/jpg' />
+                        <Image src={'/assets/images/home.jpg'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[100px] rounded-bl-[100px] max-920:rounded-none'/>
+                    </picture>
                 </div>
             </div>
         </Element>
