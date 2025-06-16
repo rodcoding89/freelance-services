@@ -23,7 +23,7 @@ interface Client {
     name:string;
     email?:string;
     services:Services[];
-    dateCreation: Date;
+    modifDate: string;
     clientNumber:number;
     invoiceCount?:number;
 }
@@ -47,7 +47,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                     const data = doc.data();
                     clientsData.push({
                         id: doc.id,
-                        dateCreation: data.dateCreation,
+                        modifDate: data.modifDate,
                         name: data.name,
                         clientNumber: data.clientNumber,
                         invoiceCount: data.invoiceCount,
@@ -142,10 +142,9 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
         }
     };
 
-    const parseDate = (date: Date) => {
+    const parseDate = (date: string) => {
         if (!date) return 'N/A';
-        const convertDate = new Date(date);
-        return convertDate.toLocaleDateString();
+        return date;
     }
 
     const logout = async () => {
@@ -187,7 +186,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                                 <div className="font-medium text-gray-900">{client.name}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {parseDate(client.dateCreation) || 'N/A'}
+                                {parseDate(client.modifDate) || 'N/A'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <ul className='m-0 p-0 flex flex-col gap-2 w-full'>

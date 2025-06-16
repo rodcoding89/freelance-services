@@ -776,7 +776,7 @@
                     "para4":"4) Le Prestataire pourra conserver une copie du site dans un serveur sécurisé(Controlle de version GIT EX: GitHub,GitLab) uniquement pour les besoins futurs de modification du site internet après la livraison. Le Prestation reconnait que cette copie reste la propriété de la Cliente et les contenus y figurant peuvent être utilisés ou reproduits sans l’accord de celle-ci."
                 },
                 "sec20":{
-                    "title": "4.3 - Corrective – Bugs après livraison",
+                    "title": "5.20 - Corrective – Bugs après livraison",
                     "para11": "Le prestataire s'engage à corriger gratuitement tout",
                     "para12":"bug technique bloquant ou critique ",
                     "para13":"détecté dans les",
@@ -1007,6 +1007,8 @@
     "websiteVitrineShortText1":"Site de présentation des produits de fieger",
     "websiteVitrineShortText2":"Site de présentation d'une association de scientifique dentaire",
     "websiteVitrineShortText3":"Site internet de présentation des formations.",
+    "taxNumberText":"Numéro de TVA",
+    "reset":"Réinitialiser",
     "websiteVitrineShortText4":"Site de présentation de services + blog",
     "appShortText1":"Application mobile du site de rencontre LovSid",
     "websiteItem1Para":"<strong>Fieger</strong> est une <strong>entreprise basé dans plusieurs pays</strong> et export dans le monde entier. Elle propose des solutions <strong>d'aménagements de ventillations</strong> pour une éfficacité <strong>énergétique optimale</strong>. Sa spécialité est la création en passant par le design de <strong>fenetre à lame</strong>.<br><br> Ce site à été réalisé et codé <strong>a la main</strong> sans CMS, il a pour but de <strong>refleter l'entreprise</strong> et <strong>presenter ses produits</strong>.",

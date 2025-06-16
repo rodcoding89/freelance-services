@@ -101,7 +101,7 @@ const sendInvoice = async(data:Invoice,locale:string)=>{
             <p><strong>ROD TECH SOLUTIONS</strong></p>
         </div></body>`;
         const mailOptions = {
-            from: {name:"ROD TECH SOLUTIONS",address:process.env.FREELANCE_EMAIL ?? ''},
+            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.FREELANCE_EMAIL ?? ''},
             to: data.to,
             subject: data.subject,
             attachments:[attachement],
@@ -156,7 +156,7 @@ const sendContract = async(data:Contrat,locale:string)=>{
             encoding: "base64",
         }
         const mailOptions = {
-            from: {name:"ROD TECH SOLUTIONS",address:process.env.FREELANCE_EMAIL ?? ''},
+            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.FREELANCE_EMAIL ?? ''},
             to: data.to,
             subject: data.subject,
             attachments:[attachementContrat,attachementPayment],

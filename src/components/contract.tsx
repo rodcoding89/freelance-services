@@ -20,16 +20,28 @@ interface Services {
 }
 
 interface Client {
-    id: string;
+    id?: string;
     name:string;
     email?:string;
-    dateCreation?: string;
-    modifDate?:string;
+    modifDate:string;
     clientNumber:number;
     invoiceCount?:number;
 }
 
-interface Contract {
+interface contractFormPrestataire{
+    freelancerName:string;
+    freelancerTaxId?:string;
+    freelanceAddress:string;
+    projectTitle:string;
+    projectDescription:string;
+    startDate:string;
+    endDate:string;
+    totalPrice:number;
+    paymentSchedule:string;
+    maintenanceCategory:"app"|"saas"|"web"|null;
+}
+
+interface contractFormClient{
     name:string;
     adresse:{
         street:string;
@@ -42,20 +54,16 @@ interface Contract {
     clientEmail:string;
     clientPhone:string;
     clientVatNumber?:string;
-    freelancerName:string;
-    freelancerTaxId?:string;
-    freelanceAddress:string;
-    projectTitle:string;
-    projectDescription:string;
-    projectFonctionList:string[];
-    startDate:string;
-    endDate:string;
+    typeMaintenance?:"perYear"|"perHour"|"";
+}
+
+interface Contract {
+    clientGivingData:contractFormClient|null,
+    prestataireGivingData:contractFormPrestataire|null,
     contractType: "service"|"maintenance"|"service_and_maintenance";
-    maintenanceType:"app"|"saas"|"web"|null;
-    maintenaceOptionPayment?:"perYear"|"perHour"
-    totalPrice:number;
+    maintenanceCategory:"app"|"saas"|"web"|null;
     mprice?:number;
-    paymentSchedule:string;
+    projectFonctionList:string[];
     contractLanguage:string;
     saleTermeConditionValided?:boolean;
     electronicContractSignatureAccepted?:boolean;
@@ -65,6 +73,7 @@ interface Contract {
 interface ContractProps{
     locale:string
 }
+
 const contractType = [
     { value: "service", label: "Services" },
     { value: "maintenance", label: "Maintenance" },
@@ -73,13 +82,14 @@ const contractType = [
 
 const contractStatus = [
     { value: "unsigned", label: "Non Signé" },
-    { value: "pending", label: "En Attente de Signature" }
+    { value: "pending", label: "En Attente de Signature" },
+    { value: "signed", label: "Signé" },
 ];
 
 const Contrat:React.FC<ContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
-    const [maintenanceType,setMaintenaceType] = useState<"app"|"saas"|"web"|null>(null)
+    const [maintenanceCategory,setMaintenaceType] = useState<"app"|"saas"|"web"|null>(null)
     const [loading, setLoading] = useState(true);
     const {contextData} = useContext(AppContext)
     const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
@@ -103,35 +113,66 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const clientServiceId = serviceId as string;
     
     const {
-        register,
-        handleSubmit,
-        reset,
-        setValue,
-        watch,
-        formState: { errors,isValid },
-    } = useForm<Contract>({ mode: 'onChange'});
-    const typeClient = watch("typeClient");
-    const onSubmit = async(data:Contract) => {
-        const contract = {...data,adresse:{...data.adresse,country:countryTosave.current},projectFonctionList:fonctionalityList,maintenanceType:maintenanceType,contractLanguage:contractLanguage,contractType:selectedContractType}
-        const parsedService = {...service,serviceType:selectedContractType,contractStatus:selectedContractStatus}
+    register: registerClient,
+    handleSubmit: handleSubmitClient,
+    reset: resetClient,
+    setValue: setValueClient,
+    watch: watchClient,
+    formState: { errors: errorsClient, isValid: isValidClient }
+    } = useForm<contractFormClient>({ mode: 'onChange' });
+    const {
+    register: registerPrestataire,
+    handleSubmit: handleSubmitPrestataire,
+    reset: resetPrestataire,
+    setValue: setValuePrestataire,
+    watch: watchPrestataire,
+    formState: { errors: errorsPrestataire, isValid: isValidPrestataire }
+    } = useForm<contractFormPrestataire>({ mode: 'onChange' });
+    const typeClient = watchClient("typeClient");
+    const clientVatNumber = watchClient("clientVatNumber");
+
+    const onSubmitPrestataire = async(data:contractFormPrestataire) => {
+        if(!selectedContractType || !maintenanceCategory) return
+        const contract = {prestataireGivingData:{...data},...service?.contract,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:contractLanguage,contractType:selectedContractType,clientGivingData:service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null}
+        const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contract}
+        const clientData = {...client,modifDate:new Date().toLocaleDateString()}
+        saveContractAndNavigate(clientData,parsedService)
+    }
+
+    const onSubmitClient = async(data:contractFormClient) => {
+        if(!countryTosave.current || !selectedContractType || !maintenanceCategory) return
+        const client = {...data, adresse: {...data.adresse, country: countryTosave.current}}
+        const contract = {
+            ...service?.contract,
+            prestataireGivingData: service?.contract?.prestataireGivingData || null,
+            clientGivingData: client,
+            contractType: selectedContractType,
+            maintenanceCategory: service?.contract?.maintenanceCategory ?? null,contractLanguage:service?.contract?.contractLanguage ?? 'en',projectFonctionList:service?.contract?.projectFonctionList ?? fonctionalityList
+        };
+        console.log("contract",contract,"data",data,"client",client)
+        const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contract};
         const clientData = {...client,name:data.name,modifDate:new Date().toLocaleDateString()}
+        saveContractAndNavigate(clientData,parsedService)
+        // Generate PDF or send data to backend
+    };
+
+    const saveContractAndNavigate = async(clientData:any,parsedService:Services) => {
         if (Cookies.get('logged')) {
             try {
                 const docService = doc(firebase.db,"services",clientServiceId)
-                const service = {...parsedService,contract:contract}
-                await setDoc(docService, { ...service }, { merge: false })
-                sessionStorage.setItem('contractData', JSON.stringify({contract:contract,client:clientData,service:parsedService}));
+                await setDoc(docService, { ...parsedService }, { merge: false })
+                sessionStorage.setItem('contractData', JSON.stringify({client:clientData,service:parsedService}));
                 router.push("/"+locale+"/sign-contract/"+clientId+'/'+clientServiceId)
             } catch (error) {
-                
+                console.error('Erreur lors de la mise à jour du document :', error);
             }
         }else{
-            sessionStorage.setItem('contractData', JSON.stringify({contract:contract,client:clientData,service:parsedService}));
+            sessionStorage.setItem('contractData', JSON.stringify({client:clientData,service:parsedService}));
             router.push("/"+locale+"/sign-contract/"+clientId+'/'+clientServiceId)
         }
-        console.log("Contract Data:", contract);
-        // Generate PDF or send data to backend
-    };
+        //console.log("Contract Data:", contract);
+    }
+        
     
     const getStatusText = (status: string) => {
         if(!status) return t.unknownStatus;
@@ -170,27 +211,38 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     }
 
     const checkFormValidation = ()=>{
-        return isValid && maintenanceType !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && contractLanguage !== '' && contractLanguage !== 'default' && countryTosave.current !== null
+        if (Cookies.get('logged')) {
+            return maintenanceCategory !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && contractLanguage !== '' && contractLanguage !== 'default' && isValidPrestataire
+        } else {
+            return isValidClient && countryTosave.current !== null && (typeClient === 'company' ? clientVatNumber !== '' : true)
+        }
     }
-
+    //console.log("checkFormValidation",checkFormValidation(),"isValidClient",isValidClient,"countryTosave",countryTosave.current,"typeClient",typeClient,"clientVatNumber",clientVatNumber)
     const clearAdresse = () => {
-        setValue('adresse.street', '');
-        setValue('adresse.city', '');
-        setValue('adresse.postalCode', '');
+        setValueClient('adresse.street', '');
+        setValueClient('adresse.city', '');
+        setValueClient('adresse.postalCode', '');
     }
 
     const handleContractLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setContractLanguage(e.target.value);
     };
 
+    const handleCountryChange = (e:any)=>{
+        if (e.target.value !== 'default') {
+            setCurrentCountry(e.target.value)
+            const country = countries.find((item:any) => item.name === e.target.value);
+            countryTosave.current = country ?? null
+        } else {
+            setCurrentCountry(null);
+            clearAdresse()
+        }
+    }
+
     const parseInputDate = ()=>{
         return `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
     }
 
-    /*useEffect(()=>{
-        alert(typeClient)
-    },[typeClient])*/
-    
     useEffect(() => {
         const loadCountrieData = async () => {
             try {
@@ -199,6 +251,13 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             } catch (error) {
                 console.error('Erreur lors du chargement des pays :', error);
                 return
+            }
+        }
+        const checkUserConnection = (contractStatus:"signed"|"unsigned"|"pending")=>{
+            if (Cookies.get('logged') || contractStatus === 'pending') {
+            }else{
+                router.push("/"+locale)
+                return null
             }
         }
         async function getDocumentById(collectionName: string, id: string,serviceId:string) {
@@ -218,6 +277,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 const service = { clientId: serviceSnap.data().clientId,name: serviceSnap.data().name, serviceType: serviceSnap.data().serviceType,contractStatus: serviceSnap.data().contractStatus,contract:serviceSnap.data().contract ?? null } as Services;
                 const contract = service.contract
                 setService(service)
+                checkUserConnection(service.contractStatus)
                 console.log("service",service,"client",client)
                 if (edit === 'true') {
                     loadContractFromCache(countriesList)
@@ -225,15 +285,20 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     setClient(client);
                     if (contract) {
                         setFonctionalityList(contract.projectFonctionList)
-                        reset(contract);
-                        setMaintenaceType(contract.maintenanceType)
+                        if (contract.clientGivingData) {
+                            resetClient(contract.clientGivingData);
+                            const country = countriesList.find((item:any) => item.name === contract.clientGivingData?.adresse.country.name);
+                            setCurrentCountry(country?.name ?? null)
+                            countryTosave.current = country ?? null
+                        }
+                        if (contract.prestataireGivingData) {
+                            resetPrestataire(contract.prestataireGivingData);
+                        }
+                        setMaintenaceType(contract.maintenanceCategory)
                         setContractLanguage(contract.contractLanguage);
-                        const country = countriesList.find((item:any) => item.name === contract.adresse.country.name);
-                        //console.log("country",country,"contract.adresse",contract.adresse,"contract.adresse.country",contract.adresse.country,"countries",countries)
-                        setCurrentCountry(country?.name ?? null)
-                        countryTosave.current = country ?? null
                     }else{
-                        reset(client)
+                        resetClient(contract);
+                        resetPrestataire(contract);
                     }
                     setSelectedContractStatus(service.contractStatus)
                     setSelectedContractType(service.serviceType)
@@ -250,24 +315,31 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             const contractData = sessionStorage.getItem('contractData');
             if (contractData) {
                 const parsedData = JSON.parse(contractData);
-                reset(parsedData.contract);
-                setClient(parsedData.client);
-                setContractLanguage(parsedData.contract.contractLanguage)
-                setMaintenaceType(parsedData.contract.maintenanceType)
-                const country = countriesList.find(item => item.name === parsedData.contract.adresse.country.name);
-                setCurrentCountry(country?.name ?? null)
-                countryTosave.current = country ?? null
-                setSelectedContractStatus(parsedData.client.contractStatus)
-                setSelectedContractType(parsedData.client.contractType)
-                setFonctionalityList(parsedData.contract.projectFonctionList)
+                if (parsedData.service.contract) {
+                    if (parsedData.service.contract.clientGivingData) {
+                        resetClient(parsedData.service.contract.clientGivingData);
+                        const country = countriesList.find(item => item.name === parsedData.service.contract.clientGivingData.adresse.country.name);
+                        setCurrentCountry(country?.name ?? null)
+                        countryTosave.current = country ?? null
+                    }
+                    if (parsedData.service.contract.prestataireGivingData) {
+                        resetPrestataire(parsedData.service.contract.prestataireGivingData);
+                    }
+                    setContractLanguage(parsedData.service.contract.contractLanguage)
+                    setMaintenaceType(parsedData.service.contract.maintenanceCategory)
+                    setFonctionalityList(parsedData.service.contract.projectFonctionList)
+                }
+                setSelectedContractStatus(parsedData.service.contractStatus)
+                setSelectedContractType(parsedData.service.serviceType)
+                checkUserConnection(parsedData.service.contractStatus)
                 setLoading(false);
             }else{
                 router.push("/"+locale)
             }
         }
         getDocumentById("clients",clientId,clientServiceId);
-    }, [edit,clientId]);
-    //console.log("selectedContractStatus",selectedContractStatus,"maintenaceType",maintenanceType)
+    }, [edit,clientId,router,locale]);
+    
     const handleContractStatusChange = (value: "signed" | "unsigned" | "pending") => {
         setSelectedContractStatus(value as 'signed' | 'unsigned' | 'pending');
     };
@@ -276,6 +348,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         setSelectedContractType(value as "service"|"maintenance"|"service_and_maintenance");
     };
 
+    const resetInput = () => {
+        setValueClient('typeMaintenance','');
+    }
+
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
             console.log("inside contextData",contextData)
@@ -283,10 +359,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     },[contextData])
 
-    if (service?.contractStatus === 'signed' || (service?.contractStatus === 'unsigned' && !Cookies.get('logged'))) {
-        router.push("/"+locale)
-        return null
-    }
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
@@ -297,10 +369,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(service?.contractStatus ?? '')}`}><i className={`${getStatusIcon(service?.contractStatus ?? '')} mr-1`}></i>{getStatusText(service?.contractStatus ?? '')}</span>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={handleSubmitClient(onSubmitClient)} className="space-y-6">
                     {/* === Client Information === */}
                     <section className="border-b pb-6">
-                        <h2 className="text-xl font-semibold mb-4">{t.clientInfo}</h2>
+                        <h2 className="text-xl font-semibold mb-4">{t.clientGivingData}</h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                             <div>
@@ -308,23 +380,23 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     {t.clientName} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                    {...register("name", { required: t.fileRequirer })}
+                                    {...registerClient("name", { required: t.fileRequirer })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
-                                {errors.name && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.name.message as string}</p>
+                                {errorsClient.name && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsClient.name.message as string}</p>
                                 )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">{t.clientType} <em className="text-red-700">*</em></label>
                                 <div className="flex items-center justify-start gap-2 flex-wrap w-full mt-3">
                                     <div className="flex items-center gap-2">
-                                        <input type="radio" id="particular" {...register("typeClient", { required: true })} value={"particular"}/>
+                                        <input type="radio" id="particular" {...registerClient("typeClient", { required: true })} value={"particular"}/>
                                         <label htmlFor="particular" className="ml-2 block text-sm font-medium text-gray-700">
                                             {t.particular}</label>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <input type="radio" id="company" {...register("typeClient", { required: true })} value={"company"}/>
+                                        <input type="radio" id="company" {...registerClient("typeClient", { required: true })} value={"company"}/>
                                         <label htmlFor="company" className="ml-2 block text-sm font-medium text-gray-700">
                                             {t.company}</label>
                                     </div>
@@ -337,7 +409,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <label className="block text-sm font-medium text-gray-700">{t.email} <em className="text-red-700">*</em></label>
                                 <input
                                     type="email"
-                                    {...register("clientEmail", {
+                                    {...registerClient("clientEmail", {
                                         required: t.errorEmail,
                                         pattern: {
                                             value: /^\S+@\S+$/i,
@@ -346,8 +418,8 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
-                                {errors.clientEmail && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
+                                {errorsClient.clientEmail && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsClient.clientEmail.message as string}</p>
                                 )}
                             </div>
 
@@ -355,11 +427,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <label className="block text-sm font-medium text-gray-700">{t.tel} <em className="text-red-700">*</em></label>
                                 <input
                                     type="tel"
-                                    {...register("clientPhone", { required: t.errorTel })}
+                                    {...registerClient("clientPhone", { required: t.errorTel })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
-                                {errors.clientPhone && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.clientPhone.message as string}</p>
+                                {errorsClient.clientPhone && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsClient.clientPhone.message as string}</p>
                                 )}
                             </div>
                         </div>
@@ -369,7 +441,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             {t.adresse.title} <em className="text-red-700">*</em>
                             </label>
                             <div>
-                                <select value={currentCountry ? t.adresse[currentCountry] : t.adresse.default} id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={(e:any)=>{e.target.value !== 'default' ? setCurrentCountry(e.target.value):setCurrentCountry(null);clearAdresse()}}>
+                                <select value={currentCountry ? t.adresse[currentCountry] : t.adresse.default} id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={handleCountryChange}>
                                     <option value="default">{t.adresse.default}</option>
                                     {
                                         countries.map((item, index) => ( 
@@ -387,12 +459,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     {t.adresse.street} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                    {...register("adresse.street", { required: t.fileRequirer })}
+                                    {...registerClient("adresse.street", { required: t.fileRequirer })}
                                     placeholder={t.adresse.street}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
-                                {errors.adresse?.street && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.adresse.street.message as string}</p>
+                                {errorsClient.adresse?.street && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.street.message as string}</p>
                                 )}
                             </div>
                             <div className="min-w-[14rem] w-max max-w-1/3">
@@ -400,12 +472,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     {t.adresse.city} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                    {...register("adresse.city", { required: t.fileRequirer })}
+                                    {...registerClient("adresse.city", { required: t.fileRequirer })}
                                     placeholder={t.adresse.city}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
-                                {errors.adresse?.city && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.adresse.city.message as string}</p>
+                                {errorsClient.adresse?.city && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.city.message as string}</p>
                                 )}
                             </div>
                             <div className="min-w-[14rem] w-max max-w-1/3">
@@ -413,12 +485,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     {t.adresse.codePostal} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                    {...register("adresse.postalCode", { required: t.fileRequirer })}
+                                    {...registerClient("adresse.postalCode", { required: t.fileRequirer })}
                                     placeholder={t.adresse.codePostal}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
-                                {errors.adresse?.postalCode && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.adresse.postalCode.message as string}</p>
+                                {errorsClient.adresse?.postalCode && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.postalCode.message as string}</p>
                                 )}
                             </div>
                             </div>
@@ -428,10 +500,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         {
                             (typeClient === 'company' && currentCountry) && <div className="min-w-[14rem] w-max max-w-1/3">
                                 <label className="block text-sm font-medium text-gray-700">
-                                {t.diffAdresse}
+                                {t.taxNumberText} <em className="text-red-700">*</em>
                                 </label>
                                 <input
-                                {...register("clientVatNumber")}
+                                {...registerClient("clientVatNumber")}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
                             </div>
@@ -441,22 +513,33 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             {t.diffAdresse}
                             </label>
                             <input
-                            {...register("clientBillingAddress")}
+                            {...registerClient("clientBillingAddress")}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                             />
                         </div>
                     </div>
                     </section>
+                    {/* Submit Button */}
+                    {
+                        !Cookies.get("logged") && (
+                            <div className="flex justify-end gap-3 flex-wrap">
+                                <button type="submit"
+                                className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}>{t.generedContract}</button>
+                            </div>
+                        )
+                    }
+                </form>
+                <form onSubmit={handleSubmitPrestataire(onSubmitPrestataire)} className="space-y-6">
 
                     {/* === Freelancer Information === */}
                     <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold mb-4">{t.freelancerInfo}</h2>
+                    <h2 className="text-xl font-semibold my-4">{t.freelancerInfo}</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                         <label className="block text-sm font-medium text-gray-700">{t.freelancerCompanyName} <em className="text-red-700">*</em></label>
                         <input
-                            {...register("freelancerName", { required: t.fileRequirer })}
+                            {...registerPrestataire("freelancerName", { required: t.fileRequirer })}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={companyName} disabled={true}
                         />
                         </div>
@@ -464,7 +547,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <div>
                         <label className="block text-sm font-medium text-gray-700">{t.freelancerCompanyAdresse} <em className="text-red-700">*</em></label>
                         <input
-                            {...register("freelanceAddress", { required: t.fileRequirer })}
+                            {...registerPrestataire("freelanceAddress", { required: t.fileRequirer })}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={companyAdress} disabled={true}
                         />
                         </div>
@@ -474,7 +557,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">{t.invoice.identificationNumber} <em className="text-red-700">*</em></label>
                                 <input
-                                    {...register("freelancerTaxId", { required: t.fileRequirer })}
+                                    {...registerPrestataire("freelancerTaxId", { required: t.fileRequirer })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2" value={process.env.NEXT_PUBLIC_TAX_ID} disabled={true}
                                 />
                             </div>
@@ -488,23 +571,23 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     <div>
                         <label className="block text-sm font-medium text-gray-700">{t.projetTitle} <em className="text-red-700">*</em></label>
                         <input
-                        {...register("projectTitle", { required: t.fileRequirer })}
+                        {...registerPrestataire("projectTitle", { required: t.fileRequirer })}
                         className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
                         />
-                        {errors.projectTitle && (
-                        <p className="text-red-500 text-sm mt-1">{errors.projectTitle.message as string}</p>
+                        {errorsPrestataire.projectTitle && (
+                        <p className="text-red-500 text-sm mt-1">{errorsPrestataire.projectTitle.message as string}</p>
                         )}
                     </div>
 
                     <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">{t.projetDescription} <em className="text-red-700">*</em></label>
                         <textarea
-                        {...register("projectDescription", { required: t.fileRequirer })}
+                        {...registerPrestataire("projectDescription", { required: t.fileRequirer })}
                         rows={4}
                         className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
                         />
-                        {errors.projectDescription && (
-                        <p className="text-red-500 text-sm mt-1">{errors.projectDescription.message as string}</p>
+                        {errorsPrestataire.projectDescription && (
+                        <p className="text-red-500 text-sm mt-1">{errorsPrestataire.projectDescription.message as string}</p>
                         )}
                     </div>
 
@@ -535,12 +618,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <label className="block text-sm font-medium text-gray-700">{t.beginContract} <em className="text-red-700">*</em></label>
                             <input
                                 type="date"
-                                {...register("startDate", { required: t.fileRequirer })}
+                                {...registerPrestataire("startDate", { required: t.fileRequirer })}
                                 min={parseInputDate()}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
                             />
-                            {errors.startDate && (
-                                <p className="text-red-500 text-sm mt-1">{errors.startDate.message as string}</p>
+                            {errorsPrestataire.startDate && (
+                                <p className="text-red-500 text-sm mt-1">{errorsPrestataire.startDate.message as string}</p>
                             )}
                         </div>
 
@@ -551,7 +634,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <input
                                 type="date"
                                 min={parseInputDate()}
-                                {...register("endDate")}
+                                {...registerPrestataire("endDate")}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
                             />
                         </div>
@@ -567,27 +650,27 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <label className="block text-sm font-medium text-gray-700">{t.totalPrice} (€) <em className="text-red-700">*</em></label>
                                 <input
                                     type="text"
-                                    {...register("totalPrice", {
+                                    {...registerPrestataire("totalPrice", {
                                     required: t.priceError
                                     })}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
                                 />
-                                {errors.totalPrice && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.totalPrice.message as string}</p>
+                                {errorsPrestataire.totalPrice && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsPrestataire.totalPrice.message as string}</p>
                                 )}
                             </div>
                             <div className="min-w-[14rem] w-full max-w-[calc(50%-1.5rem)]">
                                 <label className="block text-sm font-medium text-gray-700">{t.paymentSchedule} <em className="text-red-700">*</em></label>
                                 <input type="text"
-                                {...register("paymentSchedule", { required: "Ce champ est requis",pattern: {
+                                {...registerPrestataire("paymentSchedule", { required: "Ce champ est requis",pattern: {
                                     value: /^\d+%(?:,\d+%)*$/i,
                                     message: t.errorPaymentShedule,
                                 }, })}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 placeholder="50% au début, 50% a la livraison" disabled={!Cookies.get('logged') ? true : false}
                                 />
-                                {errors.paymentSchedule && (
-                                <p className="text-red-500 text-sm mt-1">{errors.paymentSchedule.message as string}</p>
+                                {errorsPrestataire.paymentSchedule && (
+                                <p className="text-red-500 text-sm mt-1">{errorsPrestataire.paymentSchedule.message as string}</p>
                                 )}
 
                             </div>
@@ -598,35 +681,36 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <h2 className="text-xl font-semibold mb-4">{t.maintenanceService.title}</h2>
                         {
                             Cookies.get('logged') && (<div className="flex gap-5 justify-start items-center flex-wrap">
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceType === 'web' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('web')}>{t.maintenanceService.web}</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenanceType === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('app')}>{t.maintenanceService.app}</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceType === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('saas')}>{t.maintenanceService.saas}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'web' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('web')}>{t.maintenanceService.web}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenanceCategory === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('app')}>{t.maintenanceService.app}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('saas')}>{t.maintenanceService.saas}</span>
                             </div>)
                         }
                         
                         {
-                            maintenanceType === null && (<p className="text-red-500 text-sm mt-1">{t.maintenanceService.maintenanceError}</p>)
+                            maintenanceCategory === null && (<p className="text-red-500 text-sm mt-1">{t.maintenanceService.maintenanceError}</p>)
                         }
                         {
-                            maintenanceType !== null && (<div className="mt-4">
+                            maintenanceCategory !== null && (<div className="mt-4">
                                 {
-                                    maintenanceType === "app" ? (
+                                    maintenanceCategory === "app" ? (
                                         <div className="flex gap-2 justify-start items-center">
                                             <input type="checkbox" name="app" id="app" />
                                             <label className="block text-sm font-medium text-gray-700" htmlFor="app">{t.maintenanceService.maintenanceApp}</label>
                                         </div>
-                                    ) : maintenanceType === "saas" ? (<div className="flex gap-2 justify-start items-center">
+                                    ) : maintenanceCategory === "saas" ? (<div className="flex gap-2 justify-start items-center">
                                         <input type="checkbox" name="saas" id="saas" />
                                         <label className="block text-sm font-medium text-gray-700" htmlFor="saas">{t.maintenanceService.maintenanceSaas}</label>
                                     </div>) : (<div className="flex gap-5 justify-start items-center flex-wrap">
                                         <div className="flex gap-2 justify-start items-center">
-                                            <input type="checkbox" name="hour" id="hour" />
+                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perHour"} id="hour" />
                                             <label className="block text-sm font-medium text-gray-700" htmlFor="hour">{t.maintenanceService.pricePerHour.replace("{price}",50)}</label>
                                         </div>
                                         <div className="flex gap-2 justify-start items-center">
-                                            <input type="checkbox" name="year" id="year" />
+                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perYear"} id="year" />
                                             <label className="block text-sm font-medium text-gray-700" htmlFor="year">{t.maintenanceService.pricePerYear.replace("{price}",500)}</label>
                                         </div>
+                                        <div onClick={resetInput} className="px-2 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-[.8rem] text-center cursor-pointer">{t.reset}</div>
                                     </div>)
                                 }
                             </div>)
@@ -675,18 +759,20 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     }
                     
                     {/* Submit Button */}
-                    <div className="flex justify-end gap-3 flex-wrap">
-                        {
-                            Cookies.get('logged')  && (<a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center">{t.clientList}</a>)
-                        }
-                        
-                        <button
-                            type="submit"
-                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}
-                        >
-                            {t.generedContract}
-                        </button>
-                    </div>
+                    {
+                        Cookies.get('logged') && (
+                            <div className="flex justify-end gap-3 flex-wrap">
+                                <a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center">{t.clientList}</a>
+                            
+                                <button
+                                    type="submit"
+                                    className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}
+                                >
+                                    {t.generedContract}
+                                </button>
+                            </div>
+                        )
+                    }
                 </form>
             </div>
         </main>

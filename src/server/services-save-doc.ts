@@ -21,7 +21,7 @@ const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,s
   const drive = google.drive({ version: 'v3', auth });
   const clientFolderId = await getOrCreateFolder(`${client.name}_${client.id}`,INVOICE_FOLDER,drive)
   if(!clientFolderId) return
-  const filename = `${client.name.replaceAll(" ","-")}.${new Date().getFullYear()}.${new Date().getMonth() + 1}.${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
+  const filename = `${client.name.replaceAll(" ","-")}.${new Date().getFullYear()}.${new Date().getMonth() + 1}.${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_invoice`
   const mimeType = mime.getType(filename) || 'application/octet-stream';
   const arrayBuffer = await data.blobInvoice.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
@@ -49,10 +49,10 @@ const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,s
   }
 }
 
-const saveContractDoc = async(data:{service:any,blobPdf:Blob},client:any,filename:string,serviceId:string)=>{
+const saveContractDoc = async(data:{service:any,blobPdf:Blob},client:any,serviceId:string)=>{
   const auth = await GoogleAuth()
   if(!CONTRACT_FOLDER || !SCOPE || !auth) return
-
+  const filename = `${client.name.replaceAll(" ","-")}.${new Date().getFullYear()}.${new Date().getMonth() + 1}.${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_signed-contract`
   const drive = google.drive({ version: 'v3', auth });
   const clientFolderId = await getOrCreateFolder(`${client.name}_${client.id}`,CONTRACT_FOLDER,drive)
   console.log("clientFolderId",clientFolderId)

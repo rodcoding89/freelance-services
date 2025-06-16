@@ -15,13 +15,24 @@ interface Client {
     id: string;
     name:string;
     email?:string;
-    modifDate?:string
-    dateCreation?: string;
+    modifDate:string
     clientNumber:number;
     invoiceCount?:number;
 }
 
-interface Contract {
+interface contractFormPrestataire{
+    freelancerName:string;
+    freelancerTaxId?:string;
+    freelanceAddress:string;
+    projectTitle:string;
+    projectDescription:string;
+    startDate:string;
+    endDate:string;
+    totalPrice:number;
+    paymentSchedule:string;
+    maintenanceCategory:"app"|"saas"|"web"|null;
+}
+interface contractFormClient{
     name:string;
     adresse:{
         street:string;
@@ -34,25 +45,21 @@ interface Contract {
     clientEmail:string;
     clientPhone:string;
     clientVatNumber?:string;
-    freelancerName:string;
-    freelancerTaxId?:string;
-    freelanceAddress:string;
-    projectTitle:string;
-    projectDescription:string;
-    projectFonctionList:string[];
-    startDate:string;
-    endDate:string;
+    typeMaintenance?:"perYear"|"perHour"|"";
+}
+
+interface Contract {
+    clientGivingData:contractFormClient|null,
+    prestataireGivingData:contractFormPrestataire|null,
     contractType: "service"|"maintenance"|"service_and_maintenance";
-    maintenanceType:"app"|"saas"|"web"|null;
-    maintenaceOptionPayment?:"perYear"|"perHour"
-    totalPrice:number;
+    maintenanceCategory:"app"|"saas"|"web"|null;
     mprice?:number;
-    paymentSchedule:string;
-    contractLanguage:string;
     tax:number;
-    saleTermeConditionValided:boolean;
-    electronicContractSignatureAccepted:boolean;
-    rigthRetractionLostAfterServiceBegin:boolean;
+    projectFonctionList:string[];
+    contractLanguage:string;
+    saleTermeConditionValided?:boolean;
+    electronicContractSignatureAccepted?:boolean;
+    rigthRetractionLostAfterServiceBegin?:boolean;
 }
 
 interface Services {
@@ -72,7 +79,6 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const [contract, setContract] = useState<Contract|null>(null)
     const [client, setClient] = useState<Client|null>(null)
     const [contractStatus, setContractStatus] = useState<{contractLink:string;paymentLink:string;status:"success"|"error"}|null>(null)
-    const [contractData, setContractData] = useState<Contract|null>(null)
     const router = useRouter()
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const [loading, setLoading] = useState(true);
@@ -80,6 +86,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const [clientSignatureLink, setClientSignatureLink] = useState<string | null>(null);
     const [freelanceSignatureLink, setFreelanceSignatureLink] = useState<string | null>(null);
     const [service, setService] = useState<Services|null>(null);
+    const [serviceData, setServiceData] = useState<Services|null>(null);
     const [acceptSaleTerm,setAcceptSaleTerm] = useState<boolean>(false)
     const [confirmAcceptBackAmountCondition,setConfirmAcceptBackAmountCondition] = useState<boolean>(false)
     const {id,serviceId} = useParams()
@@ -99,25 +106,30 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     },[contextData])
 
     useEffect(()=>{
+        const checkUserConnection = (contractStatus:"signed"|"unsigned"|"pending")=>{
+            if (Cookies.get('logged') || contractStatus === 'pending') {
+            }else{
+                router.push("/"+locale)
+                return null
+            }
+        }
         const contractData = sessionStorage.getItem('contractData');
         if (contractData) {
             const parsedData = JSON.parse(contractData);
             console.log("parsedData",parsedData)
-            setContract(parsedData.contract);
+            setContract(parsedData.service.contract);
             setClient(parsedData.client);
             setService(parsedData.service);
+            checkUserConnection(parsedData.service.contractStatus)
             setLoading(false);
         }else{
             router.push("/"+locale+"/create-contract/"+clientId+"/"+clientServiceId)
         }
-    },[clientId,locale,loading])
+    },[clientId,locale,loading,router])
 
-    if (service?.contractStatus === 'signed' || (service?.contractStatus === 'unsigned' && !Cookies.get('logged'))) {
-        router.push("/"+locale)
-    }
     const uploadContract = ()=>{
-        if(!contract || !clientSignatureLink || !freelanceSignatureLink || !client) return
-        setContractData(contract)
+        if(!contract || !clientSignatureLink || !freelanceSignatureLink || !client || !service) return
+        setServiceData(service)
     }
     const checkContractValidation = ()=>{
         return clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition
@@ -151,7 +163,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             <p className="text-[1rem] mb-5">{t.contract.sections["2"].sec2.para}</p>
                             <h2 className="text-[1.8rem] leading-[1.95rem] mb-5">{t.contract.sections["3"].title}</h2>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["3"].sec1.title}</h3>
-                            <p className="text-[1rem] mb-5">{contract?.projectDescription}</p>
+                            <p className="text-[1rem] mb-5">{contract?.prestataireGivingData?.projectDescription}</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["3"].sec2.title}</h3>
                             <ul className="list-disc ml-10 mb-5">
                                 {
@@ -162,14 +174,14 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             </ul>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["3"].sec3.title}</h3>
                             <p className="text-[1rem] mb-3">{
-                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",contract.startDate).replace("{endDate}",contract.endDate) : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",contract.endDate) : ''
+                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",contract.prestataireGivingData?.startDate).replace("{endDate}",contract.prestataireGivingData?.endDate) : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",contract.prestataireGivingData?.endDate) : ''
                             }</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{
                                 contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance : ''
                             }</h3>
                             <p className="text-[1rem] mb-5">{
-                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",contract.totalPrice) : contract.contractType === 'maintenance' ? contract.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraMaintenance.perYear.replace("{mprice}",contract.mprice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.totalPrice)} ${
-                                    contract.maintenaceOptionPayment === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract.mprice)} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}` : ''
+                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",contract.prestataireGivingData?.totalPrice) : contract.contractType === 'maintenance' ? contract.clientGivingData?.typeMaintenance === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraMaintenance.perYear.replace("{mprice}",contract.mprice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.prestataireGivingData?.totalPrice)} ${
+                                    contract.clientGivingData?.typeMaintenance === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract.mprice)} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}` : ''
                             }</p>
                             <h2 className="text-[1.8rem] leading-[1.95rem] mb-5">{t.contract.sections["4"].title}</h2>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["4"].sec1.title}</h3>
@@ -251,8 +263,8 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec15.para4}</p>
                             <ol className="list-decimal ml-10 mb-5">
                                 {
-                                    contract?.paymentSchedule.split(',').map((item, index) => (
-                                        <li className="text-[1rem] mb-1" key={index}><strong>{index === 0 ? t.contract.sections["5"].sec15.item : index === contract?.paymentSchedule.split(',').length - 1 ? t.contract.sections["5"].sec15.itemEnd : t.contract.sections["5"].sec15.item1 + (index + 1) + ': '}</strong> {item}</li>
+                                    contract?.prestataireGivingData?.paymentSchedule.split(',').map((item, index) => (
+                                        <li className="text-[1rem] mb-1" key={index}><strong>{index === 0 ? t.contract.sections["5"].sec15.item : index === contract.prestataireGivingData!.paymentSchedule.split(',').length - 1 ? t.contract.sections["5"].sec15.itemEnd : t.contract.sections["5"].sec15.item1 + (index + 1) + ': '}</strong> {item}</li>
                                     ))
                                 }
                             </ol>
@@ -277,19 +289,19 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec19.para4}</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["5"].sec20.title}</h3>
                             <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec20.para11} <strong>{t.contract.sections["5"].sec20.para12}</strong> {t.contract.sections["5"].sec20.para13} <strong>{t.contract.sections["5"].sec20.para14}</strong> {t.contract.sections["5"].sec20.para15}</p>
-                            <ul>
+                            <ul className="list-disc ml-10 mb-5">
                                 <li>{t.contract.sections["5"].sec20.para2A}</li>
                                 <li>{t.contract.sections["5"].sec20.para2B}</li>
                             </ul>
-                            <p>{t.contract.sections["5"].sec20.para3}</p>
-                            <p><strong>{t.contract.sections["5"].sec20.paraBold}</strong></p>
-                            <ul>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec20.para3}</p>
+                            <p className="text-[1rem] mb-5"><strong>{t.contract.sections["5"].sec20.paraBold}</strong></p>
+                            <ul className="list-disc ml-10 mb-5">
                                 <li>{t.contract.sections["5"].sec20.para3A}</li>
                                 <li>{t.contract.sections["5"].sec20.para3B}</li>
                                 <li>{t.contract.sections["5"].sec20.para3C}</li>
                             </ul>
-                            <p>{t.contract.sections["5"].sec20.para4}</p>
-                            <p>{t.contract.sections["5"].sec20.para51} <strong>{t.contract.sections["5"].sec20.para52}</strong> {t.contract.sections["5"].sec20.para53}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec20.para4}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["5"].sec20.para51} <strong>{t.contract.sections["5"].sec20.para52}</strong> {t.contract.sections["5"].sec20.para53}</p>
                             <h2 className="text-[1.8rem] leading-[1.95rem] mb-5">{t.contract.sections["6"].title}</h2>
                             <p className="text-[1rem] mb-5">{t.contract.sections["6"].para}</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["6"].sec1.title}</h3>
@@ -339,7 +351,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraB}</p>
                             <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraC}</p>
                         </div>
-                        <GeneratePdfContract data={contractData} clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} client={client} service={service} locale={locale} onEmit={handleContractStatus}/>
+                        <GeneratePdfContract clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} client={client} service={serviceData} locale={locale} onEmit={handleContractStatus}/>
                     </section>
                     <span className="block italic my-4">{t.contractConfirm}</span>
                     <div className="flex justify-start items-center my-5 gap-2">

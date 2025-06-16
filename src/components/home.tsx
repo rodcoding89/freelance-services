@@ -51,9 +51,9 @@ const Home:React.FC<HomeProps> = ({locale})=>{
                         </div>
                     </div>
                     <picture className='w-1/2 max-920:w-full h-[500px]'>
-                        <source srcSet='/assets/images/home.webp' type='image/webp'/>
-                        <source srcSet='/assets/images/home.jpg' type='image/jpg' />
-                        <Image src={'/assets/images/home.jpg'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[100px] rounded-bl-[100px] max-920:rounded-none'/>
+                        <source srcSet='/assets/images/home.webp' type='image/webp' />
+                        <source srcSet='/assets/images/home.png' type='image/png' />
+                        <Image src={'/assets/images/home.png'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[100px] rounded-bl-[100px] max-920:rounded-none'/>
                     </picture>
                 </div>
             </div>

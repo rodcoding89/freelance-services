@@ -17,7 +17,7 @@ interface Client {
     id?: string;
     name:string;
     email?:string;
-    dateCreation: string;
+    modifDate: string;
     clientNumber:number;
     invoiceCount?:number;
 }
@@ -67,7 +67,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     }
 
     const onSubmit = async(data: any) => {
-        const client:Client = {name:data.clientName,dateCreation:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000}
+        const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000}
         console.log('Client Data:', data);
 
         const clientId = await addClient(client);
