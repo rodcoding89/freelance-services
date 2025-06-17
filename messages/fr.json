@@ -474,97 +474,74 @@
     "optionEcommerceMaintenance5": "<p><span class='prix'>+50€</span><span class='text'>Renouvellement nom de domaine + Hébergement + e-mail pendant 12 mois.</span></p><p><span class='prix'>+50€</span><span class='text'>Mise en ligne du site sur un serveur.</span></p>",
     "appMaintenance": "Pour la maintenance de vos applications mobiles, veuillez nous contacter afin d'établir un devis et une procédure adaptée. En effet, pour les applications mobiles, un tarif précis ne peut être déterminé sans une compréhension approfondie des besoins spécifiques de votre application.",
     "saasMaintenance": "Pour la maintenance de vos logiciels métiers ou SaaS, veuillez nous contacter afin d'établir un devis et une procédure adaptée. En effet, pour ce type de logiciel, un tarif précis ne peut être déterminé sans une compréhension approfondie des besoins spécifiques de votre logiciel.",
-    "devModeWordpress":"Fait sous WordPress",
-    "devModeOfHand":"Codé à la main",
-    "websiteTitle":"Site vitrine",
-    "websiteItemTitle":"Site internet pour",
-    "websiteItem1Proprio":"Entrerpise Fieger",
-    "acivityDomaine":"Domaine d'activité de",
-    "websiteItem1DescriptionPara1":"",
-    "websiteItem1DescriptionPara2":"",
-    "websiteItem1DescriptionPara3":"",
-    "websiteItem1DescriptionPara4":"",
-    "infoProjet":"Infos projet web",
-    "websiteItem1TaksPara1":"Mise à jour du contenu (text/image...)",
-    "websiteItem1TaksPara2":"Correction lié au design(apparence)",
-    "websiteItem1TaksPara3":"Ajout de composant & images",
-    "websiteItem1TaksPara4":"Test final",
-    "websiteItem1TaksPara5":"Publication",
-    "websiteItem2Proprio":"Entreprise Neue-gruppe",
-    "websiteItem2DescriptionPara1":"",
-    "websiteItem2DescriptionPara2":"",
-    "websiteItem2DescriptionPara3":"",
-    "websiteItem2DescriptionPara4":"",
-    "websiteItem2TaksPara1":"Ajout de nouvelle fonctionnalité",
-    "websiteItem2TaksPara2":"Ajout du contenu (text/image...)",
-    "websiteItem2TaksPara3":"Modification du désign (style/apparence)",
-    "websiteItem2TaksPara4":"Test final",
-    "websiteItem2TaksPara5":"Déploiement (mise en ligne)",
-    "websiteItem3Proprio":"Entreprise Avlis",
-    "websiteItem3DescriptionPara1":"",
-    "websiteItem3DescriptionPara2":"",
-    "websiteItem3DescriptionPara3":"",
-    "websiteItem3DescriptionPara4":"",
-    "websiteItem3TaksPara1":"Correction des bugs",
-    "websiteItem3TaksPara2":"Mise à jour du contenu (text/image...)",
-    "websiteItem3TaksPara3":"Ajout de nouvelle fonctionnalité",
-    "websiteItem3TaksPara4":"Amélioration du code produit",
-    "websiteItem3TaksPara5":"Tests final",
-    "websiteItem3TaksPara6":"Déploiement (mise en ligne)",
-    "websiteItem4Proprio":"Entreprise Charlotte Consulting",
-    "websiteItem4DescriptionPara1":"",
-    "websiteItem4DescriptionPara2":"",
-    "websiteItem4DescriptionPara3":"",
-    "websiteItem4DescriptionPara4":"",
-    "websiteItem4TaksPara1":"Définition de la charte graphique (palette couleur,typographie...)",
-    "websiteItem4TaksPara2":"Mise en place du template (pages/services/blog...)",
-    "websiteItem4TaksPara3":"Création des différentes fonctionnalités",
-    "websiteItem4TaksPara4":"Création du backoffice (espace d'administration du site)",
-    "websiteItem4TaksPara5":"Tests final",
-    "websiteItem4TaksPara6":"Déploiement (mise en ligne)",
-    "reworkedTitle":"Refonte site",
-    "reworkedItemTitle":"Refonte site pour",
-    "reworkedItemProprio":"Entreprise Graphicon",
-    "reworkedItemDescriptionTitel":"Domaine d'activité de",
-    "reworkedItemDescriptionPara1":"",
-    "reworkedItemDescriptionPara2":"",
-    "reworkedItemDescriptionPara3":"",
-    "reworkedItemDescriptionPara4":"",
-    "reworkedItemTaksPara1":"Mise à jour du contenu (text/image...)",
-    "reworkedItemTaksPara2":"Correction lié au design(apparence)",
-    "reworkedItemTaksPara3":"Ajout de composant & images",
-    "reworkedItemTaksPara4":"Test final",
-    "reworkedItemTaksPara5":"Déploiement (mise en ligne)",
-    "ecommerceTitle":"Site e-commerce",
-    "ecommerceItemTitle":"Site e-commerce pour",
-    "ecommerceItem1Proprio":"Entreprise waveconnect",
-    "ecommerceItem1DescriptionPara1":"",
-    "ecommerceItem1DescriptionPara2":"",
-    "ecommerceItem1DescriptionPara3":"",
-    "ecommerceItem1DescriptionPara4":"",
-    "ecommerceItem1TaksPara1":"Etude du projet(Cahier de charge)",
-    "ecommerceItem1TaksPara2":"Choix des techos appropriés",
-    "ecommerceItem1TaksPara3":"Mise en place de la structure du projet",
-    "ecommerceItem1TaksPara4":"Définition de la charte graphique (palette couleur,typographie...)",
-    "ecommerceItem1TaksPara5":"Mise en place du template (pages/services...)",
-    "ecommerceItem1TaksPara6":"Création des différentes fonctionnalités",
-    "ecommerceItem1TaksPara7":"Création du backoffice (espace d'administration du site)",
-    "ecommerceItem1TaksPara8":"Tests final",
-    "ecommerceItem1TaksPara9":"Déploiement (mise en ligne)",
-    "ecommerceItem2TaksPara5":"Mise en place du template (pages/panier/services...)",
-    "budget":"Quel est votre budget ?",
+    "devModeWordpress": "Réalisé sous WordPress",
+    "devModeOfHand": "Développé à la main",
+    "websiteTitle": "Site vitrine",
+    "websiteItemTitle": "Site internet pour",
+    "websiteItem1Proprio": "Entreprise Fieger",
+    "activityDomain": "Domaine d'activité de",
+    "infoProjet": "Informations sur le projet web",
+    "websiteItem1TaskPara1": "Mise à jour du contenu (texte/images)",
+    "websiteItem1TaskPara2": "Corrections liées au design (apparence)",
+    "websiteItem1TaskPara3": "Ajout de composants et d'images",
+    "websiteItem1TaskPara4": "Test final",
+    "websiteItem1TaskPara5": "Publication",
+    "websiteItem2Proprio": "Entreprise Neue-Gruppe",
+    "websiteItem2TaskPara1": "Ajout de nouvelles fonctionnalités",
+    "websiteItem2TaskPara2": "Ajout de contenu (texte/images)",
+    "websiteItem2TaskPara3": "Modification du design (style/apparence)",
+    "websiteItem2TaskPara4": "Test final",
+    "websiteItem2TaskPara5": "Déploiement (mise en ligne)",
+    "websiteItem3Proprio": "Entreprise Avlis",
+    "websiteItem3TaskPara1": "Correction des bugs",
+    "websiteItem3TaskPara2": "Mise à jour du contenu (texte/images)",
+    "websiteItem3TaskPara3": "Ajout de nouvelles fonctionnalités",
+    "websiteItem3TaskPara4": "Amélioration du code produit",
+    "websiteItem3TaskPara5": "Test final",
+    "websiteItem3TaskPara6": "Déploiement (mise en ligne)",
+    "websiteItem4Proprio": "Entreprise Charlotte Consulting",
+    "websiteItem4TaskPara1": "Définition de la charte graphique (palette de couleurs, typographie)",
+    "websiteItem4TaskPara2": "Mise en place du template (pages/services/blog)",
+    "websiteItem4TaskPara3": "Création des différentes fonctionnalités",
+    "websiteItem4TaskPara4": "Création du backoffice (espace d'administration du site)",
+    "websiteItem4TaskPara5": "Test final",
+    "websiteItem4TaskPara6": "Déploiement (mise en ligne)",
+    "reworkedTitle": "Refonte de site",
+    "reworkedItemTitle": "Refonte de site pour",
+    "reworkedItemProprio": "Entreprise Graphicon",
+    "reworkedItemDescriptionTitle": "Domaine d'activité de",
+    "reworkedItemTaskPara1": "Mise à jour du contenu (texte/images)",
+    "reworkedItemTaskPara2": "Corrections liées au design (apparence)",
+    "reworkedItemTaskPara3": "Ajout de composants et d'images",
+    "reworkedItemTaskPara4": "Test final",
+    "reworkedItemTaskPara5": "Déploiement (mise en ligne)",
+    "ecommerceTitle": "Site e-commerce",
+    "ecommerceItemTitle": "Site e-commerce pour",
+    "ecommerceItem1Proprio": "Entreprise WaveConnect",
+    "ecommerceItem1TaskPara1": "Étude du projet (cahier des charges)",
+    "ecommerceItem1TaskPara2": "Choix des technologies appropriées",
+    "ecommerceItem1TaskPara3": "Mise en place de la structure du projet",
+    "ecommerceItem1TaskPara4": "Définition de la charte graphique (palette de couleurs, typographie)",
+    "ecommerceItem1TaskPara5": "Mise en place du template (pages/services)",
+    "ecommerceItem1TaskPara6": "Création des différentes fonctionnalités",
+    "ecommerceItem1TaskPara7": "Création du backoffice (espace d'administration du site)",
+    "ecommerceItem1TaskPara8": "Test final",
+    "ecommerceItem1TaskPara9": "Déploiement (mise en ligne)",
+    "ecommerceItem2TaskPara5": "Mise en place du template (pages/panier/services)",
+    "budget": "Quel est votre budget ?",
     "contract":{
-        "header":{
-            "tittleService":"CONTRAT DE PRESTATION DE SERVICE - ",
-            "tittleMaintenance":"CONTRAT DE PRESTATION DE MAINTENANCE - ",
-            "tittleServiceMaintenance":"CONTRAT DE PRESTATION DE SERVICE PLUS MAINTENANCE - ",
-            "subTitle":"Entre les soussignées :",
-            "home":"domicilié(e) à",
-            "designation":"ci aprés désigné par le",
-            "from":"Client,",
-            "to":"Prestataire de services.",
-            "and":"et",
-            "parties":"(le client et le prestataire de services ci-après collectivement appelés 'les parties')"
+        "header": {
+            "para":"Le présent contrat constitue une traduction en français d’un document rédigé à l’origine en anglais, fournie à titre informatif afin de faciliter la compréhension par le client. Toutefois, en cas de contradiction, divergence ou difficulté d’interprétation entre les versions, seule la version anglaise fera foi et prévaudra entre les parties.",
+            "titleService": "Contrat de prestation de service - ",
+            "titleMaintenance": "Contrat de prestation de maintenance - ",
+            "titleServiceMaintenance": "Contrat de prestation de service et de maintenance - ",
+            "subTitle": "Entre les soussignés :",
+            "home": "domicilié(e) à",
+            "designation": "ci-après désigné par le",
+            "from": "Client,",
+            "to": "Prestataire de services.",
+            "and": "et",
+            "parties": "(le client et le prestataire de services ci-après collectivement appelés 'les Parties')"
         },
         "sections":{
             "1":{
@@ -586,530 +563,490 @@
                     "para":"À compter du moment où le client a fourni au prestataire de services les éléments d'information et sous réserve de tout service additionnel requis par le client après la signature du présent contrat, le délai de fourniture des services par le prestataire de services est celui indiqué dans les spécifications."
                 }
             },
-            "3":{
-                "title":"3 - DESCRPTION ET FONCTIONNALITÉS CLES DU PROJET",
-                "sec1":{
-                    "title":"3.1 - Déscription"
+            "3": {
+                "title": "3 - DESCRIPTION ET FONCTIONNALITÉS CLÉS DU PROJET",
+                "sec1": {
+                    "title": "3.1 - Description"
                 },
-                "sec2":{
-                    "title":"3.2 - Fonctionnalités"
+                "sec2": {
+                    "title": "3.2 - Fonctionnalités"
                 },
-                "sec3":{
-                    "title":"3.3 - Duré du contrat",
-                    "paraService":"Le contrat début le {startDate}, mais le projet lui débute lorsque le premier dépot est éffectué. Cala signifi que les retarts du versement du premier dépot seront prix en compte sur la date de livraison. Le contrat s'achève le {endDate} avec une semaine de marge et ceci dans les conditions ou le premiér depot est versée le même jours de la signature du contrat. Cela peut être confirmé par une preuve de virement, nulle besoin de recevoir l'argent avant de commencer le projet.",
-                    "paraMaintenance":"Le présent contrat prends éffet au jour de sa signature par les deux parties. Le contrat sera alors conclu pour une durée determiné de 12 mois. À l'expiration de la période initiale, le contrat sera automatiquement renouvelé pour des périodes successives de 12 mois, sauf si l'une des parties notifie à l'autre son intention de ne pas renouveler le contrat par écrit, au moins 30 jours avant la date d'expiration de la période en cours. Chaque partie peut résilier le contrat avant son terme en cas de manquement grave de l'autre partie à ses obligations contractuelles, sous réserve d'un préavis écrit de 30 jours et de la possibilité pour la partie défaillante de remédier au manquement dans ce délai.",
-                    "paraServiceMaintenance":"Le contrat début lors de la signature des deux parties, mais le projet lui débute lorsque le premier dépot est éffectué. Cala signifi que les retarts du versement du premier dépot seront prix en compte sur la date de livraison. Le contrat s'achève le {endDate} avec une semaine de marge et ceci dans les conditions ou le premiér depot est versée le même jours de la signature du contrat. Cela peut être confirmé par une pruve de virement, nul besoin de recevoir l'argent avant de commencer. Le contrat de prestation de maintenance prend effet à la fin du contrat de prestation service. Le contrat sera alors conclu pour une durée determiné de 12 mois. À l'expiration de la période initiale, le contrat sera automatiquement renouvelé pour des périodes successives de 12 mois, sauf si l'une des parties notifie à l'autre son intention de ne pas renouveler le contrat par écrit, au moins 30 jours avant la date d'expiration de la période en cours. Chaque partie peut résilier le contrat avant son terme en cas de manquement grave de l'autre partie à ses obligations contractuelles, sous réserve d'un préavis écrit de 30 jours et de la possibilité pour la partie défaillante de remédier au manquement dans ce délai."
+                "sec3": {
+                    "title": "3.3 - Durée du contrat",
+                    "paraService": "Le contrat débute le {startDate}, mais le projet commence lorsque le premier dépôt est effectué. Cela signifie que les retards du versement du premier dépôt seront pris en compte sur la date de livraison. Le contrat s'achève le {endDate} avec une semaine de marge, et ceci dans les conditions où le premier dépôt est versé le même jour que la signature du contrat. Cela peut être confirmé par une preuve de virement, nul besoin de recevoir l'argent avant de commencer le projet.",
+                    "paraMaintenance": "Le présent contrat prend effet au jour de sa signature par les deux parties. Le contrat sera alors conclu pour une durée déterminée de 12 mois. À l'expiration de la période initiale, le contrat sera automatiquement renouvelé pour des périodes successives de 12 mois, sauf si l'une des parties notifie à l'autre son intention de ne pas renouveler le contrat par écrit, au moins 30 jours avant la date d'expiration de la période en cours. Chaque partie peut résilier le contrat avant son terme en cas de manquement grave de l'autre partie à ses obligations contractuelles, sous réserve d'un préavis écrit de 30 jours et de la possibilité pour la partie défaillante de remédier au manquement dans ce délai.",
+                    "paraServiceMaintenance": "Le contrat débute lors de la signature des deux parties, mais le projet commence lorsque le premier dépôt est effectué. Cela signifie que les retards du versement du premier dépôt seront pris en compte sur la date de livraison. Le contrat s'achève le {endDate} avec une semaine de marge, et ceci dans les conditions où le premier dépôt est versé le même jour que la signature du contrat. Cela peut être confirmé par une preuve de virement, nul besoin de recevoir l'argent avant de commencer. Le contrat de prestation de maintenance prend effet à la fin du contrat de prestation de service. Le contrat sera alors conclu pour une durée déterminée de 12 mois. À l'expiration de la période initiale, le contrat sera automatiquement renouvelé pour des périodes successives de 12 mois, sauf si l'une des parties notifie à l'autre son intention de ne pas renouveler le contrat par écrit, au moins 30 jours avant la date d'expiration de la période en cours. Chaque partie peut résilier le contrat avant son terme en cas de manquement grave de l'autre partie à ses obligations contractuelles, sous réserve d'un préavis écrit de 30 jours et de la possibilité pour la partie défaillante de remédier au manquement dans ce délai."
                 },
-                "sec4":{
-                    "titleService":"3.4 - Prix",
-                    "titleMaintenance":"3.4 - Prix",
-                    "titleServiceMaintenance":"3.4 - Prix",
-                    "paraService":"Le prix pour la prestation de services est de {price} € TTC selon conclu dans le devis. Les modalités de paiement se trouvent en annexe de ce contrat.",
-                    "paraMaintenance":{
-                        "peerHour":"Le tarif horaire pour la prestation de maintenance est de {mprice} € TTC selon conclu dans le devis. Les heures travaillées seront consignées dans un rapport mensuel et facturées à la fin de chaque mois. Les modalités de paiement se trouvent en annexe de ce contrat.",
-                        "peerYear":"Le forfait annuel pour la prestation de maintenance est de {mprice} € TTC selon conclu dans le devis. Le paiement sera effectué en une seule fois au début de chaque période contractuelle. Les modalités de paiement se trouvent en annexe de ce contrat."
+                "sec4": {
+                    "titleService": "3.4 - Prix",
+                    "titleMaintenance": "3.4 - Prix",
+                    "titleServiceMaintenance": "3.4 - Prix",
+                    "paraService": "Le prix pour la prestation de services est de {price} € TTC, selon ce qui a été conclu dans le devis. Les modalités de paiement se trouvent en annexe de ce contrat.",
+                    "paraMaintenance": {
+                        "peerHour": "Le tarif horaire pour la prestation de maintenance est de {mprice} € TTC, selon ce qui a été conclu dans le devis. Les heures travaillées seront consignées dans un rapport mensuel et facturées à la fin de chaque mois. Les modalités de paiement se trouvent en annexe de ce contrat.",
+                        "peerYear": "Le forfait annuel pour la prestation de maintenance est de {mprice} € TTC, selon ce qui a été conclu dans le devis. Le paiement sera effectué en une seule fois au début de chaque période contractuelle. Les modalités de paiement se trouvent en annexe de ce contrat."
                     },
-                    "paraServiceMaintenance":{
-                        "para":"Le prix pour la prestation de services est de {price} € selon conclu dans le devis. Pour la prestation de maintenance,",
-                        "para1":"Les modalités de paiement se trouvent en annexe de ce contrat.",
-                        "peerHour":"le tarif horaire est de {mprice} €. Les heures travaillées seront consignées dans un rapport mensuel et facturées à la fin de chaque mois.",
-                        "peerYear":"le forfait annuel est de {mprice} €. Le paiement sera effectué en une seule fois au début de chaque période contractuelle."
+                    "paraServiceMaintenance": {
+                        "para": "Le prix pour la prestation de services est de {price} €, selon ce qui a été conclu dans le devis. Pour la prestation de maintenance,",
+                        "para1": "Les modalités de paiement se trouvent en annexe de ce contrat.",
+                        "peerHour": "le tarif horaire est de {mprice} €. Les heures travaillées seront consignées dans un rapport mensuel et facturées à la fin de chaque mois.",
+                        "peerYear": "le forfait annuel est de {mprice} €. Le paiement sera effectué en une seule fois au début de chaque période contractuelle."
                     }
                 }
             },
-            "4":{
-                "title":"4 - CONSIDÉRATION",
-                "sec1":{
-                    "title":"4.1 - Prix des services",
-                    "para":"En considération de la fourniture des services, le client doit payer au prestataire de services le prix indiqué dans les spécifications, ainsi que toutes les taxes applicables."
+            "4": {
+                "title": "4 - CONSIDÉRATIONS FINANCIÈRES",
+                "sec1": {
+                    "title": "4.1 - Tarification des services",
+                    "para": "En contrepartie des services fournis, le client s'engage à régler au prestataire le montant convenu, conformément aux spécifications, incluant toutes les taxes et redevances applicables."
                 },
-                "sec2":{
-                    "title":"4.2 - Termes et conditions de paiement",
-                    "para":"Le prix est payable par le client au prestataire de services selon les termes et conditions de paiement indiqués dans les spécifications.",
-                    "paraClose":"(Les modalités et coordonnées de paiement sont indiqués en annexe de ce contrat)"
+                "sec2": {
+                    "title": "4.2 - Modalités de paiement",
+                    "para": "Le règlement des sommes dues par le client au prestataire doit être effectué selon les modalités et échéances précisées dans les spécifications.",
+                    "paraClose": "(Les détails et coordonnées pour le paiement sont précisés en annexe du présent contrat.)"
                 }
             },
-            "5":{
-                "title":"5 - DISPOSITIONS PARTICULIÈRES",
-                "para":"",
-                "sec1":{
-                    "title":"5.1 - Représentants des parties",
-                    "para":"Chacune des parties reconnaît que la personne qu'elle désigne dans les spécifications (ou toute personne remplaçant la personne désignée, après avis en ce sens donné à l'autre partie) la représente et a toute autorité pour poser les actes, prendre les décisions et donner les autorisations requises relativement à l'exécution du présent contrat."
+             "5": {
+                "title": "5 - DISPOSITIONS PARTICULIÈRES",
+                "para": "",
+                "sec1": {
+                    "title": "5.1 - Représentants des parties",
+                    "para": "Chacune des parties reconnaît que la personne qu'elle désigne dans les spécifications (ou toute personne remplaçant la personne désignée, après avis en ce sens donné à l'autre partie) la représente et a toute autorité pour poser les actes, prendre les décisions et donner les autorisations requises relativement à l'exécution du présent contrat."
                 },
-                "sec2":{
-                    "title":"5.2 - Communications électroniques",
-                    "para1":"Les représentants des parties peuvent communiquer entre eux par voie électronique. Dans un tel cas, les présomptions suivantes s'appliquent:",
-                    "para2":"la présence d'un code d'identification dans un document électronique est suffisante pour identifier la personne émettrice et pour établir l'authenticité dudit document; un document électronique contenant un code d'identification constitue un écrit signé par la personne émettrice; un document électronique ou toute sortie imprimée d'un tel document, conservée conformément aux pratiques commerciales habituelles, est considéré comme un original."
+                "sec2": {
+                    "title": "5.2 - Communications électroniques",
+                    "para1": "Les représentants des parties peuvent communiquer entre eux par voie électronique. Dans un tel cas, les présomptions suivantes s'appliquent:",
+                    "para2": "la présence d'un code d'identification dans un document électronique est suffisante pour identifier la personne émettrice et pour établir l'authenticité dudit document; un document électronique contenant un code d'identification constitue un écrit signé par la personne émettrice; un document électronique ou toute sortie imprimée d'un tel document, conservée conformément aux pratiques commerciales habituelles, est considéré comme un original."
                 },
-                "sec3":{
-                    "title":"5.3 - Obligations du client",
-                    "para":"Le client s'engage et s'oblige envers le prestataire de services à ce qui suit:",
-                    "paraA":"a) Le client doit fournir au prestataire de services les éléments d'information dans la forme et à l'intérieur des délais prévus dans les spécifications;",
-                    "paraB1":"b) Les éléments d'information doivent respecter toutes les lois et tous les règlements applicables,",
-                    "paraB2":"notamment la RGPD et autres directives pour le respect de la vie privée;",
-                    "paraC":"c) La fourniture des éléments d'information par le client ne doit violer aucune obligation de confidentialité ou de non-divulgation et doit permettre au prestataire de services de les utiliser librement et sans contrainte dans le cadre de la fourniture des services;",
-                    "paraD":"d) Le client doit fournir au prestataire de services, sur demande de celui-ci, la preuve de son droit, titre ou intérêt de propriété intellectuelle dans tout élément d'information;",
-                    "paraE":"e) Le client doit apporter au prestataire de services toute sa collaboration et lui fournir toute l'information requise pour assurer l'exécution fidèle et complète des services à être rendus;",
-                    "paraF":"f) À moins d'un motif sérieux, le client doit donner au prestataire de services, sur demande de celui-ci, son approbation du travail effectué au terme de chacune des phases de prestation de services indiquées dans les spécifications;",
-                    "paraG":"g) Le client est seul responsable du contenu des équipements informatiques et des dommages pouvant découler de leur utilisation;",
-                    "paraH1":"h) Le client doit prendre fait et cause du prestataire de services si ce dernier est mis en cause ou porté partie dans une procédure judiciaire intentée par une tierce personne et alléguant une faute du prestataire de services découlant de l'utilisation des équipements informatiques ou des informations qui y sont contenues, et",
-                    "paraH2":"indemniser le prestataire de services de toute condamnation monétaire en capital et intérêts ainsi que de tous les frais judiciaires et extrajudiciaires que le prestataire de services peut encourir en conséquence;",
-                    "paraI":"i) Le client doit payer le prix des services du prestataire de services, payer le prix de tout service additionnel qu'il pourrait requérir ultérieurement à la signature du présent contrat ainsi que rembourser les dépenses encourues, conformément aux termes et conditions de paiement prévus dans les spécifications;",
-                    "paraJ":"j) Le client doit aviser le prestataire de services sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne."
+                "sec3": {
+                    "title": "5.3 - Obligations du client",
+                    "para": "Le Client s’engage à ne transmettre au Prestataire de services que des données personnelles obtenues légalement, et traitées dans le respect des lois sur la protection des données en vigueur dans le pays où ces données ont été collectées, ou dans celui où résident les personnes concernées.",
+                    "paraA": "a) Le client doit fournir au prestataire de services les éléments d'information dans la forme et à l'intérieur des délais prévus dans les spécifications;",
+                    "paraB1": "b) Les éléments d'information doivent respecter toutes les lois et tous les règlements applicables.",
+                    "paraC": "c) La fourniture des éléments d'information par le client ne doit violer aucune obligation de confidentialité ou de non-divulgation et doit permettre au prestataire de services de les utiliser librement et sans contrainte dans le cadre de la fourniture des services;",
+                    "paraD": "d) Le client doit fournir au prestataire de services, sur demande de celui-ci, la preuve de son droit, titre ou intérêt de propriété intellectuelle dans tout élément d'information;",
+                    "paraE": "e) Le client doit apporter au prestataire de services toute sa collaboration et lui fournir toute l'information requise pour assurer l'exécution fidèle et complète des services à être rendus;",
+                    "paraF": "f) À moins d'un motif sérieux, le client doit donner au prestataire de services, sur demande de celui-ci, son approbation du travail effectué au terme de chacune des phases de prestation de services indiquées dans les spécifications;",
+                    "paraG": "g) Le client est seul responsable du contenu des équipements informatiques et des dommages pouvant découler de leur utilisation;",
+                    "paraH1": "h) Le client doit prendre fait et cause du prestataire de services si ce dernier est mis en cause ou porté partie dans une procédure judiciaire intentée par une tierce personne et alléguant une faute du prestataire de services découlant de l'utilisation des équipements informatiques ou des informations qui y sont contenues, et",
+                    "paraH2": "indemniser le prestataire de services de toute condamnation monétaire en capital et intérêts ainsi que de tous les frais judiciaires et extrajudiciaires que le prestataire de services peut encourir en conséquence;",
+                    "paraI": "i) Le client doit payer le prix des services du prestataire de services, payer le prix de tout service additionnel qu'il pourrait requérir ultérieurement à la signature du présent contrat ainsi que rembourser les dépenses encourues, conformément aux termes et conditions de paiement prévus dans les spécifications;",
+                    "paraJ": "j) Le client doit aviser le prestataire de services sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne."
                 },
-                "sec4":{
-                    "title":"5.4 - Obligations du prestataire de services",
-                    "para":"Le prestataire de services s'engage et s'oblige envers le client à ce qui suit:",
-                    "paraA":"a) Les services doivent être rendus de façon professionnelle, selon les règles généralement reconnues par l'industrie, et en fonction des spécifications;",
-                    "paraB1":"b) Le prestataire de services doit s'assurer que ses employés, fournisseurs, collaborateurs et sous-traitants, s'il y a lieu,",
-                    "paraB2":"respectent intégralement les dispositions du présent contrat, notamment en ce qui concerne la propriété intellectuelle et la confidentialité;",
-                    "paraC":"c) Le prestataire de services doit aviser le client sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne."
+                "sec4": {
+                    "title": "5.4 - Obligations du prestataire de services",
+                    "para": "Le prestataire de services s'engage et s'oblige envers le client à ce qui suit:",
+                    "paraA": "a) Les services doivent être rendus de façon professionnelle, selon les règles généralement reconnues par l'industrie, et en fonction des spécifications;",
+                    "paraB1": "b) Le prestataire de services doit s'assurer que ses employés, fournisseurs, collaborateurs et sous-traitants, s'il y a lieu,",
+                    "paraB2": "respectent intégralement les dispositions du présent contrat, notamment en ce qui concerne la propriété intellectuelle et la confidentialité;",
+                    "paraC": "c) Le prestataire de services doit aviser le client sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne."
                 },
-                "sec5":{
-                    "title":"5.5 - Information utile",
-                    "para":"Le client reconnaît que le prestataire de services lui a fourni, avant la signature du présent contrat, toute l’information utile relativement aux services qu'il s'engage à fournir. Remarque : Toutes autres informations pour la réalisation du service nécessitant des coups supplémentaires sont a la charge du prestataire de services."
+                "sec5": {
+                    "title": "5.5 - Information utile",
+                    "para": "Le client reconnaît que le prestataire de services lui a fourni, avant la signature du présent contrat, toute l’information utile relativement aux services qu'il s'engage à fournir. Remarque : Toutes autres informations pour la réalisation du service nécessitant des coups supplémentaires sont à la charge du prestataire de services."
                 },
-                "sec6":{
-                    "title":"5.6 - Moyens d'exécution",
-                    "para11":"Sauf quant au respect des spécifications,",
-                    "para12":"le prestataire de services a le libre choix des moyens d'exécution du présent contrat",
-                    "para13":"et il n'existe entre lui et le client aucun lien de subordination quant à son exécution."
+                "sec6": {
+                    "title": "5.6 - Moyens d'exécution",
+                    "para11": "Sauf quant au respect des spécifications,",
+                    "para12": "le prestataire de services a le libre choix des moyens d'exécution du présent contrat",
+                    "para13": "et il n'existe entre lui et le client aucun lien de subordination quant à son exécution."
                 },
-                "sec7":{
-                    "title":"5.7 - Relation entre les parties",
-                    "para":"Les parties étant des entrepreneurs indépendants, le présent contrat ne les lie entre elles qu'aux fins qui y sont mentionnées. Par conséquent, les dispositions du présent contrat ne peuvent nullement être interprétées comme créant une quelconque association ou société entre les parties ou comme confiant un quelconque mandat de l'une à l'autre. De plus, aucune des parties ne peut lier l'autre, de quelque façon que ce soit et envers qui que ce soit, autrement qu'en conformité avec les dispositions du présent contrat."
+                "sec7": {
+                    "title": "5.7 - Relation entre les parties",
+                    "para": "Les parties étant des entrepreneurs indépendants, le présent contrat ne les lie entre elles qu'aux fins qui y sont mentionnées. Par conséquent, les dispositions du présent contrat ne peuvent nullement être interprétées comme créant une quelconque association ou société entre les parties ou comme confiant un quelconque mandat de l'une à l'autre. De plus, aucune des parties ne peut lier l'autre, de quelque façon que ce soit et envers qui que ce soit, autrement qu'en conformité avec les dispositions du présent contrat."
                 },
-                "sec8":{
-                    "title":"5.8 - Sous-traitance",
-                    "para11":"À moins d'une disposition à l'effet contraire dans le présent contrat et à condition d'avoir obtenu préalablement le consentement du client,",
-                    "para12":"le prestataire de services peut s'adjoindre tout tiers pour exécuter ce contrat.",
-                    "para13":"Il conserve néanmoins la direction et la responsabilité de l'exécution."
+                "sec8": {
+                    "title": "5.8 - Sous-traitance",
+                    "para11": "À moins d'une disposition à l'effet contraire dans le présent contrat et à condition d'avoir obtenu préalablement le consentement du client,",
+                    "para12": "le prestataire de services peut s'adjoindre tout tiers pour exécuter ce contrat.",
+                    "para13": "Il conserve néanmoins la direction et la responsabilité de l'exécution."
                 },
-                "sec9":{
-                    "title":"5.9 - Processus de vérification, de test et d'approbation",
-                    "para1":"Sur demande formulée par le prestataire de services au terme de chacune des phases de prestation de services indiquées dans les spécifications, le client doit vérifier, réviser, tester ou autrement apprécier le résultat des services rendus jusqu'à ce moment par le prestataire de services.",
-                    "para2":"Dans un délai maximal de {sday} jours suivant la demande du prestataire de services, le client doit approuver ou refuser le travail effectué par le prestataire de services. Si le client approuve le travail effectué ou omet de manifester son approbation ou son refus à l'intérieur dudit délai, le travail effectué est réputé approuvé et fait conformément aux spécifications, et le prestataire de services peut continuer son travail, s'il y a lieu. Si le client refuse le travail effectué, en tout ou en partie, il doit aviser le prestataire de services à l'intérieur dudit délai et par écrit de toute erreur, omission, non-conformité aux spécifications ou autre motif de refus, en donnant les indications utiles et précisions nécessaires à une bonne compréhension des points reprochés.",
-                    "para3":"Le prestataire de services dispose alors d'un délai minimum identique à celui ci-haut mentionné et un délai maximum de {day} jours pouvant varier (en fonction des modification a éffectuer) afin de procéder à la correction des points reprochés et de soumettre de nouveau au client le résultat de son travail. Si le prestataire de services est en désaccord avec le client sur un ou plusieurs des points soulevés dans l'avis de refus, il doit faire part de sa position par écrit au client dans un délai maximal de {sday} jours suivant la réception dudit avis de refus."
+                "sec9": {
+                    "title": "5.9 - Processus de vérification, de test et d'approbation",
+                    "para1": "Sur demande formulée par le prestataire de services au terme de chacune des phases de prestation de services indiquées dans les spécifications, le client doit vérifier, réviser, tester ou autrement apprécier le résultat des services rendus jusqu'à ce moment par le prestataire de services.",
+                    "para2": "Dans un délai maximal de {sday} jours suivant la demande du prestataire de services, le client doit approuver ou refuser le travail effectué par le prestataire de services. Si le client approuve le travail effectué ou omet de manifester son approbation ou son refus à l'intérieur dudit délai, le travail effectué est réputé approuvé et fait conformément aux spécifications, et le prestataire de services peut continuer son travail, s'il y a lieu. Si le client refuse le travail effectué, en tout ou en partie, il doit aviser le prestataire de services à l'intérieur dudit délai et par écrit de toute erreur, omission, non-conformité aux spécifications ou autre motif de refus, en donnant les indications utiles et précisions nécessaires à une bonne compréhension des points reprochés.",
+                    "para3": "Le prestataire de services dispose alors d'un délai minimum identique à celui ci-haut mentionné et un délai maximum de {day} jours pouvant varier (en fonction des modification à effectuer) afin de procéder à la correction des points reprochés et de soumettre de nouveau au client le résultat de son travail. Si le prestataire de services est en désaccord avec le client sur un ou plusieurs des points soulevés dans l'avis de refus, il doit faire part de sa position par écrit au client dans un délai maximal de {sday} jours suivant la réception dudit avis de refus."
                 },
-                "sec10":{
-                    "title":"5.10 - Modifications demandées en cours de contrat",
-                    "para1":"Si, en cours d'exécution du présent contrat et avant l'approbation finale des services rendus par le prestataire de services, le client requiert une révision, correction, addition, substitution ou autre modification aux spécifications:",
-                    "paraA":"a) afin que le résultat recherché soit conforme aux éléments d'information fournis par le client à l'origine;",
-                    "paraB":"b) suite à une erreur ou omission du prestataire de services; ou",
-                    "paraC":"c) qui n'entraîne pas un surcroît de travail de la part du prestataire de services;",
-                    "para21":"alors ladite demande de modification n'est pas considérée comme une demande de services additionnels et",
-                    "para22":"n'entraîne donc aucun coût supplémentaire pour le client. Toute telle demande de modification de la part du client doit être formulée par écrit.",
-                    "paraClose":"Toute autre demande de modification de la part du client est considérée comme étant une demande de services additionnels."
+                "sec10": {
+                    "title": "5.10 - Modifications demandées en cours de contrat",
+                    "para1": "Si, en cours d'exécution du présent contrat et avant l'approbation finale des services rendus par le prestataire de services, le client requiert une révision, correction, addition, substitution ou autre modification aux spécifications:",
+                    "paraA": "a) afin que le résultat recherché soit conforme aux éléments d'information fournis par le client à l'origine;",
+                    "paraB": "b) suite à une erreur ou omission du prestataire de services; ou",
+                    "paraC": "c) qui n'entraîne pas un surcroît de travail de la part du prestataire de services;",
+                    "para21": "alors ladite demande de modification n'est pas considérée comme une demande de services additionnels et",
+                    "para22": "n'entraîne donc aucun coût supplémentaire pour le client. Toute telle demande de modification de la part du client doit être formulée par écrit.",
+                    "paraClose": "Toute autre demande de modification de la part du client est considérée comme étant une demande de services additionnels."
                 },
-                "sec11":{
-                    "title":"5.11 - Services additionnels",
-                    "para1":"Si le client requiert des services additionnels, il doit le formuler par écrit et le faire par au prestatrice de services.",
-                    "para2":"Si le prestataire de services accepte de rendre ceux-ci, le client en est informé par écrit.",
-                    "para3":"Tout service additionnel est donc soumis aux dispositions du présent contrat, notamment en matière de propriété intellectuelle et de confidentialité, en faisant les adaptations qui s'imposent s'il y a lieu."
+                "sec11": {
+                    "title": "5.11 - Services additionnels",
+                    "para1": "Si le client requiert des services additionnels, il doit le formuler par écrit et le faire par au prestataire de services.",
+                    "para2": "Si le prestataire de services accepte de rendre ceux-ci, le client en est informé par écrit.",
+                    "para3": "Tout service additionnel est donc soumis aux dispositions du présent contrat, notamment en matière de propriété intellectuelle et de confidentialité, en faisant les adaptations qui s'imposent s'il y a lieu."
                 },
-                "sec12":{
-                    "title":"5.12 - Représentations et garanties du prestataire de services",
-                    "para":"Le prestataire de services représente et garantit au client que:",
-                    "paraA":"a) il possède la capacité requise afin de s'engager en vertu du présent contrat, telle capacité n'étant nullement limitée par un quelconque engagement envers une tierce personne;",
-                    "paraB":"b) il possède l'expertise et l'expérience requises afin d'exécuter et de mener à terme les obligations qui lui incombent en vertu du présent contrat;",
-                    "paraC":"c) il va rendre les services de façon professionnelle et efficace, selon les règles généralement reconnues par l'industrie et à l'aide de la technologie d'arrière-plan et des outils de développement les plus récents;",
-                    "paraD":"d) il va respecter toutes et chacune des spécifications relatives aux services qu'il doit rendre;",
-                    "paraE":"e) il va respecter tout droit, titre ou intérêt de propriété intellectuelle appartenant à tout tiers dans tout outil de développement qu'il va utiliser et dans tout composant qu'il va concevoir à l'aide de tout tel outil;",
-                    "paraF":"f) il ne va utiliser aucune information confidentielle ou secret de commerce appartenant à toute tierce personne, à moins d'avoir reçu l'autorisation de cette dernière;",
-                    "paraG":"g) le client va posséder un bon et valable droit, titre ou intérêt de propriété intellectuelle dans tout contenu créé par le prestataire de services, conformément à ce qui est prévu dans le présent contrat;",
-                    "paraH":"h) tout tel contenu ne violera aucun droit, titre ou intérêt de propriété intellectuelle appartenant à un tiers."
+                "sec12": {
+                    "title": "5.12 - Représentations et garanties du prestataire de services",
+                    "para": "Le prestataire de services représente et garantit au client que:",
+                    "paraA": "a) il possède la capacité requise afin de s'engager en vertu du présent contrat, telle capacité n'étant nullement limitée par un quelconque engagement envers une tierce personne;",
+                    "paraB": "b) il possède l'expertise et l'expérience requises afin d'exécuter et de mener à terme les obligations qui lui incombent en vertu du présent contrat;",
+                    "paraC": "c) il va rendre les services de façon professionnelle et efficace, selon les règles généralement reconnues par l'industrie et à l'aide de la technologie d'arrière-plan et des outils de développement les plus récents;",
+                    "paraD": "d) il va respecter toutes et chacune des spécifications relatives aux services qu'il doit rendre;",
+                    "paraE": "e) il va respecter tout droit, titre ou intérêt de propriété intellectuelle appartenant à tout tiers dans tout outil de développement qu'il va utiliser et dans tout composant qu'il va concevoir à l'aide de tout tel outil;",
+                    "paraF": "f) il ne va utiliser aucune information confidentielle ou secret de commerce appartenant à toute tierce personne, à moins d'avoir reçu l'autorisation de cette dernière;",
+                    "paraG": "g) le client va posséder un bon et valable droit, titre ou intérêt de propriété intellectuelle dans tout contenu créé par le prestataire de services, conformément à ce qui est prévu dans le présent contrat;",
+                    "paraH": "h) tout tel contenu ne violera aucun droit, titre ou intérêt de propriété intellectuelle appartenant à un tiers."
                 },
-                "sec13":{
-                    "title":"5.13 - Limitation de garantie",
-                    "para":"Sauf si autrement prévu dans le présent contrat, le prestataire de services ne donne aucune garantie, expresse ou implicite, au client relativement:",
-                    "paraA":"a) aux équipements informatiques du client, à leur fonctionnement, et à leurs composants matériels et logiciels;",
-                    "paraB":"b) aux retombées, financières ou non, réelles ou appréhendées, positives ou non, résultant ou pouvant résulter de la fourniture des services.",
-                    "paraClose":"LES GARANTIES CONTENUES DANS LE PRÉSENT CONTRAT SONT LES SEULES GARANTIES FOURNIES EN RELATION AVEC L'OBJET DU PRÉSENT CONTRAT ET ELLES CONSTITUENT UNE GARANTIE LIMITÉE."
+                "sec13": {
+                    "title": "5.13 - Limitation de garantie",
+                    "para": "Sauf si autrement prévu dans le présent contrat, le prestataire de services ne donne aucune garantie, expresse ou implicite, au client relativement:",
+                    "paraA": "a) aux équipements informatiques du client, à leur fonctionnement, et à leurs composants matériels et logiciels;",
+                    "paraB": "b) aux retombées, financières ou non, réelles ou appréhendées, positives ou non, résultant ou pouvant résulter de la fourniture des services.",
+                    "paraClose": "LES GARANTIES CONTENUES DANS LE PRÉSENT CONTRAT SONT LES SEULES GARANTIES FOURNIES EN RELATION AVEC L'OBJET DU PRÉSENT CONTRAT ET ELLES CONSTITUENT UNE GARANTIE LIMITÉE."
                 },
-                "sec14":{
-                    "title":"5.14 - Limitation de responsabilité",
-                    "para":"Sauf en cas de faute grave de sa part, le prestataire de services ne peut être tenu responsable envers le client de toute faute et de tout dommage, direct ou indirect, pouvant en découler, et le client tient le prestataire de services quitte et indemne de toute réclamation, y compris de toute réclamation sur garantie, dans l'un ou l'autre des cas suivants:",
-                    "paraA":"a) modifications apportées au contenu par une personne autre que le prestataire de services ou relevant de ce dernier;",
-                    "paraB":"b) modifications ou ajouts, matériels ou logiciels, aux équipements informatiques du client, ayant un effet sur le bon fonctionnement des produits logiciels;",
-                    "paraC":"c) introduction d'un virus informatique dans les équipements informatiques du client, ayant un effet sur le bon fonctionnement des produits logiciels;",
-                    "paraD":"d) migration des produits logiciels dans un environnement matériel ou logiciel différent; perte d'occasions ou de revenus d'affaires reliés au fonctionnement ou à l'absence de fonctionnement, ou à l'utilisation ou à l'absence d'utilisation des produits logiciels;",
-                    "paraE":"e) intrusion illégale ou non-autorisée de tout tiers dans les équipements informatiques du client.",
-                    "paraClose":"SAUF SI AUTREMENT PRÉVU DANS LE PRÉSENT CONTRAT, EN AUCUN CAS LE PRESTATAIRE DE SERVICES (Y COMPRIS, S'IL Y A LIEU, SES FILIALES ET SA MAISON-MÈRE AINSI QUE SES ACTIONNAIRES, DIRIGEANTS, CADRES, EMPLOYÉS, COLLABORATEURS ET SOUS-TRAITANTS) NE PEUT ÊTRE TENU RESPONSABLE ENVERS LE CLIENT OU ENVERS DES TIERS DE TOUT DOMMAGE INDIRECT, INCIDENT, SPÉCIAL, PUNITIF OU EXEMPLAIRE, Y COMPRIS DE FAÇON NON LIMITATIVE DE TOUTE PERTE DE PROFIT OU AUTRE PERTE ÉCONOMIQUE (DÉCOULANT D'UNE FAUTE CONTRACTUELLE, D'UNE FAUTE DÉLICTUELLE OU D'UNE NÉGLIGENCE) MÊME SI LE PRESTATAIRE DE SERVICES A ÉTÉ AVERTI DE LA POSSIBILITÉ QUE SURVIENNE UN TEL DOMMAGE."
+                "sec14": {
+                    "title": "5.14 - Limitation de responsabilité",
+                    "para": "Sauf en cas de faute grave de sa part, le prestataire de services ne peut être tenu responsable envers le client de toute faute et de tout dommage, direct ou indirect, pouvant en découler, et le client tient le prestataire de services quitte et indemne de toute réclamation, y compris de toute réclamation sur garantie, dans l'un ou l'autre des cas suivants:",
+                    "paraA": "a) modifications apportées au contenu par une personne autre que le prestataire de services ou relevant de ce dernier;",
+                    "paraB": "b) modifications ou ajouts, matériels ou logiciels, aux équipements informatiques du client, ayant un effet sur le bon fonctionnement des produits logiciels;",
+                    "paraC": "c) introduction d'un virus informatique dans les équipements informatiques du client, ayant un effet sur le bon fonctionnement des produits logiciels;",
+                    "paraD": "d) migration des produits logiciels dans un environnement matériel ou logiciel différent; perte d'occasions ou de revenus d'affaires reliés au fonctionnement ou à l'absence de fonctionnement, ou à l'utilisation ou à l'absence d'utilisation des produits logiciels;",
+                    "paraE": "e) intrusion illégale ou non-autorisée de tout tiers dans les équipements informatiques du client.",
+                    "paraClose": "SAUF SI AUTREMENT PRÉVU DANS LE PRÉSENT CONTRAT, EN AUCUN CAS LE PRESTATAIRE DE SERVICES (Y COMPRIS, S'IL Y A LIEU, SES FILIALES ET SA MAISON-MÈRE AINSI QUE SES ACTIONNAIRES, DIRIGEANTS, CADRES, EMPLOYÉS, COLLABORATEURS ET SOUS-TRAITANTS) NE PEUT ÊTRE TENU RESPONSABLE ENVERS LE CLIENT OU ENVERS DES TIERS DE TOUT DOMMAGE INDIRECT, INCIDENT, SPÉCIAL, PUNITIF OU EXEMPLAIRE, Y COMPRIS DE FAÇON NON LIMITATIVE DE TOUTE PERTE DE PROFIT OU AUTRE PERTE ÉCONOMIQUE (DÉCOULANT D'UNE FAUTE CONTRACTUELLE, D'UNE FAUTE DÉLICTUELLE OU D'UNE NÉGLIGENCE) MÊME SI LE PRESTATAIRE DE SERVICES A ÉTÉ AVERTI DE LA POSSIBILITÉ QUE SURVIENNE UN TEL DOMMAGE."
                 },
-                "sec15":{
-                    "title":"5.15 - Dépôt de garantie et paiements échelonnés",
-                    "para11":"Lors de la signature du présent contrat,",
-                    "para12":"le client doit verser au prestataire de services le dépôt de garantie indiqué dans le devis.",
-                    "para13":"Ce dépôt de garantie est nécessaire pour garantir le début des travaux comme convenu.",
-                    "para4":"En outre, le paiement total des services sera effectué par échelonnement selon le calendrier suivant :",
-                    "item":"Dépôt de garantie :",
-                    "item1":"Echelon",
-                    "itemEnd":"Solde final :"
+                "sec15": {
+                    "title": "5.15 - Dépôt de garantie et paiements échelonnés",
+                    "para11": "Lors de la signature du présent contrat,",
+                    "para12": "le client doit verser au prestataire de services le dépôt de garantie indiqué dans le devis.",
+                    "para13": "Ce dépôt de garantie est nécessaire pour garantir le début des travaux comme convenu.",
+                    "para4": "En outre, le paiement total des services sera effectué par échelonnement selon le calendrier suivant :",
+                    "item": "Dépôt de garantie :",
+                    "item1": "Échelon",
+                    "itemEnd": "Solde final :"
                 },
-                "sec16":{
-                    "title":"5.16 - Suspension des services en cas de non-paiement",
-                    "para11":"Si le client refuse sans droit de verser au prestataire de services les sommes qui sont payables ou remboursables, selon le cas, en vertu du présent contrat conformément aux termes et conditions de paiement indiqués dans les spécifications, malgré une mise en demeure du prestataire de services,",
-                    "para12":"ce dernier est en droit de suspendre la prestation des services concernés,",
-                    "para13":"sans autre avis ni délai, sous réserve de tout autre droit que peut avoir le prestataire de services en vertu du présent contrat."
+                "sec16": {
+                    "title": "5.16 - Suspension des services en cas de non-paiement",
+                    "para11": "Si le client refuse sans droit de verser au prestataire de services les sommes qui sont payables ou remboursables, selon le cas, en vertu du présent contrat conformément aux termes et conditions de paiement indiqués dans les spécifications, malgré une mise en demeure du prestataire de services,",
+                    "para12": "ce dernier est en droit de suspendre la prestation des services concernés,",
+                    "para13": "sans autre avis ni délai, sous réserve de tout autre droit que peut avoir le prestataire de services en vertu du présent contrat."
                 },
-                "sec17":{
-                    "title":"5.17 - Résiliation du contrat (par le client)",
-                    "para1":"Le client peut résilier le présent contrat en tout temps, sur avis envoyé au prestataire de services. Toutefois, le client demeure responsable:",
-                    "paraA":"a) du paiement du prix des services rendus;",
-                    "paraB":"b) du paiement du prix des services additionnels rendus; et",
-                    "paraC":"c) du remboursement des dépenses encourues;",
-                    "para2":"sans aucune réduction ou remise.",
-                    "paraClose":"De plus, si le prestataire de services a respecté ses obligations en vertu du présent contrat jusqu'à la résiliation de ce dernier, le client doit verser au prestataire de services un montant équivalent à quatre-vingt pour cent (80%) du solde du prix du contrat, à titre de perte de profit anticipé."
+                "sec17": {
+                    "title": "5.17 - Résiliation du contrat (par le client)",
+                    "para1": "Le client peut résilier le présent contrat en tout temps, sur avis envoyé au prestataire de services. Toutefois, le client demeure responsable:",
+                    "paraA": "a) du paiement du prix des services rendus;",
+                    "paraB": "b) du paiement du prix des services additionnels rendus; et",
+                    "paraC": "c) du remboursement des dépenses encourues;",
+                    "para2": "sans aucune réduction ou remise.",
+                    "paraClose": "En cas de résiliation anticipée, le Client sera tenu de payer les services réalisés jusqu’à la date de résiliation, ainsi qu’une indemnité supplémentaire correspondant à 20 % du reste du contrat, sauf preuve d’un préjudice plus élevé."
                 },
-                "sec18":{
-                    "title":"5.18 - Résiliation du contrat (par le prestataire de services)",
-                    "para1":"1) Si le client ne respecte pas l'une ou l'autre de ses obligations en vertu du présent contrat,",
-                    "para2":"2) si le client cesse ses opérations de quelque façon que ce soit, y compris en raison de la faillite, liquidation ou cession de ses biens, ou",
-                    "para3":"si le client lui a présenté des renseignements faux ou trompeurs ou lui a fait de fausses représentations,",
-                    "paraClose":"Le prestataire de services peut résilier le présent contrat par l’envoi d’un avis écrit de résiliation énonçant le motif de résiliation. S’il s’agit d’un motif de résiliation prévu au paragraphe 1, le client devra remédier au défaut énoncé dans le délai prescrit dans l’avis, à défaut de quoi le contrat sera automatiquement résilié. Le prestataire de services n'est alors tenu que de rembourser au client toute avance (ou tout solde de celle-ci) ou tout montant excédentaire reçu, sous réserve de tous ses droits et recours contre le client."
+                "sec18": {
+                    "title": "5.18 - Résiliation du contrat (par le prestataire de services)",
+                    "para1": "1) Si le client ne respecte pas l'une ou l'autre de ses obligations en vertu du présent contrat,",
+                    "para2": "2) si le client cesse ses opérations de quelque façon que ce soit, y compris en raison de la faillite, liquidation ou cession de ses biens, ou",
+                    "para3": "si le client lui a présenté des renseignements faux ou trompeurs ou lui a fait de fausses représentations,",
+                    "paraClose": "Le prestataire de services peut résilier le présent contrat par l’envoi d’un avis écrit de résiliation énonçant le motif de résiliation. S’il s’agit d’un motif de résiliation prévu au paragraphe 1, le client devra remédier au défaut énoncé dans le délai prescrit dans l’avis, à défaut de quoi le contrat sera automatiquement résilié. Le prestataire de services n'est alors tenu que de rembourser au client toute avance (ou tout solde de celle-ci) ou tout montant excédentaire reçu, sous réserve de tous ses droits et recours contre le client."
                 },
-                "sec19":{
-                    "title":"5.19 - Droits d’auteur et propriété intellectuelle",
-                    "para1":"1) Tous les contenus (textes, images, vidéos, logos, etc.) fournis par la Cliente restent la propriété exclusive de celle-ci.",
-                    "para2":"2) Le Prestataire ne peut, en aucun cas, utiliser ou reproduire ces contenus pour ses propres besoins ou ceux d’autres clients sans une autorisation écrite du/de la Client(e).",
-                    "para3":"3) À la livraison du site internet, la Cliente sera l’unique propriétaire du design, du code source et des contenus du site, à l’exception des éléments appartenant à des tiers (plugins, logiciels, etc.) dont les droits seront spécifiés.",
-                    "para4":"4) Le Prestataire pourra conserver une copie du site dans un serveur sécurisé(Controlle de version GIT EX: GitHub,GitLab) uniquement pour les besoins futurs de modification du site internet après la livraison. Le Prestation reconnait que cette copie reste la propriété de la Cliente et les contenus y figurant peuvent être utilisés ou reproduits sans l’accord de celle-ci."
+                "sec19": {
+                    "title": "5.19 - Droits d’auteur et propriété intellectuelle",
+                    "para1": "1) Tous les contenus (textes, images, vidéos, logos, etc.) fournis par la Cliente restent la propriété exclusive de celle-ci.",
+                    "para2": "2) Le Prestataire ne peut, en aucun cas, utiliser ou reproduire ces contenus pour ses propres besoins ou ceux d’autres clients sans une autorisation écrite du/de la Client(e).",
+                    "para3": "3) À la livraison du site internet, la Cliente sera l’unique propriétaire du design, du code source et des contenus du site, à l’exception des éléments appartenant à des tiers (plugins, logiciels, etc.) dont les droits seront spécifiés.",
+                    "para4": "4) Le Prestataire pourra conserver une copie du site dans un serveur sécurisé (Contrôle de version GIT EX: GitHub, GitLab) uniquement pour les besoins futurs de modification du site internet après la livraison. Le Prestataire reconnaît que cette copie reste la propriété de la Cliente et les contenus y figurant peuvent être utilisés ou reproduits sans l’accord de celle-ci."
                 },
-                "sec20":{
+                "sec20": {
                     "title": "5.20 - Corrective – Bugs après livraison",
                     "para11": "Le prestataire s'engage à corriger gratuitement tout",
-                    "para12":"bug technique bloquant ou critique ",
-                    "para13":"détecté dans les",
-                    "para14":"7 jours ouvrés suivant la livraison finale",
-                    "para15":"du projet, à condition que :",
-                    "para2A":"Le bug soit signalé par écrit via support@rodcoding.com .",
-                    "para2B":"Le bug soit directement lié au périmètre du projet livré, tel que défini dans le cahier des charges ou les spécifications convenues.",
-                    "para3":"Les corrections seront effectuées dans un délai raisonnable, proportionnel à la gravité du problème.",
-                    "paraBold":"Sont exclus de cette garantie :",
-                    "para3A":"Toute modification du code ou de l’environnement par le client ou un tiers après livraison.",
-                    "para3B":"Les erreurs dues à des services ou outils externes (hébergeur, plugin tiers, API tierces...).",
-                    "para3C":"Les demandes d’évolution, d’ajout de fonctionnalités ou de refonte.",
-                    "para4":"Maintenance au-delà de la période de garantie",
-                    "para51":"Passé le délai de garantie mentionné ci-dessus, toute demande de correction fera l’objet d’un",
-                    "para52":"devis ou d’un tarif horaire",
-                    "para53":"selon la grille en vigueur, sauf si un contrat de maintenance a été souscrit."
+                    "para12": "bug technique bloquant ou critique",
+                    "para13": "détecté dans les",
+                    "para14": "7 jours ouvrés suivant la livraison finale",
+                    "para15": "du projet, à condition que :",
+                    "para2A": "Le bug soit signalé par écrit via support@rodcoding.com.",
+                    "para2B": "Le bug soit directement lié au périmètre du projet livré, tel que défini dans le cahier des charges ou les spécifications convenues.",
+                    "para3": "Les corrections seront effectuées dans un délai raisonnable, proportionnel à la gravité du problème.",
+                    "paraBold": "Sont exclus de cette garantie :",
+                    "para3A": "Toute modification du code ou de l’environnement par le client ou un tiers après livraison.",
+                    "para3B": "Les erreurs dues à des services ou outils externes (hébergeur, plugin tiers, API tierces...).",
+                    "para3C": "Les demandes d’évolution, d’ajout de fonctionnalités ou de refonte.",
+                    "para4": "Maintenance au-delà de la période de garantie",
+                    "para51": "Passé le délai de garantie mentionné ci-dessus, toute demande de correction fera l’objet d’un",
+                    "para52": "devis ou d’un tarif horaire",
+                    "para53": "selon la grille en vigueur, sauf si un contrat de maintenance a été souscrit."
                 }
             },
-            "6":{
-                "title":"6 - DISPOSITIONS GÉNÉRALES",
-                "para":"À moins d'une disposition expresse à l'effet contraire dans le présent contrat, les dispositions suivantes s'appliquent.",
-                "sec1":{
-                    "title":"6.1 - Force majeure",
-                    "para":"Aucune des parties ne peut être considérée en défaut en vertu du présent contrat si l'exécution de ses obligations, en tout ou en partie, est retardée ou empêchée par suite d'une situation de force majeure. La force majeure est un événement extérieur, imprévisible, irrésistible et rendant absolument impossible l'exécution d'une obligation."
+            "6": {
+                "title": "6 - DISPOSITIONS GÉNÉRALES",
+                "para": "À moins d'une disposition expresse à l'effet contraire dans le présent contrat, les dispositions suivantes s'appliquent.",
+                "sec1": {
+                    "title": "6.1 - Force majeure",
+                    "para": "Aucune des parties ne peut être considérée en défaut en vertu du présent contrat si l'exécution de ses obligations, en tout ou en partie, est retardée ou empêchée par suite d'une situation de force majeure. La force majeure est un événement extérieur, imprévisible, irrésistible et rendant absolument impossible l'exécution d'une obligation."
                 },
-                "sec2":{
-                    "title":"6.2 - Autonomie des dispositions",
-                    "para11":"L'éventuelle illégalité ou nullité d'un article, d'un paragraphe ou d'une disposition (ou partie d'un article, d'un paragraphe ou d'une disposition)",
-                    "para12":"ne saurait affecter de quelque manière la légalité des autres articles, paragraphes ou dispositions de ce contrat,",
-                    "para13":"ni non plus le reste de cet article, de ce paragraphe ou de cette disposition, à moins d'intention contraire évidente dans le texte."
+                "sec2": {
+                    "title": "6.2 - Autonomie des dispositions",
+                    "para11": "L'éventuelle illégalité ou nullité d'un article, d'un paragraphe ou d'une disposition (ou partie d'un article, d'un paragraphe ou d'une disposition)",
+                    "para12": "ne saurait affecter de quelque manière la légalité des autres articles, paragraphes ou dispositions de ce contrat,",
+                    "para13": "ni non plus le reste de cet article, de ce paragraphe ou de cette disposition, à moins d'intention contraire évidente dans le texte."
                 },
-                "sec3":{
-                    "title":"6.3 - Titres",
-                    "para":"Les titres utilisés dans le présent contrat ne le sont qu'à des fins de référence et de commodité seulement. Ils n'affectent en rien la signification ou la portée des dispositions qu'ils désignent."
+                "sec3": {
+                    "title": "6.3 - Titres",
+                    "para": "Les titres utilisés dans le présent contrat ne le sont qu'à des fins de référence et de commodité seulement. Ils n'affectent en rien la signification ou la portée des dispositions qu'ils désignent."
                 },
-                "sec4":{
-                    "title":"6.4 - Annexes",
-                    "para":"Les annexes du présent contrat, lorsque transmisent jointes à ce contrat, même par voie numérique, en font partie intégrante."
+                "sec4": {
+                    "title": "6.4 - Annexes",
+                    "para": "Les annexes du présent contrat, lorsque transmises jointes à ce contrat, même par voie numérique, en font partie intégrante."
                 },
-                "sec5":{
-                    "title":"6.5 - Absence de renonciation",
-                    "para":"L'inertie, la négligence ou le retard par une partie à exercer un droit ou un recours en vertu du présent contrat ne saurait en aucun cas être interprété comme une renonciation à ce droit ou recours."
+                "sec5": {
+                    "title": "6.5 - Absence de renonciation",
+                    "para": "L'inertie, la négligence ou le retard par une partie à exercer un droit ou un recours en vertu du présent contrat ne saurait en aucun cas être interprété comme une renonciation à ce droit ou recours."
                 },
-                "sec6":{
-                    "title":"6.6 - Droits cumulatifs et non alternatifs",
-                    "para":"Tous les droits mentionnés dans le présent contrat sont cumulatifs et non alternatifs. La renonciation à l'exercice d'un droit ne doit pas être interprétée comme une renonciation à tout autre droit."
+                "sec6": {
+                    "title": "6.6 - Droits cumulatifs et non alternatifs",
+                    "para": "Tous les droits mentionnés dans le présent contrat sont cumulatifs et non alternatifs. La renonciation à l'exercice d'un droit ne doit pas être interprétée comme une renonciation à tout autre droit."
                 },
-                "sec7":{
-                    "title":"6.7 - Totalité et intégralité de l'entente",
-                    "para":"Le présent contrat représente la totalité et l'intégralité de l'entente intervenue entre les parties. Aucune déclaration, représentation, promesse ou condition non contenue dans le présent contrat ne peut et ne doit être admise pour contredire, modifier ou affecter de quelque façon que ce soit les termes de celui-ci."
+                "sec7": {
+                    "title": "6.7 - Totalité et intégralité de l'entente",
+                    "para": "Le présent contrat représente la totalité et l'intégralité de l'entente intervenue entre les parties. Aucune déclaration, représentation, promesse ou condition non contenue dans le présent contrat ne peut et ne doit être admise pour contredire, modifier ou affecter de quelque façon que ce soit les termes de celui-ci."
                 },
-                "sec8":{
-                    "title":"6.8 - Modification du contrat",
-                    "para":"Le présent contrat ne peut être modifié que par un autre écrit, dûment signé par toutes les parties."
+                "sec8": {
+                    "title": "6.8 - Modification du contrat",
+                    "para": "Le présent contrat ne peut être modifié que par un autre écrit, dûment signé par toutes les parties."
                 },
-                "sec9":{
-                    "title":"6.9 - Genre et nombre",
-                    "para":"Tous les mots et termes employés dans le présent contrat doivent s'interpréter comme comprenant le masculin et le féminin, ainsi que le singulier et le pluriel, suivant le contexte ou le sens de ce contrat."
+                "sec9": {
+                    "title": "6.9 - Genre et nombre",
+                    "para": "Tous les mots et termes employés dans le présent contrat doivent s'interpréter comme comprenant le masculin et le féminin, ainsi que le singulier et le pluriel, suivant le contexte ou le sens de ce contrat."
                 },
-                "sec10":{
-                    "title":"6.10 - Incessibilité",
-                    "para":"Aucune partie ne peut céder ou autrement transférer à un tiers tout ou partie de ses droits dans le présent contrat sans obtenir au préalable la permission écrite de l'autre partie à cet effet."
+                "sec10": {
+                    "title": "6.10 - Incessibilité",
+                    "para": "Aucune partie ne peut céder ou autrement transférer à un tiers tout ou partie de ses droits dans le présent contrat sans obtenir au préalable la permission écrite de l'autre partie à cet effet."
                 },
-                "sec11":{
-                    "title":"6.11 - Lois applicables",
-                    "para":"Le présent contrat est régi et interprété conformément aux lois de l'État de New Mexique, sans égard aux principes de conflit de lois."
+                "sec11": {
+                    "title": "6.11 - Lois applicables",
+                    "para": "Le présent contrat est régi et interprété conformément aux lois de l'État du Nouveau-Mexique (New Mexico), sans égard aux principes de conflit de lois. Tout litige relatif à l'interprétation, l'exécution ou la validité du présent contrat sera soumis à la compétence exclusive des tribunaux étatiques ou fédéraux situés à Albuquerque, Nouveau-Mexique, États-Unis."
                 },
-                "sec12":{
-                    "title":"6.12 - Exemplaires",
-                    "para":"Lorsque signé par toutes les parties, chaque exemplaire du présent contrat est réputé être un original, mais ces exemplaires ne reflètent ensemble qu'une seule et même entente."
+                "sec12": {
+                    "title": "6.12 - Exemplaires",
+                    "para": "Lorsque signé par toutes les parties, chaque exemplaire du présent contrat est réputé être un original, mais ces exemplaires ne reflètent ensemble qu'une seule et même entente."
                 },
-                "sec13":{
-                    "title":"6.13 - Portée du contrat",
-                    "para":"Le présent contrat lie les parties, ainsi que leurs successibles, héritiers et ayants cause respectifs."
+                "sec13": {
+                    "title": "6.13 - Portée du contrat",
+                    "para": "Le présent contrat lie les parties, ainsi que leurs successeurs, héritiers et ayants cause respectifs."
                 },
-                "sec14":{
-                    "title":"6.14 - Solidarité",
-                    "para":"Si l'une des parties est constituée de deux personnes ou plus, celles-ci sont solidairement obligées et responsables envers l'autre partie."
+                "sec14": {
+                    "title": "6.14 - Solidarité",
+                    "para": "Si l'une des parties est constituée de deux personnes ou plus, celles-ci sont solidairement obligées et responsables envers l'autre partie."
                 },
-                "sec15":{
-                    "title":"6.15 - Règlement de différends",
-                    "para":"Si un différend survient dans le cours de l’exécution du présent contrat ou sur son interprétation, les parties s’engagent, avant d’exercer tout recours, à rechercher une solution à l’amiable à ce différend et, si besoin est, à faire appel à un tiers, selon les modalités à convenir, pour les assister dans ce règlement."
+                "sec15": {
+                    "title": "6.15 - Règlement de différends",
+                    "para": "Si un différend survient dans le cours de l’exécution du présent contrat ou sur son interprétation, les parties s’engagent, avant d’exercer tout recours, à rechercher une solution à l’amiable à ce différend et, si besoin est, à faire appel à un tiers, selon les modalités à convenir, pour les assister dans ce règlement. Si le désaccord persiste, le litige pourra être soumis à arbitrage selon les règles de l'American Arbitration Association (AAA), si les deux parties y consentent. Le lieu de l'arbitrage sera Albuquerque, Nouveau-Mexique, États-Unis."
                 }
             },
-            "7":{
-                "title":"7 - ENTRÉE EN VIGUEUR DU CONTRAT",
-                "para":"Le présent contrat entre en vigueur à la signature du présent contrat."
+            "7": {
+                "title": "7 - ENTRÉE EN VIGUEUR DU CONTRAT",
+                "para": "Le présent contrat entre en vigueur à la signature du présent contrat."
             },
-            "8":{
-                "title":"8 - FIN DU CONTRAT",
-                "para":"Le présent contrat prend fin dans l'un ou l'autre des cas suivants:",
-                "paraA":"a) lorsque toutes les obligations des parties ont été remplies;",
-                "paraB":"b) lorsque le projet est receptionné par le client;",
-                "paraC":"c) lorsque le client signe le document de fin de contrat;",
-                "paraD":"d) en cas de résiliation prévu au présent contrat;",
-                "paraE":"e) si l'une des parties fait défaut de respecter l'une ou l'autre de ses obligations, dans un délai de {day} jours suivant la réception par la partie en défaut d'une mise en demeure d'y remédier ou dans tout autre délai plus court que prévoit le présent contrat, et qu'il y a inaction de la partie en défaut à l'intérieur dudit délai;",
-                "paraF":"f) en cas de faillite, d'insolvabilité ou de cessation des activités de l'une ou l'autre des parties.",
-                "paraClose":"Toutefois, la fin du présent contrat n'a pas pour effet de faire perdre un droit à une partie ou de la libérer d'une obligation, notamment en ce qui concerne la confidentialité, la propriété intellectuelle, la limitation de garantie et la limitation de responsabilité. Lesdits droits et obligations survivent à la fin du présent contrat."
+            "8": {
+                "title": "8 - FIN DU CONTRAT",
+                "para": "Le présent contrat prend fin dans l'un ou l'autre des cas suivants:",
+                "paraA": "a) lorsque toutes les obligations des parties ont été remplies;",
+                "paraB": "b) lorsque le projet est réceptionné par le client;",
+                "paraC": "c) lorsque le client signe le document de fin de contrat;",
+                "paraD": "d) en cas de résiliation prévu au présent contrat;",
+                "paraE": "e) si l'une des parties fait défaut de respecter l'une ou l'autre de ses obligations, dans un délai de {day} jours suivant la réception par la partie en défaut d'une mise en demeure d'y remédier ou dans tout autre délai plus court que prévoit le présent contrat, et qu'il y a inaction de la partie en défaut à l'intérieur dudit délai;",
+                "paraF": "f) en cas de faillite, d'insolvabilité ou de cessation des activités de l'une ou l'autre des parties.",
+                "paraClose": "Toutefois, la fin du présent contrat n'a pas pour effet de faire perdre un droit à une partie ou de la libérer d'une obligation, notamment en ce qui concerne la confidentialité, la propriété intellectuelle, la limitation de garantie et la limitation de responsabilité. Lesdits droits et obligations survivent à la fin du présent contrat."
             },
-            "9":{
-                "title":"9 - RECONNAISSANCE DES PARTIES",
-                "para":"LES PARTIES RECONNAISSENT QUE:",
-                "paraA":"A) LE PRÉSENT CONTRAT A FAIT L'OBJET DE NÉGOCIATIONS PRÉALABLES ENTRE ELLES;",
-                "paraB":"B) LE PRÉSENT CONTRAT REFLÈTE VÉRITABLEMENT ET COMPLÈTEMENT L'ENTENTE INTERVENUE ENTRE ELLES;",
-                "paraC":"C) TOUTES ET CHACUNE DES CLAUSES DU PRÉSENT CONTRAT SONT LISIBLES ET COMPREHENSIBLES;"
+            "9": {
+                "title": "9 - RECONNAISSANCE DES PARTIES",
+                "para": "LES PARTIES RECONNAISSENT QUE:",
+                "paraA": "A) LE PRÉSENT CONTRAT A FAIT L'OBJET DE NÉGOCIATIONS PRÉALABLES ENTRE ELLES;",
+                "paraB": "B) LE PRÉSENT CONTRAT REFLÈTE VÉRITABLEMENT ET COMPLÈTEMENT L'ENTENTE INTERVENUE ENTRE ELLES;",
+                "paraC": "C) TOUTES ET CHACUNE DES CLAUSES DU PRÉSENT CONTRAT SONT LISIBLES ET COMPREHENSIBLES;"
             },
-            "10":{
-                "title":"10 - SIGNATURES",
-                "sclient":"Signature du client",
-                "sprestataire":"Signature du prestataire de services",
-                "do":"Fait à Poissy, le "
+            "10": {
+                "title": "10 - SIGNATURES",
+                "sclient": "Signature du client",
+                "sprestataire": "Signature du prestataire de services",
+                "do": "Fait à {city}, le "
             }
         }
     },
-    "invoice":{
-       "Adress":"Adresse:",
-       "postalCode":"Code Postal:",
-       "city":"Ville:",
-       "country":"Pays:",
-       "wsite":"Référence Internet:",
-       "billNr":"FACTURE N°:",
-       "identificationNumber":"Numéro d’identification fiscale (EIN)",
-       "billDate":"Date:",
-       "customerNr":"Numéro de client:",
-       "dueDate":"Date d'échéance:",
-       "billTo":"Facturé à :",
-       "prestation":"Prestations",
-       "features":{
-        "description":"Description",
-        "quantity":"Quantité",
-        "singlePriceWithoutTax":"Prix unitaire HT",
-        "totalPriceWithoutTax":"Prix total HT"
-       },
-        "subtotal":"Sous-total HT:",
-        "tax":"TVA {tax}%:",
-        "discount":"Remise {discount}%:",
-        "totalWithTax":"Total TTC:",
-        "end1":"Bonne réception.",
-        "end2":"Cordialement,",
-        "footer":"Ce montant à déjà été déduit de votre compte, vous n'avez donc rien a faire. Cet facture est a titre de preuve de paiement reçu consernant les services realisés.",
-        "page":"Page {page} sur {total}"
+    "invoice": {
+        "Adress": "Adresse:",
+        "postalCode": "Code Postal:",
+        "city": "Ville:",
+        "country": "Pays:",
+        "wsite": "Référence Internet:",
+        "billNr": "FACTURE N°:",
+        "identificationNumber": "Numéro d’identification fiscale (EIN)",
+        "billDate": "Date:",
+        "customerNr": "Numéro de client:",
+        "dueDate": "Date d'échéance:",
+        "billTo": "Facturé à :",
+        "prestation": "Prestations",
+        "features": {
+            "description": "Description",
+            "quantity": "Quantité",
+            "singlePriceWithoutTax": "Prix unitaire HT",
+            "totalPriceWithoutTax": "Prix total HT"
+        },
+        "subtotal": "Sous-total HT:",
+        "tax": "TVA {tax}%:",
+        "discount": "Remise {discount}%:",
+        "totalWithTax": "Total TTC:",
+        "end1": "Bonne réception.",
+        "end2": "Cordialement,",
+        "footer": "Ce montant a déjà été déduit de votre compte, vous n'avez donc rien à faire. Cette facture est à titre de preuve de paiement reçu concernant les services réalisés.",
+        "page": "Page {page} sur {total}"
     },
-    "enterpriceLocation":"Siège social",
-    "payment":{
-        "title":"Paiement et Echeance",
-        "pagePara11":"Vous trouverez sur ce document les modalité de paiement pour la prestation {title}",
-        "totalPrice":"Prix total",
-        "pagePara12":"à réaliser.",
-        "pagePara13":"Ce paiement se fera par échelonement dans le but d'établir une relation de confiance entre vous (client) et nous (prestataire), car notre objectif dans nos prestations est la sasisfation du client.",
-        "pagePara2":"Nous vous recommandons d'effectuer tous vos virements dans le cadre de cette prestation en devise locale afin d'éviter des surcoups lors des virements.",
-        "ttc":"TTC",
-        "beforeStart":"Depot de garantie",
-        "afterDelively":"Paiement après la livraison du projet",
-        "intermediarePaiement":"Paiement après {nr} validation.",
-        "singleEchelon":"Pour cette prestation, il ni aura aucun echelonnement. Le prix dela prestation est donc de :",
-        "multipleEchelon":"Cette prestation se fera en plusieurs échelonement.",
-        "bySigning":"à effectué dès signature du contrat.",
-        "pagePara3":"Pour faire le virement, cliquer sur le lien en dessous ou copier et coller le sur un navigateur, puis suivez les instructions. Aprés la transaction, faite une photo de votre compte montrant le virement éffectué, et envoyer nous cela afin qu'on puisse demarré avec votre prestation, si non elle débutera uniquement lorsque le virement sera reçu. Cela peut prendre plusieurs jours."
+    "enterpriceLocation": "Siège social",
+    "payment": {
+        "title": "Paiement et Échéance",
+        "pagePara11": "Vous trouverez dans ce document les modalités de paiement pour la prestation {title}",
+        "totalPrice": "Prix total",
+        "pagePara12": "à réaliser.",
+        "pagePara13": "Ce paiement sera échelonné afin d'établir une relation de confiance entre vous (client) et nous (prestataire), car notre objectif principal est votre satisfaction.",
+        "pagePara2": "Nous vous recommandons d'effectuer tous vos virements dans le cadre de cette prestation en devise locale afin d'éviter des frais supplémentaires lors des transactions.",
+        "ttc": "TTC",
+        "beforeStart": "Dépôt de garantie",
+        "afterDelively": "Paiement après la livraison du projet",
+        "intermediarePaiement": "Paiement après {nr} validation(s).",
+        "singleEchelon": "Pour cette prestation, il n'y aura aucun échelonnement. Le prix de la prestation est donc de :",
+        "multipleEchelon": "Cette prestation se fera en plusieurs échelonnements.",
+        "bySigning": "à effectuer dès la signature du contrat.",
+        "pagePara3": "Pour effectuer le virement, cliquez sur le lien ci-dessous ou copiez et collez-le dans un navigateur, puis suivez les instructions. Après la transaction, prenez une photo de votre compte montrant le virement effectué et envoyez-la-nous afin que nous puissions démarrer votre prestation. Sinon, celle-ci débutera uniquement lorsque le virement sera reçu, ce qui peut prendre plusieurs jours."
     },
-    "contractTerme":"Terme du contrat",
-    "contractConfirm":"Si vous êtes d'accord avec ces termes, cocher premièrement la case pour approuver la signature éléctronique du contrat, puis confirmer avoir lue et accepté les CGV en cochant la seconde case, puis signé en dessous. Dans le cas contraire, indiquez nous les raisons de votre rétition.",
-    "confirmElectronicSignature":"Cocher pour approuver la signature électronique du contrat",
-    "updateContract":"Modifier le contrat",
-    "uploadContract":"Télecharger le contrat",
-    "signedContract":"Contrat signé",
-    "pendingContract":"En cours de signature",
-    "unsignedContract":"Contrat non signé",
-    "unknowStatus":"Statut inconnu",
-    "loading":"Chargement...",
-    "contractPrestation":"Contrat de prestation de service/maintenace",
-    "clientInfo":"Information sur le client",
-    "clientName":"Nom complet / Nom de l'entreprise",
-    "clientType":"Type de client",
-    "particular":"Particuler",
-    "company":"Entreprise",
-    "email":"Adresse email",
-    "errorEmail":"Email is required",
-    "invalidEmail":"Invalid email format",
-    "tel":"Numéro de téléphone",
-    "errorTel":"Phone is required",
-    "errorPaymentShedule":"Structure invalide",
-    "saasItemTitle":"Logiciel Métier/SaaS pour",
-    "saasTitle":"Logiciel Métier/SaaS",
-    "appTitle":"Application mobile",
-    "appItemTitle":"Application mobile pour",
-    "saasItem1TaksPara1":"Etude du projet",
-    "saasItem1TaksPara2":"Découpage des fonctionnalités",
-    "saasItem1TaksPara3":"Mise en place des wireframe (design)",
-    "saasItem1TaksPara4":"Définition de la charte graphique (Couleur, Typographie,Logo...)",
-    "saasItem1TaksPara5":"Définition des shéma de base de données",
-    "saasItem1TaksPara6":"Développement (Frontend)",
-    "saasItem1TaksPara7":"Développement (Backend)",
-    "saasItem1TaksPara8":"Mise en place et développement test Test unitaire et des Tests End-to-End (test en condition réel)",
-    "saasItem1TaksPara9":"Déploiement sur un VPS",
-    "saasItem1TaksPara10":"Développement (Backoffice)",
-    "saasItem1Proprio":"ROD TECH SOLUTIONS",
-    "saasItem2Proprio":"Centre de Formation (Ifocop)",
-    "saasItem2TaksPara1":"Définition de la charte graphique (Couleur, Typographie,Logo...)",
-    "saasItem2TaksPara2":"Définition des shéma de base de données",
-    "saasItem2TaksPara3":"Développement (Frontend)",
-    "saasItem2TaksPara4":"Développement (Backoffice)",
-    "saasItem2TaksPara5":"Ajout des données (img,titre,description) depuis le backoffice",
-    "saasItem2TaksPara6":"Test des fonctionnalités",
-    "saasItem2TaksPara7":"Déploiement",
-    "saasItem3Proprio":"Avlis Formation",
-    "saasItem3TaksPara1":"Correction des bugs",
-    "saasItem3TaksPara2":"Mise à jour du contenu (text/image...)",
-    "saasItem3TaksPara3":"Ajout de nouvelle fonctionnalité",
-    "saasItem3TaksPara4":"Amélioration du code produit",
-    "saasItem3TaksPara5":"Tests final",
-    "saasItem3TaksPara6":"Déploiement (mise en ligne)",
-    "appItem1Proprio":"ROD TECH SOLUTION",
-    "appItem4TaksPara1":"Etude du projet",
-    "appItem4TaksPara2":"Découpage des fonctionnalités",
-    "appItem4TaksPara3":"Mise en place des wireframe (design)",
-    "appItem4TaksPara4":"Définition de la charte graphique (Couleur, Typographie,Logo...)",
-    "appItem4TaksPara5":"Développement de l'application",
-    "appItem4TaksPara6":"Test du resultat sur Android et Ios",
-    "appItem4TaksPara7":"Mise en place et développement test Test unitaire et des Tests End-to-End (test en condition réel)",
-    "appItem4TaksPara8":"Déploiement sur App Store et Play Store",
-    "saasShortText1":"Site de rencontre pour célibataire chrétien",
-    "saasShortText2":"Site de reservation de sale",
-    "saasShortText3":"Backoffice pour gestion et administration du CRM de l'entreprise",
-    "saasShortText4":"Espace dédié aux étudiant pour la gestion des devoirs et échange avec les formateurs",
-    "websiteEcommerShortText1":"Site E-commerce pour un restaurant faisant des livraisons à domicile",
-    "websiteEcommerShortText2":"Site E-commerce pour un restaurant avec multiple point de vente",
-    "websiteReworkShortText1":"Site de présentation de l'entreprise et de ses services",
-    "websiteVitrineShortText1":"Site de présentation des produits de fieger",
-    "websiteVitrineShortText2":"Site de présentation d'une association de scientifique dentaire",
-    "websiteVitrineShortText3":"Site internet de présentation des formations.",
-    "taxNumberText":"Numéro de TVA",
-    "reset":"Réinitialiser",
-    "websiteVitrineShortText4":"Site de présentation de services + blog",
-    "appShortText1":"Application mobile du site de rencontre LovSid",
-    "websiteItem1Para":"<strong>Fieger</strong> est une <strong>entreprise basé dans plusieurs pays</strong> et export dans le monde entier. Elle propose des solutions <strong>d'aménagements de ventillations</strong> pour une éfficacité <strong>énergétique optimale</strong>. Sa spécialité est la création en passant par le design de <strong>fenetre à lame</strong>.<br><br> Ce site à été réalisé et codé <strong>a la main</strong> sans CMS, il a pour but de <strong>refleter l'entreprise</strong> et <strong>presenter ses produits</strong>.",
-    "websiteItem2Para":"<strong>Neue Groupe</strong> est une <strong>association de scientifique dentaire</strong> basé en Allemagne. Il organise régulièrement des <strong>séminaires, des conférences, cours</strong> avec différent théme.<br><br> Ce site est réalisé avec un CMS <strong>(outil de gestion de contenu)</strong> WordPress.br> Bien qu'etant réalisé a partir d'un CMS, il est",
-    "websiteItem3Para":"<strong>Avlis</strong> est un une entreprise de formation pour <strong>future secretaire médicales</strong> basé en france et dans les Dom Tom. Elle est spécialisé dans la formation des <strong>sécrétaires assistant(e)s médicosocial, des sécretaires assistant(e)s option médicale, des assistant(e)s de direction option médicale, des assistant(e)s ressource humaine option médicale</strong>.<br><br> Le site est un bloc faisant partie d'un CRM. Il a pour but de présenter <strong>l'entreprise et ses différentes formation</strong>. Il a été contruit entièrement en PHP.",
-    "websiteItem4Para":"<strong>Charlotte consulting</strong> est une entreprise basé en france. Elle a pour but <strong>d'accompagner et d'aider des personnes atteint de trouble menteaux</strong>.<br><br> Le site est un <strong>blog + présentation d'atheliés et service</strong> développé sans CMS et entièrement en PHP. Son backoofice simule une gestion de contenu, car l'utilisateur peut administrer ses contenus telque <strong>le blog, les services et atelier</strong> depuis son backoffice.",
-    "reworkedWebSiteItem1Para":"<strong>Graphicon</strong> est une entreprise basé en allemangne. Elle est spécialisé dans le <strong>developpement de site internet</strong> et offre egalement des <strong>services de maketing digitale</strong>.<br><br> Le site à pour but de présenter <strong>l'image et les services de l'entreprise</strong>. Il a été developpé entirèrement sur angular.",
-    "ecommerceWebSiteItem1Para":"<strong>Chicken Grill</strong> est une entreprise de rstauration <strong>fast food</strong> basé en france. Elle est spécialisé dans le poulet <strong>frit, bugger, frite de pomme</strong> ... . Elle propose ses propres solutions et formule.<br><br> Le site a pour but de présenter les différents point de vente du restaurant, elle permet de guider les utilisateurs en fonction de leur localisation. Les utilisateur peuvent faire leurs achats directement sur le site et recupérer la commande au restaurant.",
-    "ecommerceWebSiteItem2Para":"<strong>Kebab de la Gare</strong> est une entreprise de rstauration fast food basé en france. Elle est spécialisé dans <strong>les Bugers, Sandwich, Tacos</strong> ... . Elle propose ses propres formule adapté au budget clientelle standard.<br><br> Le site a pour but de permettre au restaurant de determiner le <strong>prix de livraison</strong> en fonction de la localisation du client qui souhaite une livraison a domicile.",
-    "saasItem1Para":"<strong>LovSid</strong> est un site de rencontre pour <strong>célibataire chrétien</strong> basé aux Etat unit. Elle a pour but de mettre a disposition des utilisateurs des outils leurs permettant d'interagir avec d'autre membre afin de faciliter une connaissance mutuelle l'un de l'autre pour a la fin aboutir au mariage.<br><br> Le site presente différent utilisateurs de different pays, il offre egalement plusieurs outils de communication, telque <strong>les echanges de message audio, text, verset biblique en temps reel, etc</strong>. Le site offre aux utilisateur la possibilité d'echanger entre eux sur <strong>des thèmes biblique, de partager des articles et des événements</strong>.",
-    "saasItem2Para":"<strong>Booking Sale</strong> est un site de <strong>reservation de sale</strong> en france. Elle a pour but de permettre au utilisateur de <strong>reserver des sales</strong> en fonction de leur disponibilité.<br><br> Le site a été fait dans le cadre d'une formation, il est réalisé entièrement en PHP. Il est divisé en deux blocs, le site visible ou le client interagit, fait ses reservation et un backoffice ou l'administrateur administre la disponibilité des sales.",
-    "saasItem3Para":"<strong>Avlis</strong> est un une entreprise de formation pour <strong>future secretaire médicales</strong> basé en france et dans les Dom Tom. Elle est spécialisé dans la formation <strong>des sécrétaires assistant(e)s médicosocial, des sécretaires assistant(e)s option médicale, des assistant(e)s de direction option médicale, des assistant(e)s ressource humaine option médicale</strong>.<br><br> La gestion est l'espace reservé au <strong>employé et formateur</strong>, depuis cet espace, les formateur par exemple gere les cours pour les édutiants, corrige leurs devoirs, publié les notes ... . Les employés gére l'aspet administratif des élèves, telque <strong>la signature des contrats pour les alternants, et les problèmes administraif</strong>.",
-    "saasItem4Para":"<strong>Avlis</strong> est un une entreprise de formation pour <strong>future secretaire médicales</strong> basé en france et dans les Dom Tom. Elle est spécialisé dans la formation des <strong>sécrétaires assistant(e)s médicosocial, des sécretaires assistant(e)s option médicale, des assistant(e)s de direction option médicale, des assistant(e)s ressource humaine option médicale</strong>.<br><br> L'espace formation est dédié au éléve et a pour but de permettre au élève d'accéder aux information utile lié a leur formation. Il donne au éléve l'accès au <strong>devoir, aux notes ...</strong>.",
-    "appItem1Para":"<strong>LovSid</strong> est un site de rencontre pour <strong>célibataire chrétien</strong> basé aux Etat unit. Elle a pour but de mettre a disposition des utilisateurs des outils leurs permettant d'interagir avec d'autre membre afin de faciliter une <strong>connaissance mutuelle l'un de l'autre</strong> pour a la fin aboutir au mariage.<br><br> L'application a pour but de donner a l'utilisateur un accès rapide et fluide aux fonctionnalités disponible également sur le site. Elle permet aux utilisateurs d'expériemnter l'interaction deja sur le site sur d'autre aspect.",
-    "contractSuccess":{
-        "title":"Contrat généré avec succès",
-        "para":"Le contrat pour la prestation de service à bien été signé. Vous pouvez le télécharger à partir du lien en dessous. Vous devez egalement télécharger le pdf consernant les modalités de paiement en cliquant sur le bouton en dessous.",
-        "para1":"Une copie de ses deux document vous on egalement été envoyé par email.",
-        "titleDownload":"Télécharger ses documments",
-        "signedContract":"Contrat signé",
-        "paymentMethode":"Modalité de paiement"
+    "contractTerme": "Conditions du contrat",
+    "contractConfirm": "Si vous acceptez les termes ci-dessus, veuillez d'abord cocher la case pour approuver la signature électronique du contrat, puis confirmer avoir lu et accepté les Conditions Générales de Vente (CGV) en cochant la seconde case. Ensuite, signez le contrat ci-dessous. Si vous n’êtes pas d’accord, merci de nous indiquer les raisons de votre refus.",
+    "confirmElectronicSignature": "Je confirme approuver la signature électronique du contrat",
+    "updateContract": "Modifier le contrat",
+    "uploadContract": "Télécharger le contrat",
+    "signedContract": "Contrat signé",
+    "pendingContract": "Signature en cours",
+    "unsignedContract": "Contrat non signé",
+    "unknowStatus": "Statut inconnu",
+    "loading": "Chargement...",
+    "contractPrestation": "Contrat de prestation de service et maintenance",
+    "clientInfo": "Informations sur le client",
+    "clientName": "Nom complet / Raison sociale",
+    "clientType": "Type de client",
+    "particular": "Particulier",
+    "company": "Entreprise",
+    "email": "Adresse email",
+    "errorEmail": "L'adresse email est requise",
+    "invalidEmail": "Format d'email invalide",
+    "tel": "Numéro de téléphone",
+    "errorTel": "Le numéro de téléphone est requis",
+    "errorPaymentShedule": "Structure du paiement invalide",
+    "websiteItem1Para": "<strong>Fieger</strong> est une <strong>entreprise implantée dans plusieurs pays</strong> et exportant dans le monde entier. Elle propose des solutions <strong>d’aménagement de ventilation</strong> pour une <strong>efficacité énergétique optimale</strong>. Sa spécialité est la création et le design de <strong>fenêtres à lames</strong>.<br><br> Ce site a été réalisé et codé <strong>manuellement</strong>, sans CMS. Il a pour but de <strong>refléter l’image de l’entreprise</strong> et de <strong>présenter ses produits</strong>.",
+    
+    "websiteItem2Para": "<strong>Neue Groupe</strong> est une <strong>association de scientifiques dentaires</strong> basée en Allemagne. Elle organise régulièrement des <strong>séminaires, conférences et cours</strong> sur différents thèmes.<br><br> Ce site a été réalisé avec un CMS <strong>(outil de gestion de contenu)</strong> WordPress. Bien qu’utilisant un CMS, il est conçu de manière professionnelle et personnalisée.",
+    
+    "websiteItem3Para": "<strong>Avlis</strong> est une entreprise de formation pour <strong>futures secrétaires médicales</strong> basée en France et dans les DOM-TOM. Elle est spécialisée dans la formation de <strong>secrétaires assistant(e)s médico-social, secrétaires assistant(e)s option médicale, assistant(e)s de direction option médicale, et assistant(e)s ressources humaines option médicale</strong>.<br><br> Le site fait partie intégrante d’un CRM. Il a pour objectif de <strong>présenter l’entreprise et ses différentes formations</strong>. Il a été développé entièrement en PHP.",
+    
+    "websiteItem4Para": "<strong>Charlotte Consulting</strong> est une entreprise basée en France. Elle a pour mission <strong>d’accompagner et d’aider des personnes atteintes de troubles mentaux</strong>.<br><br> Le site est un <strong>blog et vitrine pour les ateliers et services</strong>, développé sans CMS et entièrement en PHP. Le back-office simule une interface de gestion de contenu, permettant à l’utilisateur d’administrer ses contenus tels que <strong>le blog, les services et les ateliers</strong>.",
+    
+    "reworkedWebSiteItem1Para": "<strong>Graphicon</strong> est une entreprise basée en Allemagne, spécialisée dans le <strong>développement de sites internet</strong> et offrant également des <strong>services de marketing digital</strong>.<br><br> Le site a pour objectif de présenter <strong>l’image et les services de l’entreprise</strong>. Il a été entièrement développé avec Angular.",
+    
+    "ecommerceWebSiteItem1Para": "<strong>Chicken Grill</strong> est une entreprise de restauration <strong>fast-food</strong> basée en France. Elle est spécialisée dans le poulet <strong>frit, les burgers, les frites de pomme de terre</strong>, etc. Elle propose ses propres formules et solutions.<br><br> Le site présente les différents points de vente du restaurant et guide les utilisateurs selon leur localisation. Les clients peuvent commander directement en ligne et récupérer leur commande en restaurant.",
+    
+    "ecommerceWebSiteItem2Para": "<strong>Kebab de la Gare</strong> est une entreprise de restauration fast-food basée en France. Elle est spécialisée dans les <strong>burgers, sandwiches, tacos</strong>, etc. Elle propose des formules adaptées au budget de sa clientèle cible.<br><br> Le site permet au restaurant de calculer automatiquement le <strong>prix de livraison</strong> en fonction de la localisation du client souhaitant une livraison à domicile.",
+    
+    "saasItem1Para": "<strong>LovSid</strong> est un site de rencontre pour <strong>célibataires chrétiens</strong> basé aux États-Unis. Il met à disposition des outils permettant aux utilisateurs d’interagir avec d’autres membres, afin de favoriser une <strong>connaissance mutuelle</strong> pouvant mener au mariage.<br><br> Le site présente des membres issus de différents pays et propose plusieurs outils de communication : <strong>échanges de messages audio, textes, versets bibliques en temps réel, etc.</strong>. Il permet aussi de discuter sur <strong>des thèmes bibliques, de partager des articles et des événements</strong>.",
+    
+    "saasItem2Para": "<strong>Booking Sale</strong> est un site de <strong>réservation de salles</strong> en France. Il permet aux utilisateurs de <strong>réserver des salles</strong> en fonction de leur disponibilité.<br><br> Le site, réalisé dans le cadre d’une formation, est développé entièrement en PHP. Il comprend une interface utilisateur pour les réservations et un back-office permettant à l’administrateur de gérer les disponibilités.",
+    
+    "saasItem3Para": "<strong>Avlis</strong> est une entreprise de formation pour <strong>futures secrétaires médicales</strong> basée en France et dans les DOM-TOM. Elle est spécialisée dans la formation de <strong>secrétaires assistant(e)s médico-social, secrétaires assistant(e)s option médicale, assistant(e)s de direction option médicale, assistant(e)s ressources humaines option médicale</strong>.<br><br> La gestion est réservée aux <strong>employés et formateurs</strong>, qui peuvent gérer les cours, corriger les devoirs, publier les notes, etc. Les employés s’occupent également des aspects administratifs comme <strong>la signature des contrats en alternance et les démarches administratives</strong>.",
+    
+    "saasItem4Para": "<strong>Avlis</strong> est une entreprise de formation pour <strong>futures secrétaires médicales</strong> basée en France et dans les DOM-TOM. Elle est spécialisée dans la formation de <strong>secrétaires assistant(e)s médico-social, secrétaires assistant(e)s option médicale, assistant(e)s de direction option médicale, assistant(e)s ressources humaines option médicale</strong>.<br><br> L’espace formation est dédié aux élèves et leur permet d’accéder aux <strong>informations utiles liées à leur parcours</strong>, notamment <strong>les devoirs, les notes</strong>, etc.",
+    
+    "appItem1Para": "<strong>LovSid</strong> est un site de rencontre pour <strong>célibataires chrétiens</strong> basé aux États-Unis. Il met à disposition des outils permettant aux utilisateurs d’interagir avec d’autres membres afin de favoriser une <strong>connaissance mutuelle</strong> menant au mariage.<br><br> L’application permet aux utilisateurs d’accéder de manière rapide et fluide aux fonctionnalités disponibles sur le site, tout en enrichissant l’expérience utilisateur sur d’autres aspects.",
+    "contractSuccess": {
+      "title": "Contrat généré avec succès",
+      "para": "Le contrat pour la prestation de service a été signé avec succès. Vous pouvez le télécharger à partir des liens ci-dessous. Vous disposez de deux exemplaires du contrat : une version traduite en {lang} et l'original en anglais. Vous devez également télécharger le PDF concernant les modalités de paiement en cliquant sur 'Modalités de paiement'.",
+      "para1": "Une copie de ces documents vous a également été envoyée par e-mail.",
+      "titleDownload": "Télécharger les documents",
+      "signedContractTranslated": "Contrat signé version traduite",
+      "signedContract": "Contrat signé version originel",
+      "paymentMethode": "Modalités de paiement"
     },
-    "contractEchec":{
-        "title":"Échec sur la génération du contrat",
-        "para":"Un problème s'est produit lors de la génération du contrat. Nous ne pouvons pas determiner avec précision l'origine de l'erreur, nous vous recommandons de contacter le service client.",
-        "supportClient":"Contacter le service client",
-        "retry":"Réesayer"
+    "reset": "Réinitialiser",
+    "contractEchec": {
+        "title": "Échec lors de la génération du contrat",
+        "para": "Une erreur est survenue lors de la génération du contrat. L’origine du problème reste indéterminée. Nous vous recommandons de contacter notre service client pour obtenir de l’assistance.",
+        "supportClient": "Contacter le service client",
+        "retry": "Réessayer"
     },
-    "adresse":{
-        "title":"Adresse",
-        "default":"---Choisir un pays---",
-        "Afrique du Sud":"Afrique du Sud",
-        "Allemagne":"Allemagne",
-        "Australie":"Australie",
-        "Autriche":"Autriche",
-        "Belgique":"Belgique",
-        "Canada":"Canada",
-        "Cameroun":"Cameroun",
-        "Congo (Brazzaville)":"Congo (Brazzaville)",
-        "Congo-Kinshasa":"Congo-Kinshasa",
-        "Côte d'Ivoire":"Côte d'Ivoire",
-        "Espagne":"Espagne",
-        "États-Unis":"États-Unis",
-        "France":"France",
-        "Gabon":"Gabon",
-        "Italie":"Italie",
-        "Nigéria":"Nigéria",
-        "Pays-Bas":"Pays-Bas",
-        "Royaume-Uni":"Royaume-Uni",
-        "Sénégal":"Sénégal",
-        "Suisse":"Suisse",
-        "street":"Rue",
-        "city":"Ville",
-        "codePostal":"Code Postale"
+    "adresse": {
+        "title": "Adresse",
+        "default": "---Choisir un pays---",
+        "Afrique du Sud": "Afrique du Sud",
+        "Allemagne": "Allemagne",
+        "Australie": "Australie",
+        "Autriche": "Autriche",
+        "Belgique": "Belgique",
+        "Canada": "Canada",
+        "Cameroun": "Cameroun",
+        "Congo (Brazzaville)": "Congo (Brazzaville)",
+        "Congo-Kinshasa": "Congo-Kinshasa",
+        "Côte d'Ivoire": "Côte d'Ivoire",
+        "Espagne": "Espagne",
+        "États-Unis": "États-Unis",
+        "France": "France",
+        "Gabon": "Gabon",
+        "Italie": "Italie",
+        "Nigéria": "Nigéria",
+        "Pays-Bas": "Pays-Bas",
+        "Royaume-Uni": "Royaume-Uni",
+        "Sénégal": "Sénégal",
+        "Suisse": "Suisse",
+        "street": "Rue",
+        "city": "Ville",
+        "codePostal": "Code postal"
     },
-    "fileRequirer":"This field is required",
-    "diffAdresse":"Adresse de facturation (si différente)",
-    "freelancerInfo":"Information sur le prestataire de service",
-    "freelancerCompanyName":"Nom complet / Nom de l'entreprise",
-    "freelancerCompanyAdresse":"Adresse",
-    "projetInfo":"Détailles du projet",
-    "projetTitle":"Nom du projet",
-    "projetDescription":"Déscription du projet",
-    "projetFonctionality":"Ajouter des fonctionnalités",
-    "add":"Ajouter",
-    "clearListe":"Vider la liste",
-    "principalFonctionality":"Liste des fonctionnalités principales",
-    "beginContract":"Date de début du contrat",
-    "endContract":"Date de fin du contrat (estimation)",
-    "paymentCondition":"Information de paiement",
-    "totalPrice":"Prix ​total",
-    "paymentSchedule":"Échéancier de paiement",
-    "priceError":"Price is required",
-    "maintenanceService":{
-        "title":"Services maintenace",
-        "web":"Web",
-        "app":"Application mobile",
-        "saas":"Application métier / SaaS",
-        "maintenanceError":"Indiquer le type de maintenance",
-        "maintenanceApp":"Maintenance pour une application mobile",
-        "maintenanceSaaS":"Maintenance pour une application métier / SaaS",
-        "pricePerHour":"Facturation à l'heure ({price})/heure",
-        "pricePerYear":"Facturation annuélle ({price})/An"
+    "fileRequirer": "Ce champ est obligatoire",
+    "diffAdresse": "Adresse de facturation (si différente)",
+    "freelancerInfo": "Informations sur le prestataire de services",
+    "freelancerCompanyName": "Nom complet / Nom de l'entreprise",
+    "freelancerCompanyAdresse": "Adresse",
+    "projetInfo": "Détails du projet",
+    "projetTitle": "Titre du projet",
+    "projetDescription": "Description du projet",
+    "projetFonctionality": "Ajouter une fonctionnalité",
+    "add": "Ajouter",
+    "clearListe": "Vider la liste",
+    "principalFonctionality": "Fonctionnalités principales",
+    "beginContract": "Date de début du contrat",
+    "endContract": "Date de fin estimée du contrat",
+    "paymentCondition": "Informations de paiement",
+    "totalPrice": "Prix total",
+    "paymentSchedule": "Échéancier de paiement",
+    "priceError": "Le prix est requis",
+    "maintenanceService": {
+        "title": "Services de maintenance",
+        "web": "Site web",
+        "ecommerce": "E-commerce",
+        "app": "Application mobile",
+        "saas": "Application métier / SaaS",
+        "maintenanceError": "Veuillez indiquer le type de maintenance",
+        "maintenanceApp": "Maintenance pour application mobile",
+        "maintenanceSaaS": "Maintenance pour application métier / SaaS",
+        "pricePerHour": "Facturation horaire ({price})/heure",
+        "pricePerYear": "Facturation annuelle ({price})/an"
     },
-    "contractLanguage":{
-        "title":"Choisir la langue pour le contrat",
-        "defaultLang":"---Choisir une langue---",
-        "french":"Français",
-        "english":"Anglais",
-        "germany":"Allemand",
-        "errorLang":"Veuillez choisir une langue"
+    "contractLanguage": {
+        "title": "Choisir la langue du contrat",
+        "defaultLang": "---Choisir une langue---",
+        "french": "Français",
+        "english": "Anglais",
+        "germany": "Allemand",
+        "errorLang": "Veuillez sélectionner une langue"
     },
-    "contractType":"Modifier le type de contrat",
-    "contractStatus":"Modifier le status du contrat",
-    "termsOfSale":"Conditions Générale de Vente",
-    "clientList":"Liste client",
-    "generedContract":"Générer le contrat",
-    "acceptSaleTerm":"Cocher pour cerifier avoir lue et accepter les {GTS}.",
-    "backAmountConditionText":"Cocher pour accepter notre polititique de remboursement pour les client UE,Royaume uni ... {GTS}.",
-    "privacyPolicies":"Politique de Confidentialité",
-    "backAmountCondition":"Politique de Remborsement",
+    "contractType": "Modifier le type de contrat",
+    "contractStatus": "Modifier le statut du contrat",
+    "termsOfSale": "Conditions Générales de Vente",
+    "clientList": "Liste des clients",
+    "generedContract": "Générer le contrat",
+    "acceptSaleTerm": "Cocher pour certifier avoir lu et accepté les {GTS}.",
+    "backAmountConditionText": "Cocher pour accepter notre politique de remboursement applicable aux clients de l’UE, du Royaume-Uni, etc. {GTS}.",
+    "privacyPolicies": "Politique de confidentialité",
+    "backAmountCondition": "Politique de remboursement",
     "legalNotices":{
         "content_0": "Cette page est la traduction d’un document en français. Cette traduction est uniquement fournie à titre d’information. La version définitive est celle en français.",
         "content_1": "Dernière mise à jour : {date}",
@@ -1219,7 +1156,7 @@
         "content_200": "Du paiement du prix des services rendus ;",
         "content_201": "Du paiement du prix des services additionnels rendus ; et",
         "content_202": "Du remboursement des dépenses encourues ;",
-        "content_99": "Sans aucune réduction ou remise. De plus, si le prestataire de services a respecté ses obligations en vertu du présent contrat jusqu'à la résiliation de ce dernier, le client doit verser au prestataire de services un montant équivalent à quatre-vingt pour cent (80%) du solde du prix du contrat, à titre de perte de profit anticipé.",
+        "content_99": "Sans aucune réduction ou remise. En cas de résiliation anticipée, le Client sera tenu de payer les services réalisés jusqu’à la date de résiliation, ainsi qu’une indemnité supplémentaire correspondant à 20 % du reste du contrat, sauf preuve d’un préjudice plus élevé.",
         "content_100": "4.2 - Politique de remboursement",
         "content_101": "Le remboursement est calculé au prorata des tâches déjà réalisées, ainsi que le remboursement des frais engagés et non récupérables (tels que l'achat de noms de domaine, licences, ou abonnements nécessaires à l'exécution du projet, etc.).",
         "content_102": "CGU",
@@ -1273,6 +1210,7 @@
         "content_22": "Nous nous réservons le droit de mettre à jour cette politique de confidentialité de temps à autre. Les modifications seront publiées sur cette page. Étant donné que nos services sont régis par un contrat qui prend fin à la réalisation de la tâche convenue, les utilisateurs sont encouragés à consulter cette page régulièrement pour rester informés des éventuelles modifications.",
         "content_23": "8. Nous contacter",
         "content_24": "Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter à : {link}"
-    }
+    },
+    "reset":"Réinitialiser"
 }
     

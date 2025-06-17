@@ -1,6 +1,6 @@
 "use client"
 import { useTranslationContext } from '@/hooks/app-hook';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, StandardFonts } from "pdf-lib";
 import { sendContract } from '@/server/services-mail';
 import { saveContractDoc } from '@/server/services-save-doc';
@@ -153,9 +153,10 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
     const contract = service.contract as Contract
     const {id,serviceId} = useParams()
     const clientServiceId = serviceId as string;
+    const clientId = id as string;
     const [tax,setTax] = React.useState<number>(0)
     const functionListAndRang = [
-        {name:"addText",count:2,id:1},{name:"addHorizontalText",count:1,id:2},
+        {name:"addText",count:3,id:1},{name:"addHorizontalText",count:1,id:2},
         {name:"addText",count:1,id:3},
         {name:"addHorizontalText",count:1,id:4},
         {name:"addText",count:2,id:5},
@@ -379,7 +380,8 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         console.log("client info",client)
         console.log("data",data)
         const content = {
-            title: contract.contractType === 'service' ? t.contract.header.tittleService + contract.prestataireGivingData!.projectTitle : contract.contractType === 'maintenance' ? t.contract.header.tittleMaintenance + contract.prestataireGivingData!.projectTitle : t.contract.header.tittleServiceMaintenance + contract.prestataireGivingData!.projectTitle,
+            para: t.contract.header.para,
+            title: contract.contractType === 'service' ? t.contract.header.titleService + contract.prestataireGivingData!.projectTitle : contract.contractType === 'maintenance' ? t.contract.header.titleMaintenance + contract.prestataireGivingData!.projectTitle : t.contract.header.titleServiceMaintenance + contract.prestataireGivingData!.projectTitle,
             sousTitle: t.contract.header.subTitle,
             clientName: `${contract.clientGivingData!.name}`,
             freelanceName: `${contract.prestataireGivingData!.freelancerName}`,
@@ -427,6 +429,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 1:{
                     id:1,
                     param:[
+                        [locale !== 'en' ? content.para : '', margin, yRef.current,margin,locale !== 'en' ? 20 : 0,{...addTextOption,isBold:true},...lastParam],
                         [content.title, margin, yRef.current,margin,20,{...addTextOption,lineHeight:lineHeight+6,size:18,isBold:true},...lastParam
                         ],
                         [content.sousTitle, margin, yRef.current, margin,10,{...addTextOption,lineHeight:lineHeight,size:9,isBold:true},...lastParam]
@@ -468,7 +471,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 },
                 10:{
                     id:10,
-                    param:[[[{text:t.contract.sections["5"].sec3.paraB1,size:11,isBold:false},{text:t.contract.sections["5"].sec3.paraB2,size:11,isBold:true}],margin,yRef.current,false,margin,8,fontRegular,fontBold,
+                    param:[[[{text:t.contract.sections["5"].sec3.paraB1,size:11,isBold:false}],margin,yRef.current,false,margin,8,fontRegular,fontBold,
                     textHorizontalOption,...lastParam]]
                 },
                 11:{
@@ -505,7 +508,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 },
                 19:{
                     id:19,
-                    param:[[t.contract.sections["5"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec9.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para2.replace("{sday}",3).replace("{day}",7), margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para3.replace("{sday}",3), margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec10.para1, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam]]
+                    param:[[t.contract.sections["5"].sec9.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec9.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para2.replace("{sday}",3).replace("{day}",7), margin, yRef.current,margin,10, addTextOption,...lastParam],[t.contract.sections["5"].sec9.para3.replace("{sday}",3).replace("{day}",7), margin, yRef.current,margin,15, addTextOption,...lastParam],[t.contract.sections["5"].sec10.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.contract.sections["5"].sec10.para1, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.contract.sections["5"].sec10.paraC, margin, yRef.current,margin,15, addTextOption,...lastParam]]
                 },
                 20:{
                     id:20,
@@ -578,7 +581,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 },
                 37:{
                     id:37,
-                    param:[[[t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],[],yRef.current,margin,15,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[[],[],yRef.current,margin,10,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam],[["",t.contract.sections["10"].do+' '+formatDate(new Date())],[],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
+                    param:[[[t.contract.sections["10"].sprestataire,t.contract.sections["10"].sclient],[],yRef.current,margin,15,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[[],[],yRef.current,margin,10,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam],[["",t.contract.sections["10"].do.replace("{city}",process.env.NEXT_PUBLIC_MAKE_CONTRACT_CITY as string)+' '+formatDate(new Date())],[],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
                 }
             }
             console.log("fonctionParam",fonctionParam)
@@ -1067,6 +1070,9 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         });
     }
     useEffect(()=>{
+        const clearUp = () => {
+            
+        }
         const generedPdf = async()=>{
             if(!service || !client) return
             const allRequest = [
@@ -1087,7 +1093,6 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 const contractData = {service:parsedService,blobPdf:blobContract}
                 const updateClient = {...client,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)}
                 const result = await saveContractDoc(contractData,updateClient,clientServiceId)
-                sessionStorage.clear()
                 const email = {
                     to:contract.clientGivingData!.clientEmail,
                     name:contract.clientGivingData!.name,
@@ -1096,6 +1101,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                     base64Payement:paymentBase64
                 }
                 if (result === 'success') {
+                    sessionStorage.clear()
                     await sendContract(email,contract.contractLanguage);
                     const emitData:{contractLink:string,
                         paymentLink:string,status:"success" | "error"} = {
@@ -1115,7 +1121,8 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 }
             }
         }
-        generedPdf()   
+        generedPdf()
+        clearUp()   
     },[contract,client,clientSignatureLink,freelanceSignatureLink,locale])
       
     return null

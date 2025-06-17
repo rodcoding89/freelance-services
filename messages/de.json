@@ -474,6 +474,579 @@
     "optionEcommerceMaintenance5": "<div><span class='prix'>+50€</span><span class='text'>Verlängerung Domainname + Hosting + E-Mail für 12 Monate.</span></div><div><span class='prix'>+50€</span><span class='text'>Website online stellen auf einem Server.</span></div>",
     "appMaintenance": "Für die Wartung Ihrer mobilen Anwendungen kontaktieren Sie mich bitte, um ein Angebot und ein geeignetes Verfahren zu erstellen. Ein genauer Preis kann für mobile Anwendungen nicht ohne tiefgehendes Verständnis der spezifischen Anforderungen Ihrer Anwendung festgelegt werden.",
     "saasMaintenance": "Für die Wartung Ihrer Business-Software oder SaaS kontaktieren Sie mich bitte, um ein Angebot und ein geeignetes Verfahren zu erstellen. Ein genauer Preis kann für diese Art von Software nicht ohne tiefgehendes Verständnis der spezifischen Anforderungen Ihrer Software festgelegt werden.",
+    "devModeWordpress": "Mit WordPress erstellt",
+    "devModeOfHand": "Handcodiert",
+    "websiteTitle": "Schaufenster-Website",
+    "websiteItemTitle": "Website für",
+    "websiteItem1Proprio": "Fieger Unternehmen",
+    "activityDomain": "Tätigkeitsbereich von",
+    "infoProjet": "Informationen zum Webprojekt",
+    "websiteItem1TaskPara1": "Inhaltsaktualisierung (Text/Bilder)",
+    "websiteItem1TaskPara2": "Designbezogene Korrekturen (Erscheinungsbild)",
+    "websiteItem1TaskPara3": "Hinzufügen von Komponenten und Bildern",
+    "websiteItem1TaskPara4": "Abschlusstest",
+    "websiteItem1TaskPara5": "Veröffentlichung",
+    "websiteItem2Proprio": "Neue-Gruppe Unternehmen",
+    "websiteItem2TaskPara1": "Hinzufügen neuer Funktionen",
+    "websiteItem2TaskPara2": "Inhalt hinzufügen (Text/Bilder)",
+    "websiteItem2TaskPara3": "Designänderung (Stil/Erscheinungsbild)",
+    "websiteItem2TaskPara4": "Abschlusstest",
+    "websiteItem2TaskPara5": "Bereitstellung (Online gehen)",
+    "websiteItem3Proprio": "Avlis Unternehmen",
+    "websiteItem3TaskPara1": "Fehlerbehebungen",
+    "websiteItem3TaskPara2": "Inhaltsaktualisierung (Text/Bilder)",
+    "websiteItem3TaskPara3": "Hinzufügen neuer Funktionen",
+    "websiteItem3TaskPara4": "Verbesserung des erstellten Codes",
+    "websiteItem3TaskPara5": "Abschlusstest",
+    "websiteItem3TaskPara6": "Bereitstellung (Online gehen)",
+    "websiteItem4Proprio": "Charlotte Consulting Unternehmen",
+    "websiteItem4TaskPara1": "Definition der Grafikcharta (Farbenpalette, Typografie)",
+    "websiteItem4TaskPara2": "Vorlage einrichten (Seiten/Dienste/Blog)",
+    "websiteItem4TaskPara3": "Erstellung verschiedener Funktionen",
+    "websiteItem4TaskPara4": "Erstellung des Backoffice (Website-Administrationsbereich)",
+    "websiteItem4TaskPara5": "Abschlusstest",
+    "websiteItem4TaskPara6": "Bereitstellung (Online gehen)",
+    "reworkedTitle": "Website-Redesign",
+    "reworkedItemTitle": "Website-Redesign für",
+    "reworkedItemProprio": "Graphicon Unternehmen",
+    "reworkedItemDescriptionTitle": "Tätigkeitsbereich von",
+    "reworkedItemTaskPara1": "Inhaltsaktualisierung (Text/Bilder)",
+    "reworkedItemTaskPara2": "Designbezogene Korrekturen (Erscheinungsbild)",
+    "reworkedItemTaskPara3": "Hinzufügen von Komponenten und Bildern",
+    "reworkedItemTaskPara4": "Abschlusstest",
+    "reworkedItemTaskPara5": "Bereitstellung (Online gehen)",
+    "ecommerceTitle": "E-Commerce-Website",
+    "ecommerceItemTitle": "E-Commerce-Website für",
+    "ecommerceItem1Proprio": "WaveConnect Unternehmen",
+    "ecommerceItem1TaskPara1": "Projektstudie (Pflichtenheft)",
+    "ecommerceItem1TaskPara2": "Wahl der geeigneten Technologien",
+    "ecommerceItem1TaskPara3": "Einrichtung der Projektstruktur",
+    "ecommerceItem1TaskPara4": "Definition der Grafikcharta (Farbenpalette, Typografie)",
+    "ecommerceItem1TaskPara5": "Vorlage einrichten (Seiten/Dienste)",
+    "ecommerceItem1TaskPara6": "Erstellung verschiedener Funktionen",
+    "ecommerceItem1TaskPara7": "Erstellung des Backoffice (Website-Administrationsbereich)",
+    "ecommerceItem1TaskPara8": "Abschlusstest",
+    "ecommerceItem1TaskPara9": "Bereitstellung (Online gehen)",
+    "ecommerceItem2TaskPara5": "Vorlage einrichten (Seiten/Warenkorb/Dienste)",
+    "budget": "Was ist Ihr Budget?",
+    "contract":{
+        "header": {
+            "para":"Dieser Vertrag ist eine Deutsch Übersetzung eines ursprünglich auf Englisch verfassten Dokuments und wird ausschließlich zu Informationszwecken bereitgestellt, um das Verständnis des Kunden zu erleichtern. Im Falle von Widersprüchen, Abweichungen oder Auslegungsschwierigkeiten zwischen den Versionen gilt ausschließlich die englische Version als rechtsverbindlich zwischen den Parteien.",
+            "titleService": "Dienstleistungsvertrag - ",
+            "titleMaintenance": "Wartungsdienstvertrag - ",
+            "titleServiceMaintenance": "Dienstleistungs- und Wartungsvertrag - ",
+            "subTitle": "Zwischen den Unterzeichneten:",
+            "home": "wohnhaft in",
+            "designation": "im Folgenden bezeichnet als der",
+            "from": "Kunde,",
+            "to": "Dienstleister.",
+            "and": "und",
+            "parties": "(der Kunde und der Dienstleister im Folgenden gemeinsam als 'die Parteien' bezeichnet)"
+        },
+        "sections":{
+            "1": {
+                "title": "1 - PRÄAMBEL",
+                "paraDef": "IN ANBETRACHT DER TATSACHE, DASS",
+                "para1": "der Kunde verschiedene IT-Dienstleistungen vom Dienstleister erhalten möchte;",
+                "para2": "die Parteien ihre Vereinbarung schriftlich festhalten möchten;",
+                "para3": "die Parteien die Fähigkeit und Befugnis haben, alle für den Abschluss und die Durchführung der in diesem Vertrag festgehaltenen Vereinbarung erforderlichen Rechte auszuüben;",
+                "para": "IN FOLGE DESSEN VEREINBAREN DIE PARTEIEN FOLGENDES:"
+            },
+            "2": {
+                "title": "2 - GEGENSTAND",
+                "sec1": {
+                    "title": "2.1 - Dienstleistungen",
+                    "para": "Der Dienstleister verpflichtet sich gegenüber dem Kunden, die in den Spezifikationen beschriebenen IT-Dienstleistungen (im Folgenden als 'die Dienstleistungen' bezeichnet) zu erbringen, die im Abschnitt 'Beschreibung und Hauptfunktionen des Projekts' aufgeführt sind, oder, falls nicht vorhanden, im Angebot."
+                },
+                "sec2": {
+                    "title": "2.2 - Frist für die Erbringung der Dienstleistungen",
+                    "para": "Ab dem Zeitpunkt, zu dem der Kunde dem Dienstleister die erforderlichen Informationen zur Verfügung gestellt hat, und vorbehaltlich zusätzlicher Dienstleistungen, die der Kunde nach Unterzeichnung dieses Vertrags anfordert, ist die Frist für die Erbringung der Dienstleistungen durch den Dienstleister die in den Spezifikationen angegebene."
+                }
+            },
+            "3": {
+                "title": "3 - BESCHREIBUNG UND WICHTIGSTE FUNKTIONEN DES PROJEKTS",
+                "sec1": {
+                    "title": "3.1 - Beschreibung"
+                },
+                "sec2": {
+                    "title": "3.2 - Funktionen"
+                },
+                "sec3": {
+                    "title": "3.3 - Vertragsdauer",
+                    "paraService": "Der Vertrag beginnt am {startDate}, aber das Projekt startet, wenn die erste Zahlung erfolgt. Das bedeutet, dass Verzögerungen bei der ersten Zahlung sich auf das Lieferdatum auswirken. Der Vertrag endet am {endDate} mit einer Woche Spielraum, und dies unter der Bedingung, dass die erste Zahlung am selben Tag wie die Unterzeichnung des Vertrags erfolgt. Dies kann durch einen Überweisungsnachweis bestätigt werden, es ist nicht notwendig, das Geld zu erhalten, bevor das Projekt beginnt.",
+                    "paraMaintenance": "Dieser Vertrag tritt am Tag seiner Unterzeichnung durch beide Parteien in Kraft. Der Vertrag wird dann für eine festgelegte Dauer von 12 Monaten abgeschlossen. Nach Ablauf des anfänglichen Zeitraums wird der Vertrag automatisch für aufeinanderfolgende Perioden von 12 Monaten verlängert, es sei denn, eine der Parteien teilt der anderen schriftlich mindestens 30 Tage vor Ablauf der laufenden Periode mit, dass sie den Vertrag nicht verlängern möchte. Jede Partei kann den Vertrag vorzeitig kündigen, falls die andere Partei ihre vertraglichen Verpflichtungen schwerwiegend verletzt, vorbehaltlich einer schriftlichen Kündigungsfrist von 30 Tagen und der Möglichkeit für die säumige Partei, den Verstoß innerhalb dieser Frist zu beheben.",
+                    "paraServiceMaintenance": "Der Vertrag beginnt mit der Unterzeichnung durch beide Parteien, aber das Projekt startet, wenn die erste Zahlung erfolgt. Das bedeutet, dass Verzögerungen bei der ersten Zahlung sich auf das Lieferdatum auswirken. Der Vertrag endet am {endDate} mit einer Woche Spielraum, und dies unter der Bedingung, dass die erste Zahlung am selben Tag wie die Unterzeichnung des Vertrags erfolgt. Dies kann durch einen Überweisungsnachweis bestätigt werden, es ist nicht notwendig, das Geld zu erhalten, bevor das Projekt beginnt. Der Wartungsvertrag tritt am Ende des Dienstleistungsvertrags in Kraft. Der Vertrag wird dann für eine festgelegte Dauer von 12 Monaten abgeschlossen. Nach Ablauf des anfänglichen Zeitraums wird der Vertrag automatisch für aufeinanderfolgende Perioden von 12 Monaten verlängert, es sei denn, eine der Parteien teilt der anderen schriftlich mindestens 30 Tage vor Ablauf der laufenden Periode mit, dass sie den Vertrag nicht verlängern möchte. Jede Partei kann den Vertrag vorzeitig kündigen, falls die andere Partei ihre vertraglichen Verpflichtungen schwerwiegend verletzt, vorbehaltlich einer schriftlichen Kündigungsfrist von 30 Tagen und der Möglichkeit für die säumige Partei, den Verstoß innerhalb dieser Frist zu beheben."
+                },
+                "sec4": {
+                    "titleService": "3.4 - Preis",
+                    "titleMaintenance": "3.4 - Preis",
+                    "titleServiceMaintenance": "3.4 - Preis",
+                    "paraService": "Der Preis für die Dienstleistung beträgt {price} € inkl. MwSt., wie im Kostenvoranschlag vereinbart. Die Zahlungsmodalitäten finden sich im Anhang dieses Vertrags.",
+                    "paraMaintenance": {
+                        "peerHour": "Der Stundensatz für die Wartungsdienstleistung beträgt {mprice} € inkl. MwSt., wie im Kostenvoranschlag vereinbart. Die gearbeiteten Stunden werden in einem monatlichen Bericht erfasst und am Ende jedes Monats in Rechnung gestellt. Die Zahlungsmodalitäten finden sich im Anhang dieses Vertrags.",
+                        "peerYear": "Die jährliche Pauschale für die Wartungsdienstleistung beträgt {mprice} € inkl. MwSt., wie im Kostenvoranschlag vereinbart. Die Zahlung erfolgt einmalig zu Beginn jeder Vertragsperiode. Die Zahlungsmodalitäten finden sich im Anhang dieses Vertrags."
+                    },
+                    "paraServiceMaintenance": {
+                        "para": "Der Preis für die Dienstleistung beträgt {price} €, wie im Kostenvoranschlag vereinbart. Für die Wartungsdienstleistung,",
+                        "para1": "Die Zahlungsmodalitäten finden sich im Anhang dieses Vertrags.",
+                        "peerHour": "beträgt der Stundensatz {mprice} €. Die gearbeiteten Stunden werden in einem monatlichen Bericht erfasst und am Ende jedes Monats in Rechnung gestellt.",
+                        "peerYear": "beträgt die jährliche Pauschale {mprice} €. Die Zahlung erfolgt einmalig zu Beginn jeder Vertragsperiode."
+                    }
+                }
+            },
+            "4": {
+                "title": "4 - FINANZIELLE ÜBERLEGUNGEN",
+                "sec1": {
+                    "title": "4.1 - Dienstleistungspreise",
+                    "para": "Als Gegenleistung für die erbrachten Dienstleistungen verpflichtet sich der Kunde, dem Dienstleister den vereinbarten Betrag gemäß den Spezifikationen, einschließlich aller anwendbaren Steuern und Gebühren, zu zahlen."
+                },
+                "sec2": {
+                    "title": "4.2 - Zahlungsbedingungen",
+                    "para": "Die Zahlung der vom Kunden an den Dienstleister geschuldeten Beträge muss gemäß den in den Spezifikationen festgelegten Bedingungen und Fristen erfolgen.",
+                    "paraClose": "(Die Details und Kontaktdaten für die Zahlung sind im Anhang dieses Vertrags angegeben.)"
+                }
+            },
+            "5": {
+                "title": "5 - BESONDERE BESTIMMUNGEN",
+                "para": "",
+                "sec1": {
+                    "title": "5.1 - Vertreter der Parteien",
+                    "para": "Jede der Parteien erkennt an, dass die von ihr in den Spezifikationen bezeichnete Person (oder jede Person, die die bezeichnete Person ersetzt, nach entsprechender Mitteilung an die andere Partei) sie vertritt und voll befugt ist, die Handlungen vorzunehmen, Entscheidungen zu treffen und die für die Ausführung dieses Vertrags erforderlichen Genehmigungen zu erteilen."
+                },
+                "sec2": {
+                    "title": "5.2 - Elektronische Kommunikation",
+                    "para1": "Die Vertreter der Parteien können elektronisch miteinander kommunizieren. In einem solchen Fall gelten folgende Vermutungen:",
+                    "para2": "die Anwesenheit eines Identifikationscodes in einem elektronischen Dokument reicht aus, um die sendende Person zu identifizieren und die Authentizität des Dokuments festzustellen; ein elektronisches Dokument mit einem Identifikationscode gilt als von der sendenden Person unterzeichnetes Schriftstück; ein elektronisches Dokument oder ein gedruckter Auszug eines solchen Dokuments, das gemäß den üblichen Geschäftspraktiken aufbewahrt wird, gilt als Original."
+                },
+                "sec3": {
+                    "title": "5.3 - Pflichten des Kunden",
+                    "para": "Der Kunde verpflichtet sich, dem Dienstleister nur personenbezogene Daten zu übermitteln, die rechtmäßig erhoben und in Übereinstimmung mit den Datenschutzgesetzen des Landes, in dem diese Daten erhoben wurden, oder des Landes, in dem die betroffenen Personen ansässig sind, verarbeitet wurden.",
+                    "paraA": "a) Der Kunde muss dem Dienstleister die Informationsbestandteile in der Form und innerhalb der in den Spezifikationen vorgesehenen Fristen zur Verfügung stellen;",
+                    "paraB1": "b) Die Informationsbestandteile müssen alle anwendbaren Gesetze und Vorschriften einhalten.",
+                    "paraC": "c) Die Bereitstellung von Informationsbestandteilen durch den Kunden darf keine Vertraulichkeits- oder Nichtoffenlegungsverpflichtung verletzen und muss es dem Dienstleister ermöglichen, diese frei und ohne Einschränkungen im Rahmen der Dienstleistungserbringung zu verwenden;",
+                    "paraD": "d) Der Kunde muss dem Dienstleister auf dessen Anfrage den Nachweis seines Rechts, Titels oder geistigen Eigentumsinteresses an jedem Informationsbestandteil erbringen;",
+                    "paraE": "e) Der Kunde muss dem Dienstleister seine volle Zusammenarbeit zukommen lassen und alle erforderlichen Informationen zur Verfügung stellen, um die treue und vollständige Ausführung der zu erbringenden Dienstleistungen sicherzustellen;",
+                    "paraF": "f) Sofern kein triftiger Grund vorliegt, muss der Kunde dem Dienstleister auf dessen Anfrage seine Zustimmung zu der am Ende jeder der in den Spezifikationen angegebenen Dienstleistungsphasen erbrachten Arbeit erteilen;",
+                    "paraG": "g) Der Kunde ist allein verantwortlich für den Inhalt der Computerausrüstung und die daraus resultierenden Schäden;",
+                    "paraH1": "h) Der Kunde muss Partei für den Dienstleister ergreifen, falls dieser von einer dritten Person in ein Gerichtsverfahren verwickelt oder als Partei gezogen wird, in dem dem Dienstleister ein Verschulden aufgrund der Nutzung der Computerausrüstung oder der darin enthaltenen Informationen vorgeworfen wird, und",
+                    "paraH2": "den Dienstleister von jeder kapitalmäßigen und zinsmäßigen Geldstrafe sowie von allen gerichtlichen und außergerichtlichen Kosten, die der Dienstleister in der Folge tragen muss, freistellen;",
+                    "paraI": "i) Der Kunde muss den Preis für die Dienstleistungen des Dienstleisters zahlen, den Preis für jede zusätzliche Dienstleistung, die er nach Unterzeichnung dieses Vertrags anfordern könnte, sowie die entstandenen Ausgaben gemäß den in den Spezifikationen festgelegten Zahlungsbedingungen erstatten;",
+                    "paraJ": "j) Der Kunde muss den Dienstleister unverzüglich benachrichtigen, wenn sein in den Spezifikationen angegebener Vertreter während der Vertragsausführung durch eine andere Person ersetzt wird."
+                },
+                "sec4": {
+                    "title": "5.4 - Pflichten des Dienstleisters",
+                    "para": "Der Dienstleister verpflichtet sich gegenüber dem Kunden wie folgt:",
+                    "paraA": "a) Die Dienstleistungen müssen professionell, nach den allgemein anerkannten Regeln der Branche und gemäß den Spezifikationen erbracht werden;",
+                    "paraB1": "b) Der Dienstleister muss sicherstellen, dass seine Mitarbeiter, Lieferanten, Mitarbeiter und Subunternehmer, falls zutreffend,",
+                    "paraB2": "die Bestimmungen dieses Vertrags vollständig einhalten, insbesondere in Bezug auf geistiges Eigentum und Vertraulichkeit;",
+                    "paraC": "c) Der Dienstleister muss den Kunden unverzüglich benachrichtigen, wenn sein in den Spezifikationen angegebener Vertreter während der Vertragsausführung durch eine andere Person ersetzt wird."
+                },
+                "sec5": {
+                    "title": "5.5 - Nützliche Informationen",
+                    "para": "Der Kunde bestätigt, dass der Dienstleister ihm vor der Unterzeichnung dieses Vertrags alle nützlichen Informationen in Bezug auf die Dienstleistungen, die er zu erbringen verpflichtet ist, zur Verfügung gestellt hat. Hinweis: Alle weiteren Informationen für die Durchführung des Dienstes, die zusätzliche Aufwände erfordern, gehen zu Lasten des Dienstleisters."
+                },
+                "sec6": {
+                    "title": "5.6 - Ausführungsmittel",
+                    "para11": "Abgesehen von der Einhaltung der Spezifikationen,",
+                    "para12": "hat der Dienstleister die freie Wahl der Mittel zur Ausführung dieses Vertrags",
+                    "para13": "und es besteht zwischen ihm und dem Kunden kein Unterordnungsverhältnis in Bezug auf seine Ausführung."
+                },
+                "sec7": {
+                    "title": "5.7 - Beziehung zwischen den Parteien",
+                    "para": "Da die Parteien unabhängige Unternehmer sind, bindet dieser Vertrag sie nur für die darin genannten Zwecke. Folglich können die Bestimmungen dieses Vertrags in keiner Weise als Schaffung einer Vereinigung oder Gesellschaft zwischen den Parteien oder als Erteilung eines Mandats von einer Partei an die andere ausgelegt werden. Darüber hinaus kann keine der Parteien die andere in irgendeiner Weise und gegenüber wem auch immer binden, es sei denn, dies entspricht den Bestimmungen dieses Vertrags."
+                },
+                "sec8": {
+                    "title": "5.8 - Subunternehmer",
+                    "para11": "Sofern in diesem Vertrag nichts Gegenteiliges bestimmt ist und vorbehaltlich der vorherigen Zustimmung des Kunden,",
+                    "para12": "kann der Dienstleister jede dritte Partei hinzuziehen, um diesen Vertrag auszuführen.",
+                    "para13": "Er behält jedoch die Leitung und Verantwortung für die Ausführung."
+                },
+                "sec9": {
+                    "title": "5.9 - Überprüfungs-, Test- und Genehmigungsprozess",
+                    "para1": "Auf Anfrage des Dienstleisters am Ende jeder der in den Spezifikationen angegebenen Dienstleistungsphasen muss der Kunde das Ergebnis der bis zu diesem Zeitpunkt vom Dienstleister erbrachten Dienstleistungen überprüfen, überarbeiten, testen oder anderweitig bewerten.",
+                    "para2": "Innerhalb einer maximalen Frist von {sday} Tagen nach der Anfrage des Dienstleisters muss der Kunde die vom Dienstleister geleistete Arbeit genehmigen oder ablehnen. Wenn der Kunde die geleistete Arbeit genehmigt oder es versäumt, seine Genehmigung oder Ablehnung innerhalb der genannten Frist zu äußern, gilt die geleistete Arbeit als genehmigt und entsprechend den Spezifikationen durchgeführt, und der Dienstleister kann seine Arbeit fortsetzen, falls zutreffend. Wenn der Kunde die geleistete Arbeit ganz oder teilweise ablehnt, muss er den Dienstleister innerhalb der genannten Frist und schriftlich über jeden Fehler, jede Auslassung, jede Nichtübereinstimmung mit den Spezifikationen oder jeden anderen Ablehnungsgrund informieren und die nützlichen Hinweise und notwendigen Präzisierungen für ein gutes Verständnis der kritisierten Punkte geben.",
+                    "para3": "Der Dienstleister hat dann eine Mindestfrist, die der oben genannten entspricht, und eine maximale Frist von {day} Tagen, die variieren kann (abhängig von den durchzuführenden Änderungen), um die Korrektur der kritisierten Punkte vorzunehmen und dem Kunden das Ergebnis seiner Arbeit erneut vorzulegen. Wenn der Dienstleister mit dem Kunden in einem oder mehreren der in der Ablehnungsmitteilung aufgeführten Punkte nicht einverstanden ist, muss er dem Kunden seine Position innerhalb einer maximalen Frist von {sday} Tagen nach Erhalt der Ablehnungsmitteilung schriftlich mitteilen."
+                },
+                "sec10": {
+                    "title": "5.10 - Während des Vertrags angeforderte Änderungen",
+                    "para1": "Wenn der Kunde während der Ausführung dieses Vertrags und vor der endgültigen Genehmigung der vom Dienstleister erbrachten Dienstleistungen eine Überarbeitung, Korrektur, Ergänzung, Substitution oder andere Änderung der Spezifikationen anfordert:",
+                    "paraA": "a) damit das gewünschte Ergebnis mit den ursprünglich vom Kunden bereitgestellten Informationsbestandteilen übereinstimmt;",
+                    "paraB": "b) aufgrund eines Fehlers oder einer Auslassung des Dienstleisters; oder",
+                    "paraC": "c) die keinen zusätzlichen Arbeitsaufwand für den Dienstleister verursacht;",
+                    "para21": "dann wird diese Änderungsanforderung nicht als Anforderung für zusätzliche Dienstleistungen betrachtet und",
+                    "para22": "verursacht daher keine zusätzlichen Kosten für den Kunden. Jede solche Änderungsanforderung des Kunden muss schriftlich erfolgen.",
+                    "paraClose": "Jede andere Änderungsanforderung des Kunden wird als Anforderung für zusätzliche Dienstleistungen betrachtet."
+                },
+                "sec11": {
+                    "title": "5.11 - Zusätzliche Dienstleistungen",
+                    "para1": "Wenn der Kunde zusätzliche Dienstleistungen anfordert, muss er dies schriftlich tun und an den Dienstleister senden.",
+                    "para2": "Wenn der Dienstleister zustimmt, diese zu erbringen, wird der Kunde schriftlich informiert.",
+                    "para3": "Jede zusätzliche Dienstleistung unterliegt daher den Bestimmungen dieses Vertrags, insbesondere in Bezug auf geistiges Eigentum und Vertraulichkeit, wobei die notwendigen Anpassungen vorgenommen werden, falls erforderlich."
+                },
+                "sec12": {
+                    "title": "5.12 - Zusicherungen und Garantien des Dienstleisters",
+                    "para": "Der Dienstleister sichert dem Kunden zu und garantiert, dass:",
+                    "paraA": "a) er über die erforderliche Kapazität verfügt, um sich gemäß diesem Vertrag zu verpflichten, wobei diese Kapazität in keiner Weise durch eine Verpflichtung gegenüber einer dritten Person eingeschränkt ist;",
+                    "paraB": "b) er über die erforderliche Fachkenntnis und Erfahrung verfügt, um die ihm gemäß diesem Vertrag obliegenden Verpflichtungen auszuführen und abzuschließen;",
+                    "paraC": "c) er die Dienstleistungen auf professionelle und effektive Weise gemäß den allgemein anerkannten Regeln der Branche und unter Verwendung der neuesten Hintergrundtechnologie und Entwicklungstools erbringen wird;",
+                    "paraD": "d) er alle Spezifikationen in Bezug auf die zu erbringenden Dienstleistungen einhalten wird;",
+                    "paraE": "e) er jedes Recht, jeden Titel oder jedes geistige Eigentumsinteresse eines Dritten an jedem Entwicklungstool, das er verwenden wird, und an jeder Komponente, die er mit einem solchen Tool entwerfen wird, respektieren wird;",
+                    "paraF": "f) er keine vertraulichen Informationen oder Geschäftsgeheimnisse verwenden wird, die einem Dritten gehören, es sei denn, er hat die Genehmigung des Letzteren erhalten;",
+                    "paraG": "g) der Kunde ein gutes und gültiges Recht, einen Titel oder ein geistiges Eigentumsinteresse an jedem vom Dienstleister erstellten Inhalt haben wird, gemäß dem, was in diesem Vertrag vorgesehen ist;",
+                    "paraH": "h) jeder solche Inhalt keine Rechte, Titel oder geistigen Eigentumsinteressen eines Dritten verletzen wird."
+                },
+                "sec13": {
+                    "title": "5.13 - Garantieeinschränkung",
+                    "para": "Sofern in diesem Vertrag nicht anders vorgesehen, gibt der Dienstleister dem Kunden keine ausdrückliche oder stillschweigende Garantie in Bezug auf:",
+                    "paraA": "a) die Computerausrüstung des Kunden, deren Betrieb und deren Hardware- und Softwarekomponenten;",
+                    "paraB": "b) die finanziellen oder nicht-finanziellen, realen oder befürchteten, positiven oder negativen Auswirkungen, die sich aus der Erbringung der Dienstleistungen ergeben oder ergeben können.",
+                    "paraClose": "DIE IN DIESEM VERTRAG ENTHALTENEN GARANTIEN SIND DIE EINZIGEN GARANTIEN, DIE IN BEZUG AUF DEN GEGENSTAND DIESES VERTRAGS GEWÄHRT WERDEN, UND SIE STELLEN EINE BESCHRÄNKTE GARANTIE DAR."
+                },
+                "sec14": {
+                    "title": "5.14 - Haftungsbeschränkung",
+                    "para": "Sofern kein grobes Verschulden seinerseits vorliegt, kann der Dienstleister dem Kunden gegenüber nicht für irgendein Verschulden und irgendeinen daraus resultierenden direkten oder indirekten Schaden verantwortlich gemacht werden, und der Kunde hält den Dienstleister von jeder Forderung, einschließlich jeder Garantieforderung, in einem der folgenden Fälle frei und schadlos:",
+                    "paraA": "a) Änderungen, die von einer anderen Person als dem Dienstleister oder in dessen Zusammenhang an dem Inhalt vorgenommen werden;",
+                    "paraB": "b) Änderungen oder Ergänzungen, Hardware oder Software, an der Computerausrüstung des Kunden, die sich auf die ordnungsgemäße Funktion der Softwareprodukte auswirken;",
+                    "paraC": "c) Einführung eines Computervirus in die Computerausrüstung des Kunden, der sich auf die ordnungsgemäße Funktion der Softwareprodukte auswirkt;",
+                    "paraD": "d) Migration der Softwareprodukte in eine andere Hardware- oder Softwareumgebung; Verlust von Geschäftschancen oder -einnahmen im Zusammenhang mit dem Betrieb oder Nichtbetrieb oder der Nutzung oder Nichtnutzung der Softwareprodukte;",
+                    "paraE": "e) illegale oder nicht autorisierte Eindringlinge von Dritten in die Computerausrüstung des Kunden.",
+                    "paraClose": "SOFERN IN DIESEM VERTRAG NICHT ANDERS VORGESEHEN, KANN DER DIENSTLEISTER (EINSCHLIESSLICH, FALLS ZUTREFFEND, SEINER TOCHTERGESELLSCHAFTEN UND MUTTERGESELLSCHAFT SOWIE SEINER AKTIONÄRE, FÜHRUNGSKRÄFTE, MANAGER, MITARBEITER, MITARBEITER UND SUBCONTRACTOR) UNTER KEINEN UMSTÄNDEN DEM KUNDEN ODER DRITTEN GEGENÜBER FÜR JEGLICHEN INDIREKTEN, ZUFÄLLIGEN, BESONDEREN, STRAFENDEN ODER EXEMPLARISCHEN SCHADEN VERANTWORTLICH GEMACHT WERDEN, EINSCHLIESSLICH, ABER NICHT BESCHRÄNKT AUF, JEDEN ENTGANGENEN GEWINN ODER ANDEREN WIRTSCHAFTLICHEN VERLUST (HERVORGERUFEN DURCH EINEN VERTRAGLICHEN FEHLER, EINEN DELIKTISCHEN FEHLER ODER FAHRLÄSSIGKEIT), AUCH WENN DER DIENSTLEISTER ÜBER DIE MÖGLICHKEIT EINES SOLCHEN SCHADENS INFORMIERT WURDE."
+                },
+                "sec15": {
+                    "title": "5.15 - Sicherheitsleistung und Ratenzahlungen",
+                    "para11": "Bei Unterzeichnung dieses Vertrags,",
+                    "para12": "muss der Kunde dem Dienstleister die im Kostenvoranschlag angegebene Sicherheitsleistung zahlen.",
+                    "para13": "Diese Sicherheitsleistung ist notwendig, um den Beginn der Arbeiten wie vereinbart zu gewährleisten.",
+                    "para4": "Darüber hinaus wird die Gesamtzahlung für die Dienstleistungen in Raten gemäß dem folgenden Zeitplan durchgeführt:",
+                    "item": "Sicherheitsleistung:",
+                    "item1": "Rate",
+                    "itemEnd": "Endsaldo:"
+                },
+                "sec16": {
+                    "title": "5.16 - Aussetzung der Dienstleistungen bei Nichtzahlung",
+                    "para11": "Wenn der Kunde ohne Recht die an den Dienstleister zu zahlenden oder zu erstattenden Beträge gemäß den in den Spezifikationen angegebenen Zahlungsbedingungen und -bedingungen nicht zahlt, trotz einer Mahnung des Dienstleisters,",
+                    "para12": "ist dieser berechtigt, die Erbringung der betreffenden Dienstleistungen auszusetzen,",
+                    "para13": "ohne weitere Mitteilung oder Frist, vorbehaltlich jedes anderen Rechts, das der Dienstleister gemäß diesem Vertrag haben kann."
+                },
+                "sec17": {
+                    "title": "5.17 - Kündigung des Vertrags (durch den Kunden)",
+                    "para1": "Der Kunde kann diesen Vertrag jederzeit durch an den Dienstleister gesendete Mitteilung kündigen. Der Kunde bleibt jedoch verantwortlich für:",
+                    "paraA": "a) die Zahlung des Preises für die erbrachten Dienstleistungen;",
+                    "paraB": "b) die Zahlung des Preises für die erbrachten zusätzlichen Dienstleistungen; und",
+                    "paraC": "c) die Erstattung der entstandenen Ausgaben;",
+                    "para2": "ohne jegliche Reduzierung oder Ermäßigung.",
+                    "paraClose": "Im Falle einer vorzeitigen Kündigung ist der Kunde verpflichtet, die bis zum Kündigungsdatum erbrachten Dienstleistungen sowie eine zusätzliche Entschädigung in Höhe von 20 % des Restvertrags zu zahlen, sofern kein höherer Schaden nachgewiesen wird."
+                },
+                "sec18": {
+                    "title": "5.18 - Kündigung des Vertrags (durch den Dienstleister)",
+                    "para1": "1) Wenn der Kunde eine oder mehrere seiner Verpflichtungen gemäß diesem Vertrag nicht erfüllt,",
+                    "para2": "2) wenn der Kunde seine Geschäfte auf irgendeine Weise einstellt, einschließlich aufgrund von Insolvenz, Liquidation oder Übertragung seiner Vermögenswerte, oder",
+                    "para3": "wenn der Kunde ihm falsche oder irreführende Informationen gegeben oder falsche Darstellungen gemacht hat,",
+                    "paraClose": "kann der Dienstleister diesen Vertrag durch Zusendung einer schriftlichen Kündigungsmitteilung, in der der Kündigungsgrund angegeben ist, kündigen. Wenn es sich um einen in Absatz 1 genannten Kündigungsgrund handelt, muss der Kunde den in der Mitteilung genannten Mangel innerhalb der darin festgelegten Frist beheben, andernfalls wird der Vertrag automatisch gekündigt. Der Dienstleister ist dann nur verpflichtet, dem Kunden jeden Vorschuss (oder jeden Restbetrag davon) oder jeden überschüssigen Betrag zu erstatten, vorbehaltlich aller seiner Rechte und Rechtsbehelfe gegen den Kunden."
+                },
+                "sec19": {
+                    "title": "5.19 - Urheberrechte und geistiges Eigentum",
+                    "para1": "1) Alle Inhalte (Texte, Bilder, Videos, Logos usw.), die vom Kunden bereitgestellt werden, bleiben dessen ausschließliches Eigentum.",
+                    "para2": "2) Der Dienstleister darf diese Inhalte in keinem Fall für seine eigenen Bedürfnisse oder die anderer Kunden ohne schriftliche Genehmigung des Kunden verwenden oder reproduzieren.",
+                    "para3": "3) Bei Lieferung der Website wird der Kunde der alleinige Eigentümer des Designs, des Quellcodes und der Inhalte der Website sein, mit Ausnahme der Elemente, die Dritten gehören (Plugins, Software usw.), deren Rechte spezifiziert werden.",
+                    "para4": "4) Der Dienstleister kann eine Kopie der Website auf einem sicheren Server (Versionskontrolle GIT z.B.: GitHub, GitLab) ausschließlich für zukünftige Bedürfnisse der Modifikation der Website nach der Lieferung behalten. Der Dienstleister erkennt an, dass diese Kopie das Eigentum des Kunden bleibt und die darin enthaltenen Inhalte ohne dessen Zustimmung verwendet oder reproduziert werden können."
+                },
+                "sec20": {
+                    "title": "5.20 - Korrektur – Fehler nach Lieferung",
+                    "para11": "Der Dienstleister verpflichtet sich, jeden",
+                    "para12": "blockierenden oder kritischen technischen Fehler",
+                    "para13": "der innerhalb von",
+                    "para14": "7 Werktagen nach der endgültigen Lieferung",
+                    "para15": "des Projekts erkannt wird, kostenlos zu korrigieren, vorausgesetzt, dass:",
+                    "para2A": "Der Fehler schriftlich über support@rodcoding.com gemeldet wird.",
+                    "para2B": "Der Fehler direkt mit dem Umfang des gelieferten Projekts zusammenhängt, wie im Lastenheft oder den vereinbarten Spezifikationen definiert.",
+                    "para3": "Korrekturen werden in einem angemessenen Zeitrahmen durchgeführt, der proportional zur Schwere des Problems ist.",
+                    "paraBold": "Von dieser Garantie ausgeschlossen sind:",
+                    "para3A": "Jede Änderung des Codes oder der Umgebung durch den Kunden oder einen Dritten nach der Lieferung.",
+                    "para3B": "Fehler aufgrund externer Dienste oder Tools (Hosting-Anbieter, Plugins von Dritten, APIs von Dritten usw.).",
+                    "para3C": "Anfragen zur Weiterentwicklung, Hinzufügung von Funktionen oder Neugestaltung.",
+                    "para4": "Wartung über die Garantiezeit hinaus",
+                    "para51": "Nach Ablauf der oben genannten Garantiefrist wird jede Korrekturanfrage Gegenstand eines",
+                    "para52": "Angebots oder eines Stundensatzes",
+                    "para53": "gemäß der gültigen Preisliste sein, es sei denn, es wurde ein Wartungsvertrag abgeschlossen."
+                }
+            },
+            "6": {
+                "title": "6 - ALLGEMEINE BESTIMMUNGEN",
+                "para": "Sofern in diesem Vertrag nicht ausdrücklich etwas anderes bestimmt ist, gelten die folgenden Bestimmungen.",
+                "sec1": {
+                    "title": "6.1 - Höhere Gewalt",
+                    "para": "Keine der Parteien kann als in Verzug befindlich angesehen werden, wenn die Erfüllung ihrer Verpflichtungen ganz oder teilweise durch höhere Gewalt verzögert oder verhindert wird. Höhere Gewalt ist ein äußeres, unvorhersehbares, unabwendbares Ereignis, das die Erfüllung einer Verpflichtung absolut unmöglich macht."
+                },
+                "sec2": {
+                    "title": "6.2 - Selbstständigkeit der Bestimmungen",
+                    "para11": "Die mögliche Illegalität oder Nichtigkeit eines Artikels, eines Absatzes oder einer Bestimmung (oder eines Teils eines Artikels, eines Absatzes oder einer Bestimmung)",
+                    "para12": "kann in keiner Weise die Legalität der anderen Artikel, Absätze oder Bestimmungen dieses Vertrags beeinträchtigen,",
+                    "para13": "noch den Rest dieses Artikels, dieses Absatzes oder dieser Bestimmung, es sei denn, es gibt eine offensichtlich gegenteilige Absicht im Text."
+                },
+                "sec3": {
+                    "title": "6.3 - Titel",
+                    "para": "Die in diesem Vertrag verwendeten Titel dienen nur zu Referenz- und Bequemlichkeitszwecken. Sie beeinflussen in keiner Weise die Bedeutung oder den Umfang der Bestimmungen, auf die sie sich beziehen."
+                },
+                "sec4": {
+                    "title": "6.4 - Anhänge",
+                    "para": "Die Anhänge dieses Vertrags, wenn sie mit diesem Vertrag übermittelt werden, auch auf digitalem Wege, sind integraler Bestandteil desselben."
+                },
+                "sec5": {
+                    "title": "6.5 - Kein Verzicht",
+                    "para": "Die Untätigkeit, Nachlässigkeit oder Verzögerung einer Partei bei der Ausübung eines Rechts oder eines Rechtsbehelfs gemäß diesem Vertrag darf in keinem Fall als Verzicht auf dieses Recht oder diesen Rechtsbehelf ausgelegt werden."
+                },
+                "sec6": {
+                    "title": "6.6 - Kumulative und nicht alternative Rechte",
+                    "para": "Alle in diesem Vertrag genannten Rechte sind kumulativ und nicht alternativ. Der Verzicht auf die Ausübung eines Rechts darf nicht als Verzicht auf ein anderes Recht ausgelegt werden."
+                },
+                "sec7": {
+                    "title": "6.7 - Vollständigkeit der Vereinbarung",
+                    "para": "Dieser Vertrag stellt die gesamte und vollständige Vereinbarung zwischen den Parteien dar. Keine Erklärung, Zusicherung, Zusage oder Bedingung, die nicht in diesem Vertrag enthalten ist, darf in irgendeiner Weise verwendet werden, um die Bestimmungen desselben zu widerlegen, zu ändern oder zu beeinflussen."
+                },
+                "sec8": {
+                    "title": "6.8 - Änderung des Vertrags",
+                    "para": "Dieser Vertrag kann nur durch eine weitere schriftliche Vereinbarung geändert werden, die von allen Parteien ordnungsgemäß unterzeichnet ist."
+                },
+                "sec9": {
+                    "title": "6.9 - Geschlecht und Anzahl",
+                    "para": "Alle in diesem Vertrag verwendeten Wörter und Begriffe sind so auszulegen, dass sie das männliche und weibliche Geschlecht sowie das Singular und Plural umfassen, je nach Kontext oder Bedeutung dieses Vertrags."
+                },
+                "sec10": {
+                    "title": "6.10 - Unübertragbarkeit",
+                    "para": "Keine Partei darf ganz oder teilweise ihre Rechte aus diesem Vertrag ohne vorherige schriftliche Zustimmung der anderen Partei an einen Dritten abtreten oder anderweitig übertragen."
+                },
+                "sec11": {
+                    "title": "6.11 - Anzuwendendes Recht",
+                    "para": "Dieser Vertrag unterliegt den Gesetzen des Staates New Mexico (New Mexico) und ist gemäß diesen auszulegen, ohne Berücksichtigung der Grundsätze des internationalen Privatrechts. Jeder Streit in Bezug auf die Auslegung, Durchführung oder Gültigkeit dieses Vertrags unterliegt der ausschließlichen Zuständigkeit der staatlichen oder bundesstaatlichen Gerichte in Albuquerque, New Mexico, USA."
+                },
+                "sec12": {
+                    "title": "6.12 - Ausfertigungen",
+                    "para": "Wenn dieser Vertrag von allen Parteien unterzeichnet ist, gilt jede Ausfertigung als Original, aber diese Ausfertigungen spiegeln insgesamt nur eine einzige Vereinbarung wider."
+                },
+                "sec13": {
+                    "title": "6.13 - Geltungsbereich des Vertrags",
+                    "para": "Dieser Vertrag bindet die Parteien sowie deren jeweilige Rechtsnachfolger, Erben und Rechtsvertreter."
+                },
+                "sec14": {
+                    "title": "6.14 - Solidarität",
+                    "para": "Wenn eine der Parteien aus zwei oder mehr Personen besteht, sind diese gemeinsam und gesamtschuldnerisch der anderen Partei gegenüber verpflichtet und verantwortlich."
+                },
+                "sec15": {
+                    "title": "6.15 - Streitbeilegung",
+                    "para": "Wenn während der Ausführung dieses Vertrags oder über seine Auslegung ein Streit entsteht, verpflichten sich die Parteien, vor der Ausübung eines Rechtsbehelfs eine gütliche Lösung des Streits zu suchen und, falls erforderlich, einen Dritten nach den zu vereinbarenden Modalitäten hinzuzuziehen, um bei der Beilegung zu helfen. Wenn die Uneinigkeit anhält, kann der Streit einem Schiedsverfahren gemäß den Regeln der American Arbitration Association (AAA) unterworfen werden, wenn beide Parteien zustimmen. Der Ort des Schiedsverfahrens wird Albuquerque, New Mexico, USA sein."
+                }
+            },
+            "7": {
+                "title": "7 - INKRAFTTRETEN DES VERTRAGS",
+                "para": "Dieser Vertrag tritt mit der Unterzeichnung dieses Vertrags in Kraft."
+            },
+            "8": {
+                "title": "8 - ENDE DES VERTRAGS",
+                "para": "Dieser Vertrag endet in einem der folgenden Fälle:",
+                "paraA": "a) wenn alle Verpflichtungen der Parteien erfüllt sind;",
+                "paraB": "b) wenn das Projekt vom Kunden abgenommen wird;",
+                "paraC": "c) wenn der Kunde das Vertragsende-Dokument unterzeichnet;",
+                "paraD": "d) im Falle einer im Vertrag vorgesehenen Kündigung;",
+                "paraE": "e) wenn eine der Parteien es versäumt, eine oder mehrere ihrer Verpflichtungen innerhalb einer Frist von {day} Tagen nach Erhalt einer Aufforderung zur Behebung des Verstoßes oder innerhalb einer anderen kürzeren Frist, die in diesem Vertrag vorgesehen ist, zu erfüllen, und wenn die säumige Partei innerhalb dieser Frist untätig bleibt;",
+                "paraF": "f) im Falle von Insolvenz, Zahlungsunfähigkeit oder Einstellung der Geschäftstätigkeit einer der Parteien.",
+                "paraClose": "Das Ende dieses Vertrags hat jedoch nicht zur Folge, dass eine Partei ein Recht verliert oder von einer Verpflichtung befreit wird, insbesondere in Bezug auf Vertraulichkeit, geistiges Eigentum, Gewährleistungsbeschränkung und Haftungsbeschränkung. Diese Rechte und Pflichten überdauern das Ende dieses Vertrags."
+            },
+            "9": {
+                "title": "9 - ANERKENNUNG DER PARTEIEN",
+                "para": "DIE PARTEIEN ERKENNEN AN, DASS:",
+                "paraA": "A) DIESER VERTRAG GEGENSTAND VORHERIGER VERHANDLUNGEN ZWISCHEN IHNEN WAR;",
+                "paraB": "B) DIESE VERTRAG WAHRHEITSGETREU UND VOLLSTÄNDIG DIE ZWISCHEN IHNEN GETROFFENE VEREINBARUNG WIEDERGIBT;",
+                "paraC": "C) ALLE KLAUSELN DIESES VERTRAGS LESBAR UND VERSTÄNDLICH SIND;"
+            },
+            "10": {
+                "title": "10 - UNTERSCHRIFTEN",
+                "sclient": "Unterschrift des Kunden",
+                "sprestataire": "Unterschrift des Dienstleisters",
+                "do": "Geschehen in {city}, am "
+            }
+        }
+    },
+    "invoice": {
+        "Adress": "Adresse:",
+        "postalCode": "Postleitzahl:",
+        "city": "Stadt:",
+        "country": "Land:",
+        "wsite": "Internetreferenz:",
+        "billNr": "RECHNUNG NR.:",
+        "identificationNumber": "Steueridentifikationsnummer (EIN)",
+        "billDate": "Datum:",
+        "customerNr": "Kundennummer:",
+        "dueDate": "Fälligkeitsdatum:",
+        "billTo": "Rechnung an:",
+        "prestation": "Leistungen",
+        "features": {
+            "description": "Beschreibung",
+            "quantity": "Menge",
+            "singlePriceWithoutTax": "Einzelpreis ohne Steuern",
+            "totalPriceWithoutTax": "Gesamtpreis ohne Steuern"
+        },
+        "subtotal": "Zwischensumme ohne Steuern:",
+        "tax": "MwSt. {tax}%:",
+        "discount": "Rabatt {discount}%:",
+        "totalWithTax": "Gesamtbetrag inkl. Steuern:",
+        "end1": "Guter Empfang.",
+        "end2": "Mit freundlichen Grüßen,",
+        "footer": "Dieser Betrag wurde bereits von Ihrem Konto abgebucht, Sie müssen daher nichts weiter tun. Diese Rechnung dient als Nachweis für den erhaltenen Zahlungseingang bezüglich der erbrachten Dienstleistungen.",
+        "page": "Seite {page} von {total}"
+    },
+    "enterpriceLocation": "Firmensitz",
+    "payment":{
+        "title": "Zahlung und Fälligkeit",
+        "pagePara11": "In diesem Dokument finden Sie die Zahlungsmodalitäten für die Leistung {title}",
+        "totalPrice": "Gesamtpreis",
+        "pagePara12": "durchzuführen.",
+        "pagePara13": "Diese Zahlung wird gestaffelt, um eine Vertrauensbeziehung zwischen Ihnen (Kunde) und uns (Dienstleister) aufzubauen, da unser Hauptziel Ihre Zufriedenheit ist.",
+        "pagePara2": "Wir empfehlen Ihnen, alle Überweisungen im Rahmen dieser Leistung in der lokalen Währung vorzunehmen, um zusätzliche Gebühren bei Transaktionen zu vermeiden.",
+        "ttc": "inkl. MwSt.",
+        "beforeStart": "Anzahlung",
+        "afterDelively": "Zahlung nach Lieferung des Projekts",
+        "intermediarePaiement": "Zahlung nach {nr} Bestätigung(en).",
+        "singleEchelon": "Für diese Leistung wird es keine Staffelung geben. Der Preis der Leistung beträgt daher:",
+        "multipleEchelon": "Diese Leistung wird in mehreren Raten erfolgen.",
+        "bySigning": "bei Vertragsunterzeichnung durchzuführen.",
+        "pagePara3": "Um die Überweisung durchzuführen, klicken Sie auf den untenstehenden Link oder kopieren Sie ihn in einen Browser und folgen Sie den Anweisungen. Nach der Transaktion machen Sie ein Foto von Ihrem Konto, das die Überweisung zeigt, und senden Sie es uns, damit wir Ihre Leistung starten können. Andernfalls beginnt diese erst, wenn die Überweisung eingegangen ist, was mehrere Tage dauern kann."
+    },
+    "contractTerme": "Vertragsbedingungen",
+    "contractConfirm": "Wenn Sie den oben genannten Bedingungen zustimmen, kreuzen Sie bitte zunächst das Kästchen an, um die elektronische Unterzeichnung des Vertrags zu genehmigen, und bestätigen Sie anschließend, dass Sie die Allgemeinen Geschäftsbedingungen (AGB) gelesen und akzeptiert haben, indem Sie das zweite Kästchen ankreuzen. Danach unterschreiben Sie bitte den Vertrag unten. Wenn Sie nicht einverstanden sind, teilen Sie uns bitte die Gründe für Ihre Ablehnung mit.",
+    "confirmElectronicSignature": "Ich bestätige, dass ich die elektronische Unterzeichnung des Vertrags genehmige",
+    "updateContract": "Vertrag bearbeiten",
+    "uploadContract": "Vertrag herunterladen",
+    "signedContract": "Unterzeichneter Vertrag",
+    "pendingContract": "Unterschrift ausstehend",
+    "unsignedContract": "Nicht unterzeichneter Vertrag",
+    "unknowStatus": "Unbekannter Status",
+    "loading": "Ladevorgang...",
+    "contractPrestation": "Dienstleistungs- und Wartungsvertrag",
+    "clientInfo": "Kundeninformationen",
+    "clientName": "Vollständiger Name / Firmenname",
+    "clientType": "Kundentyp",
+    "particular": "Privatperson",
+    "company": "Unternehmen",
+    "email": "E-Mail-Adresse",
+    "errorEmail": "E-Mail-Adresse ist erforderlich",
+    "invalidEmail": "Ungültiges E-Mail-Format",
+    "tel": "Telefonnummer",
+    "errorTel": "Telefonnummer ist erforderlich",
+    "errorPaymentShedule": "Ungültige Zahlungsstruktur",
+    "websiteItem1Para": "<strong>Fieger</strong> ist ein <strong>international tätiges Unternehmen</strong>, das weltweit exportiert. Es bietet <strong>Lüftungslösungen</strong> zur <strong>optimalen Energieeffizienz</strong> an und ist auf die Entwicklung und das Design von <strong>Lamellenfenstern</strong> spezialisiert.<br><br> Diese Website wurde <strong>manuell</strong> und ohne CMS programmiert. Ziel ist es, <strong>das Unternehmensimage zu vermitteln</strong> und <strong>die Produkte zu präsentieren</strong>.",
+  
+    "websiteItem2Para": "<strong>Neue Groupe</strong> ist eine <strong>Vereinigung zahnmedizinischer Wissenschaftler</strong> mit Sitz in Deutschland. Sie organisiert regelmäßig <strong>Seminare, Konferenzen und Schulungen</strong> zu verschiedenen Themen.<br><br> Diese Website wurde mit dem CMS <strong>WordPress</strong> erstellt. Trotz CMS basiert sie auf einem professionellen und maßgeschneiderten Design.",
+    
+    "websiteItem3Para": "<strong>Avlis</strong> ist ein Ausbildungsunternehmen für <strong>angehende medizinische Sekretärinnen</strong> mit Sitz in Frankreich und den Überseegebieten. Es ist spezialisiert auf die Ausbildung von <strong>medizinisch-sozialen Assistent(inn)en, medizinisch ausgerichteten Sekretär(inn)en, medizinischen Direktionsassistent(inn)en und HR-Assistent(inn)en mit medizinischem Schwerpunkt</strong>.<br><br> Die Website ist in ein CRM-System integriert und dient der <strong>Präsentation des Unternehmens und seiner Ausbildungsangebote</strong>. Sie wurde vollständig in PHP entwickelt.",
+    
+    "websiteItem4Para": "<strong>Charlotte Consulting</strong> ist ein Unternehmen mit Sitz in Frankreich, das sich der <strong>Unterstützung von Menschen mit psychischen Störungen</strong> widmet.<br><br> Die Website dient als <strong>Blog und Präsentationsplattform für Workshops und Dienstleistungen</strong>, wurde ohne CMS entwickelt und vollständig in PHP programmiert. Das Backend simuliert ein Content-Management-System, sodass der Nutzer Inhalte wie <strong>Blog, Services und Workshops</strong> selbst verwalten kann.",
+    
+    "reworkedWebSiteItem1Para": "<strong>Graphicon</strong> ist ein Unternehmen mit Sitz in Deutschland, das auf <strong>Webentwicklung</strong> spezialisiert ist und <strong>digitale Marketing-Dienstleistungen</strong> anbietet.<br><br> Ziel der Website ist es, <strong>das Unternehmen und seine Dienstleistungen zu präsentieren</strong>. Sie wurde vollständig mit Angular entwickelt.",
+    
+    "ecommerceWebSiteItem1Para": "<strong>Chicken Grill</strong> ist ein <strong>Fast-Food-Restaurant</strong> mit Sitz in Frankreich, spezialisiert auf <strong>frittiertes Hähnchen, Burger, Pommes</strong> usw. Es bietet eigene Menüs und Lösungen an.<br><br> Die Website zeigt die verschiedenen Verkaufsstellen des Restaurants und führt Nutzer je nach Standort. Kunden können direkt online bestellen und ihre Bestellung im Restaurant abholen.",
+    
+    "ecommerceWebSiteItem2Para": "<strong>Kebab de la Gare</strong> ist ein Fast-Food-Restaurant in Frankreich, spezialisiert auf <strong>Burger, Sandwiches, Tacos</strong> usw. Es bietet Menüs an, die auf das Budget der Zielkundschaft abgestimmt sind.<br><br> Die Website berechnet automatisch die <strong>Lieferkosten</strong> je nach Standort des Kunden, der eine Lieferung wünscht.",
+    
+    "saasItem1Para": "<strong>LovSid</strong> ist eine Dating-Website für <strong>christliche Singles</strong> mit Sitz in den USA. Sie bietet Tools, um die <strong>gegenseitige Bekanntschaft</strong> zu fördern, die zur Ehe führen kann.<br><br> Die Website stellt Mitglieder aus verschiedenen Ländern vor und bietet verschiedene Kommunikationsmittel: <strong>Audio- und Textnachrichten, Bibelverse in Echtzeit</strong> usw. Nutzer können über <strong>biblische Themen diskutieren, Artikel und Veranstaltungen teilen</strong>.",
+    
+    "saasItem2Para": "<strong>Booking Sale</strong> ist eine Plattform zur <strong>Raumbuchung</strong> in Frankreich. Nutzer können <strong>Räume je nach Verfügbarkeit buchen</strong>.<br><br> Die im Rahmen einer Ausbildung erstellte Website wurde vollständig in PHP entwickelt. Sie verfügt über eine Benutzeroberfläche für Reservierungen und ein Backend zur Verwaltung der Verfügbarkeiten.",
+    
+    "saasItem3Para": "<strong>Avlis</strong> ist ein Ausbildungsunternehmen für <strong>angehende medizinische Sekretärinnen</strong> mit Sitz in Frankreich und den Überseegebieten. Es ist spezialisiert auf die Ausbildung von <strong>medizinisch-sozialen Assistent(inn)en, medizinischen Sekretär(inn)en, medizinischen Direktionsassistent(inn)en und HR-Assistent(inn)en mit medizinischem Fokus</strong>.<br><br> Die Verwaltung ist <strong>den Mitarbeitenden und Ausbildern</strong> vorbehalten, die Kurse verwalten, Hausaufgaben korrigieren, Noten veröffentlichen usw. Die Mitarbeitenden kümmern sich auch um <strong>Verträge im Rahmen der Berufsausbildung und administrative Aufgaben</strong>.",
+    
+    "saasItem4Para": "<strong>Avlis</strong> ist ein Ausbildungsunternehmen für <strong>angehende medizinische Sekretärinnen</strong> mit Sitz in Frankreich und den Überseegebieten. Es ist spezialisiert auf die Ausbildung von <strong>medizinisch-sozialen Assistent(inn)en, medizinischen Sekretär(inn)en, medizinischen Direktionsassistent(inn)en und HR-Assistent(inn)en mit medizinischem Fokus</strong>.<br><br> Der Ausbildungsbereich richtet sich an Schüler und bietet Zugang zu <strong>wichtigen Informationen über ihren Lernweg</strong>, insbesondere <strong>Hausaufgaben, Noten</strong> usw.",
+    
+    "appItem1Para": "<strong>LovSid</strong> ist eine Dating-Website für <strong>christliche Singles</strong> mit Sitz in den USA. Sie bietet Tools, um die <strong>gegenseitige Bekanntschaft</strong> zu fördern, die zur Ehe führen kann.<br><br> Die App ermöglicht einen schnellen und reibungslosen Zugriff auf die Funktionen der Website und verbessert das Nutzererlebnis durch zusätzliche Features.",
+    "contractSuccess": {
+      "title": "Vertrag erfolgreich generiert",
+      "para": "Der Vertrag für die Dienstleistung wurde erfolgreich unterzeichnet. Sie können ihn über die untenstehenden Links herunterladen. Sie erhalten zwei Exemplare des Vertrags: eine übersetzte Version in {lang} und das Original auf Englisch. Sie müssen auch das PDF zu den Zahlungsmodalitäten herunterladen, indem Sie auf 'Zahlungsmodalitäten' klicken.",
+      "para1": "Eine Kopie dieser Dokumente wurde Ihnen auch per E-Mail zugesandt.",
+      "titleDownload": "Dokumente herunterladen",
+      "signedContractTranslated": "Unterzeichneter Vertrag, übersetzte Version",
+      "signedContract": "Unterzeichneter Vertrag, Originalversion",
+      "paymentMethode": "Zahlungsmodalitäten"
+    },
+    "reset": "Zurücksetzen",
+    "contractEchec": {
+        "title": "Fehler bei der Vertragserstellung",
+        "para": "Beim Erstellen des Vertrags ist ein Fehler aufgetreten. Die Ursache des Problems ist noch unklar. Wir empfehlen, unseren Kundendienst zu kontaktieren.",
+        "supportClient": "Kundendienst kontaktieren",
+        "retry": "Erneut versuchen"
+    },
+    "adresse": {
+        "title": "Adresse",
+        "default": "---Land auswählen---",
+        "Afrique du Sud": "Südafrika",
+        "Allemagne": "Deutschland",
+        "Australie": "Australien",
+        "Autriche": "Österreich",
+        "Belgique": "Belgien",
+        "Canada": "Kanada",
+        "Cameroun": "Kamerun",
+        "Congo (Brazzaville)": "Kongo (Brazzaville)",
+        "Congo-Kinshasa": "Kongo (Kinshasa)",
+        "Côte d'Ivoire": "Elfenbeinküste",
+        "Espagne": "Spanien",
+        "États-Unis": "Vereinigte Staaten",
+        "France": "Frankreich",
+        "Gabon": "Gabun",
+        "Italie": "Italien",
+        "Nigéria": "Nigeria",
+        "Pays-Bas": "Niederlande",
+        "Royaume-Uni": "Vereinigtes Königreich",
+        "Sénégal": "Senegal",
+        "Suisse": "Schweiz",
+        "street": "Straße",
+        "city": "Stadt",
+        "codePostal": "Postleitzahl"
+    },
+    "fileRequirer": "Dieses Feld ist erforderlich",
+    "diffAdresse": "Rechnungsadresse (falls abweichend)",
+    "freelancerInfo": "Informationen zum Dienstleister",
+    "freelancerCompanyName": "Vollständiger Name / Firmenname",
+    "freelancerCompanyAdresse": "Adresse",
+    "projetInfo": "Projektdetails",
+    "projetTitle": "Projekttitel",
+    "projetDescription": "Projektbeschreibung",
+    "projetFonctionality": "Funktion hinzufügen",
+    "add": "Hinzufügen",
+    "clearListe": "Liste leeren",
+    "principalFonctionality": "Hauptfunktionen",
+    "beginContract": "Vertragsbeginn",
+    "endContract": "Voraussichtliches Vertragsende",
+    "paymentCondition": "Zahlungsinformationen",
+    "totalPrice": "Gesamtpreis",
+    "paymentSchedule": "Zahlungsplan",
+    "priceError": "Preis ist erforderlich",
+    "maintenanceService": {
+        "title": "Wartungsdienste",
+        "web": "Webseite",
+        "ecommerce": "E-Commerce",
+        "app": "Mobile App",
+        "saas": "Business-App / SaaS",
+        "maintenanceError": "Bitte geben Sie die Art der Wartung an",
+        "maintenanceApp": "Wartung für Mobile Apps",
+        "maintenanceSaaS": "Wartung für Business-App / SaaS",
+        "pricePerHour": "Stundensatz ({price})/Stunde",
+        "pricePerYear": "Jahressatz ({price})/Jahr"
+    },
+    "contractLanguage": {
+        "title": "Vertragssprache wählen",
+        "defaultLang": "---Sprache auswählen---",
+        "french": "Französisch",
+        "english": "Englisch",
+        "germany": "Deutsch",
+        "errorLang": "Bitte wählen Sie eine Sprache aus"
+    },
+    "contractType": "Vertragstyp ändern",
+    "contractStatus": "Vertragsstatus ändern",
+    "termsOfSale": "Allgemeine Verkaufsbedingungen",
+    "clientList": "Kundenliste",
+    "generedContract": "Vertrag erstellen",
+    "acceptSaleTerm": "Ankreuzen, um zu bestätigen, dass Sie die {GTS} gelesen und akzeptiert haben.",
+    "backAmountConditionText": "Ankreuzen, um unsere Rückerstattungsrichtlinie für Kunden in der EU, im Vereinigten Königreich usw. zu akzeptieren. {GTS}.",
+    "privacyPolicies": "Datenschutzerklärung",
+    "backAmountCondition": "Rückerstattungsrichtlinie",
     "legalNotices":{
         "content_0": "Diese Seite ist eine Übersetzung eines Dokuments in Französisch. Diese Übersetzung wird nur zu Informationszwecken bereitgestellt. Die endgültige Version ist die französische.",
         "content_1": "Letzte Aktualisierung: {date}",

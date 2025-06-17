@@ -23,6 +23,7 @@ const Success: React.FC<SuccessProps> = ({ locale,contractLink,paymentLink }) =>
                 <div className='mb-3'>
                     <h3 className='text-2xl mb-[1.75rem] text-center'>{t.contractSuccess.titleDownload}</h3>
                     <div className='flex justify-center items-center gap-4 flex-wrap'>
+                        <Link className='bg-green-700 text-white p-4 rounded-[.2rem] font-medium flex justify-start items-center gap-2 min-w-[14rem]' href={contractLink} target='_blank'><Icon name="bxs-file-pdf" size='1.6rem' color='white'/>{t.contractSuccess.signedContractTranslated}</Link>
                         <Link className='bg-green-700 text-white p-4 rounded-[.2rem] font-medium flex justify-start items-center gap-2 min-w-[14rem]' href={contractLink} target='_blank'><Icon name="bxs-file-pdf" size='1.6rem' color='white'/>{t.contractSuccess.signedContract}</Link>
                         <Link className='bg-green-700 text-white p-4 rounded-[.2rem] font-medium flex justify-start items-center gap-2 min-w-[14rem]' href={paymentLink} target='_blank'><Icon name="bxs-file-pdf" size='1.6rem' color='white'/>{t.contractSuccess.paymentMethode}</Link>
                     </div>

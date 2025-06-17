@@ -8,6 +8,7 @@ import mime from 'mime';
 import { Readable } from 'stream';
 
 import { GoogleAuth } from './google-auth';
+import { getIp } from './services';
 
 
 const SCOPE = process.env.NEXT_PUBLIC_GOOGLE_DRIVE_SCOPE;
@@ -112,13 +113,16 @@ async function getOrCreateFolder(name: string, parentId: string,drive:drive_v3.D
 }
 
 const updateClientWithData = async(clientServiceId:string,services:any,client:any)=>{
-    //console.log("services",services,"client",client)
   try{
+    const contractSignedDate = new Date().toISOString();
+    const clientIP = await getIp()
+    const updateService = {...services,contract:{...services.contract,contractSignedDate:contractSignedDate,clientIP:clientIP}}
     const docService = doc(firebase.db,"services",clientServiceId)
     const docClient = doc(firebase.db,"clients",client.id)
+    console.log("updateService",updateService)
     const allRequest = [
       setDoc(docClient,{ ...client }, { merge: false }),
-      setDoc(docService, { ...services }, { merge: false }),
+      setDoc(docService, { ...updateService }, { merge: false }),
     ]
     await Promise.all(allRequest)
     return true

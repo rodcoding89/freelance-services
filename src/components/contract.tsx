@@ -38,7 +38,7 @@ interface contractFormPrestataire{
     endDate:string;
     totalPrice:number;
     paymentSchedule:string;
-    maintenanceCategory:"app"|"saas"|"web"|null;
+    maintenanceCategory:"app"|"saas"|"website"|"ecommerce"|null;
 }
 
 interface contractFormClient{
@@ -61,8 +61,8 @@ interface Contract {
     clientGivingData:contractFormClient|null,
     prestataireGivingData:contractFormPrestataire|null,
     contractType: "service"|"maintenance"|"service_and_maintenance";
-    maintenanceCategory:"app"|"saas"|"web"|null;
-    mprice?:number;
+    maintenanceCategory:"app"|"saas"|"website"|"ecommerce"|null;
+    mprice:number;
     projectFonctionList:string[];
     contractLanguage:string;
     saleTermeConditionValided?:boolean;
@@ -89,8 +89,9 @@ const contractStatus = [
 const Contrat:React.FC<ContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
-    const [maintenanceCategory,setMaintenaceType] = useState<"app"|"saas"|"web"|null>(null)
+    const [maintenanceCategory,setMaintenaceType] = useState<"app"|"saas"|"website"|"ecommerce"|null>(null)
     const [loading, setLoading] = useState(true);
+    const [loader, setLoader] = useState(false);
     const {contextData} = useContext(AppContext)
     const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
     const [fonction, setFonction] = useState<string>('')
@@ -98,6 +99,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const countryTosave = useRef<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number}|null>(null)
     const [currentCountry,setCurrentCountry] = useState<string|null>(null)
     const [client, setClient] = useState<Client|null>(null)
+    const maintenaceCost = useRef<number>(0)
     const [service, setService] = useState<Services|null>(null)
     const [selectedContractType, setSelectedContractType] = useState<"service"|"maintenance"|"service_and_maintenance"|null>(null);
     const [selectedContractStatus, setSelectedContractStatus] = useState<'signed' | 'unsigned' | 'pending'|null>(null);
@@ -111,29 +113,32 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const {id,serviceId} = useParams()
     const clientId = id as string
     const clientServiceId = serviceId as string;
-    
+    const [perHourCost,setPerHourCost] = useState(0)
+    const [perYearCost,setPerYearCost] = useState(0)
     const {
-    register: registerClient,
-    handleSubmit: handleSubmitClient,
-    reset: resetClient,
-    setValue: setValueClient,
-    watch: watchClient,
-    formState: { errors: errorsClient, isValid: isValidClient }
+        register: registerClient,
+        handleSubmit: handleSubmitClient,
+        reset: resetClient,
+        setValue: setValueClient,
+        watch: watchClient,
+        formState: { errors: errorsClient, isValid: isValidClient }
     } = useForm<contractFormClient>({ mode: 'onChange' });
     const {
-    register: registerPrestataire,
-    handleSubmit: handleSubmitPrestataire,
-    reset: resetPrestataire,
-    setValue: setValuePrestataire,
-    watch: watchPrestataire,
-    formState: { errors: errorsPrestataire, isValid: isValidPrestataire }
+        register: registerPrestataire,
+        handleSubmit: handleSubmitPrestataire,
+        reset: resetPrestataire,
+        setValue: setValuePrestataire,
+        watch: watchPrestataire,
+        formState: { errors: errorsPrestataire, isValid: isValidPrestataire }
     } = useForm<contractFormPrestataire>({ mode: 'onChange' });
     const typeClient = watchClient("typeClient");
     const clientVatNumber = watchClient("clientVatNumber");
+    const typeMaintenance = watchClient("typeMaintenance");
 
     const onSubmitPrestataire = async(data:contractFormPrestataire) => {
         if(!selectedContractType || !maintenanceCategory) return
-        const contract = {prestataireGivingData:{...data},...service?.contract,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:contractLanguage,contractType:selectedContractType,clientGivingData:service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null}
+        setLoader(true)
+        const contract = {prestataireGivingData:{...data},...service?.contract,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:contractLanguage,contractType:selectedContractType,clientGivingData:service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null,mprice:0}
         const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contract}
         const clientData = {...client,modifDate:new Date().toLocaleDateString()}
         saveContractAndNavigate(clientData,parsedService)
@@ -141,15 +146,16 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
     const onSubmitClient = async(data:contractFormClient) => {
         if(!countryTosave.current || !selectedContractType || !maintenanceCategory) return
-        const client = {...data, adresse: {...data.adresse, country: countryTosave.current}}
+        setLoader(true);
+        const clientInfo = {...data, adresse: {...data.adresse, country: countryTosave.current}}
         const contract = {
             ...service?.contract,
             prestataireGivingData: service?.contract?.prestataireGivingData || null,
-            clientGivingData: client,
+            clientGivingData: clientInfo,
             contractType: selectedContractType,
-            maintenanceCategory: service?.contract?.maintenanceCategory ?? null,contractLanguage:service?.contract?.contractLanguage ?? 'en',projectFonctionList:service?.contract?.projectFonctionList ?? fonctionalityList
+            maintenanceCategory: service?.contract?.maintenanceCategory ?? null,contractLanguage:service?.contract?.contractLanguage ?? 'en',mprice:maintenaceCost.current,projectFonctionList:service?.contract?.projectFonctionList ?? fonctionalityList
         };
-        console.log("contract",contract,"data",data,"client",client)
+        
         const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contract};
         const clientData = {...client,name:data.name,modifDate:new Date().toLocaleDateString()}
         saveContractAndNavigate(clientData,parsedService)
@@ -164,6 +170,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 sessionStorage.setItem('contractData', JSON.stringify({client:clientData,service:parsedService}));
                 router.push("/"+locale+"/sign-contract/"+clientId+'/'+clientServiceId)
             } catch (error) {
+                setLoader(false)
                 console.error('Erreur lors de la mise à jour du document :', error);
             }
         }else{
@@ -203,7 +210,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     };
     
-    const chooseMaintenance = (type:"app"|"saas"|"web")=>{
+    const chooseMaintenance = (type:"app"|"saas"|"website"|"ecommerce")=>{
         setMaintenaceType((prev)=>{
             if(prev === type) return null
             return type
@@ -214,10 +221,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         if (Cookies.get('logged')) {
             return maintenanceCategory !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && contractLanguage !== '' && contractLanguage !== 'default' && isValidPrestataire
         } else {
-            return isValidClient && countryTosave.current !== null && (typeClient === 'company' ? clientVatNumber !== '' : true)
+            return isValidClient && countryTosave.current !== null && (typeClient === 'company' ? clientVatNumber !== '' : true) && (selectedContractType === 'service_and_maintenance' ? (typeMaintenance ? true : false) : true)
         }
     }
-    //console.log("checkFormValidation",checkFormValidation(),"isValidClient",isValidClient,"countryTosave",countryTosave.current,"typeClient",typeClient,"clientVatNumber",clientVatNumber)
+    
     const clearAdresse = () => {
         setValueClient('adresse.street', '');
         setValueClient('adresse.city', '');
@@ -315,6 +322,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             const contractData = sessionStorage.getItem('contractData');
             if (contractData) {
                 const parsedData = JSON.parse(contractData);
+                setClient(parsedData.client);
                 if (parsedData.service.contract) {
                     if (parsedData.service.contract.clientGivingData) {
                         resetClient(parsedData.service.contract.clientGivingData);
@@ -359,6 +367,21 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     },[contextData])
 
+    useEffect(()=>{
+        if (typeMaintenance === 'perHour') {
+            maintenaceCost.current = process.env.NEXT_PUBLIC_MAINTENACE_COST_PER_HOUR as unknown as number;
+        } else if(typeMaintenance === 'perYear') {
+            maintenaceCost.current = process.env.NEXT_PUBLIC_MAINTENACE_COST_PER_YEAR as unknown as number;
+        }
+        if (maintenanceCategory === 'website') {
+            setPerHourCost(process.env.NEXT_PUBLIC_MAINTENACE_WEBSITE_COST_PER_HOUR as unknown as number)
+            setPerYearCost(process.env.NEXT_PUBLIC_MAINTENACE_WEBSITE_COST_PER_YEAR as unknown as number)
+        } else if(maintenanceCategory === 'ecommerce') {
+            setPerHourCost(process.env.NEXT_PUBLIC_MAINTENACE_ECOMMERCE_COST_PER_HOUR as unknown as number)
+            setPerYearCost(process.env.NEXT_PUBLIC_MAINTENACE_ECOMMERCE_COST_PER_YEAR as unknown as number)
+        }
+    },[typeMaintenance,maintenanceCategory])
+
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
@@ -369,7 +392,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(service?.contractStatus ?? '')}`}><i className={`${getStatusIcon(service?.contractStatus ?? '')} mr-1`}></i>{getStatusText(service?.contractStatus ?? '')}</span>
                 </div>
 
-                <form onSubmit={handleSubmitClient(onSubmitClient)} className="space-y-6">
+                <form id="onSubmitClientForm" onSubmit={handleSubmitClient(onSubmitClient)} className="space-y-6">
                     {/* === Client Information === */}
                     <section className="border-b pb-6">
                         <h2 className="text-xl font-semibold mb-4">{t.clientGivingData}</h2>
@@ -381,7 +404,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 </label>
                                 <input
                                     {...registerClient("name", { required: t.fileRequirer })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
                                 />
                                 {errorsClient.name && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.name.message as string}</p>
@@ -391,12 +414,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <label className="block text-sm font-medium text-gray-700">{t.clientType} <em className="text-red-700">*</em></label>
                                 <div className="flex items-center justify-start gap-2 flex-wrap w-full mt-3">
                                     <div className="flex items-center gap-2">
-                                        <input type="radio" id="particular" {...registerClient("typeClient", { required: true })} value={"particular"}/>
+                                        <input type="radio" id="particular" {...registerClient("typeClient", { required: true })} value={"particular"} disabled={Cookies.get('logged') ? true : false}/>
                                         <label htmlFor="particular" className="ml-2 block text-sm font-medium text-gray-700">
                                             {t.particular}</label>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <input type="radio" id="company" {...registerClient("typeClient", { required: true })} value={"company"}/>
+                                        <input type="radio" id="company" {...registerClient("typeClient", { required: true })} value={"company"} disabled={Cookies.get('logged') ? true : false}/>
                                         <label htmlFor="company" className="ml-2 block text-sm font-medium text-gray-700">
                                             {t.company}</label>
                                     </div>
@@ -416,7 +439,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                             message: t.invalidEmail,
                                         },
                                     })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
                                 />
                                 {errorsClient.clientEmail && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.clientEmail.message as string}</p>
@@ -428,7 +451,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <input
                                     type="tel"
                                     {...registerClient("clientPhone", { required: t.errorTel })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
                                 />
                                 {errorsClient.clientPhone && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.clientPhone.message as string}</p>
@@ -441,7 +464,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             {t.adresse.title} <em className="text-red-700">*</em>
                             </label>
                             <div>
-                                <select value={currentCountry ? t.adresse[currentCountry] : t.adresse.default} id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={handleCountryChange}>
+                                <select value={currentCountry ? t.adresse[currentCountry] : t.adresse.default} id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={handleCountryChange} disabled={Cookies.get('logged') ? true : false}>
                                     <option value="default">{t.adresse.default}</option>
                                     {
                                         countries.map((item, index) => ( 
@@ -461,7 +484,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <input
                                     {...registerClient("adresse.street", { required: t.fileRequirer })}
                                     placeholder={t.adresse.street}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
                                 />
                                 {errorsClient.adresse?.street && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.street.message as string}</p>
@@ -474,7 +497,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <input
                                     {...registerClient("adresse.city", { required: t.fileRequirer })}
                                     placeholder={t.adresse.city}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
                                 />
                                 {errorsClient.adresse?.city && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.city.message as string}</p>
@@ -487,7 +510,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <input
                                     {...registerClient("adresse.postalCode", { required: t.fileRequirer })}
                                     placeholder={t.adresse.codePostal}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
                                 />
                                 {errorsClient.adresse?.postalCode && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.postalCode.message as string}</p>
@@ -504,7 +527,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 </label>
                                 <input
                                 {...registerClient("clientVatNumber")}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
                                 />
                             </div>
                         }
@@ -514,20 +537,39 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             </label>
                             <input
                             {...registerClient("clientBillingAddress")}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
                             />
                         </div>
                     </div>
-                    </section>
-                    {/* Submit Button */}
                     {
-                        !Cookies.get("logged") && (
-                            <div className="flex justify-end gap-3 flex-wrap">
-                                <button type="submit"
-                                className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}>{t.generedContract}</button>
+                        maintenanceCategory !== null && (<div>
+                            <h2 className="text-xl font-semibold mb-4">{t.maintenanceService.title + ' (' +maintenanceCategory === 'website' ? t.website : maintenanceCategory === 'ecommerce' ? t.ecommerce : maintenanceCategory === 'saas' ? t.saasTitle : t.appTitle +')'} {selectedContractType === 'service_and_maintenance' && <em className="text-red-700">*</em>}</h2>
+                            <div className="mt-4">
+                                {
+                                    maintenanceCategory === "app" ? (
+                                        <div className="flex gap-2 justify-start items-center">
+                                            <input type="checkbox" name="app" id="app" disabled={Cookies.get('logged') ? true : false}/>
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="app">{t.maintenanceService.maintenanceApp}</label>
+                                        </div>
+                                    ) : maintenanceCategory === "saas" ? (<div className="flex gap-2 justify-start items-center">
+                                        <input type="checkbox" name="saas" id="saas" disabled={Cookies.get('logged') ? true : false}/>
+                                        <label className="block text-sm font-medium text-gray-700" htmlFor="saas">{t.maintenanceService.maintenanceSaas}</label>
+                                    </div>) : (<div className="flex gap-5 justify-start items-center flex-wrap">
+                                        <div className="flex gap-2 justify-start items-center">
+                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perHour"} id="hour" disabled={Cookies.get('logged') ? true : false}/>
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="hour">{t.maintenanceService.pricePerHour.replace("{price}",perHourCost)}</label>
+                                        </div>
+                                        <div className="flex gap-2 justify-start items-center">
+                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perYear"} id="year" disabled={Cookies.get('logged') ? true : false}/>
+                                            <label className="block text-sm font-medium text-gray-700" htmlFor="year">{t.maintenanceService.pricePerYear.replace("{price}",perYearCost)}</label>
+                                        </div>
+                                        <div onClick={resetInput} className="px-2 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-[.8rem] text-center cursor-pointer">{t.reset}</div>
+                                    </div>)
+                                }
                             </div>
-                        )
+                        </div>)
                     }
+                    </section>
                 </form>
                 <form onSubmit={handleSubmitPrestataire(onSubmitPrestataire)} className="space-y-6">
 
@@ -677,45 +719,22 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         </div>
                     </section>
 
-                    <section className="border-b pb-6">
+                    {
+                        Cookies.get('logged') && (<section className="border-b pb-6">
                         <h2 className="text-xl font-semibold mb-4">{t.maintenanceService.title}</h2>
-                        {
-                            Cookies.get('logged') && (<div className="flex gap-5 justify-start items-center flex-wrap">
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'web' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('web')}>{t.maintenanceService.web}</span>
+                        <div className="flex gap-5 justify-start items-center flex-wrap">
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'website' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('website')}>{t.maintenanceService.web}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'ecommerce' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('ecommerce')}>{t.maintenanceService.ecommerce}</span>
                                 <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenanceCategory === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('app')}>{t.maintenanceService.app}</span>
                                 <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('saas')}>{t.maintenanceService.saas}</span>
-                            </div>)
-                        }
+                            </div>
+                        
                         
                         {
                             maintenanceCategory === null && (<p className="text-red-500 text-sm mt-1">{t.maintenanceService.maintenanceError}</p>)
                         }
-                        {
-                            maintenanceCategory !== null && (<div className="mt-4">
-                                {
-                                    maintenanceCategory === "app" ? (
-                                        <div className="flex gap-2 justify-start items-center">
-                                            <input type="checkbox" name="app" id="app" />
-                                            <label className="block text-sm font-medium text-gray-700" htmlFor="app">{t.maintenanceService.maintenanceApp}</label>
-                                        </div>
-                                    ) : maintenanceCategory === "saas" ? (<div className="flex gap-2 justify-start items-center">
-                                        <input type="checkbox" name="saas" id="saas" />
-                                        <label className="block text-sm font-medium text-gray-700" htmlFor="saas">{t.maintenanceService.maintenanceSaas}</label>
-                                    </div>) : (<div className="flex gap-5 justify-start items-center flex-wrap">
-                                        <div className="flex gap-2 justify-start items-center">
-                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perHour"} id="hour" />
-                                            <label className="block text-sm font-medium text-gray-700" htmlFor="hour">{t.maintenanceService.pricePerHour.replace("{price}",50)}</label>
-                                        </div>
-                                        <div className="flex gap-2 justify-start items-center">
-                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perYear"} id="year" />
-                                            <label className="block text-sm font-medium text-gray-700" htmlFor="year">{t.maintenanceService.pricePerYear.replace("{price}",500)}</label>
-                                        </div>
-                                        <div onClick={resetInput} className="px-2 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-[.8rem] text-center cursor-pointer">{t.reset}</div>
-                                    </div>)
-                                }
-                            </div>)
-                        }
-                    </section>
+                        </section>)
+                    }
                     {
                         Cookies.get('logged') && (
                             <>
@@ -766,14 +785,23 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             
                                 <button
                                     type="submit"
-                                    className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkFormValidation()}
+                                    className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkFormValidation()}
                                 >
-                                    {t.generedContract}
+                                    {loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.generedContract}
                                 </button>
                             </div>
                         )
                     }
                 </form>
+                {/* Submit Button */}
+                {
+                    !Cookies.get("logged") && (
+                        <div className="flex justify-end gap-3 flex-wrap my-4">
+                            <button form="onSubmitClientForm" type="submit"
+                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkFormValidation()}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.generedContract}</button>
+                        </div>
+                    )
+                }
             </div>
         </main>
     )

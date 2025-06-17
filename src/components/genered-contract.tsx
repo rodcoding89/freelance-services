@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import GeneratePdfContract from "./generate-pdf-contract";
 import Success from "./success";
 import Echec from "./echec";
+import Icon from "./Icon";
 
 interface Client {
     id: string;
@@ -82,6 +83,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const router = useRouter()
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const [loading, setLoading] = useState(true);
+    const [loader, setLoader] = useState(false);
     const {contextData} = useContext(AppContext)
     const [clientSignatureLink, setClientSignatureLink] = useState<string | null>(null);
     const [freelanceSignatureLink, setFreelanceSignatureLink] = useState<string | null>(null);
@@ -129,6 +131,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
 
     const uploadContract = ()=>{
         if(!contract || !clientSignatureLink || !freelanceSignatureLink || !client || !service) return
+        setLoader(true)
         setServiceData(service)
     }
     const checkContractValidation = ()=>{
@@ -137,9 +140,15 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     //console.log("totalPrice",contract?.totalPrice, contract)
     const handleContractStatus = (data: { contractLink: string; paymentLink: string; status: "success" | "error"; }): void =>{
         setContractStatus(data)
+        setLoader(false)
     }
     const handleEmit = (data: string): void =>{
         setContractStatus(null)
+        setClientSignatureLink(null)
+        setFreelanceSignatureLink(null)
+        setConfirmElectronicSignature(false)
+        setAcceptSaleTerm(false)
+        setConfirmAcceptBackAmountCondition(false)
     }
     if (!contract && loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
 
@@ -174,7 +183,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             </ul>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["3"].sec3.title}</h3>
                             <p className="text-[1rem] mb-3">{
-                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",contract.prestataireGivingData?.startDate).replace("{endDate}",contract.prestataireGivingData?.endDate) : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",contract.prestataireGivingData?.endDate) : ''
+                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",new Date(contract.prestataireGivingData?.startDate!).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)).replace("{endDate}",new Date(contract.prestataireGivingData?.endDate!).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)) : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",new Date(contract.prestataireGivingData?.endDate!).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)) : ''
                             }</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{
                                 contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance : ''
@@ -197,7 +206,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["5"].sec3.title}</h3>
                             <p className="text-[1rem] mb-3">{t.contract.sections["5"].sec3.para}</p>
                             <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraA}</p>
-                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraB1} <strong>{t.contract.sections["5"].sec3.paraB2}</strong></p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraB1}</p>
                             <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraC}</p>
                             <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraD}</p>
                             <p className="text-[1rem] mb-2">{t.contract.sections["5"].sec3.paraE}</p>
@@ -371,7 +380,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                     </section>
                     <div className="flex justify-end items-center mt-5 gap-4 flex-wrap">
                         <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center" href={`/${locale}/create-contract/${clientId}/${clientServiceId}/?edit=true`}>{t.updateContract}</a>
-                        <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md min-w-[14rem]  hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`} disabled={!checkContractValidation()} onClick={uploadContract}>{t.uploadContract}</button>
+                        <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md min-w-[14rem]  hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkContractValidation()} onClick={uploadContract}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.uploadContract}</button>
                     </div>
                     </>
             ) : (
