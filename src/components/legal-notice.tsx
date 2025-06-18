@@ -69,7 +69,7 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
             <h1 className="text-center text-thirty uppercase">{t["legalNotice"]}</h1>
             <div className="mt-8">
                 {
-                    locale !== 'fr' && <div className="my-3">
+                    locale !== 'en' && <div className="my-3">
                     <p className="my-3 p-2 px-4 bg-blue-500 text-white rounded-300" dangerouslySetInnerHTML={{ __html: replaceContent(t.legalNotices.content_0, '', '') }}></p>
                 </div>
                 }

@@ -23,6 +23,7 @@ interface Contrat{
     subject:string;
     base64Contrat:string;
     base64Payement:string;
+    base64NotEnContract:string|null;
 }
 
 
@@ -130,8 +131,8 @@ const sendContract = async(data:Contrat,locale:string)=>{
             "You are receiving this email because you have just signed a contract with the company <strong>ROD TECH SOLUTIONS</strong> for an IT service or maintenance <strong>(Web Development)</strong>. We warmly thank you for this."}
             </p>
             <p>
-            ${locale === 'fr' ? "Vous trouverez en pièce jointe votre contrat signé par les deux parties et un document contenant les instructions de paiement." :
-            locale === 'de' ? "Im Anhang finden Sie Ihren von beiden Parteien unterzeichneten Vertrag und ein Dokument mit den Zahlungsanweisungen." :
+            ${locale === 'fr' ? "Vous trouverez en pièce jointe votre contrat signé (version traduite et version originale) par les deux parties et un document contenant les instructions de paiement." :
+            locale === 'de' ? "Im Anhang finden Sie Ihren von beiden Parteien unterzeichneten Vertrag (übersetzte Version und Originalversion) sowie ein Dokument mit Zahlungsanweisungen." :
             "You will find attached your contract signed by both parties and a document containing the payment instructions."}
             </p>
             <p>
@@ -146,7 +147,7 @@ const sendContract = async(data:Contrat,locale:string)=>{
             </p>
         </div></body>`
         const attachementContrat = {
-            filename: "contrat_"+data.name+".pdf",
+            filename: locale !== 'en' ? "translated-contrat_"+data.name+".pdf":"original_contrat_"+data.name+".pdf",
             content: data.base64Contrat, // truncated
             encoding: "base64",
         }
@@ -155,11 +156,16 @@ const sendContract = async(data:Contrat,locale:string)=>{
             content: data.base64Payement, // truncated
             encoding: "base64",
         }
+        const attachementNotEnContract = data.base64NotEnContract ? {
+            filename: "original_contrat_"+data.name+".pdf",
+            content: data.base64NotEnContract, // truncated
+            encoding: "base64",
+        } : null
         const mailOptions = {
             from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.FREELANCE_EMAIL ?? ''},
             to: data.to,
             subject: data.subject,
-            attachments:[attachementContrat,attachementPayment],
+            attachments: attachementNotEnContract ? [attachementContrat,attachementPayment,attachementNotEnContract] : [attachementContrat,attachementPayment],
             html : htmlSquelette(body,data.subject,locale)
         };
         const response = await transporter.sendMail(mailOptions);

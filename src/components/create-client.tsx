@@ -1,5 +1,5 @@
 "use client"
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslationContext } from '@/hooks/app-hook';
 import { AppContext } from '@/app/context/app-context';
@@ -8,6 +8,7 @@ import { collection, addDoc, getDocs,query, orderBy, limit } from "firebase/fire
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
+import Icon from './Icon';
 
 interface CreateClientProps {
     locale:string
@@ -16,10 +17,11 @@ interface CreateClientProps {
 interface Client {
     id?: string;
     name:string;
-    email?:string;
-    modifDate: string;
+    email:string;
+    modifDate:string;
     clientNumber:number;
     invoiceCount?:number;
+    clientLang:string;
 }
 
 interface Services {
@@ -35,12 +37,14 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
     const [lastClient,setLastClient] = useState<Client|null>(null)
+    const [loader, setLoader] = useState(false);
+    
     const router = useRouter();
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm();
+    } = useForm({ mode: 'onChange'});
 
     const addService = async(id:string,serviceName:string,serviceType:"service"|"maintenance"|"service_and_maintenance") =>{
         try {
@@ -67,18 +71,26 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     }
 
     const onSubmit = async(data: any) => {
-        const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000}
-        console.log('Client Data:', data);
+        console.log("data",data)
+        if(!data) return
+        setLoader(true);
+        try {
+            const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang}
+            //console.log('Client Data:', data);
 
-        const clientId = await addClient(client);
-        
-        if (clientId) {
-            const serviceId = await addService(clientId,data.serviceType,data.serviceType)
-            if (serviceId) {
-                router.push('/'+locale+'/clients-list')
+            const clientId = await addClient(client);
+            if (clientId) {
+                const serviceId = await addService(clientId,data.serviceType,data.serviceType)
+                if (serviceId) {
+                    router.push('/'+data.clientLang+'/clients-list')
+                }
             }
+            console.log("clientId",clientId)
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        } finally {
+            setLoader(false);
         }
-        console.log("clientId",clientId)
     };
     console.log("main",contextData)
     useEffect(()=>{
@@ -134,11 +146,30 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                     <p className="text-red-500 text-sm mt-1">{errors.clientName.message as string}</p>
                 )}
                 </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">{t.email} <em className="text-red-700">*</em></label>
+                    <input
+                        type="email"
+                        id="clientEmail"
+                        placeholder="Email du client"
+                        {...register("clientEmail", {
+                            required: t.errorEmail,
+                            pattern: {
+                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+                                message: t.invalidEmail,
+                            },
+                        })}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    />
+                    {errors.clientEmail && (
+                        <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
+                    )}
+                </div>
                 <div className='my-3'>
-                    <label htmlFor="clientName" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">
                         Choisir le type de contrat
                     </label>
-                    <select id="serviceType" {...register("serviceType", { required: "This field is required" })}
+                    <select id="serviceType" {...register("serviceType", { required: "The selection is required" })}
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                         <option value="service">Service</option>
                         <option value="maintenance">Maintenance</option>
@@ -148,13 +179,27 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                         <p className="text-red-500 text-sm mt-1">{errors.serviceType?.message as string}</p>
                     )}
                 </div>
+                <section className="border-b pb-6">
+                    <label htmlFor="clientLang" className="block text-sm font-medium text-gray-700">
+                        Choisir la langue du client
+                    </label>
+                    <select id="clientLang" {...register("clientLang", { required: "The selection is required" })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                        <option value="fr">{t.contractLanguage.french}</option>
+                        <option value="en">{t.contractLanguage.english}</option>
+                        <option value="de">{t.contractLanguage.germany}</option>
+                    </select>
+                    {errors.clientLang && (
+                        <p className="text-red-500 text-sm mt-1">{errors.clientLang?.message as string}</p>
+                    )}
+                </section>
                 <div className='flex justify-start items-center gap-5'>
+                    <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/clients-list'}>Liste de clients</Link>
                     <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                        Créer le client
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center items-center gap-2">
+                        {loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>} Créer le client
                     </button>
-                    <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/clients-list'}>Liste de clients</Link>
                 </div>
             </form>
             </div>

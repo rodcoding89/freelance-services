@@ -531,23 +531,22 @@
     "budget": "What is your budget?",
     "contract":{
         "header": {
-            "para":"This agreement is a English translation of a document originally drafted in English, provided for informational purposes only to facilitate the client's understanding. However, in the event of any contradiction, discrepancy, or difficulty of interpretation between the versions, only the English version shall prevail and be legally binding between the parties.",
-            "titleService": "Service Agreement - ",
-            "titleMaintenance": "Maintenance Service Agreement - ",
-            "titleServiceMaintenance": "Service and Maintenance Agreement - ",
+            "titleService": "Service Agreement Contract - ",
+            "titleMaintenance": "Maintenance Service Contract - ",
+            "titleServiceMaintenance": "Service and Maintenance Agreement Contract - ",
             "subTitle": "Between the undersigned:",
-            "home": "residing at",
-            "designation": "hereinafter referred to as the",
+            "home": "domiciled at",
+            "designation": "hereinafter designated by the",
             "from": "Client,",
             "to": "Service Provider.",
             "and": "and",
             "parties": "(the client and the service provider hereinafter collectively referred to as 'the Parties')"
         },
-        "sections":{
+        "sections": {
             "1": {
                 "title": "1 - PREAMBLE",
                 "paraDef": "WHEREAS",
-                "para1": "the client desires to obtain various IT services from the service provider;",
+                "para1": "the client wishes to obtain various computer services from the service provider;",
                 "para2": "the parties wish to confirm their agreement in writing;",
                 "para3": "the parties have the capacity and authority to exercise all the rights required for the conclusion and execution of the agreement set forth in this contract;",
                 "para": "IN CONSEQUENCE OF THE FOREGOING, THE PARTIES AGREE AS FOLLOWS:"
@@ -556,314 +555,325 @@
                 "title": "2 - PURPOSE",
                 "sec1": {
                     "title": "2.1 - Services",
-                    "para": "The service provider undertakes to provide the client with the IT services (hereinafter referred to as 'the services') described in the specifications included in the section 'Description and Key Features of the Project', or, failing that, in the quotation."
+                    "para": "The service provider undertakes to provide the client with the computer services (hereinafter referred to as 'the services') described in the specifications included in the 'Project Description and Key Features' section, or, failing that, in the quote."
                 },
                 "sec2": {
-                    "title": "2.2 - Deadline for the provision of services",
-                    "para": "From the moment the client has provided the service provider with the necessary information and subject to any additional services requested by the client after the signing of this contract, the deadline for the provision of services by the service provider is as indicated in the specifications."
+                    "title": "2.2 - Service Delivery Time",
+                    "para": "From the moment the client has provided the service provider with the necessary information and subject to any additional service required by the client after the signing of this contract, the service delivery time by the service provider is as indicated in the specifications."
                 }
-            }
-        },
-        "3": {
-            "title": "3 - DESCRIPTION AND KEY FEATURES OF THE PROJECT",
-            "sec1": {
-                "title": "3.1 - Description"
             },
-            "sec2": {
-                "title": "3.2 - Features"
-            },
-            "sec3": {
-                "title": "3.3 - Contract Duration",
-                "paraService": "The contract begins on {startDate}, but the project starts when the first deposit is made. This means that delays in the payment of the first deposit will be taken into account for the delivery date. The contract ends on {endDate} with a one-week margin, and this is under the condition that the first deposit is paid on the same day as the contract signing. This can be confirmed by proof of transfer; there is no need to receive the money before starting the project.",
-                "paraMaintenance": "This contract takes effect on the day it is signed by both parties. The contract will then be concluded for a fixed term of 12 months. Upon expiration of the initial period, the contract will be automatically renewed for successive periods of 12 months, unless one of the parties notifies the other in writing of its intention not to renew the contract at least 30 days before the expiration date of the current period. Each party may terminate the contract before its term in the event of a serious breach by the other party of its contractual obligations, subject to a written notice of 30 days and the possibility for the defaulting party to remedy the breach within this period.",
-                "paraServiceMaintenance": "The contract begins upon the signing by both parties, but the project starts when the first deposit is made. This means that delays in the payment of the first deposit will be taken into account for the delivery date. The contract ends on {endDate} with a one-week margin, and this is under the condition that the first deposit is paid on the same day as the contract signing. This can be confirmed by proof of transfer; there is no need to receive the money before starting. The maintenance service contract takes effect at the end of the service contract. The contract will then be concluded for a fixed term of 12 months. Upon expiration of the initial period, the contract will be automatically renewed for successive periods of 12 months, unless one of the parties notifies the other in writing of its intention not to renew the contract at least 30 days before the expiration date of the current period. Each party may terminate the contract before its term in the event of a serious breach by the other party of its contractual obligations, subject to a written notice of 30 days and the possibility for the defaulting party to remedy the breach within this period."
-            },
-            "sec4": {
-                "titleService": "3.4 - Price",
-                "titleMaintenance": "3.4 - Price",
-                "titleServiceMaintenance": "3.4 - Price",
-                "paraService": "The price for the service is {price} € including VAT, as agreed in the quote. The payment terms are found in the appendix of this contract.",
-                "paraMaintenance": {
-                    "peerHour": "The hourly rate for the maintenance service is {mprice} € including VAT, as agreed in the quote. The hours worked will be recorded in a monthly report and billed at the end of each month. The payment terms are found in the appendix of this contract.",
-                    "peerYear": "The annual fee for the maintenance service is {mprice} € including VAT, as agreed in the quote. The payment will be made in one installment at the beginning of each contractual period. The payment terms are found in the appendix of this contract."
+            "3": {
+                "title": "3 - PROJECT DESCRIPTION AND KEY FEATURES",
+                "sec1": {
+                    "title": "3.1 - Description"
                 },
-                "paraServiceMaintenance": {
-                    "para": "The price for the service is {price} €, as agreed in the quote. For the maintenance service,",
-                    "para1": "The payment terms are found in the appendix of this contract.",
-                    "peerHour": "the hourly rate is {mprice} €. The hours worked will be recorded in a monthly report and billed at the end of each month.",
-                    "peerYear": "the annual fee is {mprice} €. The payment will be made in one installment at the beginning of each contractual period."
+                "sec2": {
+                    "title": "3.2 - Features"
+                },
+                "sec3": {
+                    "title": "3.3 - Contract Duration",
+                    "paraService": "The contract begins on {startDate}, but the project starts when the first deposit is made. This means that delays in the payment of the first deposit will be taken into account on the delivery date. The contract ends on {endDate} with a one-week margin, and this is under the conditions where the first deposit is paid on the same day as the signing of the contract. This can be confirmed by proof of transfer, there is no need to receive the money before starting the project.",
+                    "paraMaintenance": "This contract takes effect on the day it is signed by both parties. The contract will then be concluded for a fixed term of 12 months. At the end of the initial period, the contract will be automatically renewed for successive periods of 12 months, unless one of the parties notifies the other of its intention not to renew the contract in writing, at least 30 days before the expiration date of the current period. Each party may terminate the contract before its term in the event of a serious breach by the other party of its contractual obligations, subject to a written notice of 30 days and the possibility for the defaulting party to remedy the breach within this period.",
+                    "paraServiceMaintenance": "The contract begins upon the signing of both parties, but the project starts when the first deposit is made. This means that delays in the payment of the first deposit will be taken into account on the delivery date. The contract ends on {endDate} with a one-week margin, and this is under the conditions where the first deposit is paid on the same day as the signing of the contract. This can be confirmed by proof of transfer, there is no need to receive the money before starting. The maintenance service contract takes effect at the end of the service contract. The contract will then be concluded for a fixed term of 12 months. At the end of the initial period, the contract will be automatically renewed for successive periods of 12 months, unless one of the parties notifies the other of its intention not to renew the contract in writing, at least 30 days before the expiration date of the current period. Each party may terminate the contract before its term in the event of a serious breach by the other party of its contractual obligations, subject to a written notice of 30 days and the possibility for the defaulting party to remedy the breach within this period."
+                },
+                "sec4": {
+                    "titleService": "3.4 - Price",
+                    "titleMaintenance": "3.4 - Price",
+                    "titleServiceMaintenance": "3.4 - Price",
+                    "paraService": "The price for the service provision is {price} € including VAT, as agreed in the quote. The payment terms are found in the appendix of this contract.",
+                    "paraMaintenance": {
+                        "peerHour": "The hourly rate for the maintenance service is {mprice} € including VAT, as agreed in the quote. The hours worked will be recorded in a monthly report and billed at the end of each month. The payment terms are found in the appendix of this contract.",
+                        "peerYear": "The annual fee for the maintenance service is {mprice} € including VAT, as agreed in the quote. The payment will be made in one installment at the beginning of each contractual period. The payment terms are found in the appendix of this contract."
+                    },
+                    "paraServiceMaintenance": {
+                        "para": "The price for the service provision is {price} €, as agreed in the quote. For the maintenance service,",
+                        "para1": "The payment terms are found in the appendix of this contract.",
+                        "peerHour": "the hourly rate is {mprice} €. The hours worked will be recorded in a monthly report and billed at the end of each month.",
+                        "peerYear": "the annual fee is {mprice} €. The payment will be made in one installment at the beginning of each contractual period."
+                    }
                 }
             },
             "4": {
                 "title": "4 - FINANCIAL CONSIDERATIONS",
                 "sec1": {
                     "title": "4.1 - Service Pricing",
-                    "para": "In return for the services provided, the client agrees to pay the provider the agreed amount, in accordance with the specifications, including all applicable taxes and fees."
+                    "para": "In return for the services provided, the client undertakes to pay the service provider the agreed amount, in accordance with the specifications, including all applicable taxes and fees."
                 },
                 "sec2": {
                     "title": "4.2 - Payment Terms",
-                    "para": "Payment of the amounts due by the client to the provider must be made according to the terms and deadlines specified in the specifications.",
-                    "paraClose": "(Details and coordinates for payment are specified in the appendix to this contract.)"
+                    "para": "The payment of the amounts due by the client to the service provider must be made according to the terms and deadlines specified in the specifications.",
+                    "paraClose": "(The details and coordinates for payment are specified in the appendix of this contract.)"
                 }
-            }
-        },
-        "5": {
-            "title": "5 - SPECIAL PROVISIONS",
-            "para": "",
-            "sec1": {
-                "title": "5.1 - Representatives of the Parties",
-                "para": "Each of the parties acknowledges that the person they designate in the specifications (or any person replacing the designated person, after notice to that effect given to the other party) represents them and has full authority to perform the acts, make the decisions, and give the authorizations required in relation to the execution of this contract."
             },
-            "sec2": {
-                "title": "5.2 - Electronic Communications",
-                "para1": "The representatives of the parties may communicate with each other electronically. In such a case, the following presumptions apply:",
-                "para2": "the presence of an identification code in an electronic document is sufficient to identify the sender and to establish the authenticity of said document; an electronic document containing an identification code constitutes a document signed by the sender; an electronic document or any printed output of such a document, kept in accordance with usual business practices, is considered an original."
+            "5": {
+                "title": "5 - SPECIAL PROVISIONS",
+                "para": "",
+                "sec1": {
+                    "title": "5.1 - Representatives of the Parties",
+                    "para": "Each of the parties acknowledges that the person they designate in the specifications (or any person replacing the designated person, after notice to that effect given to the other party) represents them and has full authority to perform the acts, make the decisions, and give the authorizations required in relation to the execution of this contract."
+                },
+                "sec2": {
+                    "title": "5.2 - Electronic Communications",
+                    "para1": "The representatives of the parties may communicate with each other electronically. In such a case, the following presumptions apply:",
+                    "para2": "the presence of an identification code in an electronic document is sufficient to identify the sender and to establish the authenticity of said document; an electronic document containing an identification code constitutes a document signed by the sender; an electronic document or any printed output of such a document, kept in accordance with usual business practices, is considered an original."
+                },
+                "sec3": {
+                    "title": "5.3 - Client Obligations",
+                    "para": "The Client undertakes to transmit to the Service Provider only personal data obtained legally, and processed in compliance with the data protection laws in force in the country where this data was collected, or in the one where the concerned persons reside.",
+                    "paraA": "a) The client must provide the service provider with the information elements in the form and within the deadlines provided in the specifications;",
+                    "paraB1": "b) The information elements must comply with all applicable laws and regulations.",
+                    "paraC": "c) The provision of information elements by the client must not violate any obligation of confidentiality or non-disclosure and must allow the service provider to use them freely and without constraint in the context of the provision of services;",
+                    "paraD": "d) The client must provide the service provider, at the latter's request, with proof of its right, title, or intellectual property interest in any information element;",
+                    "paraE": "e) The client must provide the service provider with all its collaboration and provide it with all the information required to ensure the faithful and complete execution of the services to be rendered;",
+                    "paraF": "f) Unless for a serious reason, the client must give the service provider, at the latter's request, its approval of the work done at the end of each of the service provision phases indicated in the specifications;",
+                    "paraG": "g) The client is solely responsible for the content of the computer equipment and the damages that may result from their use;",
+                    "paraH1": "h) The client must take the side of the service provider if the latter is implicated or involved in a legal proceeding initiated by a third party and alleging a fault of the service provider resulting from the use of the computer equipment or the information contained therein, and",
+                    "paraH2": "indemnify the service provider for any monetary conviction in capital and interest as well as for all judicial and extrajudicial costs that the service provider may incur as a result;",
+                    "paraI": "i) The client must pay the price of the service provider's services, pay the price of any additional service it may require subsequently to the signing of this contract as well as reimburse the expenses incurred, in accordance with the payment terms and conditions provided in the specifications;",
+                    "paraJ": "j) The client must notify the service provider without delay if its representative indicated in the specifications is replaced during the execution of the contract by another person."
+                },
+                "sec4": {
+                    "title": "5.4 - Service Provider Obligations",
+                    "para": "The service provider undertakes and obliges itself to the client as follows:",
+                    "paraA": "a) The services must be rendered professionally, according to the rules generally recognized by the industry, and based on the specifications;",
+                    "paraB1": "b) The service provider must ensure that its employees, suppliers, collaborators, and subcontractors, if applicable,",
+                    "paraB2": "fully comply with the provisions of this contract, particularly regarding intellectual property and confidentiality;",
+                    "paraC": "c) The service provider must notify the client without delay if its representative indicated in the specifications is replaced during the execution of the contract by another person."
+                },
+                "sec5": {
+                    "title": "5.5 - Useful Information",
+                    "para": "The client acknowledges that the service provider has provided them, before the signing of this contract, with all useful information relating to the services it undertakes to provide. Note: Any other information necessary for the realization of the service requiring additional efforts is the responsibility of the service provider."
+                },
+                "sec6": {
+                    "title": "5.6 - Means of Execution",
+                    "para11": "Except for compliance with the specifications,",
+                    "para12": "the service provider has the free choice of the means of execution of this contract",
+                    "para13": "and there is no relationship of subordination between it and the client regarding its execution."
+                },
+                "sec7": {
+                    "title": "5.7 - Relationship Between the Parties",
+                    "para": "The parties being independent entrepreneurs, this contract binds them only for the purposes mentioned therein. Therefore, the provisions of this contract cannot in any way be interpreted as creating any association or company between the parties or as conferring any mandate from one to the other. Furthermore, neither of the parties can bind the other, in any way and to anyone, other than in accordance with the provisions of this contract."
+                },
+                "sec8": {
+                    "title": "5.8 - Subcontracting",
+                    "para11": "Unless there is a provision to the contrary in this contract and subject to having previously obtained the client's consent,",
+                    "para12": "the service provider may engage any third party to execute this contract.",
+                    "para13": "It nevertheless retains the direction and responsibility for the execution."
+                },
+                "sec9": {
+                    "title": "5.9 - Verification, Testing, and Approval Process",
+                    "para1": "Upon request made by the service provider at the end of each of the service provision phases indicated in the specifications, the client must verify, review, test, or otherwise assess the result of the services rendered up to that point by the service provider.",
+                    "para2": "Within a maximum period of {sday} days following the service provider's request, the client must approve or refuse the work done by the service provider. If the client approves the work done or omits to express its approval or refusal within said period, the work done is deemed approved and done in accordance with the specifications, and the service provider may continue its work, if applicable. If the client refuses the work done, in whole or in part, it must notify the service provider within said period and in writing of any error, omission, non-compliance with the specifications, or other reason for refusal, giving the useful indications and necessary details for a good understanding of the points criticized.",
+                    "para3": "The service provider then has a minimum period identical to the one mentioned above and a maximum period of {day} days that may vary (depending on the modifications to be made) to proceed with the correction of the criticized points and to submit again to the client the result of its work. If the service provider disagrees with the client on one or more of the points raised in the notice of refusal, it must communicate its position in writing to the client within a maximum period of {sday} days following the reception of said notice of refusal."
+                },
+                "sec10": {
+                    "title": "5.10 - Modifications Requested During the Contract",
+                    "para1": "If, during the execution of this contract and before the final approval of the services rendered by the service provider, the client requests a revision, correction, addition, substitution, or other modification to the specifications:",
+                    "paraA": "a) so that the desired result complies with the information elements originally provided by the client;",
+                    "paraB": "b) following an error or omission by the service provider; or",
+                    "paraC": "c) that does not result in additional work by the service provider;",
+                    "para21": "then said modification request is not considered a request for additional services and",
+                    "para22": "therefore does not result in any additional cost for the client. Any such modification request by the client must be made in writing.",
+                    "paraClose": "Any other modification request by the client is considered a request for additional services."
+                },
+                "sec11": {
+                    "title": "5.11 - Additional Services",
+                    "para1": "If the client requests additional services, it must do so in writing and address the service provider.",
+                    "para2": "If the service provider agrees to provide them, the client is informed in writing.",
+                    "para3": "Any additional service is therefore subject to the provisions of this contract, particularly in terms of intellectual property and confidentiality, making the necessary adaptations if applicable."
+                },
+                "sec12": {
+                    "title": "5.12 - Representations and Warranties of the Service Provider",
+                    "para": "The service provider represents and warrants to the client that:",
+                    "paraA": "a) it has the required capacity to engage under this contract, such capacity not being limited in any way by any commitment to a third party;",
+                    "paraB": "b) it has the required expertise and experience to execute and complete the obligations incumbent upon it under this contract;",
+                    "paraC": "c) it will render the services in a professional and effective manner, according to the rules generally recognized by the industry and using the most recent background technology and development tools;",
+                    "paraD": "d) it will comply with all and each of the specifications relating to the services it must render;",
+                    "paraE": "e) it will respect any right, title, or intellectual property interest belonging to any third party in any development tool it will use and in any component it will design using any such tool;",
+                    "paraF": "f) it will not use any confidential information or trade secret belonging to any third party, unless it has received authorization from the latter;",
+                    "paraG": "g) the client will have a good and valid right, title, or intellectual property interest in any content created by the service provider, in accordance with what is provided in this contract;",
+                    "paraH": "h) any such content will not violate any right, title, or intellectual property interest belonging to a third party."
+                },
+                "sec13": {
+                    "title": "5.13 - Warranty Limitation",
+                    "para": "Unless otherwise provided in this contract, the service provider gives no warranty, express or implied, to the client regarding:",
+                    "paraA": "a) the client's computer equipment, its operation, and its hardware and software components;",
+                    "paraB": "b) the financial or other, real or anticipated, positive or negative, outcomes resulting or potentially resulting from the provision of the services.",
+                    "paraClose": "THE WARRANTIES CONTAINED IN THIS CONTRACT ARE THE ONLY WARRANTIES PROVIDED IN RELATION TO THE SUBJECT MATTER OF THIS CONTRACT AND THEY CONSTITUTE A LIMITED WARRANTY."
+                },
+                "sec14": {
+                    "title": "5.14 - Liability Limitation",
+                    "para": "Except in the case of gross negligence on its part, the service provider cannot be held liable to the client for any fault and any damage, direct or indirect, that may result therefrom, and the client holds the service provider harmless from any claim, including any warranty claim, in one or the other of the following cases:",
+                    "paraA": "a) modifications made to the content by a person other than the service provider or related to the latter;",
+                    "paraB": "b) modifications or additions, hardware or software, to the client's computer equipment, affecting the proper functioning of the software products;",
+                    "paraC": "c) introduction of a computer virus into the client's computer equipment, affecting the proper functioning of the software products;",
+                    "paraD": "d) migration of the software products to a different hardware or software environment; loss of business opportunities or revenues related to the functioning or lack of functioning, or to the use or lack of use of the software products;",
+                    "paraE": "e) illegal or unauthorized intrusion by any third party into the client's computer equipment.",
+                    "paraClose": "UNLESS OTHERWISE PROVIDED IN THIS CONTRACT, IN NO EVENT SHALL THE SERVICE PROVIDER (INCLUDING, IF APPLICABLE, ITS SUBSIDIARIES AND ITS PARENT COMPANY AS WELL AS ITS SHAREHOLDERS, DIRECTORS, EXECUTIVES, EMPLOYEES, COLLABORATORS, AND SUBCONTRACTORS) BE LIABLE TO THE CLIENT OR TO THIRD PARTIES FOR ANY INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR EXEMPLARY DAMAGE, INCLUDING WITHOUT LIMITATION ANY LOSS OF PROFIT OR OTHER ECONOMIC LOSS (ARISING FROM A CONTRACTUAL FAULT, A TORTIOUS FAULT, OR NEGLIGENCE) EVEN IF THE SERVICE PROVIDER HAS BEEN ADVISED OF THE POSSIBILITY THAT SUCH DAMAGE MAY OCCUR."
+                },
+                "sec15": {
+                    "title": "5.15 - Security Deposit and Staggered Payments",
+                    "para11": "Upon signing this contract,",
+                    "para12": "the client must pay the service provider the security deposit indicated in the quote.",
+                    "para13": "This security deposit is necessary to guarantee the start of the work as agreed.",
+                    "para4": "In addition, the total payment for the services will be made in installments according to the following schedule:",
+                    "item": "Security Deposit:",
+                    "item1": "Installment",
+                    "itemEnd": "Final Balance:"
+                },
+                "sec16": {
+                    "title": "5.16 - Suspension of Services in Case of Non-Payment",
+                    "para11": "If the client wrongfully refuses to pay the service provider the amounts that are payable or reimbursable, as the case may be, under this contract in accordance with the payment terms and conditions indicated in the specifications, despite a formal notice from the service provider,",
+                    "para12": "the latter is entitled to suspend the provision of the services concerned,",
+                    "para13": "without further notice or delay, subject to any other right that the service provider may have under this contract."
+                },
+                "sec17": {
+                    "title": "5.17 - Contract Termination (by the Client)",
+                    "para1": "The client may terminate this contract at any time, upon notice sent to the service provider. However, the client remains responsible:",
+                    "paraA": "a) for the payment of the price of the services rendered;",
+                    "paraB": "b) for the payment of the price of the additional services rendered; and",
+                    "paraC": "c) for the reimbursement of the expenses incurred;",
+                    "para2": "without any reduction or discount.",
+                    "paraClose": "In the event of early termination, the Client shall be required to pay for the services provided up to the date of termination, as well as an additional indemnity corresponding to 20% of the remainder of the contract, unless there is evidence of higher damages."
+                },
+                "sec18": {
+                    "title": "5.18 - Contract Termination (by the Service Provider)",
+                    "para1": "1) If the client does not comply with one or more of its obligations under this contract,",
+                    "para2": "2) if the client ceases its operations in any way, including due to bankruptcy, liquidation, or assignment of its assets, or",
+                    "para3": "if the client has provided it with false or misleading information or made false representations,",
+                    "paraClose": "The service provider may terminate this contract by sending a written notice of termination stating the reason for termination. If it is a reason for termination provided for in paragraph 1, the client must remedy the default stated in the notice within the prescribed period, failing which the contract will be automatically terminated. The service provider is then only required to reimburse the client for any advance (or any balance thereof) or any excess amount received, subject to all its rights and recourses against the client."
+                },
+                "sec19": {
+                    "title": "5.19 - Copyright and Intellectual Property",
+                    "para1": "1) All content (texts, images, videos, logos, etc.) provided by the Client remains the exclusive property of the latter.",
+                    "para2": "2) The Service Provider may in no case use or reproduce this content for its own needs or those of other clients without written authorization from the Client.",
+                    "para3": "3) Upon delivery of the website, the Client will be the sole owner of the design, source code, and content of the site, with the exception of elements belonging to third parties (plugins, software, etc.) whose rights will be specified.",
+                    "para4": "4) The Service Provider may keep a copy of the site on a secure server (Version Control GIT EX: GitHub, GitLab) solely for future needs of modifying the website after delivery. The Service Provider acknowledges that this copy remains the property of the Client and the contents therein may be used or reproduced without the agreement of the latter."
+                },
+                "sec20": {
+                    "title": "5.20 - Corrective – Bugs after Delivery",
+                    "para11": "The service provider undertakes to correct free of charge any",
+                    "para12": "blocking or critical technical bug",
+                    "para13": "detected within",
+                    "para14": "7 working days following the final delivery",
+                    "para15": "of the project, provided that:",
+                    "para2A": "The bug is reported in writing via support@rodcoding.com.",
+                    "para2B": "The bug is directly related to the scope of the delivered project, as defined in the specifications or agreed features.",
+                    "para3": "Corrections will be made within a reasonable time, proportional to the severity of the issue.",
+                    "paraBold": "The following are excluded from this warranty:",
+                    "para3A": "Any modification of the code or environment by the client or a third party after delivery.",
+                    "para3B": "Errors due to external services or tools (hosting provider, third-party plugin, third-party API, etc.).",
+                    "para3C": "Requests for changes, additions of features, or redesigns.",
+                    "para4": "Maintenance beyond the warranty period",
+                    "para51": "After the warranty period mentioned above, any correction request will be subject to",
+                    "para52": "a quote or an hourly rate",
+                    "para53": "according to the current rate sheet, unless a maintenance contract has been subscribed."
+                }
             },
-            "sec3": {
-                "title": "5.3 - Client Obligations",
-                "para": "The Client undertakes to transmit to the Service Provider only personal data obtained legally and processed in compliance with the data protection laws in force in the country where this data was collected or in the country where the concerned individuals reside.",
-                "paraA": "a) The client must provide the service provider with the information elements in the form and within the deadlines specified in the specifications;",
-                "paraB1": "b) The information elements must comply with all applicable laws and regulations.",
-                "paraC": "c) The provision of information elements by the client must not violate any confidentiality or non-disclosure obligation and must allow the service provider to use them freely and without constraint in the context of providing the services;",
-                "paraD": "d) The client must provide the service provider, upon request, with proof of their right, title, or intellectual property interest in any information element;",
-                "paraE": "e) The client must provide the service provider with full collaboration and provide all the information required to ensure the faithful and complete execution of the services to be provided;",
-                "paraF": "f) Unless there is a serious reason, the client must give the service provider, upon request, their approval of the work carried out at the end of each of the service provision phases indicated in the specifications;",
-                "paraG": "g) The client is solely responsible for the content of the computer equipment and any damages that may result from their use;",
-                "paraH1": "h) The client must support the service provider if the latter is implicated or involved in legal proceedings initiated by a third party alleging a fault of the service provider resulting from the use of the computer equipment or the information contained therein, and",
-                "paraH2": "indemnify the service provider for any monetary judgment in capital and interest as well as all judicial and extrajudicial costs that the service provider may incur as a result;",
-                "paraI": "i) The client must pay the price for the services of the service provider, pay the price for any additional service they may require after the signing of this contract, as well as reimburse the expenses incurred, in accordance with the payment terms and conditions specified in the specifications;",
-                "paraJ": "j) The client must notify the service provider without delay if their representative indicated in the specifications is replaced during the execution of the contract by another person."
-            },
-            "sec4": {
-                "title": "5.4 - Service Provider Obligations",
-                "para": "The service provider undertakes and is obliged to the client as follows:",
-                "paraA": "a) The services must be provided professionally, according to the generally recognized rules of the industry, and in accordance with the specifications;",
-                "paraB1": "b) The service provider must ensure that its employees, suppliers, collaborators, and subcontractors, if applicable,",
-                "paraB2": "fully comply with the provisions of this contract, particularly with regard to intellectual property and confidentiality;",
-                "paraC": "c) The service provider must notify the client without delay if their representative indicated in the specifications is replaced during the execution of the contract by another person."
-            },
-            "sec5": {
-                "title": "5.5 - Useful Information",
-                "para": "The client acknowledges that the service provider has provided them, before the signing of this contract, with all useful information relating to the services they undertake to provide. Note: Any other information for the realization of the service requiring additional efforts is the responsibility of the service provider."
-            },
-            "sec6": {
-                "title": "5.6 - Means of Execution",
-                "para11": "Except for compliance with the specifications,",
-                "para12": "the service provider has the free choice of the means of execution of this contract",
-                "para13": "and there is no subordination relationship between them and the client regarding its execution."
-            },
-            "sec7": {
-                "title": "5.7 - Relationship Between the Parties",
-                "para": "The parties being independent entrepreneurs, this contract binds them only for the purposes mentioned therein. Consequently, the provisions of this contract cannot in any way be interpreted as creating any association or company between the parties or as conferring any mandate from one to the other. Furthermore, neither party can bind the other in any way and to anyone, other than in accordance with the provisions of this contract."
-            },
-            "sec8": {
-                "title": "5.8 - Subcontracting",
-                "para11": "Unless there is a provision to the contrary in this contract and subject to obtaining the prior consent of the client,",
-                "para12": "the service provider may engage any third party to execute this contract.",
-                "para13": "However, they retain the direction and responsibility for the execution."
-            },
-            "sec9": {
-                "title": "5.9 - Verification, Testing, and Approval Process",
-                "para1": "Upon request made by the service provider at the end of each of the service provision phases indicated in the specifications, the client must verify, review, test, or otherwise assess the result of the services provided up to that point by the service provider.",
-                "para2": "Within a maximum period of {sday} days following the request of the service provider, the client must approve or refuse the work carried out by the service provider. If the client approves the work carried out or fails to express their approval or refusal within said period, the work carried out is deemed approved and done in accordance with the specifications, and the service provider may continue their work, if applicable. If the client refuses the work carried out, in whole or in part, they must notify the service provider within said period and in writing of any error, omission, non-compliance with the specifications, or other reason for refusal, providing the useful indications and necessary details for a good understanding of the points criticized.",
-                "para3": "The service provider then has a minimum period identical to the one mentioned above and a maximum period of {day} days that may vary (depending on the modifications to be made) to proceed with the correction of the criticized points and to submit again to the client the result of their work. If the service provider disagrees with the client on one or more of the points raised in the refusal notice, they must communicate their position in writing to the client within a maximum period of {sday} days following the receipt of said refusal notice."
-            },
-            "sec10": {
-                "title": "5.10 - Modifications Requested During the Contract",
-                "para1": "If, during the execution of this contract and before the final approval of the services provided by the service provider, the client requests a revision, correction, addition, substitution, or other modification to the specifications:",
-                "paraA": "a) so that the desired result conforms to the information elements originally provided by the client;",
-                "paraB": "b) following an error or omission by the service provider; or",
-                "paraC": "c) which does not result in additional work for the service provider;",
-                "para21": "then said modification request is not considered a request for additional services and",
-                "para22": "therefore does not result in any additional cost for the client. Any such modification request from the client must be made in writing.",
-                "paraClose": "Any other modification request from the client is considered a request for additional services."
-            },
-            "sec11": {
-                "title": "5.11 - Additional Services",
-                "para1": "If the client requires additional services, they must do so in writing and send it to the service provider.",
-                "para2": "If the service provider agrees to provide them, the client is informed in writing.",
-                "para3": "Any additional service is therefore subject to the provisions of this contract, particularly with regard to intellectual property and confidentiality, making the necessary adaptations if necessary."
-            },
-            "sec12": {
-                "title": "5.12 - Representations and Warranties of the Service Provider",
-                "para": "The service provider represents and warrants to the client that:",
-                "paraA": "a) they have the required capacity to enter into this contract, such capacity not being limited in any way by any commitment to a third party;",
-                "paraB": "b) they have the required expertise and experience to execute and complete the obligations incumbent upon them under this contract;",
-                "paraC": "c) they will provide the services in a professional and effective manner, according to the generally recognized rules of the industry and using the most recent background technology and development tools;",
-                "paraD": "d) they will comply with all specifications relating to the services they must provide;",
-                "paraE": "e) they will respect any right, title, or intellectual property interest belonging to any third party in any development tool they will use and in any component they will design using any such tool;",
-                "paraF": "f) they will not use any confidential information or trade secret belonging to any third party, unless they have received authorization from the latter;",
-                "paraG": "g) the client will have a good and valid right, title, or intellectual property interest in any content created by the service provider, in accordance with what is provided in this contract;",
-                "paraH": "h) any such content will not violate any right, title, or intellectual property interest belonging to a third party."
-            },
-            "sec13": {
-                "title": "5.13 - Warranty Limitation",
-                "para": "Unless otherwise provided in this contract, the service provider gives no warranty, express or implied, to the client regarding:",
-                "paraA": "a) the client's computer equipment, its operation, and its hardware and software components;",
-                "paraB": "b) the financial or non-financial, real or apprehended, positive or negative outcomes resulting or potentially resulting from the provision of the services.",
-                "paraClose": "THE WARRANTIES CONTAINED IN THIS CONTRACT ARE THE ONLY WARRANTIES PROVIDED IN RELATION TO THE SUBJECT MATTER OF THIS CONTRACT AND THEY CONSTITUTE A LIMITED WARRANTY."
-            },
-            "sec14": {
-                "title": "5.14 - Liability Limitation",
-                "para": "Except in the case of gross negligence on their part, the service provider cannot be held liable to the client for any fault and any damage, direct or indirect, that may result, and the client holds the service provider harmless and indemnified from any claim, including any warranty claim, in one or the other of the following cases:",
-                "paraA": "a) modifications made to the content by a person other than the service provider or related to the latter;",
-                "paraB": "b) modifications or additions, hardware or software, to the client's computer equipment, affecting the proper functioning of the software products;",
-                "paraC": "c) introduction of a computer virus into the client's computer equipment, affecting the proper functioning of the software products;",
-                "paraD": "d) migration of the software products to a different hardware or software environment; loss of business opportunities or revenues related to the operation or lack of operation, or the use or lack of use of the software products;",
-                "paraE": "e) illegal or unauthorized intrusion by any third party into the client's computer equipment.",
-                "paraClose": "UNLESS OTHERWISE PROVIDED IN THIS CONTRACT, IN NO CASE CAN THE SERVICE PROVIDER (INCLUDING, IF APPLICABLE, ITS SUBSIDIARIES AND PARENT COMPANY AS WELL AS ITS SHAREHOLDERS, DIRECTORS, EXECUTIVES, EMPLOYEES, COLLABORATORS, AND SUBCONTRACTORS) BE HELD LIABLE TO THE CLIENT OR TO THIRD PARTIES FOR ANY INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR EXEMPLARY DAMAGE, INCLUDING WITHOUT LIMITATION ANY LOSS OF PROFIT OR OTHER ECONOMIC LOSS (ARISING FROM A CONTRACTUAL FAULT, A TORTIOUS FAULT, OR NEGLIGENCE) EVEN IF THE SERVICE PROVIDER HAS BEEN WARNED OF THE POSSIBILITY THAT SUCH DAMAGE MAY OCCUR."
-            },
-            "sec15": {
-                "title": "5.15 - Security Deposit and Installment Payments",
-                "para11": "Upon signing this contract,",
-                "para12": "the client must pay the service provider the security deposit indicated in the quote.",
-                "para13": "This security deposit is necessary to guarantee the start of the work as agreed.",
-                "para4": "In addition, the total payment for the services will be made in installments according to the following schedule:",
-                "item": "Security deposit:",
-                "item1": "Installment",
-                "itemEnd": "Final balance:"
-            },
-            "sec16": {
-                "title": "5.16 - Suspension of Services in Case of Non-Payment",
-                "para11": "If the client wrongfully refuses to pay the service provider the amounts that are payable or reimbursable, as the case may be, under this contract in accordance with the payment terms and conditions indicated in the specifications, despite a formal notice from the service provider,",
-                "para12": "the latter is entitled to suspend the provision of the services concerned,",
-                "para13": "without further notice or delay, subject to any other right that the service provider may have under this contract."
-            },
-            "sec17": {
-                "title": "5.17 - Termination of the Contract (by the Client)",
-                "para1": "The client may terminate this contract at any time, upon notice sent to the service provider. However, the client remains responsible:",
-                "paraA": "a) for the payment of the price of the services provided;",
-                "paraB": "b) for the payment of the price of the additional services provided; and",
-                "paraC": "c) for the reimbursement of the expenses incurred;",
-                "para2": "without any reduction or discount.",
-                "paraClose": "In the event of early termination, the Client will be required to pay for the services provided up to the date of termination, as well as an additional indemnity corresponding to 20% of the remainder of the contract, unless proof of higher damages."
-            },
-            "sec18": {
-                "title": "5.18 - Termination of the Contract (by the Service Provider)",
-                "para1": "1) If the client does not comply with one or more of their obligations under this contract,",
-                "para2": "2) if the client ceases their operations in any way, including due to bankruptcy, liquidation, or assignment of their assets, or",
-                "para3": "if the client has provided them with false or misleading information or has made false representations,",
-                "paraClose": "The service provider may terminate this contract by sending a written notice of termination stating the reason for termination. If it is a reason for termination provided for in paragraph 1, the client must remedy the default stated in the notice within the prescribed period, failing which the contract will be automatically terminated. The service provider is then only required to reimburse the client for any advance (or any balance thereof) or any excess amount received, subject to all their rights and recourse against the client."
-            },
-            "sec19": {
-                "title": "5.19 - Copyright and Intellectual Property",
-                "para1": "1) All content (texts, images, videos, logos, etc.) provided by the Client remains their exclusive property.",
-                "para2": "2) The Provider may in no case use or reproduce this content for their own needs or those of other clients without written authorization from the Client.",
-                "para3": "3) Upon delivery of the website, the Client will be the sole owner of the design, source code, and content of the site, with the exception of elements belonging to third parties (plugins, software, etc.) whose rights will be specified.",
-                "para4": "4) The Provider may keep a copy of the site on a secure server (Version Control GIT EX: GitHub, GitLab) solely for future needs of modifying the website after delivery. The Provider acknowledges that this copy remains the property of the Client and the contents therein may be used or reproduced without their consent."
-            },
-            "sec20": {
-                "title": "5.20 - Corrective – Bugs After Delivery",
-                "para11": "The provider commits to correcting free of charge any",
-                "para12": "blocking or critical technical bug",
-                "para13": "detected within",
-                "para14": "7 working days following the final delivery",
-                "para15": "of the project, provided that:",
-                "para2A": "The bug is reported in writing via support@rodcoding.com.",
-                "para2B": "The bug is directly related to the scope of the delivered project, as defined in the specifications or agreed specifications.",
-                "para3": "Corrections will be made within a reasonable timeframe, proportional to the severity of the issue.",
-                "paraBold": "Excluded from this warranty:",
-                "para3A": "Any modification of the code or environment by the client or a third party after delivery.",
-                "para3B": "Errors due to external services or tools (hosting provider, third-party plugins, third-party APIs, etc.).",
-                "para3C": "Requests for evolution, addition of features, or redesign.",
-                "para4": "Maintenance beyond the warranty period",
-                "para51": "After the warranty period mentioned above, any correction request will be subject to a",
-                "para52": "quote or hourly rate",
-                "para53": "according to the current rate sheet, unless a maintenance contract has been subscribed."
-            }
-        },
-        "6": {
-            "title": "6 - GENERAL PROVISIONS",
-            "para": "Unless there is an express provision to the contrary in this contract, the following provisions apply.",
-            "sec1": {
-                "title": "6.1 - Force Majeure",
-                "para": "No party shall be considered in default under this contract if the performance of its obligations, in whole or in part, is delayed or prevented by reason of force majeure. Force majeure is an external, unpredictable, irresistible event that makes the performance of an obligation absolutely impossible."
-            },
-            "sec2": {
-                "title": "6.2 - Severability",
-                "para11": "The possible illegality or nullity of an article, paragraph, or provision (or part of an article, paragraph, or provision)",
-                "para12": "shall not in any way affect the legality of the other articles, paragraphs, or provisions of this contract,",
-                "para13": "nor the rest of this article, paragraph, or provision, unless there is an evident contrary intention in the text."
-            },
-            "sec3": {
-                "title": "6.3 - Headings",
-                "para": "The headings used in this contract are for reference and convenience only. They do not in any way affect the meaning or scope of the provisions they designate."
-            },
-            "sec4": {
-                "title": "6.4 - Appendices",
-                "para": "The appendices to this contract, when transmitted together with this contract, even by digital means, are an integral part thereof."
-            },
-            "sec5": {
-                "title": "6.5 - No Waiver",
-                "para": "The inertia, negligence, or delay by a party in exercising a right or remedy under this contract shall in no case be interpreted as a waiver of that right or remedy."
-            },
-            "sec6": {
-                "title": "6.6 - Cumulative and Non-Alternative Rights",
-                "para": "All rights mentioned in this contract are cumulative and not alternative. The waiver of the exercise of a right must not be interpreted as a waiver of any other right."
-            },
-            "sec7": {
-                "title": "6.7 - Entire Agreement",
-                "para": "This contract represents the entire and complete agreement between the parties. No statement, representation, promise, or condition not contained in this contract may or shall be admitted to contradict, modify, or affect in any way the terms thereof."
-            },
-            "sec8": {
-                "title": "6.8 - Amendment of the Contract",
-                "para": "This contract can only be amended by another written document, duly signed by all parties."
-            },
-            "sec9": {
-                "title": "6.9 - Gender and Number",
-                "para": "All words and terms used in this contract shall be interpreted as including the masculine and feminine, as well as the singular and plural, according to the context or meaning of this contract."
-            },
-            "sec10": {
-                "title": "6.10 - Non-Assignability",
-                "para": "No party may assign or otherwise transfer to a third party all or part of its rights under this contract without first obtaining the written permission of the other party to do so."
-            },
-            "sec11": {
-                "title": "6.11 - Applicable Laws",
-                "para": "This contract is governed by and interpreted in accordance with the laws of the State of New Mexico (New Mexico), without regard to the principles of conflicts of law. Any dispute relating to the interpretation, execution, or validity of this contract shall be subject to the exclusive jurisdiction of the state or federal courts located in Albuquerque, New Mexico, USA."
-            },
-            "sec12": {
-                "title": "6.12 - Copies",
-                "para": "When signed by all parties, each copy of this contract is deemed to be an original, but these copies together reflect only one and the same agreement."
-            },
-            "sec13": {
-                "title": "6.13 - Scope of the Contract",
-                "para": "This contract binds the parties, as well as their respective successors, heirs, and assigns."
-            },
-            "sec14": {
-                "title": "6.14 - Joint and Several Liability",
-                "para": "If one of the parties consists of two or more persons, they are jointly and severally liable and responsible to the other party."
-            },
-            "sec15": {
-                "title": "6.15 - Dispute Resolution",
-                "para": "If a dispute arises during the execution of this contract or regarding its interpretation, the parties agree, before exercising any remedy, to seek an amicable solution to this dispute and, if necessary, to call upon a third party, according to the modalities to be agreed upon, to assist in this resolution. If the disagreement persists, the dispute may be submitted to arbitration according to the rules of the American Arbitration Association (AAA), if both parties consent. The place of arbitration shall be Albuquerque, New Mexico, USA."
+            "6": {
+                "title": "6 - GENERAL PROVISIONS",
+                "para": "Unless there is an express provision to the contrary in this contract, the following provisions apply.",
+                "sec1": {
+                    "title": "6.1 - Force Majeure",
+                    "para": "Neither of the parties can be considered in default under this contract if the performance of its obligations, in whole or in part, is delayed or prevented due to a force majeure event. Force majeure is an external, unpredictable, irresistible event that makes the performance of an obligation absolutely impossible."
+                },
+                "sec2": {
+                    "title": "6.2 - Autonomy of Provisions",
+                    "para11": "The possible illegality or nullity of an article, paragraph, or provision (or part of an article, paragraph, or provision)",
+                    "para12": "cannot in any way affect the legality of the other articles, paragraphs, or provisions of this contract,",
+                    "para13": "nor the rest of this article, paragraph, or provision, unless there is an evident contrary intention in the text."
+                },
+                "sec3": {
+                    "title": "6.3 - Titles",
+                    "para": "The titles used in this contract are for reference and convenience purposes only. They do not in any way affect the meaning or scope of the provisions they designate."
+                },
+                "sec4": {
+                    "title": "6.4 - Appendices",
+                    "para": "The appendices to this contract, when transmitted together with this contract, even electronically, are an integral part thereof."
+                },
+                "sec5": {
+                    "title": "6.5 - Absence of Waiver",
+                    "para": "The inertia, negligence, or delay by a party in exercising a right or remedy under this contract cannot in any case be interpreted as a waiver of that right or remedy."
+                },
+                "sec6": {
+                    "title": "6.6 - Cumulative and Non-Alternative Rights",
+                    "para": "All rights mentioned in this contract are cumulative and non-alternative. The waiver of the exercise of a right must not be interpreted as a waiver of any other right."
+                },
+                "sec7": {
+                    "title": "6.7 - Entirety and Integrality of the Agreement",
+                    "para": "This contract represents the entirety and integrality of the agreement between the parties. No statement, representation, promise, or condition not contained in this contract can or should be admitted to contradict, modify, or affect in any way the terms thereof."
+                },
+                "sec8": {
+                    "title": "6.8 - Contract Modification",
+                    "para": "This contract can only be modified by another written document, duly signed by all parties."
+                },
+                "sec9": {
+                    "title": "6.9 - Gender and Number",
+                    "para": "All words and terms used in this contract must be interpreted as including the masculine and feminine, as well as the singular and plural, according to the context or meaning of this contract."
+                },
+                "sec10": {
+                    "title": "6.10 - Non-Assignability",
+                    "para": "No party can assign or otherwise transfer to a third party all or part of its rights in this contract without first obtaining the written permission of the other party to do so."
+                },
+                "sec11": {
+                    "title": "6.11 - Applicable Laws",
+                    "para": "This contract is governed and interpreted in accordance with the laws of the State of New Mexico, without regard to the principles of conflict of laws. Any dispute relating to the interpretation, execution, or validity of this contract will be subject to the exclusive jurisdiction of the state or federal courts located in Albuquerque, New Mexico, United States."
+                },
+                "sec12":{
+                    "title":"6.12 - Language of the Contract",
+                    "para11": "This document constitutes the original and only version of the contract. We recommend that you retain it carefully, as it shall serve as the authoritative and legally binding version in the event of any dispute.",
+                    "para12":"",
+                    "para2":"",
+                    "para31":"This contract is written in two languages: English (original version) and {lang} (for reference purposes only). In the event of any contradiction, discrepancy or interpretative difficulty,",
+                    "para32":"only the English version shall prevail and be binding between the parties.",
+                    "para41":"The",
+                    "para42":"project title, description and key features",
+                    "para43":"may be presented in their original language (notably {lang}), in order to preserve technical accuracy. These sections are considered fully valid and binding in both versions."
+                },
+                "sec13": {
+                    "title": "6.13 - Copies",
+                    "para": "When signed by all parties, each copy of this contract is deemed to be an original, but these copies together reflect only one and the same agreement."
+                },
+                "sec14": {
+                    "title": "6.14 - Scope of the Contract",
+                    "para": "This contract binds the parties, as well as their respective successors, heirs, and assigns."
+                },
+                "sec15": {
+                    "title": "6.15 - Solidarity",
+                    "para": "If one of the parties consists of two or more persons, they are jointly and severally bound and responsible to the other party."
+                },
+                "sec16": {
+                    "title": "6.16 - Dispute Resolution",
+                    "para": "If a dispute arises during the execution of this contract or regarding its interpretation, the parties undertake, before exercising any remedy, to seek an amicable solution to this dispute and, if necessary, to call upon a third party, according to the terms to be agreed, to assist in this resolution. If the disagreement persists, the dispute may be submitted to arbitration according to the rules of the American Arbitration Association (AAA), if both parties consent. The place of arbitration will be Albuquerque, New Mexico, United States."
+                }
             },
             "7": {
                 "title": "7 - EFFECTIVE DATE OF THE CONTRACT",
-                "para": "This contract shall come into effect upon the signing of this contract."
+                "para": "This contract comes into effect upon the signing of this contract."
             },
             "8": {
-                "title": "8 - END OF CONTRACT",
-                "para": "This contract ends in any of the following cases:",
-                "paraA": "a) when all obligations of the parties have been fulfilled;",
-                "paraB": "b) when the project is accepted by the client;",
+                "title": "8 - END OF THE CONTRACT",
+                "para": "This contract ends in one or the other of the following cases:",
+                "paraA": "a) when all the parties' obligations have been fulfilled;",
+                "paraB": "b) when the project is received by the client;",
                 "paraC": "c) when the client signs the contract end document;",
                 "paraD": "d) in case of termination provided for in this contract;",
-                "paraE": "e) if one of the parties fails to comply with one or more of its obligations within a period of {day} days following receipt by the defaulting party of a notice to remedy the default or within any other shorter period provided for in this contract, and there is inaction by the defaulting party within that period;",
-                "paraF": "f) in the event of bankruptcy, insolvency, or cessation of activities of either party.",
-                "paraClose": "However, the end of this contract does not have the effect of causing a party to lose a right or be released from an obligation, particularly with regard to confidentiality, intellectual property, warranty limitation, and liability limitation. These rights and obligations survive the end of this contract."
+                "paraE": "e) if one of the parties fails to comply with one or the other of its obligations, within a period of {day} days following the receipt by the defaulting party of a notice to remedy or within any other shorter period provided for in this contract, and there is inaction by the defaulting party within said period;",
+                "paraF": "f) in case of bankruptcy, insolvency, or cessation of activities of one or the other of the parties.",
+                "paraClose": "However, the end of this contract does not have the effect of causing a party to lose a right or to be released from an obligation, particularly regarding confidentiality, intellectual property, warranty limitation, and liability limitation. Said rights and obligations survive the end of this contract."
             },
             "9": {
-                "title": "9 - RECOGNITION BY THE PARTIES",
-                "para": "THE PARTIES RECOGNIZE THAT:",
+                "title": "9 - ACKNOWLEDGMENT OF THE PARTIES",
+                "para": "THE PARTIES ACKNOWLEDGE THAT:",
                 "paraA": "A) THIS CONTRACT HAS BEEN THE SUBJECT OF PRIOR NEGOTIATIONS BETWEEN THEM;",
                 "paraB": "B) THIS CONTRACT TRULY AND COMPLETELY REFLECTS THE AGREEMENT REACHED BETWEEN THEM;",
-                "paraC": "C) ALL CLAUSES OF THIS CONTRACT ARE LEGIBLE AND UNDERSTANDABLE;"
+                "paraC": "C) ALL AND EACH OF THE CLAUSES OF THIS CONTRACT ARE READABLE AND UNDERSTANDABLE;"
             },
             "10": {
                 "title": "10 - SIGNATURES",
                 "sclient": "Client's Signature",
                 "sprestataire": "Service Provider's Signature",
-                "do": "Done in {city}, on "
+                "do": "Done in {city}, on"
             }
         }
     },
@@ -959,7 +969,7 @@
     "appItem1Para": "<strong>LovSid</strong> is a dating site for <strong>Christian singles</strong> based in the United States. It provides tools to help users <strong>get to know each other</strong> with the goal of marriage.<br><br> The app allows users to quickly and smoothly access the website’s features while enriching the user experience with additional tools.",
     "contractSuccess": {
       "title": "Contract Successfully Generated",
-      "para": "The contract for the service has been successfully signed. You can download it from the links below. You have two copies of the contract: a translated version in {lang} and the original in English. You should also download the PDF regarding the payment terms by clicking on 'Payment Terms'.",
+      "para":"The contract for the service has been successfully signed. You can download it from the link below. You should also download the PDF regarding the payment terms by clicking on 'Payment Terms'.",
       "para1": "A copy of these documents has also been sent to you by email.",
       "titleDownload": "Download Documents",
       "signedContractTranslated": "Signed Contract Translated Version",
@@ -1048,7 +1058,7 @@
     "privacyPolicies": "Privacy Policy",
     "backAmountCondition": "Refund Policy",
     "legalNotices":{
-        "content_0": "This page is a translation of a document in French. This translation is provided for information purposes only. The definitive version is the one in French.",
+        "content_0": "This page is a translation of a document in English. This translation is provided for information purposes only. The definitive version is the one in English.",
         "content_1": "Last update: {date}",
         "content_2": "1. Site Publisher",
         "content_3": "<strong>Company Name:</strong> {companyName}",
@@ -1076,7 +1086,7 @@
         "content_25": "For any questions, complaints, or requests related to the site: <br><strong>Email:</strong> {rodcodingMail}"
     },
     "privacyPoliciesContent":{
-        "content_0": "This page is a translation of a document in French. This translation is provided for information purposes only. The definitive version is the one in French.",
+        "content_0": "This page is a translation of a document in English. This translation is provided for information purposes only. The definitive version is the one in English.",
         "content_1": "Last updated: {date}",
         "content_2": "1. Introduction",
         "content_3": "Welcome to our website. We are committed to protecting your privacy. This privacy policy explains how we collect, use, and protect your personal information.",
@@ -1103,7 +1113,7 @@
         "content_24": "If you have any questions regarding this privacy policy, please contact us at: {link}"
     },
     "termSale":{
-        "content_0": "This page is a translation of a document in French. This translation is provided for information purposes only. The definitive version is the one in French.",
+        "content_0": "This page is a translation of a document in English. This translation is provided for information purposes only. The definitive version is the one in English.",
         "content_1": "Last updated: {date}",
         "content_2": "> Introduction",
         "content_3": "These <strong>General Terms and Conditions of Sale</strong> (<strong>GTCS</strong>) constitute a contractual agreement between <strong>RodCoding</strong> (also referred to as <strong>We</strong>) and any person subscribing to a computer service or maintenance service (web development) (also referred to as <strong>Client</strong>).",

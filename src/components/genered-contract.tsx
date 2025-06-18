@@ -19,6 +19,7 @@ interface Client {
     modifDate:string
     clientNumber:number;
     invoiceCount?:number;
+    clientLang:string;
 }
 
 interface contractFormPrestataire{
@@ -56,7 +57,7 @@ interface Contract {
     maintenanceCategory:"app"|"saas"|"web"|null;
     mprice?:number;
     tax:number;
-    projectFonctionList:string[];
+    projectFonctionList:{title:string,content:string}[];
     contractLanguage:string;
     saleTermeConditionValided?:boolean;
     electronicContractSignatureAccepted?:boolean;
@@ -79,7 +80,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [contract, setContract] = useState<Contract|null>(null)
     const [client, setClient] = useState<Client|null>(null)
-    const [contractStatus, setContractStatus] = useState<{contractLink:string;paymentLink:string;status:"success"|"error"}|null>(null)
+    const [contractStatus, setContractStatus] = useState<{translatedOrOriginalContractLink:string;notEnContractLink:string;paymentLink:string;status:"success"|"error"}|null>(null)
     const router = useRouter()
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const [loading, setLoading] = useState(true);
@@ -125,7 +126,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
             checkUserConnection(parsedData.service.contractStatus)
             setLoading(false);
         }else{
-            router.push("/"+locale+"/create-contract/"+clientId+"/"+clientServiceId)
+            router.push("/"+(client?.clientLang ?? 'en')+"/create-contract/"+clientId+"/"+clientServiceId)
         }
     },[clientId,locale,loading,router])
 
@@ -138,7 +139,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
         return clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition
     }
     //console.log("totalPrice",contract?.totalPrice, contract)
-    const handleContractStatus = (data: { contractLink: string; paymentLink: string; status: "success" | "error"; }): void =>{
+    const handleContractStatus = (data: { translatedOrOriginalContractLink: string;notEnContractLink: string; paymentLink: string; status: "success" | "error"; }): void =>{
         setContractStatus(data)
         setLoader(false)
     }
@@ -177,7 +178,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             <ul className="list-disc ml-10 mb-5">
                                 {
                                     contract?.projectFonctionList.map((item, index) => (
-                                        <li className="text-[1rem] mb-1" key={index}>{item}</li>
+                                        <li className="text-[1rem] mb-1" key={index}>{item.title} - {item.content}</li>
                                     ))
                                 }
                             </ul>
@@ -336,13 +337,18 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["6"].sec11.title}</h3>
                             <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec11.para}</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["6"].sec12.title}</h3>
-                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec12.para}</p>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec12.para11} <strong>{t.contract.sections["6"].sec12.para12}</strong></p>
+                            {
+                                t.contract.sections["6"].sec12.para2 !== '' && <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec12.para2}</p>
+                            }
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["6"].sec13.title}</h3>
                             <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec13.para}</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["6"].sec14.title}</h3>
                             <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec14.para}</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["6"].sec15.title}</h3>
                             <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec15.para}</p>
+                            <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["6"].sec16.title}</h3>
+                            <p className="text-[1rem] mb-5">{t.contract.sections["6"].sec16.para}</p>
                             <h2 className="text-[1.8rem] leading-[1.95rem] mb-5">{t.contract.sections["7"].title}</h2>
                             <p className="text-[1rem] mb-5">{t.contract.sections["7"].para}</p>
                             <h2 className="text-[1.8rem] leading-[1.95rem] mb-5">{t.contract.sections["8"].title}</h2>
@@ -369,25 +375,25 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                     </div>
                     <div className="flex justify-start items-center my-5 gap-2">
                         <input type="checkbox" name="" id="acceptSaleTerms" onChange={(e:any)=>setAcceptSaleTerm(e.target.checked)}/>
-                        <label htmlFor="acceptSaleTerms" dangerouslySetInnerHTML={{ __html: t.acceptSaleTerm.replace('{GTS}','<a href="/'+locale+'/terms-of-sale" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t["termsOfSale"]+'</a>') }}/>
+                        <label htmlFor="acceptSaleTerms" dangerouslySetInnerHTML={{ __html: t.acceptSaleTerm.replace('{GTS}','<a href="/'+(client?.clientLang ?? 'en')+'/terms-of-sale" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t["termsOfSale"]+'</a>') }}/>
                     </div>
                     <div className="flex justify-start items-center my-5 gap-2">
                         <input type="checkbox" name="" id="backAmountCondition" onChange={(e:any)=>setConfirmAcceptBackAmountCondition(e.target.checked)}/>
-                        <label htmlFor="backAmountCondition" dangerouslySetInnerHTML={{ __html: t.backAmountConditionText.replace('{GTS}','<a href="/'+locale+'/terms-of-sale#article13" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t.backAmountCondition+'</a>') }}/>
+                        <label htmlFor="backAmountCondition" dangerouslySetInnerHTML={{ __html: t.backAmountConditionText.replace('{GTS}','<a href="/'+(client?.clientLang ?? 'en')+'/terms-of-sale#article13" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t.backAmountCondition+'</a>') }}/>
                     </div>
                     <section className={`signing ${confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition ? 'opacity-100 pointer-events-auto' : 'opacity-50 pointer-events-none'}`}>
                         <InitCanvaSignature locale={locale} emit={handleSignatureChange} enable={confirmElectronicSignature}/>
                     </section>
                     <div className="flex justify-end items-center mt-5 gap-4 flex-wrap">
-                        <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center" href={`/${locale}/create-contract/${clientId}/${clientServiceId}/?edit=true`}>{t.updateContract}</a>
+                        <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center" href={`/${client?.clientLang ?? 'en'}/create-contract/${clientId}/${clientServiceId}/?edit=true`}>{t.updateContract}</a>
                         <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md min-w-[14rem]  hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkContractValidation()} onClick={uploadContract}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.uploadContract}</button>
                     </div>
                     </>
             ) : (
                 contractStatus.status === 'success' ? (
-                    <div className="pt-9 pb-1"><Success contractLink={contractStatus.contractLink} paymentLink={contractStatus.paymentLink} locale={contract?.contractLanguage ?? 'en'}/></div>
+                    <div className="pt-9 pb-1"><Success translatedOrOriginalContractLink={contractStatus.translatedOrOriginalContractLink} notEnContractLink={contractStatus.notEnContractLink} paymentLink={contractStatus.paymentLink} locale={locale}/></div>
                 ) : (
-                    <div className="pt-9 pb-1"><Echec locale={contract?.contractLanguage ?? 'en'} onEmit={handleEmit}/></div>
+                    <div className="pt-9 pb-1"><Echec locale={client?.clientLang ?? 'en'} onEmit={handleEmit}/></div>
                 )
             )
         }

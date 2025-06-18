@@ -531,7 +531,6 @@
     "budget": "Was ist Ihr Budget?",
     "contract":{
         "header": {
-            "para":"Dieser Vertrag ist eine Deutsch Übersetzung eines ursprünglich auf Englisch verfassten Dokuments und wird ausschließlich zu Informationszwecken bereitgestellt, um das Verständnis des Kunden zu erleichtern. Im Falle von Widersprüchen, Abweichungen oder Auslegungsschwierigkeiten zwischen den Versionen gilt ausschließlich die englische Version als rechtsverbindlich zwischen den Parteien.",
             "titleService": "Dienstleistungsvertrag - ",
             "titleMaintenance": "Wartungsdienstvertrag - ",
             "titleServiceMaintenance": "Dienstleistungs- und Wartungsvertrag - ",
@@ -821,19 +820,30 @@
                     "para": "Dieser Vertrag unterliegt den Gesetzen des Staates New Mexico (New Mexico) und ist gemäß diesen auszulegen, ohne Berücksichtigung der Grundsätze des internationalen Privatrechts. Jeder Streit in Bezug auf die Auslegung, Durchführung oder Gültigkeit dieses Vertrags unterliegt der ausschließlichen Zuständigkeit der staatlichen oder bundesstaatlichen Gerichte in Albuquerque, New Mexico, USA."
                 },
                 "sec12": {
-                    "title": "6.12 - Ausfertigungen",
-                    "para": "Wenn dieser Vertrag von allen Parteien unterzeichnet ist, gilt jede Ausfertigung als Original, aber diese Ausfertigungen spiegeln insgesamt nur eine einzige Vereinbarung wider."
+                    "title": "6.12 - Vertragssprache",
+                    "para11": "Der vorliegende Vertrag ist eine Übersetzung eines ursprünglich in englischer Sprache verfassten Dokuments ins Deutsche, die zu Informationszwecken bereitgestellt wird, um das Verständnis für den Kunden zu erleichtern. Sollte es jedoch zu Widersprüchen, Abweichungen oder Auslegungsproblemen zwischen den beiden Versionen kommen,",
+                    "para12": "gilt allein die englische Version als maßgeblich und verbindlich zwischen den Parteien.",
+                    "para2": "Ausnahmsweise werden der Projekttitel, die Projektbeschreibung und die Hauptfunktionen in ihrer ursprünglichen Sprache (insbesondere auf Deutsch) präsentiert, um deren Genauigkeit und Treue zu den vereinbarten Bedingungen zu bewahren. Diese Elemente gelten unabhängig von den sprachlichen Versionen als integraler Bestandteil des Vertrags.",
+                    "para31":"",
+                    "para32":"",
+                    "para41":"",
+                    "para42":"",
+                    "para43":""
                 },
                 "sec13": {
-                    "title": "6.13 - Geltungsbereich des Vertrags",
-                    "para": "Dieser Vertrag bindet die Parteien sowie deren jeweilige Rechtsnachfolger, Erben und Rechtsvertreter."
+                    "title": "6.13 - Ausfertigungen",
+                    "para": "Wenn dieser Vertrag von allen Parteien unterzeichnet ist, gilt jede Ausfertigung als Original, aber diese Ausfertigungen spiegeln insgesamt nur eine einzige Vereinbarung wider."
                 },
                 "sec14": {
-                    "title": "6.14 - Solidarität",
-                    "para": "Wenn eine der Parteien aus zwei oder mehr Personen besteht, sind diese gemeinsam und gesamtschuldnerisch der anderen Partei gegenüber verpflichtet und verantwortlich."
+                    "title": "6.14 - Geltungsbereich des Vertrags",
+                    "para": "Dieser Vertrag bindet die Parteien sowie deren jeweilige Rechtsnachfolger, Erben und Rechtsvertreter."
                 },
                 "sec15": {
-                    "title": "6.15 - Streitbeilegung",
+                    "title": "6.15 - Solidarität",
+                    "para": "Wenn eine der Parteien aus zwei oder mehr Personen besteht, sind diese gemeinsam und gesamtschuldnerisch der anderen Partei gegenüber verpflichtet und verantwortlich."
+                },
+                "sec16": {
+                    "title": "6.16 - Streitbeilegung",
                     "para": "Wenn während der Ausführung dieses Vertrags oder über seine Auslegung ein Streit entsteht, verpflichten sich die Parteien, vor der Ausübung eines Rechtsbehelfs eine gütliche Lösung des Streits zu suchen und, falls erforderlich, einen Dritten nach den zu vereinbarenden Modalitäten hinzuzuziehen, um bei der Beilegung zu helfen. Wenn die Uneinigkeit anhält, kann der Streit einem Schiedsverfahren gemäß den Regeln der American Arbitration Association (AAA) unterworfen werden, wenn beide Parteien zustimmen. Der Ort des Schiedsverfahrens wird Albuquerque, New Mexico, USA sein."
                 }
             },
@@ -1048,7 +1058,7 @@
     "privacyPolicies": "Datenschutzerklärung",
     "backAmountCondition": "Rückerstattungsrichtlinie",
     "legalNotices":{
-        "content_0": "Diese Seite ist eine Übersetzung eines Dokuments in Französisch. Diese Übersetzung wird nur zu Informationszwecken bereitgestellt. Die endgültige Version ist die französische.",
+        "content_0": "Diese Seite ist eine Übersetzung eines Dokuments in Englisch. Diese Übersetzung wird nur zu Informationszwecken bereitgestellt. Die endgültige Version ist die Englische.",
         "content_1": "Letzte Aktualisierung: {date}",
         "content_2": "1. Herausgeber der Website",
         "content_3": "<strong>Name des Unternehmens:</strong> {companyName}",
@@ -1076,7 +1086,7 @@
         "content_25": "Für Fragen, Beschwerden oder Anfragen zur Website: <br><strong>E-Mail:</strong> {rodcodingMail}"
     },
     "privacyPoliciesContent":{
-        "content_0": "Diese Seite ist eine Übersetzung eines Dokuments in Französisch. Diese Übersetzung wird nur zu Informationszwecken bereitgestellt. Die endgültige Version ist die französische.",
+        "content_0": "Diese Seite ist eine Übersetzung eines Dokuments in Englisch. Diese Übersetzung wird nur zu Informationszwecken bereitgestellt. Die endgültige Version ist die Englische.",
         "content_1": "Letzte Aktualisierung: {date}",
         "content_2": "1. Einführung",
         "content_3": "Willkommen auf unserer Website. Wir verpflichten uns, Ihre Privatsphäre zu schützen. Diese Datenschutzrichtlinie erklärt, wie wir Ihre persönlichen Informationen sammeln, verwenden und schützen.",
@@ -1103,7 +1113,7 @@
         "content_24": "Wenn Sie Fragen zu dieser Datenschutzrichtlinie haben, kontaktieren Sie uns bitte unter: {link}"
     },
     "termSale":{
-        "content_0": "Diese Seite ist eine Übersetzung eines Dokuments in Französisch. Diese Übersetzung wird nur zu Informationszwecken bereitgestellt. Die endgültige Version ist die französische.",
+        "content_0": "Diese Seite ist eine Übersetzung eines Dokuments in Englisch. Diese Übersetzung wird nur zu Informationszwecken bereitgestellt. Die endgültige Version ist die Englische.",
         "content_1": "Letzte Aktualisierung: {date}",
         "content_2": "> Einführung",
         "content_3": "Die vorliegenden <strong>Allgemeinen Geschäftsbedingungen</strong> (<strong>AGB</strong>) stellen eine vertragliche Vereinbarung zwischen « <strong>RodCoding</strong> » (auch bezeichnet als « <strong>Wir</strong> ») und jeder Person dar, die einen Dienstleistungs- oder Wartungsvertrag für Informatikdienstleistungen (Webentwicklung) abschließt (auch bezeichnet als « <strong>Kunde</strong> »).",

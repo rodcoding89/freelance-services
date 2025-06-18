@@ -26,6 +26,7 @@ interface Client {
     modifDate: string;
     clientNumber:number;
     invoiceCount?:number;
+    clientLang:string;
 }
 interface CLientsListProps {
     locale:string
@@ -49,6 +50,8 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                         id: doc.id,
                         modifDate: data.modifDate,
                         name: data.name,
+                        clientLang: data.clientLang,
+                        email: data.email,
                         clientNumber: data.clientNumber,
                         invoiceCount: data.invoiceCount,
                         services: clientService
@@ -199,15 +202,15 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                                         <div className='w-full flex justify-start items-center gap-2'>
                                             <span className='flex-1 whitespace-pre-wrap capitalize'>{service.name.replaceAll('_',' ')}</span>
                                             <div className=' flex justify-start items-start gap-2 w-max flex-wrap'>
-                                                <a title="Remplir le formulaire de création de contrat" href={`/${locale}/create-contract/${client.id}/${service.serviceId}`} className="text-blue-600 hover:text-blue-900 "><Icon name="bx bx-edit" size="1rem"/></a>
-                                                <a title="Générer une facture" href={`/${locale}/bill/${client.id}/${service.serviceId}`} className="text-blue-600 hover:text-blue-900 "><Icon name="bx bx-receipt" size="1rem"/></a>
+                                                <a title="Remplir le formulaire de création de contrat" href={`/${client.clientLang}/create-contract/${client.id}/${service.serviceId}`} className="text-blue-600 hover:text-blue-900 "><Icon name="bx bx-edit" size="1rem"/></a>
+                                                <a title="Générer une facture" href={`/${client.clientLang}/bill/${client.id}/${service.serviceId}`} className="text-blue-600 hover:text-blue-900 "><Icon name="bx bx-receipt" size="1rem"/></a>
                                             </div>
                                         </div>
                                     </li>))}
                                 </ul>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-start items-center gap-2">
-                                <a title="Modifier le client" href={`/${locale}/upate-client/${client.id}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-edit" size="1rem"/></a>
+                                <a title="Modifier le client" href={`/${client.clientLang}/upate-client/${client.id}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-edit" size="1rem"/></a>
                                 <button
                                 onClick={() => handleDeleteClient(client.id)}
                                 className="text-red-600 hover:text-red-900"

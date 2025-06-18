@@ -26,6 +26,7 @@ interface Client {
     modifDate:string;
     clientNumber:number;
     invoiceCount?:number;
+    clientLang:string;
 }
 
 interface contractFormPrestataire{
@@ -63,7 +64,7 @@ interface Contract {
     contractType: "service"|"maintenance"|"service_and_maintenance";
     maintenanceCategory:"app"|"saas"|"website"|"ecommerce"|null;
     mprice:number;
-    projectFonctionList:string[];
+    projectFonctionList:{title:string,content:string}[];
     contractLanguage:string;
     saleTermeConditionValided?:boolean;
     electronicContractSignatureAccepted?:boolean;
@@ -93,8 +94,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [loading, setLoading] = useState(true);
     const [loader, setLoader] = useState(false);
     const {contextData} = useContext(AppContext)
-    const [fonctionalityList, setFonctionalityList] = useState<string[]>([])
-    const [fonction, setFonction] = useState<string>('')
+    const [fonctionalityList, setFonctionalityList] = useState<{title:string,content:string}[]>([])
+    const [fonctionalityTitle, setFonctionalityTile] = useState<string>('')
+    const [fonctionalityDescription, setFonctionalityDescription] = useState<string>('')
     const router = useRouter();
     const countryTosave = useRef<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number}|null>(null)
     const [currentCountry,setCurrentCountry] = useState<string|null>(null)
@@ -106,7 +108,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [countries, setCountries] = useState<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number,turnover:number}[]>([])
     const companyAdress = `${process.env.NEXT_PUBLIC_COMPANY_ADRESS_STREET} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_CITY} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_POSTAL_CODE} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_COUNTRY}`
     const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
-    const [contractLanguage, setContractLanguage] = useState<string>('')
     // Contenu dynamique basé sur la langue
     const searchParams = useSearchParams();
     const edit = searchParams.get('edit');
@@ -138,8 +139,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const onSubmitPrestataire = async(data:contractFormPrestataire) => {
         if(!selectedContractType || !maintenanceCategory) return
         setLoader(true)
-        const contract = {prestataireGivingData:{...data},...service?.contract,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:contractLanguage,contractType:selectedContractType,clientGivingData:service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null,mprice:0}
-        const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contract}
+        console.log("provider data",data)
+        const formData = {...data}
+        const contractItem = {...service?.contract,prestataireGivingData:formData,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:client?.clientLang ?? 'en',contractType:selectedContractType,clientGivingData:service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null,mprice:0}
+        console.log("provider data contract",contractItem,"formData",formData)
+        const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contractItem}
         const clientData = {...client,modifDate:new Date().toLocaleDateString()}
         saveContractAndNavigate(clientData,parsedService)
     }
@@ -168,14 +172,14 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 const docService = doc(firebase.db,"services",clientServiceId)
                 await setDoc(docService, { ...parsedService }, { merge: false })
                 sessionStorage.setItem('contractData', JSON.stringify({client:clientData,service:parsedService}));
-                router.push("/"+locale+"/sign-contract/"+clientId+'/'+clientServiceId)
+                router.push("/"+(client?.clientLang ?? 'en')+"/sign-contract/"+clientId+'/'+clientServiceId)
             } catch (error) {
                 setLoader(false)
                 console.error('Erreur lors de la mise à jour du document :', error);
             }
         }else{
             sessionStorage.setItem('contractData', JSON.stringify({client:clientData,service:parsedService}));
-            router.push("/"+locale+"/sign-contract/"+clientId+'/'+clientServiceId)
+            router.push("/"+(client?.clientLang ?? 'en')+"/sign-contract/"+clientId+'/'+clientServiceId)
         }
         //console.log("Contract Data:", contract);
     }
@@ -219,7 +223,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
     const checkFormValidation = ()=>{
         if (Cookies.get('logged')) {
-            return maintenanceCategory !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && contractLanguage !== '' && contractLanguage !== 'default' && isValidPrestataire
+            return maintenanceCategory !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && isValidPrestataire
         } else {
             return isValidClient && countryTosave.current !== null && (typeClient === 'company' ? clientVatNumber !== '' : true) && (selectedContractType === 'service_and_maintenance' ? (typeMaintenance ? true : false) : true)
         }
@@ -230,10 +234,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         setValueClient('adresse.city', '');
         setValueClient('adresse.postalCode', '');
     }
-
-    const handleContractLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setContractLanguage(e.target.value);
-    };
 
     const handleCountryChange = (e:any)=>{
         if (e.target.value !== 'default') {
@@ -297,14 +297,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             const country = countriesList.find((item:any) => item.name === contract.clientGivingData?.adresse.country.name);
                             setCurrentCountry(country?.name ?? null)
                             countryTosave.current = country ?? null
+                        }else{
+                            resetClient({clientEmail:client.email,name:client.name});
                         }
                         if (contract.prestataireGivingData) {
                             resetPrestataire(contract.prestataireGivingData);
                         }
                         setMaintenaceType(contract.maintenanceCategory)
-                        setContractLanguage(contract.contractLanguage);
                     }else{
-                        resetClient(contract);
+                        resetClient({clientEmail:client.email,name:client.name});
                         resetPrestataire(contract);
                     }
                     setSelectedContractStatus(service.contractStatus)
@@ -333,7 +334,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     if (parsedData.service.contract.prestataireGivingData) {
                         resetPrestataire(parsedData.service.contract.prestataireGivingData);
                     }
-                    setContractLanguage(parsedData.service.contract.contractLanguage)
                     setMaintenaceType(parsedData.service.contract.maintenanceCategory)
                     setFonctionalityList(parsedData.service.contract.projectFonctionList)
                 }
@@ -435,7 +435,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     {...registerClient("clientEmail", {
                                         required: t.errorEmail,
                                         pattern: {
-                                            value: /^\S+@\S+$/i,
+                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
                                             message: t.invalidEmail,
                                         },
                                     })}
@@ -636,7 +636,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     {
                         Cookies.get('logged') && (<div className="my-4 w-full">
                             <label className="block text-sm font-medium text-gray-700">{t.projetFonctionality} <em className="text-red-700">*</em></label>
-                            <div className="flex items-center mt-2 justify-start gap-1 w-full flex-wrap"><input className="p-2 bg-gray-200 w-3/5 min-w-[14rem] focus:outline-none" value={fonction} type="text" onChange={(e)=>setFonction(e.target.value)}/><span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-fit bg-slate-800 text-white rounded-[.2em]" onClick={()=>{fonction !== '' && setFonctionalityList([...fonctionalityList,fonction]);setFonction('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>{t.add}</span><span className="p-2 cursor-pointer w-fit flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonction('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>{t.clearListe}</span></div>
+                            <div className="flex items-start gap-5 mt-2 justify-start flex-col w-full flex-wrap">
+                                <input className="p-2 bg-[#f5f5f5] w-3/5 min-w-[14rem] focus:outline-none" value={fonctionalityTitle} type="text" placeholder="Titre de la fonctionnalité" onChange={(e)=>setFonctionalityTile(e.target.value)}/>
+                                <textarea className="p-2 bg-[#f5f5f5] w-3/5 min-w-[14rem] focus:outline-none" placeholder="Description de la fonctionnalité" id="" value={fonctionalityDescription} onChange={(e)=>setFonctionalityDescription(e.target.value)}></textarea>
+                                <span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-fit bg-slate-800 text-white rounded-[.2em]" onClick={()=>{(fonctionalityTitle !== '' && fonctionalityDescription !== '') && setFonctionalityList([...fonctionalityList,{title:fonctionalityTitle,content:fonctionalityDescription}]);setFonctionalityTile('');setFonctionalityDescription('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>{t.add}</span><span className="p-2 cursor-pointer w-fit flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonctionalityTile('');setFonctionalityDescription('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>{t.clearListe}</span></div>
                         </div>)
                     }
 
@@ -647,7 +650,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <ul className="my-4 mx-4 list-disc">
                                 {
                                     fonctionalityList.map((item, index) => (
-                                        <li key={index} className={`${index === fonctionalityList.length - 1 ? 'mb-0' : 'mb-2'}`}>{item}</li>
+                                        <li key={index} className={`${index === fonctionalityList.length - 1 ? 'mb-0' : 'mb-2'}`}>{item.title} - {item.content}</li>
                                     ))
                                 }
                             </ul>
@@ -739,19 +742,6 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         Cookies.get('logged') && (
                             <>
                             <section className="border-b pb-6">
-                                <h2 className="text-xl font-semibold mb-4">{t.contractLanguage.title} <em className="text-red-700">*</em></h2>
-                                <select value={contractLanguage} onChange={handleContractLanguageChange}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2">
-                                    <option value="default">{t.contractLanguage.defaultLang}</option>
-                                    <option value="fr">{t.contractLanguage.french}</option>
-                                    <option value="en">{t.contractLanguage.english}</option>
-                                    <option value="en">{t.contractLanguage.germany}</option>
-                                </select>
-                                {
-                                    contractLanguage === 'default' || contractLanguage === '' && (<p className="text-red-500 text-sm mt-1">{t.contractLanguage.errorLang}</p>)
-                                }
-                            </section>
-                            <section className="border-b pb-6">
                                 <h2 className="text-xl font-semibold mb-4">{t.contractType}</h2>
                                 <select value={selectedContractType as "service"|"maintenance"|"service_and_maintenance"} onChange={(e:any)=>handleContractTypeChange(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2">
@@ -781,7 +771,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     {
                         Cookies.get('logged') && (
                             <div className="flex justify-end gap-3 flex-wrap">
-                                <a href={'/'+locale+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center">{t.clientList}</a>
+                                <a href={'/'+(client?.clientLang ?? 'en')+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center">{t.clientList}</a>
                             
                                 <button
                                     type="submit"

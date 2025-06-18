@@ -531,7 +531,6 @@
     "budget": "Quel est votre budget ?",
     "contract":{
         "header": {
-            "para":"Le présent contrat constitue une traduction en français d’un document rédigé à l’origine en anglais, fournie à titre informatif afin de faciliter la compréhension par le client. Toutefois, en cas de contradiction, divergence ou difficulté d’interprétation entre les versions, seule la version anglaise fera foi et prévaudra entre les parties.",
             "titleService": "Contrat de prestation de service - ",
             "titleMaintenance": "Contrat de prestation de maintenance - ",
             "titleServiceMaintenance": "Contrat de prestation de service et de maintenance - ",
@@ -821,19 +820,30 @@
                     "para": "Le présent contrat est régi et interprété conformément aux lois de l'État du Nouveau-Mexique (New Mexico), sans égard aux principes de conflit de lois. Tout litige relatif à l'interprétation, l'exécution ou la validité du présent contrat sera soumis à la compétence exclusive des tribunaux étatiques ou fédéraux situés à Albuquerque, Nouveau-Mexique, États-Unis."
                 },
                 "sec12": {
-                    "title": "6.12 - Exemplaires",
-                    "para": "Lorsque signé par toutes les parties, chaque exemplaire du présent contrat est réputé être un original, mais ces exemplaires ne reflètent ensemble qu'une seule et même entente."
+                    "title": "6.12 - Langue du contrat",
+                    "para11":"Le présent contrat constitue une traduction en français d’un document rédigé à l’origine en anglais, fournie à titre informatif afin de faciliter la compréhension par le client. Toutefois, en cas de contradiction, divergence ou difficulté d’interprétation entre les deux versions,",
+                    "para12":"seule la version anglaise fera foi et prévaudra entre les parties.",
+                    "para2":"Par exception, le titre, la description du projet et les fonctionnalités principales sont présentées dans leur langue d’origine (notamment en français), afin d’en préserver la précision et la fidélité aux termes convenus. Ces éléments sont considérés comme partie intégrante du contrat, quelles que soient les versions linguistiques.",
+                    "para31":"",
+                    "para32":"",
+                    "para41":"",
+                    "para42":"",
+                    "para43":""
                 },
                 "sec13": {
-                    "title": "6.13 - Portée du contrat",
-                    "para": "Le présent contrat lie les parties, ainsi que leurs successeurs, héritiers et ayants cause respectifs."
+                    "title": "6.13 - Exemplaires",
+                    "para": "Lorsque signé par toutes les parties, chaque exemplaire du présent contrat est réputé être un original, mais ces exemplaires ne reflètent ensemble qu'une seule et même entente."
                 },
                 "sec14": {
-                    "title": "6.14 - Solidarité",
-                    "para": "Si l'une des parties est constituée de deux personnes ou plus, celles-ci sont solidairement obligées et responsables envers l'autre partie."
+                    "title": "6.14 - Portée du contrat",
+                    "para": "Le présent contrat lie les parties, ainsi que leurs successeurs, héritiers et ayants cause respectifs."
                 },
                 "sec15": {
-                    "title": "6.15 - Règlement de différends",
+                    "title": "6.15 - Solidarité",
+                    "para": "Si l'une des parties est constituée de deux personnes ou plus, celles-ci sont solidairement obligées et responsables envers l'autre partie."
+                },
+                "sec16": {
+                    "title": "6.16 - Règlement de différends",
                     "para": "Si un différend survient dans le cours de l’exécution du présent contrat ou sur son interprétation, les parties s’engagent, avant d’exercer tout recours, à rechercher une solution à l’amiable à ce différend et, si besoin est, à faire appel à un tiers, selon les modalités à convenir, pour les assister dans ce règlement. Si le désaccord persiste, le litige pourra être soumis à arbitrage selon les règles de l'American Arbitration Association (AAA), si les deux parties y consentent. Le lieu de l'arbitrage sera Albuquerque, Nouveau-Mexique, États-Unis."
                 }
             },
@@ -1048,7 +1058,7 @@
     "privacyPolicies": "Politique de confidentialité",
     "backAmountCondition": "Politique de remboursement",
     "legalNotices":{
-        "content_0": "Cette page est la traduction d’un document en français. Cette traduction est uniquement fournie à titre d’information. La version définitive est celle en français.",
+        "content_0": "Cette page est la traduction d’un document en anglais. Cette traduction est uniquement fournie à titre d’information. La version définitive est celle en anglais.",
         "content_1": "Dernière mise à jour : {date}",
         "content_2": "1. Éditeur du site",
         "content_3": "<strong>Nom de l’entreprise :</strong> {companyName}",
@@ -1076,7 +1086,7 @@
         "content_25": "Pour toute question, réclamation ou demande relative au site :<br><strong>Email : </strong>{rodcodingMail}"
     },
     "termSale":{
-        "content_0": "Cette page est une traduction d'un document en français. Cette traduction est uniquement fournie à titre d'information. La version définitive est celle en français.",
+        "content_0": "Cette page est une traduction d'un document en anglais. Cette traduction est uniquement fournie à titre d'information. La version définitive est celle en anglais.",
         "content_1": "Dernière mise à jour : {date}",
         "content_2": "> Introduction",
         "content_3": "Les présentes <strong>Conditions Générales de Vente</strong> (<strong>CGV</strong>) constituent un accord contractuel entre <strong>RodCoding</strong> (également désigné par « <strong>Nous</strong> ») et toute personne souscrivant à un service de prestation ou de maintenance informatique (développement Web) (également désigné par « <strong>Client</strong> »).",
@@ -1185,7 +1195,7 @@
         "content_117": "Pour toute question, contactez-nous via {rodcodingSupportTag}"
     },
     "privacyPoliciesContent":{
-        "content_0": "Cette page est la traduction d’un document en français. Cette traduction est uniquement fournie à titre d’information. La version définitive est celle en français.",
+        "content_0": "Cette page est la traduction d’un document en anglais. Cette traduction est uniquement fournie à titre d’information. La version définitive est celle en anglais.",
         "content_1": "Dernière mise à jour : {date}",
         "content_2": "1. Introduction",
         "content_3": "Bienvenue sur notre site web. Nous nous engageons à protéger votre vie privée. Cette politique de confidentialité explique comment nous collectons, utilisons et protégeons vos informations personnelles.",
@@ -1210,7 +1220,6 @@
         "content_22": "Nous nous réservons le droit de mettre à jour cette politique de confidentialité de temps à autre. Les modifications seront publiées sur cette page. Étant donné que nos services sont régis par un contrat qui prend fin à la réalisation de la tâche convenue, les utilisateurs sont encouragés à consulter cette page régulièrement pour rester informés des éventuelles modifications.",
         "content_23": "8. Nous contacter",
         "content_24": "Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter à : {link}"
-    },
-    "reset":"Réinitialiser"
+    }
 }
     

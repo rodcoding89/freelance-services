@@ -50,30 +50,27 @@ const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,s
   }
 }
 
-const saveContractDoc = async(data:{service:any,blobPdf:Blob},client:any,serviceId:string)=>{
+const saveContractDoc = async(data:{service:any,translatedOrOriginalBlobPdf:Blob,originalByDiffNotEnLangBlobPdf:Blob|null},client:any,serviceId:string,locale:string)=>{
   const auth = await GoogleAuth()
   if(!CONTRACT_FOLDER || !SCOPE || !auth) return
-  const filename = `${client.name.replaceAll(" ","-")}.${new Date().getFullYear()}.${new Date().getMonth() + 1}.${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_signed-contract`
+  const filenameTranslatedOrOriginal = `${locale !== 'en' ? 'translated-' : 'original-'}signed-contract_${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_${client.name.replaceAll(" ","-")}`;
+  const filenameNotEnContract = `original-signed-contract_${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_${client.name.replaceAll(" ","-")}`;
   const drive = google.drive({ version: 'v3', auth });
   const clientFolderId = await getOrCreateFolder(`${client.name}_${client.id}`,CONTRACT_FOLDER,drive)
   console.log("clientFolderId",clientFolderId)
   if(!clientFolderId) return
 
-  const mimeType = mime.getType(filename) || 'application/octet-stream';
-  const arrayBuffer = await data.blobPdf.arrayBuffer();
+  const mimeTypeTranslatedOrOriginal = mime.getType(filenameTranslatedOrOriginal) || 'application/octet-stream';
+  const mimeTypeNotEnContract = mime.getType(filenameTranslatedOrOriginal) || 'application/octet-stream';
+  const arrayBuffer = await data.translatedOrOriginalBlobPdf.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   const bufferStream = Readable.from(buffer);
 
-  const response = await drive.files.create({
-    requestBody: {
-      name: filename,
-      parents: [`${clientFolderId}`], // ID du dossier partagé avec le compte de service
-      },
-      media: {
-      mimeType,
-      body: bufferStream,
-    },
-  });
+  const arrayBufferNotEnCOntract = data.originalByDiffNotEnLangBlobPdf ? await data.originalByDiffNotEnLangBlobPdf.arrayBuffer() : null;
+  const bufferNotEnContract = arrayBufferNotEnCOntract ? Buffer.from(arrayBufferNotEnCOntract) : null;
+  const bufferStreamNotEnContract = bufferNotEnContract ? Readable.from(bufferNotEnContract) : null;
+  const allRequest = bufferStreamNotEnContract ? [loadDocOnDrive(filenameNotEnContract,bufferStreamNotEnContract,drive,mimeTypeNotEnContract,clientFolderId),loadDocOnDrive(filenameTranslatedOrOriginal,bufferStream,drive,mimeTypeTranslatedOrOriginal,clientFolderId)] : [loadDocOnDrive(filenameTranslatedOrOriginal,bufferStream,drive,mimeTypeTranslatedOrOriginal,clientFolderId)]
+  const [response] = await Promise.all(allRequest)
   if (response.status === 200) {
     const result = await updateClientWithData(serviceId,data.service,client)
     console.log('File uploaded:', result);
@@ -85,6 +82,20 @@ const saveContractDoc = async(data:{service:any,blobPdf:Blob},client:any,service
   } else {
     return "error"
   }
+}
+
+async function loadDocOnDrive(filename:string,bufferStream:Readable,drive:drive_v3.Drive,mimeType:string,clientFolderId:string){
+  const response = await drive.files.create({
+    requestBody: {
+      name: filename,
+      parents: [`${clientFolderId}`], // ID du dossier partagé avec le compte de service
+      },
+      media: {
+      mimeType,
+      body: bufferStream,
+    },
+  });
+  return response
 }
 
 async function getOrCreateFolder(name: string, parentId: string,drive:drive_v3.Drive): Promise<string> {

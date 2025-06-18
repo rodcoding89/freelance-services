@@ -47,6 +47,42 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
             setCurrentIndex((prev)=> prev === serviceSiteReference?.referenceContent.length! - 1 ? prev : prev + 1)
         }
     }
+
+    const shareOnSocialMedia = ()=>{
+        const text = `${locale === 'fr' ? 'Vous avez besoin d\'une solution web (site internet, e-commerce, etc.) ? Contactez-nous via le lien ci-dessous.' : locale === 'de' ? 'Benötigen Sie eine Weblösung (Website, E-Commerce, etc.)? Kontaktieren Sie uns über den untenstehenden Link.' : 'Need a web solution (website, e-commerce, etc.)? Contact us via the link below.'}`
+        const url = `${process.env.NEXT_PUBLIC_WEB_LINK?.replace("{locale}",locale)}`
+        let shareUrl;
+        const encodedUrl = encodeURIComponent(url);
+        const encodedText = encodeURIComponent(text);
+        if (navigator.share) {
+        navigator.share({
+            title: `${locale === 'fr' ? 'Développeur Web Freelance' : locale === 'de' ? 'Webentwickler Freelance' : 'Web Developer Freelance'}`,
+            text: encodedText,
+            url: encodedUrl
+        })
+        .then(() => console.log('Partage réussi'))
+        .catch((error) => console.error('Erreur de partage', error));
+        } else {
+            console.log('Web Share API non supportée');
+        }
+    }
+    const isMobileDevice = () =>{
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); 
+    }
+
+    const handleShareOnApp = ()=>{
+        if (isMobileDevice()) {
+            shareOnSocialMedia();
+        } else {
+            const message = locale === 'fr'
+            ? "Vous n'êtes pas en mode mobile"
+            : locale === 'de'
+                ? "Sie sind nicht im mobilen Modus"
+                : "You are not in mobile mode";
+            alert(message);
+        }
+    }
+    
     const switchDevMode = (devModeContent:any)=>{
         console.log("devModeContent",devModeContent,"avdistage",serviceAvDistage)
         if(!devModeContent || !serviceAvDistage) return
@@ -91,6 +127,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
             navigate.push("/"+locale)
         }
     }
+
     useEffect(()=>{
         if (contextData && contextData.state === "show") {
             console.log("contextData.value",contextData.value)
@@ -194,7 +231,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                     offset={-65} 
                                     duration={500} 
                                     to={`contact`} onClick={switchToStart}>{t["contact"]}</Link>
-                                    <a href="https://portfolio.rodcoding.tech" className='cursor-pointer text-primary' target="_blank">{t["protfolio"]}</a>
+                                    <a href="https://portfolio.rodcoding.com" className='cursor-pointer text-primary' target="_blank">{t["protfolio"]}</a>
                                 </nav>
                             </div>
                             <div className="w-full">
@@ -203,7 +240,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                 <div className='flex justify-start items-center gap-2'>
                                     <a className='flex justify-center items-center gap-1 w-[40px] h-[40px] rounded-[.2em] bg-white'  href='tel:+33751025598'><Icon name='bx-phone' size='1.4em' color='var(--color-secondary)'/></a>
                                     <a className='flex justify-center items-center gap-1 w-[40px] h-[40px] rounded-[.2em] bg-white'  href='mailto:rodriguekwayep.freelance@hotmail.com'><Icon name='bx-envelope' size='1.4em' color='var(--color-secondary)'/></a>
-                                    <span className='flex justify-center items-center gap-1 w-[40px] h-[40px] rounded-[.2em] bg-white cursor-pointer' title={t["shareOn"]}><Icon name="bx-share-alt" size="1.4em" color="var(--color-secondary)"/></span>
+                                    <span className='flex justify-center items-center gap-1 w-[40px] h-[40px] rounded-[.2em] bg-white cursor-pointer' title={t["shareOn"]} onClick={handleShareOnApp}><Icon name="bx-share-alt" size="1.4em" color="var(--color-secondary)"/></span>
                                 </div>
                             </div>
                         </div>
