@@ -1008,7 +1008,9 @@
         "Suisse": "Schweiz",
         "street": "Straße",
         "city": "Stadt",
-        "codePostal": "Postleitzahl"
+        "codePostal": "Postleitzahl",
+        "defaultState":"Wählen Sie ein Bundesland aus",
+        "state":"Bundesland"
     },
     "fileRequirer": "Dieses Feld ist erforderlich",
     "diffAdresse": "Rechnungsadresse (falls abweichend)",
@@ -1220,7 +1222,8 @@
         "content_115": "Bei Abweichungen in der Auslegung zwischen der übersetzten Version und der ursprünglichen französischen Version hat letztere Vorrang. Die französische Version ist für juristische und vertragliche Zwecke maßgeblich, sofern nicht ausdrücklich anders in einem zwingenden lokalen Gesetz angegeben.",
         "content_116": "> 7 - KUNDENDIENST",
         "content_117": "Bei Fragen kontaktieren Sie uns bitte über {rodcodingSupportTag}"
-    }
+    },
+    "taxNumberText":"Bitte geben Sie Ihre {tax}-Nummer ein"
 
 }
     

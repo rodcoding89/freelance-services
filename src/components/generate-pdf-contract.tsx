@@ -6,7 +6,7 @@ import { sendContract } from '@/server/services-mail';
 import { saveContractDoc } from '@/server/services-save-doc';
 import { useParams } from 'next/navigation';
 import { loadEnTranslation } from '@/utils/fonction';
-
+import SalesTax from 'sales-tax';
 
 type SingleTextLayourt = {
     size: number;
@@ -100,15 +100,26 @@ interface contractFormPrestataire{
     paymentSchedule:string;
     maintenanceCategory:"app"|"saas"|"web"|null;
 }
+interface clientCountry {
+    name:string,
+    taxB2C:string,
+    taxB2B:string,groupe:string,
+    currency:string,
+    isoCode:string,threshold_before_tax:number,
+    specficTo:"state"|"country",
+    vat?:string,
+    state:{name:string,tax:number,vat:string,stateCode:string}|null
+}
+
 interface contractFormClient{
     name:string;
     adresse:{
         street:string;
         postalCode:string;
         city:string;
-        country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
+        country:clientCountry;
     }
-    typeClient:"company"|"particular";
+    typeClient:"company"|"particular"|null;
     clientBillingAddress?:string;
     clientEmail:string;
     clientPhone:string;
@@ -147,9 +158,11 @@ interface GeneredContractProps {
   onEmit:(data:{translatedOrOriginalContractLink:string,notEnContractLink:string,paymentLink:string,status:"success"|"error"})=>void;
 }
 
+const supportCountryWithPlugins = ["US","CA","DE","FR","IT","ES","AT","BE","NL","CH","GB","AU","ZA","NG"]
 
 const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSignatureLink,clientSignatureLink,locale,onEmit,service}) => {
     if (client === null || clientSignatureLink === null || freelanceSignatureLink === null || service === null) return
+    SalesTax.setTaxOriginCountry('US');
     const t:any = useTranslationContext();
     const contract = service.contract as Contract
     const {id,serviceId} = useParams()
@@ -229,40 +242,50 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         return (totalPrice * rate / 100).toFixed(2)
     }
 
+    const calculTaxPrice = (price:number,rate:number)=>{
+        return (price * rate).toFixed(2)
+    }
+
     const getCA = (currency:string)=>{
         return 0
     }
 
-    const calculTotalPriceWithTva = (tax:number,price:string,limitBeforeTax:number,groupe:string,currency:string):string =>{
-        console.log("groupe",groupe,"currency",currency,"limitBeforeTax",limitBeforeTax,"price",price,typeof(price),"tax",tax)
-        setTax(tax);
-        if (tax === 0) return price
-        const parsedPrice = parseFloat(price)
-        const realTax = tax > 0 ? tax : 100;
-        if (groupe === 'ue') {
-            if (getCA(currency) > limitBeforeTax) {
-                const taxPrice = parsedPrice * realTax / 100
-                return (parsedPrice + taxPrice).toFixed(2)
-            } else {
-                return parsedPrice.toFixed(2);
-            }
-        }else if(groupe === 'other'){
-            const taxPrice = parsedPrice * realTax / 100
-            return (parsedPrice + taxPrice).toFixed(2)
-        }else if(groupe === 'sw'){
-            if (limitBeforeTax > getCA(currency)) {
-                const taxPrice = parsedPrice * realTax / 100
-                return (parsedPrice + taxPrice).toFixed(2)
-            } else {
-                return parsedPrice.toFixed(2);
-            }
-        }else if(groupe === 'state'){
-            return parsedPrice.toFixed(2);
-        }else{
-            return parsedPrice.toFixed(2);
+    const checkCLientIsExemptFromTax = async(isoCode:string,stateCode:string|null,taxNumber:string|undefined)=>{
+        const data = await SalesTax.getTaxExchangeStatus (isoCode, stateCode,taxNumber)
+        return data;
+    }
+
+    const calculTotalPriceWithTva = async(price:string,limitBeforeTax:number,currency:string,isoCode:string,stateCode:string|null,taxNumber:string|undefined,specficTo:"state"|"country")=>{
+        const clientTaxInfo = await getClientTaxInfo(isoCode,specficTo,stateCode,taxNumber)
+        if (clientTaxInfo === null) {
+            return {taxPrice:'0',totalePrice:parseInt(price).toFixed(2)}
+        } else{
+            const taxPrice = calculTaxPrice(parseInt(price),clientTaxInfo.rate)
+            setTax(clientTaxInfo.rate * 100)
+            const totalePrice = (parseInt(price) + parseInt(taxPrice)).toFixed(2)
+            return {taxPrice,totalePrice}
         }
     }
 
+    const getClientTaxInfo = async(isoCode:string,specficTo:"state"|"country",stateCode:string|null,taxNumber:string|undefined) =>{
+        const isCountryTaxable  =  SalesTax.hasSalesTax (isoCode);
+        const isStateTaxable = specficTo === "state" && stateCode ? SalesTax.hasStateSalesTax ( isoCode ,  stateCode ) : false;
+        const canPayTax = await checkCLientIsExemptFromTax(isoCode,stateCode,taxNumber)
+        console.log("isCountryTaxable",isCountryTaxable,"isStateTaxable",isStateTaxable,"canPayTax",canPayTax)
+        if (isCountryTaxable || isStateTaxable) {
+            if (!canPayTax.exempt) {
+                const saleTax = await SalesTax. getSalesTax(isoCode,stateCode,  taxNumber)
+                console.log("saleTax",saleTax)
+                return saleTax
+            }
+            return null
+        }
+        return null
+    }
+    const getTotalPrice = async(para:string)=>{
+        const {taxPrice,totalePrice} = await calculTotalPriceWithTva(contract.prestataireGivingData!.totalPrice.toString(),contract.clientGivingData!.adresse.country.threshold_before_tax,contract.clientGivingData!.adresse.country.currency,contract.clientGivingData!.adresse.country.isoCode,contract.clientGivingData!.adresse.country.state?.stateCode ?? '',contract.clientGivingData!.clientVatNumber ?? undefined,contract.clientGivingData!.adresse.country.specficTo)
+        return para.replace("{price}",totalePrice)
+    }
     const generePaiementDoc = async(data:Contract) =>{
         const pdfDoc = await PDFDocument.create();
         let page = pdfDoc.addPage([595, 842]); // Format A4
@@ -309,14 +332,12 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             let pageEchelonement;
             const bayingSchedule = [beforeStart];
             const priceSchedule:string[] = [];
-            const tax = contract.clientGivingData!.typeClient === 'company' ? parseInt(contract.clientGivingData!.adresse.country.taxB2B) : parseInt(contract.clientGivingData!.adresse.country.taxB2C);
-            const groupe = contract.clientGivingData!.adresse.country.groupe;
             const currency = contract.clientGivingData!.adresse.country.currency;
             const limitBeforeTax = contract.clientGivingData!.adresse.country.threshold_before_tax;
-            const ttPrice = calculTotalPriceWithTva(tax,contract.prestataireGivingData!.totalPrice.toString(),limitBeforeTax,groupe,currency);
+            const {taxPrice,totalePrice} = await calculTotalPriceWithTva(contract.prestataireGivingData?.totalPrice.toString() ?? '0',limitBeforeTax,currency,contract.clientGivingData?.adresse.country.isoCode ?? '',contract.clientGivingData?.adresse.country.state?.stateCode ?? null,contract.clientGivingData?.clientVatNumber ?? undefined,contract.clientGivingData!.adresse.country.specficTo);
             if (echelonement.length === 0) {
                 pageEchelonement = t.payment.singleEchelon;
-                const final = addHorizontalText([[{text:pageEchelonement,size:11,isBold:false},{text:ttPrice.toString(),size:14,isBold:true},{text:'EUR',size:11,isBold:false},{text:t.payment.ttc,size:9,isBold:true}],margin,yRef.current,false,margin,30,fontRegular,fontBold,textHorizontalOption,...lastParam])
+                const final = addHorizontalText([[{text:pageEchelonement,size:11,isBold:false},{text:totalePrice.toString(),size:14,isBold:true},{text:'EUR',size:11,isBold:false},{text:t.payment.ttc,size:9,isBold:true}],margin,yRef.current,false,margin,30,fontRegular,fontBold,textHorizontalOption,...lastParam])
                 yRef.current = final.finalY
             } else {
                 pageEchelonement = t.payment.multipleEchelon;
@@ -324,7 +345,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 echelonement.forEach((item,index)=>{
                     const nitem = item.split('%');
                     const rate = parseInt(nitem[0])
-                    const nprice = calculPrice(parseFloat(ttPrice),rate);
+                    const nprice = calculPrice(parseFloat(totalePrice),rate);
                     priceSchedule.push(nprice)
                     if (index === echelonement.length - 1) {
                         bayingSchedule.push(afterDelively);
@@ -343,7 +364,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
 
             const totalPrice = t.payment.totalPrice;
 
-            const final = addHorizontalText([[{text:totalPrice,size:16,isBold:true},{text:ttPrice.toString(),size:14,isBold:true},{text:'EUR',size:11,isBold:false},{text:t.payment.ttc,size:9,isBold:true}],margin,yRef.current,true,margin,30,fontRegular,fontBold,{...textHorizontalOption},...lastParam])
+            const final = addHorizontalText([[{text:totalPrice,size:16,isBold:true},{text:totalePrice.toString(),size:14,isBold:true},{text:'EUR',size:11,isBold:false},{text:t.payment.ttc,size:9,isBold:true}],margin,yRef.current,true,margin,30,fontRegular,fontBold,{...textHorizontalOption},...lastParam])
             yRef.current = final.finalY
             
             const pagePara3 = t.payment.pagePara3
@@ -478,7 +499,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 },
                 9:{
                     id:9,
-                    param:[[t.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[contract.contractType === 'service' ? t.sections["3"].sec3.paraService.replace("{startDate}",formatDate(contract.prestataireGivingData!.startDate)).replace("{endDate}",formatDate(contract.prestataireGivingData!.endDate)) : contract.contractType === 'maintenance' ? t.sections["3"].sec3.paraMaintenance : t.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",formatDate(contract.prestataireGivingData!.endDate)), margin, yRef.current,margin,15, addTextOption,...lastParam],[contract.contractType === 'service' ? t.sections["3"].sec4.titleService : contract.contractType === 'maintenance' ? t.sections["3"].sec4.titleMaintenance : t.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[contract.contractType === 'service' ? t.sections["3"].sec4.paraService.replace("{price}",contract.prestataireGivingData!.totalPrice) : contract.contractType === 'maintenance' ? contract.clientGivingData!.typeMaintenance === 'perHour' ? t.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.sections["3"].sec4.paraMaintenance.peerYear.replace("{mprice}",contract.mprice) : `${t.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.prestataireGivingData!.totalPrice)} ${
+                    param:[[t.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[contract.contractType === 'service' ? t.sections["3"].sec3.paraService.replace("{startDate}",formatDate(contract.prestataireGivingData!.startDate)).replace("{endDate}",formatDate(contract.prestataireGivingData!.endDate)) : contract.contractType === 'maintenance' ? t.sections["3"].sec3.paraMaintenance : t.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",formatDate(contract.prestataireGivingData!.endDate)), margin, yRef.current,margin,15, addTextOption,...lastParam],[contract.contractType === 'service' ? t.sections["3"].sec4.titleService : contract.contractType === 'maintenance' ? t.sections["3"].sec4.titleMaintenance : t.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[contract.contractType === 'service' ? await getTotalPrice(t.sections["3"].sec4.paraService) : contract.contractType === 'maintenance' ? contract.clientGivingData!.typeMaintenance === 'perHour' ? t.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.sections["3"].sec4.paraMaintenance.peerYear.replace("{mprice}",contract.mprice) : `${t.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.prestataireGivingData!.totalPrice)} ${
                     contract.clientGivingData!.typeMaintenance === 'perHour' ? t.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract.mprice)} ${t.sections["3"].sec4.paraServiceMaintenance.para1}`
                     ,margin, yRef.current,margin,40, addTextOption,...lastParam],[t.sections["4"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.sections["4"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["4"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["4"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["4"].sec2.para, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.sections["4"].sec2.paraClose, margin, yRef.current,margin,40, {...addTextOption,size:9,isBold:true},...lastParam],[t.sections["5"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.sections["5"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["5"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["5"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["5"].sec2.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.sections["5"].sec2.para2, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["5"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["5"].sec3.para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.sections["5"].sec3.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam]]
                 },
@@ -1115,12 +1136,12 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 const contractLink = URL.createObjectURL(blobContract)
                 const paymentLink = URL.createObjectURL(blobPayment)
                 const notEnContractLink = notEnContract ? URL.createObjectURL(notEnContract) : ''
-                //window.open(contractLink, '_blank')
-                /*if (contractEnLink) {
-                    window.open(contractEnLink, '_blank')
+                window.open(contractLink, '_blank')
+                if (notEnContractLink) {
+                    window.open(notEnContractLink, '_blank')
                 }
-                window.open(paymentLink, '_blank')*/
-                const contractBase64 = await blobToBase64(blobContract) as string;
+                window.open(paymentLink, '_blank')
+                /*const contractBase64 = await blobToBase64(blobContract) as string;
                 const base64NotEnContract = notEnContract ? await blobToBase64(notEnContract) as string : null;
                 const paymentBase64 = await blobToBase64(blobPayment) as string;
                 const contractItem = {...contract,tax:tax,saleTermeConditionValided:true,electronicContractSignatureAccepted:true,rigthRetractionLostAfterServiceBegin:true}
@@ -1156,7 +1177,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                         status:"error"
                     }
                     onEmit(emitData)
-                }
+                }*/
             }
         }
         generedPdf() 

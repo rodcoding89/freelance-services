@@ -34,13 +34,25 @@ interface contractFormPrestataire{
     paymentSchedule:string;
     maintenanceCategory:"app"|"saas"|"web"|null;
 }
+
+interface clientCountry {
+    name:string,
+    taxB2C:string,
+    taxB2B:string,groupe:string,
+    currency:string,
+    isoCode:string,threshold_before_tax:number,
+    specficTo:"state"|"country",
+    vat?:string,
+    state:{name:string,tax:number,vat:string,stateCode:string}|null
+}
+
 interface contractFormClient{
     name:string;
     adresse:{
         street:string;
         postalCode:string;
         city:string;
-        country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
+        country:clientCountry;
     }
     typeClient:"company"|"particular";
     clientBillingAddress?:string;

@@ -54,7 +54,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
         let shareUrl;
         const encodedUrl = encodeURIComponent(url);
         const encodedText = encodeURIComponent(text);
-        if (navigator.share) {
+        if (typeof window !== 'undefined' && window.navigator && navigator.share) {
         navigator.share({
             title: `${locale === 'fr' ? 'Développeur Web Freelance' : locale === 'de' ? 'Webentwickler Freelance' : 'Web Developer Freelance'}`,
             text: encodedText,
@@ -67,7 +67,11 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
         }
     }
     const isMobileDevice = () =>{
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); 
+        if (typeof window !== 'undefined' && window.navigator) {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); 
+        }else{
+            return false;
+        }
     }
 
     const handleShareOnApp = ()=>{

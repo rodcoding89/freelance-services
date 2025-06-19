@@ -16,7 +16,7 @@ const Footer:React.FC<FooterProps> = ({locale,date})=>{
         let shareUrl;
         const encodedUrl = encodeURIComponent(url);
         const encodedText = encodeURIComponent(text);
-        if (navigator && navigator.share) {
+        if (typeof window !== 'undefined' && window.navigator && navigator.share) {
             navigator.share({
                 title: `${locale === 'fr' ? 'Développeur Web Freelance' : locale === 'de' ? 'Webentwickler Freelance' : 'Web Developer Freelance'}`,
                 text: encodedText,
@@ -29,7 +29,11 @@ const Footer:React.FC<FooterProps> = ({locale,date})=>{
         }
     }
     const isMobileDevice = () =>{
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); 
+        if (typeof window !== 'undefined' && window.navigator) {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); 
+        }else{
+            return false;
+        }
     }
     const shareOnSocial = (platform:string) =>{
         const text = `${locale === 'fr' ? 'Vous avez besoin d\'une solution web (site internet, e-commerce, etc.) ? Contactez-nous via le lien ci-dessous.' : locale === 'de' ? 'Benötigen Sie eine Weblösung (Website, E-Commerce, etc.)? Kontaktieren Sie uns über den untenstehenden Link.' : 'Need a web solution (website, e-commerce, etc.)? Contact us via the link below.'}`

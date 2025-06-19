@@ -1008,7 +1008,9 @@
         "Suisse": "Switzerland",
         "street": "Street",
         "city": "City",
-        "codePostal": "Postal Code"
+        "codePostal": "Postal Code",
+        "defaultState":"Select a state",
+        "state":"State"
     },
     "fileRequirer": "This field is required",
     "diffAdresse": "Billing address (if different)",
@@ -1220,8 +1222,8 @@
         "content_115": "In case of divergence of interpretation between the translated version and the original version in French, the latter shall prevail. The French version shall be authoritative for legal and contractual purposes, unless expressly indicated otherwise in an imperative local law.",
         "content_116": "> 7 - CUSTOMER SERVICE",
         "content_117": "For any questions, contact us via {rodcodingSupportTag}"
-    }
-
+    },
+    "taxNumberText":"Please enter your {tax} number."
 }
   
     

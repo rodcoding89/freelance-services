@@ -1008,7 +1008,9 @@
         "Suisse": "Suisse",
         "street": "Rue",
         "city": "Ville",
-        "codePostal": "Code postal"
+        "codePostal": "Code postal",
+        "defaultState":"Sélectionner un état",
+        "state":"État"
     },
     "fileRequirer": "Ce champ est obligatoire",
     "diffAdresse": "Adresse de facturation (si différente)",
@@ -1220,6 +1222,7 @@
         "content_22": "Nous nous réservons le droit de mettre à jour cette politique de confidentialité de temps à autre. Les modifications seront publiées sur cette page. Étant donné que nos services sont régis par un contrat qui prend fin à la réalisation de la tâche convenue, les utilisateurs sont encouragés à consulter cette page régulièrement pour rester informés des éventuelles modifications.",
         "content_23": "8. Nous contacter",
         "content_24": "Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter à : {link}"
-    }
+    },
+    "taxNumberText":"Veuillez entrer votre numéro {tax}"
 }
     

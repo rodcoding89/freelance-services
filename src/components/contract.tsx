@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import { useForm } from "react-hook-form";
 import firebase from '@/utils/firebase'; // Importez votre configuration Firebase
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-
+import SalesTax from 'sales-tax';
 import Icon from "./Icon";
 import { loadCountries } from "@/utils/fonction";
 
@@ -41,14 +41,38 @@ interface contractFormPrestataire{
     paymentSchedule:string;
     maintenanceCategory:"app"|"saas"|"website"|"ecommerce"|null;
 }
-
+interface state {
+    name:string,
+    tax:number,
+    vat:string,
+    stateCode:string
+}
+interface clientCountry {
+    name:string,
+    taxB2C:string,
+    taxB2B:string,groupe:string,
+    currency:string,
+    isoCode:string,threshold_before_tax:number,
+    specficTo:"state"|"country",
+    vat?:string,
+    state:state|null
+}
+interface countryState {
+    name:string,
+    taxB2C:string,
+    taxB2B:string,groupe:string,
+    currency:string,
+    isoCode:string,threshold_before_tax:number,
+    specficTo:"state"|"country",vat?:string,
+    state:{name:string,tax:number,vat:string,threshold:number,stateCode:string}[]|null
+}
 interface contractFormClient{
     name:string;
     adresse:{
         street:string;
         postalCode:string;
         city:string;
-        country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
+        country:clientCountry;
     }
     typeClient:"company"|"particular";
     clientBillingAddress?:string;
@@ -86,7 +110,7 @@ const contractStatus = [
     { value: "pending", label: "En Attente de Signature" },
     { value: "signed", label: "Signé" },
 ];
-
+const enableCheckTaxNumerCountr = ["US","CA","DE","FR","IT","ES","AT","BE","NL"]
 const Contrat:React.FC<ContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
@@ -98,14 +122,22 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [fonctionalityTitle, setFonctionalityTile] = useState<string>('')
     const [fonctionalityDescription, setFonctionalityDescription] = useState<string>('')
     const router = useRouter();
-    const countryTosave = useRef<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number}|null>(null)
+
+    const [selectedCountry,setSelectedCountry] = useState<countryState|null>(null)
+
+    const countryToSave = useRef<clientCountry|null>(null)
+
     const [currentCountry,setCurrentCountry] = useState<string|null>(null)
+    const [currentState,setCurrentState] = useState<string|null>(null)
+    const toSaveState = useRef<state|null>(null)
     const [client, setClient] = useState<Client|null>(null)
     const maintenaceCost = useRef<number>(0)
     const [service, setService] = useState<Services|null>(null)
     const [selectedContractType, setSelectedContractType] = useState<"service"|"maintenance"|"service_and_maintenance"|null>(null);
     const [selectedContractStatus, setSelectedContractStatus] = useState<'signed' | 'unsigned' | 'pending'|null>(null);
-    const [countries, setCountries] = useState<{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number,turnover:number}[]>([])
+
+    const [countries, setCountries] = useState<countryState[]>([])
+
     const companyAdress = `${process.env.NEXT_PUBLIC_COMPANY_ADRESS_STREET} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_CITY} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_POSTAL_CODE} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_COUNTRY}`
     const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
     // Contenu dynamique basé sur la langue
@@ -113,6 +145,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const edit = searchParams.get('edit');
     const {id,serviceId} = useParams()
     const clientId = id as string
+    const [vatNumberChecking,setVatNumberChecking] = useState<{success:boolean,message:string}|null>(null)
     const clientServiceId = serviceId as string;
     const [perHourCost,setPerHourCost] = useState(0)
     const [perYearCost,setPerYearCost] = useState(0)
@@ -136,6 +169,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const clientVatNumber = watchClient("clientVatNumber");
     const typeMaintenance = watchClient("typeMaintenance");
 
+    const checkClientTaxNumber = async (isoCode:string,taxNumber:string)=>{
+        if (enableCheckTaxNumerCountr.includes(isoCode)) {
+            const response = await SalesTax.validateTaxNumber ( isoCode,taxNumber) 
+            return {success:response,message:response ? `Numéro de Tax valid` : `Numéro de Tax invalid, modifié le sinon le montant sera facturé avec la Tax.`}
+        } else {
+            return {success:false,message:`Numéro de Tax non prise en charge`}
+        }
+    }
+
     const onSubmitPrestataire = async(data:contractFormPrestataire) => {
         if(!selectedContractType || !maintenanceCategory) return
         setLoader(true)
@@ -149,9 +191,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     }
 
     const onSubmitClient = async(data:contractFormClient) => {
-        if(!countryTosave.current || !selectedContractType || !maintenanceCategory) return
+        if(!countryToSave.current || !selectedContractType || !maintenanceCategory) return
         setLoader(true);
-        const clientInfo = {...data, adresse: {...data.adresse, country: countryTosave.current}}
+        const clientInfo = {...data, adresse: {...data.adresse, country: countryToSave.current}}
         const contract = {
             ...service?.contract,
             prestataireGivingData: service?.contract?.prestataireGivingData || null,
@@ -225,7 +267,8 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         if (Cookies.get('logged')) {
             return maintenanceCategory !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && isValidPrestataire
         } else {
-            return isValidClient && countryTosave.current !== null && (typeClient === 'company' ? clientVatNumber !== '' : true) && (selectedContractType === 'service_and_maintenance' ? (typeMaintenance ? true : false) : true)
+            //console.log("isValidClient",isValidClient,"countryToSave",countryToSave.current,"typeClient",typeClient,"clientVatNumber",clientVatNumber,"selectedContractType",selectedContractType,"countryToSave",toSaveState.current)
+            return isValidClient && countryToSave.current !== null && (typeClient === 'company' ? clientVatNumber !== '' : true) && (selectedContractType === 'service_and_maintenance' ? (typeMaintenance !== "") : true) && (countryToSave.current?.specficTo === 'state' ? toSaveState.current !== null : true)
         }
     }
     
@@ -235,11 +278,34 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         setValueClient('adresse.postalCode', '');
     }
 
-    const handleCountryChange = (e:any)=>{
+    const handleStateChange = (e:any)=>{
+        if (e.target.value !== 'default') {
+            setCurrentState(e.target.value)
+            const state = selectedCountry?.state?.find((item:any) => item.name === e.target.value);
+            toSaveState.current = state ?? null
+            if (countryToSave.current) {
+                countryToSave.current = {...countryToSave.current,state:toSaveState.current}
+            } else {
+                countryToSave.current = null
+            }
+            
+        }else{
+            setCurrentState(null);
+            toSaveState.current = null
+        }
+    }
+
+    const handleCountryChange = async(e:any)=>{
         if (e.target.value !== 'default') {
             setCurrentCountry(e.target.value)
             const country = countries.find((item:any) => item.name === e.target.value);
-            countryTosave.current = country ?? null
+            setSelectedCountry(country ?? null)
+            countryToSave.current = country ? {...country,state:null} : null
+            if(clientVatNumber && clientVatNumber !== ''){
+                const response = await checkClientTaxNumber(countryToSave.current?.isoCode ?? '',clientVatNumber)
+                //console.log("response",response)
+                setVatNumberChecking(response)
+            }
         } else {
             setCurrentCountry(null);
             clearAdresse()
@@ -285,7 +351,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 const contract = service.contract
                 setService(service)
                 checkUserConnection(service.contractStatus)
-                console.log("service",service,"client",client)
+                //console.log("service",service,"client",client)
                 if (edit === 'true') {
                     loadContractFromCache(countriesList)
                 }else{
@@ -296,7 +362,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             resetClient(contract.clientGivingData);
                             const country = countriesList.find((item:any) => item.name === contract.clientGivingData?.adresse.country.name);
                             setCurrentCountry(country?.name ?? null)
-                            countryTosave.current = country ?? null
+                            countryToSave.current = country ?? null
+                            if (country.specficTo === 'state' && country.name === contract.clientGivingData.adresse.country.name) {
+                                const updateCountry = {...country,state:contract.clientGivingData.adresse.country.state}
+                                countryToSave.current = updateCountry ?? null
+                                toSaveState.current = contract.clientGivingData.adresse.country.state
+                                setCurrentState(contract.clientGivingData.adresse.country.state?.name ?? '')
+                            }else{
+                                countryToSave.current = country ?? null
+                            }
                         }else{
                             resetClient({clientEmail:client.email,name:client.name});
                         }
@@ -329,7 +403,15 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         resetClient(parsedData.service.contract.clientGivingData);
                         const country = countriesList.find(item => item.name === parsedData.service.contract.clientGivingData.adresse.country.name);
                         setCurrentCountry(country?.name ?? null)
-                        countryTosave.current = country ?? null
+                        setSelectedCountry(country)
+                        if (country.specficTo === 'state' && country.name === parsedData.service.contract.clientGivingData.adresse.country.name) {
+                            const updateCountry = {...country,state:parsedData.service.contract.clientGivingData.adresse.country.state}
+                            countryToSave.current = updateCountry ?? null
+                            toSaveState.current = parsedData.service.contract.clientGivingData.adresse.country.state
+                            setCurrentState(parsedData.service.contract.clientGivingData.adresse.country.state.name)
+                        }else{
+                           countryToSave.current = country ?? null
+                        }
                     }
                     if (parsedData.service.contract.prestataireGivingData) {
                         resetPrestataire(parsedData.service.contract.prestataireGivingData);
@@ -360,6 +442,23 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         setValueClient('typeMaintenance','');
     }
 
+    const disableProviderInput = ()=>{
+        return false
+    }
+
+    const disableClientInput = () =>{
+        const env = process.env.NEXT_PUBLIC_ENV
+        if (env === "dev") {
+            return false;
+        } else {
+            if (!Cookies.get('logged')) {
+                return false
+            } else {
+                return true
+            }
+        }
+    }
+
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
             console.log("inside contextData",contextData)
@@ -382,6 +481,19 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         }
     },[typeMaintenance,maintenanceCategory])
 
+    useEffect(()=>{
+        const clientTaxNumberValidation = async()=>{
+            if (clientVatNumber && clientVatNumber !== '') {
+                const response = await checkClientTaxNumber(countryToSave.current?.isoCode ?? '',clientVatNumber)
+                console.log("response",response)
+                setVatNumberChecking(response)
+            }
+            //setVatNumberChecking(null)
+        }
+        clientTaxNumberValidation()
+        console.log("clientVatNumber",clientVatNumber,"countryToSave",countryToSave.current)
+    },[clientVatNumber])
+    console.log("vatNumberChecking",vatNumberChecking)
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
@@ -404,7 +516,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 </label>
                                 <input
                                     {...registerClient("name", { required: t.fileRequirer })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableClientInput()}
                                 />
                                 {errorsClient.name && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.name.message as string}</p>
@@ -414,12 +526,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <label className="block text-sm font-medium text-gray-700">{t.clientType} <em className="text-red-700">*</em></label>
                                 <div className="flex items-center justify-start gap-2 flex-wrap w-full mt-3">
                                     <div className="flex items-center gap-2">
-                                        <input type="radio" id="particular" {...registerClient("typeClient", { required: true })} value={"particular"} disabled={Cookies.get('logged') ? true : false}/>
+                                        <input type="radio" id="particular" {...registerClient("typeClient", { required: true })} value={"particular"} disabled={disableClientInput()}/>
                                         <label htmlFor="particular" className="ml-2 block text-sm font-medium text-gray-700">
                                             {t.particular}</label>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <input type="radio" id="company" {...registerClient("typeClient", { required: true })} value={"company"} disabled={Cookies.get('logged') ? true : false}/>
+                                        <input type="radio" id="company" {...registerClient("typeClient", { required: true })} value={"company"} disabled={disableClientInput()}/>
                                         <label htmlFor="company" className="ml-2 block text-sm font-medium text-gray-700">
                                             {t.company}</label>
                                     </div>
@@ -439,7 +551,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                             message: t.invalidEmail,
                                         },
                                     })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableClientInput()}
                                 />
                                 {errorsClient.clientEmail && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.clientEmail.message as string}</p>
@@ -451,7 +563,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <input
                                     type="tel"
                                     {...registerClient("clientPhone", { required: t.errorTel })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableClientInput()}
                                 />
                                 {errorsClient.clientPhone && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.clientPhone.message as string}</p>
@@ -464,7 +576,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             {t.adresse.title} <em className="text-red-700">*</em>
                             </label>
                             <div>
-                                <select value={currentCountry ? t.adresse[currentCountry] : t.adresse.default} id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={handleCountryChange} disabled={Cookies.get('logged') ? true : false}>
+                                <select value={currentCountry || "default"} id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={handleCountryChange} disabled={disableClientInput()}>
                                     <option value="default">{t.adresse.default}</option>
                                     {
                                         countries.map((item, index) => ( 
@@ -476,7 +588,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         </div>
                         {
                         currentCountry && (
-                            <div className="flex justify-start items-center gap-3 flex-wrap w-full">
+                            <div className="flex justify-between items-center gap-3 flex-wrap w-full">
                             <div className="w-max max-w-1/3 min-w-[14rem]">
                                 <label className="block text-sm font-medium text-gray-700">
                                     {t.adresse.street} <em className="text-red-700">*</em>
@@ -484,7 +596,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <input
                                     {...registerClient("adresse.street", { required: t.fileRequirer })}
                                     placeholder={t.adresse.street}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableClientInput()}
                                 />
                                 {errorsClient.adresse?.street && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.street.message as string}</p>
@@ -497,7 +609,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <input
                                     {...registerClient("adresse.city", { required: t.fileRequirer })}
                                     placeholder={t.adresse.city}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableClientInput()}
                                 />
                                 {errorsClient.adresse?.city && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.city.message as string}</p>
@@ -510,25 +622,44 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 <input
                                     {...registerClient("adresse.postalCode", { required: t.fileRequirer })}
                                     placeholder={t.adresse.codePostal}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableClientInput()}
                                 />
                                 {errorsClient.adresse?.postalCode && (
                                     <p className="text-red-500 text-sm mt-1">{errorsClient.adresse.postalCode.message as string}</p>
                                 )}
                             </div>
+                            {
+                                (selectedCountry && selectedCountry.specficTo === "state" && currentCountry === selectedCountry.name) && (
+                                    <div className="w-full">
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            {t.adresse.state} <em className="text-red-700">*</em>
+                                        </label>
+                                        <select value={currentState || 'default'} id="" className="mt-1 block w-full border border-gray-300 rounded-md p-2" onChange={handleStateChange} disabled={disableClientInput()}>
+                                            <option value="default">{t.adresse.defaultState}</option>
+                                            {
+                                                selectedCountry.state?.map((item, index) => ( 
+                                                    <option key={index} value={item.name}>{item.name}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>)
+                            }
                             </div>
                         )
                     }
-                    <div className="flex justify-start items-center gap-3 flex-wrap w-full my-3">
+                    <div className="flex justify-between items-center gap-3 flex-wrap w-full my-3">
                         {
                             (typeClient === 'company' && currentCountry) && <div className="min-w-[14rem] w-max max-w-1/3">
                                 <label className="block text-sm font-medium text-gray-700">
-                                {t.taxNumberText} <em className="text-red-700">*</em>
+                                {t.taxNumberText.replace("{tax}",selectedCountry?.vat ?? 'VAT')} <em className="text-red-700">*</em>
                                 </label>
                                 <input
                                 {...registerClient("clientVatNumber")}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableClientInput()}
                                 />
+                                {vatNumberChecking && (
+                                    <p className={`text-sm mt-1 ${vatNumberChecking.success ? 'text-green-600' : 'text-red-500'}`}>{vatNumberChecking.message}</p>
+                                )}
                             </div>
                         }
                         <div className="min-w-[14rem] w-max max-w-1/3">
@@ -537,30 +668,30 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             </label>
                             <input
                             {...registerClient("clientBillingAddress")}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={Cookies.get('logged') ? true : false}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableClientInput()}
                             />
                         </div>
                     </div>
                     {
                         maintenanceCategory !== null && (<div>
-                            <h2 className="text-xl font-semibold mb-4">{t.maintenanceService.title + ' (' +maintenanceCategory === 'website' ? t.website : maintenanceCategory === 'ecommerce' ? t.ecommerce : maintenanceCategory === 'saas' ? t.saasTitle : t.appTitle +')'} {selectedContractType === 'service_and_maintenance' && <em className="text-red-700">*</em>}</h2>
+                            <h2 className="text-xl font-semibold my-4">{`${t.maintenanceService.title} ( ${maintenanceCategory === 'website' ? t.website : maintenanceCategory === 'ecommerce' ? t.ecommerce : maintenanceCategory === 'saas' ? t.saasTitle : t.appTitle})`} {selectedContractType === 'service_and_maintenance' && <em className="text-red-700">*</em>}</h2>
                             <div className="mt-4">
                                 {
                                     maintenanceCategory === "app" ? (
                                         <div className="flex gap-2 justify-start items-center">
-                                            <input type="checkbox" name="app" id="app" disabled={Cookies.get('logged') ? true : false}/>
+                                            <input type="checkbox" name="app" id="app" disabled={disableClientInput()}/>
                                             <label className="block text-sm font-medium text-gray-700" htmlFor="app">{t.maintenanceService.maintenanceApp}</label>
                                         </div>
                                     ) : maintenanceCategory === "saas" ? (<div className="flex gap-2 justify-start items-center">
-                                        <input type="checkbox" name="saas" id="saas" disabled={Cookies.get('logged') ? true : false}/>
+                                        <input type="checkbox" name="saas" id="saas" disabled={disableClientInput()}/>
                                         <label className="block text-sm font-medium text-gray-700" htmlFor="saas">{t.maintenanceService.maintenanceSaas}</label>
                                     </div>) : (<div className="flex gap-5 justify-start items-center flex-wrap">
                                         <div className="flex gap-2 justify-start items-center">
-                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perHour"} id="hour" disabled={Cookies.get('logged') ? true : false}/>
+                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perHour"} id="hour" disabled={disableClientInput()}/>
                                             <label className="block text-sm font-medium text-gray-700" htmlFor="hour">{t.maintenanceService.pricePerHour.replace("{price}",perHourCost)}</label>
                                         </div>
                                         <div className="flex gap-2 justify-start items-center">
-                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perYear"} id="year" disabled={Cookies.get('logged') ? true : false}/>
+                                            <input type="radio" {...registerClient("typeMaintenance")} value={"perYear"} id="year" disabled={disableClientInput()}/>
                                             <label className="block text-sm font-medium text-gray-700" htmlFor="year">{t.maintenanceService.pricePerYear.replace("{price}",perYearCost)}</label>
                                         </div>
                                         <div onClick={resetInput} className="px-2 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-[.8rem] text-center cursor-pointer">{t.reset}</div>
@@ -614,7 +745,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <label className="block text-sm font-medium text-gray-700">{t.projetTitle} <em className="text-red-700">*</em></label>
                         <input
                         {...registerPrestataire("projectTitle", { required: t.fileRequirer })}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableProviderInput()}
                         />
                         {errorsPrestataire.projectTitle && (
                         <p className="text-red-500 text-sm mt-1">{errorsPrestataire.projectTitle.message as string}</p>
@@ -626,7 +757,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         <textarea
                         {...registerPrestataire("projectDescription", { required: t.fileRequirer })}
                         rows={4}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableProviderInput()}
                         />
                         {errorsPrestataire.projectDescription && (
                         <p className="text-red-500 text-sm mt-1">{errorsPrestataire.projectDescription.message as string}</p>
@@ -665,7 +796,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 type="date"
                                 {...registerPrestataire("startDate", { required: t.fileRequirer })}
                                 min={parseInputDate()}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableProviderInput()}
                             />
                             {errorsPrestataire.startDate && (
                                 <p className="text-red-500 text-sm mt-1">{errorsPrestataire.startDate.message as string}</p>
@@ -680,7 +811,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 type="date"
                                 min={parseInputDate()}
                                 {...registerPrestataire("endDate")}
-                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableProviderInput()}
                             />
                         </div>
                     </div>
@@ -698,7 +829,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     {...registerPrestataire("totalPrice", {
                                     required: t.priceError
                                     })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={!Cookies.get('logged') ? true : false}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled={disableProviderInput()}
                                 />
                                 {errorsPrestataire.totalPrice && (
                                     <p className="text-red-500 text-sm mt-1">{errorsPrestataire.totalPrice.message as string}</p>
@@ -712,7 +843,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     message: t.errorPaymentShedule,
                                 }, })}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                                placeholder="50% au début, 50% a la livraison" disabled={!Cookies.get('logged') ? true : false}
+                                placeholder="50% au début, 50% a la livraison" disabled={disableProviderInput()}
                                 />
                                 {errorsPrestataire.paymentSchedule && (
                                 <p className="text-red-500 text-sm mt-1">{errorsPrestataire.paymentSchedule.message as string}</p>
