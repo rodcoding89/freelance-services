@@ -1,12 +1,14 @@
 "use client"
 import { useTranslationContext } from '@/hooks/app-hook';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, StandardFonts } from "pdf-lib";
 import { sendContract } from '@/server/services-mail';
 import { saveContractDoc } from '@/server/services-save-doc';
 import { useParams } from 'next/navigation';
 import { loadEnTranslation } from '@/utils/fonction';
 import SalesTax from 'sales-tax';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import firebase from '@/utils/firebase';
 
 type SingleTextLayourt = {
     size: number;
@@ -82,6 +84,7 @@ type FunctionParams = {
 interface Client {
     id: string;
     name:string;
+    taxId?:string;
     email?:string;
     modifDate:string
     clientNumber:number;
@@ -101,6 +104,7 @@ interface contractFormPrestataire{
     maintenanceCategory:"app"|"saas"|"web"|null;
 }
 interface clientCountry {
+    id:number,
     name:string,
     taxB2C:string,
     taxB2B:string,groupe:string,
@@ -108,7 +112,7 @@ interface clientCountry {
     isoCode:string,threshold_before_tax:number,
     specficTo:"state"|"country",
     vat?:string,
-    state:{name:string,tax:number,vat:string,stateCode:string}|null
+    state:{name:string,tax:number,vat:string,stateCode:string,threshold:number}|null
 }
 
 interface contractFormClient{
@@ -134,7 +138,7 @@ interface Contract {
     maintenanceCategory:"app"|"saas"|"web"|null;
     mprice?:number;
     tax:number;
-    projectFonctionList:{title:string,content:string}[];
+    projectFonctionList:{title:string,description:string,quantity:number,price:number}[];
     contractLanguage:string;
     saleTermeConditionValided?:boolean;
     electronicContractSignatureAccepted?:boolean;
@@ -158,8 +162,16 @@ interface GeneredContractProps {
   onEmit:(data:{translatedOrOriginalContractLink:string,notEnContractLink:string,paymentLink:string,status:"success"|"error"})=>void;
 }
 
-const supportCountryWithPlugins = ["US","CA","DE","FR","IT","ES","AT","BE","NL","CH","GB","AU","ZA","NG"]
+interface UserSalesSchema {
+    juridiction:string;
+    totalSales:number;
+    taxThreshold:number;
+    taxRequired:boolean;
+    lastUpdated:string;
+}
 
+const supportCountryWithPlugins = ["US","CA","DE","FR","IT","ES","AT","BE","NL","CH","GB","AU","ZA","NG"]
+const enableCountryForThresholdBeforTax = ["CA","US","CH","AU","ZA"]
 const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSignatureLink,clientSignatureLink,locale,onEmit,service}) => {
     if (client === null || clientSignatureLink === null || freelanceSignatureLink === null || service === null) return
     SalesTax.setTaxOriginCountry('US');
@@ -169,7 +181,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
     const clientServiceId = serviceId as string;
     const clientId = id as string;
     const lang = `${locale === 'fr' ? 'French' : locale === 'de' ? 'German' : 'English'}`
-    const [tax,setTax] = React.useState<number>(0)
+    const [tax,setTax] = useState<number>(0)
     const functionListAndRang = [
         {name:"addText",count:2,id:1},{name:"addHorizontalText",count:1,id:2},
         {name:"addText",count:1,id:3},
@@ -250,40 +262,72 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         return 0
     }
 
+    const checkClientTaxibility = async(juridiction:string)=>{
+        //by CH juridiction check the CA (chiffre d'affaire)
+        const postsQuery = query(collection(firebase.db, 'saleTax'), where('clientId', '==', juridiction));
+        const postsSnapshot = await getDocs(postsQuery);
+        if (!postsSnapshot.empty) {
+            const response:UserSalesSchema = postsSnapshot.docs[0].data() as UserSalesSchema;
+            return response.taxRequired;
+        }else {
+            return false;
+        }
+    }
+
     const checkCLientIsExemptFromTax = async(isoCode:string,stateCode:string|null,taxNumber:string|undefined)=>{
         const data = await SalesTax.getTaxExchangeStatus (isoCode, stateCode,taxNumber)
         return data;
     }
 
-    const calculTotalPriceWithTva = async(price:string,limitBeforeTax:number,currency:string,isoCode:string,stateCode:string|null,taxNumber:string|undefined,specficTo:"state"|"country")=>{
-        const clientTaxInfo = await getClientTaxInfo(isoCode,specficTo,stateCode,taxNumber)
+    const calculTotalPriceWithTva = async(price:string,limitBeforeTax:number,currency:string,isoCode:string,stateCode:string|null,taxNumber:string|undefined,specficTo:"state"|"country",tax:number)=>{
+        const clientTaxInfo = await getClientTaxInfo(isoCode,specficTo,stateCode,taxNumber,tax) as {rate:number}|null
+        setTax(clientTaxInfo ? clientTaxInfo.rate * 100 : 0)
+        console.log("clientTaxInfo",clientTaxInfo)
         if (clientTaxInfo === null) {
-            return {taxPrice:'0',totalePrice:parseInt(price).toFixed(2)}
+            return {taxPrice:'0',totalePrice:parseInt(price).toFixed(2),taxValue:0}
         } else{
             const taxPrice = calculTaxPrice(parseInt(price),clientTaxInfo.rate)
-            setTax(clientTaxInfo.rate * 100)
             const totalePrice = (parseInt(price) + parseInt(taxPrice)).toFixed(2)
-            return {taxPrice,totalePrice}
+            return {taxPrice,totalePrice,taxValue:clientTaxInfo.rate*100}
         }
     }
 
-    const getClientTaxInfo = async(isoCode:string,specficTo:"state"|"country",stateCode:string|null,taxNumber:string|undefined) =>{
+    const getClientTaxInfo = async(isoCode:string,specficTo:"state"|"country",stateCode:string|null,taxNumber:string|undefined,tax:number) =>{
+        console.log("tax",tax)
         const isCountryTaxable  =  SalesTax.hasSalesTax (isoCode);
-        const isStateTaxable = specficTo === "state" && stateCode ? SalesTax.hasStateSalesTax ( isoCode ,  stateCode ) : false;
+        const isStateTaxable = SalesTax.hasStateSalesTax ( isoCode ,  stateCode ?? '' )
         const canPayTax = await checkCLientIsExemptFromTax(isoCode,stateCode,taxNumber)
         console.log("isCountryTaxable",isCountryTaxable,"isStateTaxable",isStateTaxable,"canPayTax",canPayTax)
-        if (isCountryTaxable || isStateTaxable) {
-            if (!canPayTax.exempt) {
-                const saleTax = await SalesTax. getSalesTax(isoCode,stateCode,  taxNumber)
-                console.log("saleTax",saleTax)
-                return saleTax
+        console.log("isocode",isoCode,"stateCode",stateCode,"taxNumber",taxNumber)
+        const getTaxData = async()=>{
+            if (isCountryTaxable || isStateTaxable) {
+                if (!canPayTax.exempt) {
+                    const saleTax = await SalesTax. getSalesTax(isoCode,stateCode,  taxNumber)
+                    console.log("saleTax",saleTax)
+                    return {rate:saleTax.rate}
+                }
+                return null
             }
             return null
         }
-        return null
+        if(supportCountryWithPlugins.includes(isoCode)){
+            if (enableCountryForThresholdBeforTax.includes(isoCode)) {
+                const canTaxClient = await checkClientTaxibility(isoCode)
+                console.log("canTaxClient",canTaxClient)
+                if (!canTaxClient) {
+                    return getTaxData()
+                }
+                return null
+            }else{
+                getTaxData()
+            }
+        }else{
+            return new Promise((resolve,reject)=>{
+                resolve({rate:tax/100})})
+        }
     }
     const getTotalPrice = async(para:string)=>{
-        const {taxPrice,totalePrice} = await calculTotalPriceWithTva(contract.prestataireGivingData!.totalPrice.toString(),contract.clientGivingData!.adresse.country.threshold_before_tax,contract.clientGivingData!.adresse.country.currency,contract.clientGivingData!.adresse.country.isoCode,contract.clientGivingData!.adresse.country.state?.stateCode ?? '',contract.clientGivingData!.clientVatNumber ?? undefined,contract.clientGivingData!.adresse.country.specficTo)
+        const {taxPrice,totalePrice} = await calculTotalPriceWithTva(contract.prestataireGivingData!.totalPrice.toString(),contract.clientGivingData!.adresse.country.threshold_before_tax,contract.clientGivingData!.adresse.country.currency,contract.clientGivingData!.adresse.country.isoCode,contract.clientGivingData!.adresse.country.state?.stateCode ?? '',contract.clientGivingData!.clientVatNumber ?? undefined,contract.clientGivingData!.adresse.country.specficTo,contract.clientGivingData?.typeClient === 'company' ? parseInt(contract.clientGivingData.adresse.country.taxB2B ?? '0') : parseInt(contract.clientGivingData?.adresse.country.taxB2C ?? '0') )
         return para.replace("{price}",totalePrice)
     }
     const generePaiementDoc = async(data:Contract) =>{
@@ -334,7 +378,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             const priceSchedule:string[] = [];
             const currency = contract.clientGivingData!.adresse.country.currency;
             const limitBeforeTax = contract.clientGivingData!.adresse.country.threshold_before_tax;
-            const {taxPrice,totalePrice} = await calculTotalPriceWithTva(contract.prestataireGivingData?.totalPrice.toString() ?? '0',limitBeforeTax,currency,contract.clientGivingData?.adresse.country.isoCode ?? '',contract.clientGivingData?.adresse.country.state?.stateCode ?? null,contract.clientGivingData?.clientVatNumber ?? undefined,contract.clientGivingData!.adresse.country.specficTo);
+            const {taxPrice,totalePrice,taxValue} = await calculTotalPriceWithTva(contract.prestataireGivingData?.totalPrice.toString() ?? '0',limitBeforeTax,currency,contract.clientGivingData?.adresse.country.isoCode ?? '',contract.clientGivingData?.adresse.country.state?.stateCode ?? null,contract.clientGivingData?.clientVatNumber ?? undefined,contract.clientGivingData!.adresse.country.specficTo,contract.clientGivingData?.typeClient === 'company' ? parseInt(contract.clientGivingData.adresse.country.taxB2B ?? '0') : parseInt(contract.clientGivingData?.adresse.country.taxB2C ?? '0'));
             if (echelonement.length === 0) {
                 pageEchelonement = t.payment.singleEchelon;
                 const final = addHorizontalText([[{text:pageEchelonement,size:11,isBold:false},{text:totalePrice.toString(),size:14,isBold:true},{text:'EUR',size:11,isBold:false},{text:t.payment.ttc,size:9,isBold:true}],margin,yRef.current,false,margin,30,fontRegular,fontBold,textHorizontalOption,...lastParam])
@@ -374,9 +418,10 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             yRef.current = addText([payingLink,margin,margin,margin,20,{...addTextOption,size:11,isBold:false},...lastParam,rgb(0, 0, 0.55)])
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            return blob;
+            return {blob:blob,taxValue:taxValue};
         } catch (error) {
             console.error(error)
+            return null;
         }
     }
 
@@ -400,15 +445,26 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
 
     const generedEnContractVersion = async()=>{
         try {
-            const translation = await loadEnTranslation();
-            const blob = await handlePdf(translation)
+            const translation = await loadEnTranslation("en");
+            const data = await handlePdf(translation)
             //console.log("translation",translation)
-            return blob;
+            return data;
         } catch (error) {
             console.error(error)
             return null;
         }
         
+    }
+    const generedNotEnContractVersion = async(clientLang:string)=>{
+        try {
+            const translation = await loadEnTranslation(clientLang);
+            const data = await handlePdf(translation)
+            //console.log("translation",translation)
+            return data;
+        } catch (error) {
+            console.error(error)
+            return null;
+        }
     }
 
     const handlePdf = async(translated:any)=>{
@@ -673,7 +729,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                                 const params = fonctionParam[item.id].param[0]
                                 contract.projectFonctionList.forEach((item,index)=>{
                                     if (isDataStructureSingleText(params)) {
-                                        params[0] = `${item.title} - ${item.content}`
+                                        params[0] = `${item.title} - ${item.description} - ${item.price}`
                                         yRef.current = addText(params)
                                         if (index === contract.projectFonctionList.length - 1) {
                                             params[4] = 15
@@ -716,7 +772,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             // Génération du PDF final
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            return blob;
+            return {blob:blob,taxValue:0};
             //return await pdfDoc.save();
         } catch (error) {
             console.error('Erreur lors de la génération du PDF:', error);
@@ -1123,30 +1179,32 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         const generedPdf = async()=>{
             if(!service || !client) return
             const allRequest = [
-                handlePdf(t.contract),
+                generedNotEnContractVersion(contract.contractLanguage),
                 generePaiementDoc(contract)
             ]
             let notEnContract = null;
             if (locale !== 'en') {
                 notEnContract = await generedEnContractVersion()
             }
-            const [blobContract,blobPayment] = await Promise.all(allRequest)
             
-            if (blobContract && blobPayment) {
-                const contractLink = URL.createObjectURL(blobContract)
-                const paymentLink = URL.createObjectURL(blobPayment)
-                const notEnContractLink = notEnContract ? URL.createObjectURL(notEnContract) : ''
-                window.open(contractLink, '_blank')
+            const [blobContract,payment] = await Promise.all(allRequest)
+            
+            if (blobContract && payment) {
+                const contractLink = URL.createObjectURL(blobContract.blob)
+                const paymentLink = URL.createObjectURL(payment.blob)
+                const notEnContractLink = notEnContract ? URL.createObjectURL(notEnContract.blob) : ''
+                /*window.open(contractLink, '_blank')
                 if (notEnContractLink) {
                     window.open(notEnContractLink, '_blank')
                 }
-                window.open(paymentLink, '_blank')
-                /*const contractBase64 = await blobToBase64(blobContract) as string;
-                const base64NotEnContract = notEnContract ? await blobToBase64(notEnContract) as string : null;
-                const paymentBase64 = await blobToBase64(blobPayment) as string;
-                const contractItem = {...contract,tax:tax,saleTermeConditionValided:true,electronicContractSignatureAccepted:true,rigthRetractionLostAfterServiceBegin:true}
+                window.open(paymentLink, '_blank')*/
+                const contractBase64 = await blobToBase64(blobContract.blob) as string;
+                const base64NotEnContract = notEnContract ? await blobToBase64(notEnContract.blob) as string : null;
+                const paymentBase64 = await blobToBase64(payment.blob) as string;
+                const contractItem = {...contract,tax:payment.taxValue,saleTermeConditionValided:true,electronicContractSignatureAccepted:true,rigthRetractionLostAfterServiceBegin:true}
+                console.log("contratc item",contractItem)
                 const parsedService = {...service,contractStatus:"signed",contract:contractItem}
-                const contractData = {service:parsedService,translatedOrOriginalBlobPdf:blobContract,originalByDiffNotEnLangBlobPdf:notEnContract}
+                const contractData = {service:parsedService,translatedOrOriginalBlobPdf:blobContract.blob,originalByDiffNotEnLangBlobPdf:notEnContract?.blob ?? null}
                 const updateClient = {...client,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)}
                 const result = await saveContractDoc(contractData,updateClient,clientServiceId,locale)
                 const email = {
@@ -1177,7 +1235,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                         status:"error"
                     }
                     onEmit(emitData)
-                }*/
+                }
             }
         }
         generedPdf() 

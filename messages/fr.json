@@ -924,6 +924,8 @@
     },
     "contractTerme": "Conditions du contrat",
     "contractConfirm": "Si vous acceptez les termes ci-dessus, veuillez d'abord cocher la case pour approuver la signature électronique du contrat, puis confirmer avoir lu et accepté les Conditions Générales de Vente (CGV) en cochant la seconde case. Ensuite, signez le contrat ci-dessous. Si vous n’êtes pas d’accord, merci de nous indiquer les raisons de votre refus.",
+    "originalVersion":"Ceci est la version traduite du contrat. Elle vise à faciliter la compréhension des termes du contrat. Pour lire la version originale (anglaise), cliquez sur le bouton. En cas de doute sur la concordance entre les versions, vous pouvez traduire la version originale (anglaise) à l'aide de Google Traduction ou d'une intelligence artificielle en ligne.",
+    "readOriginalVersion":"Lire la version originale",
     "confirmElectronicSignature": "Je confirme approuver la signature électronique du contrat",
     "updateContract": "Modifier le contrat",
     "uploadContract": "Télécharger le contrat",

@@ -26,6 +26,36 @@ interface Contrat{
     base64NotEnContract:string|null;
 }
 
+const sendEmailForFillingContract = async(to:string,name:string,link:string,clientLang:string)=>{
+    try {
+        const body = `<body>
+            <div>
+                <h3>${clientLang === 'fr' ? 'Bonjour Chers ' + name : clientLang === 'de' ? 'Hallo Lieber ' + name : 'Hello Dear ' + name},</h3>
+                <p>${clientLang === 'fr' ? 'Vous recevez cet email suite à votre demande de prestation de service ou maintenance auprès de <strong>ROD TECH SOLUTIONS</strong>.' : clientLang === 'de' ? 'Sie erhalten diese E-Mail aufgrund Ihrer Anfrage für Dienstleistungen oder Wartungsarbeiten bei <strong>ROD TECH SOLUTIONS</strong>.' : 'You are receiving this email following your request for service or maintenance from <strong>ROD TECH SOLUTIONS</strong>.'}</p>
+                <p>${clientLang === 'fr' ? 'Nous vous informons par cet email que le formulaire de création de votre contrat est disponible.' : clientLang === 'de' ? 'Wir informieren Sie hiermit, dass das Formular zur Erstellung Ihres Vertrags verfügbar ist.' : 'We are informing you by this email that the form to create your contract is now available.'}</p>
+                <p>${clientLang === 'fr' ? 'Par conséquent, nous vous invitons à cliquer sur le lien ci-dessous. Une fois sur le lien, suivez les instructions, signez le contrat et téléchargez-le après la signature.' : clientLang === 'de' ? 'Daher laden wir Sie ein, auf den untenstehenden Link zu klicken. Sobald Sie auf der Seite sind, folgen Sie den Anweisungen, unterschreiben Sie den Vertrag und laden Sie ihn nach der Unterzeichnung herunter.' : 'Therefore, we invite you to click on the link below. Once on the link, follow the instructions, sign the contract, and download it after signing.'}</p>
+                <p><a href="${link}" target="_blank">${clientLang === 'fr' ? 'Cliquez ici' : clientLang === 'de' ? 'Klicken Sie hier' : 'Click here'}</a> ${clientLang === 'fr' ? 'pour accéder au formulaire.' : clientLang === 'de' ? 'um auf das Formular zuzugreifen.' : 'to access the form.'}</p>
+                <p>${clientLang === 'fr' ? 'Cordialement,' : clientLang === 'de' ? 'Mit freundlichen Grüßen,' : 'Best regards,'}</p>
+            </div>
+        </body>
+        `;
+        const mailOptions = {
+            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.FREELANCE_EMAIL ?? ''},
+            to: to,
+            subject: `${clientLang === 'fr' ? "Formulaire de signature de contrat disponible" : clientLang === 'de' ? "Vertragsunterzeichnungsformular verfügbar" : "Contract signature form available"}`,
+            html : htmlSquelette(body,`${clientLang === 'fr' ? "Formulaire de signature de contrat disponible" : clientLang === 'de' ? "Vertragsunterzeichnungsformular verfügbar" : "Contract signature form available"}
+            `,clientLang)
+        };
+        const response = await transporter.sendMail(mailOptions);
+        console.log("send mail",response);
+        if (response) {
+            return 'success'
+        }
+        return 'error'
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 const sendEmail = async(data:Email,locale:string)=>{
     try {
@@ -194,4 +224,4 @@ function htmlSquelette(body:string,title:string,lang:string){
     </html>`
 }
 
-export {sendEmail,sendInvoice,sendContract};
+export {sendEmail,sendInvoice,sendContract,sendEmailForFillingContract};

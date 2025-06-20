@@ -1,5 +1,5 @@
 "use server"
-import { setDoc,doc } from 'firebase/firestore';
+import { setDoc,doc, query, collection, where, getDocs, addDoc } from 'firebase/firestore';
 import firebase from '@/utils/firebase';
 
 import { drive_v3, google } from "googleapis";
@@ -9,14 +9,22 @@ import { Readable } from 'stream';
 
 import { GoogleAuth } from './google-auth';
 import { getIp } from './services';
+import { use } from 'react';
 
+interface UserSalesSchema {
+  juridiction:string;
+  totalSales:number;
+  taxThreshold:number;
+  taxRequired:boolean;
+  lastUpdated:string;
+}
 
 const SCOPE = process.env.NEXT_PUBLIC_GOOGLE_DRIVE_SCOPE;
 
 const CONTRACT_FOLDER = process.env.NEXT_PUBLIC_FOLDER_CONTRACT_ID
 const INVOICE_FOLDER = process.env.NEXT_PUBLIC_FOLDER_INVOICE_ID
 
-const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,serviceId:string)=>{
+const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,serviceId:string,userTax:{saleTax:{amount:number,taxThreshold:number|undefined},stateIsoCode:string|undefined}|null)=>{
   const auth = await GoogleAuth()
   if(!INVOICE_FOLDER || !SCOPE || !auth) return
   const drive = google.drive({ version: 'v3', auth });
@@ -39,6 +47,10 @@ const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,s
   });
   if (response.status === 200) {
     const result = await updateClientWithData(serviceId,data.service,client)
+    if (userTax) {
+      await addUpdateSales(userTax.stateIsoCode,userTax.saleTax)
+    }
+    
     console.log('File uploaded:', result);
     if (result) {
       return 'success'
@@ -120,6 +132,40 @@ async function getOrCreateFolder(name: string, parentId: string,drive:drive_v3.D
       fields: 'id',
     });
     return folder.data.id!;
+  }
+}
+
+const addUpdateSales = async(stateIsoCode:string|undefined,saleTax:{amount:number,taxThreshold:number|undefined})=>{
+  if(!stateIsoCode || !saleTax.taxThreshold) return
+  try {
+    const postsQuery = query(collection(firebase.db, 'saleTax'), where('clientId', '==', stateIsoCode));
+    const postsSnapshot = await getDocs(postsQuery);
+    if (!postsSnapshot.empty) {
+      const response:UserSalesSchema = postsSnapshot.docs[0].data() as UserSalesSchema;
+      const updateTotalSale = response.totalSales + saleTax.amount;
+      let taxRequired = false;
+      if (response.taxThreshold <= updateTotalSale && !response.taxRequired) {
+        taxRequired = true;
+      }
+      const updateTax = {
+        totalSales: updateTotalSale,
+        taxRequired: taxRequired,
+        lastUpdated: new Date().toISOString(),
+      };
+      const docRef = doc(firebase.db, 'saleTax', postsSnapshot.docs[0].id);
+      await setDoc(docRef, updateTax, { merge: true });
+    } else {
+      const newTax = {
+        juridiction: stateIsoCode,
+        totalSales: saleTax.amount,
+        taxThreshold:saleTax.taxThreshold,
+        taxRequired: false,
+        lastUpdated: new Date().toISOString(),
+      };
+      await addDoc(collection(firebase.db, 'saleTax'), newTax);
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
 

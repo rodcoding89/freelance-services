@@ -16,6 +16,7 @@ interface CreateClientProps {
 
 interface Client {
     id?: string;
+    taxId?:string;
     name:string;
     email:string;
     modifDate:string;
@@ -43,7 +44,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors,isValid },
     } = useForm({ mode: 'onChange'});
 
     const addService = async(id:string,serviceName:string,serviceType:"service"|"maintenance"|"service_and_maintenance") =>{
@@ -75,7 +76,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         if(!data) return
         setLoader(true);
         try {
-            const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang}
+            const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : ''}
             //console.log('Client Data:', data);
 
             const clientId = await addClient(client);
@@ -105,7 +106,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
             const collectionRef = collection(firebase.db, "clients");
             const q = query(
                 collectionRef,
-                orderBy("dateCreation", "desc"), // Champ de date/timestamp
+                orderBy("modifDate", "desc"), // Champ de date/timestamp
                 limit(1)
             );
             
@@ -165,6 +166,15 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                         <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
                     )}
                 </div>
+                <div className="min-w-[14rem] w-max max-w-1/3">
+                    <label className="block text-sm font-medium text-gray-700">
+                    {t.taxNumberText.replace("{tax}", 'VAT')} <em className="text-red-700">*</em>
+                    </label>
+                    <input
+                    {...register("taxId")}
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    />
+                </div>
                 <div className='my-3'>
                     <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">
                         Choisir le type de contrat
@@ -197,7 +207,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                     <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/clients-list'}>Liste de clients</Link>
                     <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center items-center gap-2">
+                        className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center items-center gap-2 ${!isValid || loader ? 'cursor-not-allowed opacity-45' : 'cursor-pointer opacity-100'}`} disabled={!isValid || loader}>
                         {loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>} Créer le client
                     </button>
                 </div>

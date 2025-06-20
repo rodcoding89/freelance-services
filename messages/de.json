@@ -924,6 +924,8 @@
     },
     "contractTerme": "Vertragsbedingungen",
     "contractConfirm": "Wenn Sie den oben genannten Bedingungen zustimmen, kreuzen Sie bitte zunächst das Kästchen an, um die elektronische Unterzeichnung des Vertrags zu genehmigen, und bestätigen Sie anschließend, dass Sie die Allgemeinen Geschäftsbedingungen (AGB) gelesen und akzeptiert haben, indem Sie das zweite Kästchen ankreuzen. Danach unterschreiben Sie bitte den Vertrag unten. Wenn Sie nicht einverstanden sind, teilen Sie uns bitte die Gründe für Ihre Ablehnung mit.",
+    "originalVersion":"Dies ist die übersetzte Version des Vertrags. Sie soll das Verständnis der Vertragsbedingungen erleichtern. Um die Originalversion (auf Englisch) zu lesen, klicken Sie auf die Schaltfläche. Bei Zweifeln an der Übereinstimmung zwischen den Versionen können Sie die Originalversion (auf Englisch) mit Google Übersetzer oder einer Online-KI übersetzen.",
+    "readOriginalVersion":"Originalversion lesen",
     "confirmElectronicSignature": "Ich bestätige, dass ich die elektronische Unterzeichnung des Vertrags genehmige",
     "updateContract": "Vertrag bearbeiten",
     "uploadContract": "Vertrag herunterladen",

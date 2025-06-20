@@ -10,6 +10,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import SalesTax from 'sales-tax';
 import Icon from "./Icon";
 import { loadCountries } from "@/utils/fonction";
+import { sendEmailForFillingContract } from "@/server/services-mail";
 
 interface Services {
   clientId:string;
@@ -22,6 +23,7 @@ interface Services {
 interface Client {
     id?: string;
     name:string;
+    taxId?:string;
     email?:string;
     modifDate:string;
     clientNumber:number;
@@ -42,12 +44,15 @@ interface contractFormPrestataire{
     maintenanceCategory:"app"|"saas"|"website"|"ecommerce"|null;
 }
 interface state {
+    id:number,
     name:string,
     tax:number,
     vat:string,
-    stateCode:string
+    stateCode:string,
+    threshold:number
 }
 interface clientCountry {
+    id:number,
     name:string,
     taxB2C:string,
     taxB2B:string,groupe:string,
@@ -58,13 +63,14 @@ interface clientCountry {
     state:state|null
 }
 interface countryState {
+    id:number,
     name:string,
     taxB2C:string,
     taxB2B:string,groupe:string,
     currency:string,
     isoCode:string,threshold_before_tax:number,
     specficTo:"state"|"country",vat?:string,
-    state:{name:string,tax:number,vat:string,threshold:number,stateCode:string}[]|null
+    state:state[]|null
 }
 interface contractFormClient{
     name:string;
@@ -72,7 +78,7 @@ interface contractFormClient{
         street:string;
         postalCode:string;
         city:string;
-        country:clientCountry;
+        country:clientCountry|null;
     }
     typeClient:"company"|"particular";
     clientBillingAddress?:string;
@@ -88,7 +94,7 @@ interface Contract {
     contractType: "service"|"maintenance"|"service_and_maintenance";
     maintenanceCategory:"app"|"saas"|"website"|"ecommerce"|null;
     mprice:number;
-    projectFonctionList:{title:string,content:string}[];
+    projectFonctionList:{title:string,description:string,quantity:number,price:number}[];
     contractLanguage:string;
     saleTermeConditionValided?:boolean;
     electronicContractSignatureAccepted?:boolean;
@@ -118,9 +124,8 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     const [loading, setLoading] = useState(true);
     const [loader, setLoader] = useState(false);
     const {contextData} = useContext(AppContext)
-    const [fonctionalityList, setFonctionalityList] = useState<{title:string,content:string}[]>([])
-    const [fonctionalityTitle, setFonctionalityTile] = useState<string>('')
-    const [fonctionalityDescription, setFonctionalityDescription] = useState<string>('')
+    const [fonctionalityList, setFonctionalityList] = useState<{title:string,description:string,quantity:number,price:number}[]>([])
+    const [fonctionality, setFonctionality] = useState<{title:string,description:string,quantity:number,price:number}>({title:"",description:"",quantity:0,price:0})
     const router = useRouter();
 
     const [selectedCountry,setSelectedCountry] = useState<countryState|null>(null)
@@ -157,6 +162,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         watch: watchClient,
         formState: { errors: errorsClient, isValid: isValidClient }
     } = useForm<contractFormClient>({ mode: 'onChange' });
+    const formClient = watchClient()
     const {
         register: registerPrestataire,
         handleSubmit: handleSubmitPrestataire,
@@ -174,20 +180,38 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             const response = await SalesTax.validateTaxNumber ( isoCode,taxNumber) 
             return {success:response,message:response ? `Numéro de Tax valid` : `Numéro de Tax invalid, modifié le sinon le montant sera facturé avec la Tax.`}
         } else {
-            return {success:false,message:`Numéro de Tax non prise en charge`}
+            //manuelle chacking before contract creating
+            if (client && client.taxId) {
+                return {success:true,message:`Numéro de Tax vérifié et valid`}
+            } else {
+                return {success:false,message:`Numéro de Tax non prise en charge`}
+            }
         }
     }
 
     const onSubmitPrestataire = async(data:contractFormPrestataire) => {
         if(!selectedContractType || !maintenanceCategory) return
         setLoader(true)
-        console.log("provider data",data)
+        console.log("countryToSave",countryToSave.current)
         const formData = {...data}
-        const contractItem = {...service?.contract,prestataireGivingData:formData,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:client?.clientLang ?? 'en',contractType:selectedContractType,clientGivingData:service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null,mprice:0}
+        let clientGivingData:contractFormClient|null = null 
+        if (process.env.NODE_ENV === 'development') {
+            const clientInfo = null/*{...formClient, adresse: {...formClient.adresse, country: countryToSave.current}}*/
+            clientGivingData = service?.contract?.clientGivingData ? service?.contract?.clientGivingData : clientInfo
+        }else{
+            clientGivingData = service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null
+        }
+        const contractItem = {...service?.contract,prestataireGivingData:formData,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:client?.clientLang ?? 'en',contractType:selectedContractType,clientGivingData:clientGivingData,mprice:0}
         console.log("provider data contract",contractItem,"formData",formData)
         const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contractItem}
         const clientData = {...client,modifDate:new Date().toLocaleDateString()}
-        saveContractAndNavigate(clientData,parsedService)
+        const link = `${process.env.NEXT_PUBLIC_WEB_LINK?.replace("{locale}",client?.clientLang ?? 'en')}/create-contract/${clientId}/${clientServiceId}`
+        const response = await sendEmailForFillingContract(client?.email ?? "",client?.name ?? "",link,client?.clientLang ?? 'en');
+        if (response) {
+            saveContractAndNavigate(clientData,parsedService)
+        }else{
+            alert("error by sending email")
+        }
     }
 
     const onSubmitClient = async(data:contractFormClient) => {
@@ -280,8 +304,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
     const handleStateChange = (e:any)=>{
         if (e.target.value !== 'default') {
-            setCurrentState(e.target.value)
-            const state = selectedCountry?.state?.find((item:any) => item.name === e.target.value);
+            const state = selectedCountry?.state?.find((item:any) => item.id === parseInt(e.target.value));
+            console.log("id",e.target.value,"state",state)
+            setCurrentState(state?.id.toString() ?? '')
             toSaveState.current = state ?? null
             if (countryToSave.current) {
                 countryToSave.current = {...countryToSave.current,state:toSaveState.current}
@@ -297,10 +322,12 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
     const handleCountryChange = async(e:any)=>{
         if (e.target.value !== 'default') {
-            setCurrentCountry(e.target.value)
-            const country = countries.find((item:any) => item.name === e.target.value);
+            console.log("id",e.target.value)
+            const country = countries.find((item:any) => item.id === parseInt(e.target.value));
             setSelectedCountry(country ?? null)
             countryToSave.current = country ? {...country,state:null} : null
+            console.log("country",country)
+            setCurrentCountry(country?.id.toString() ?? "")
             if(clientVatNumber && clientVatNumber !== ''){
                 const response = await checkClientTaxNumber(countryToSave.current?.isoCode ?? '',clientVatNumber)
                 //console.log("response",response)
@@ -311,11 +338,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             clearAdresse()
         }
     }
-
+    
     const parseInputDate = ()=>{
         return `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
     }
-
+    
     useEffect(() => {
         const loadCountrieData = async () => {
             try {
@@ -360,14 +387,14 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         setFonctionalityList(contract.projectFonctionList)
                         if (contract.clientGivingData) {
                             resetClient(contract.clientGivingData);
-                            const country = countriesList.find((item:any) => item.name === contract.clientGivingData?.adresse.country.name);
-                            setCurrentCountry(country?.name ?? null)
+                            const country = countriesList.find((item:any) => item.id === contract.clientGivingData?.adresse.country?.id);
+                            setCurrentCountry(country?.id.toString() ?? null)
                             countryToSave.current = country ?? null
-                            if (country.specficTo === 'state' && country.name === contract.clientGivingData.adresse.country.name) {
-                                const updateCountry = {...country,state:contract.clientGivingData.adresse.country.state}
+                            if (country.specficTo === 'state' && country.name === contract.clientGivingData.adresse.country?.name) {
+                                const updateCountry = {...country,state:contract.clientGivingData.adresse.country?.state}
                                 countryToSave.current = updateCountry ?? null
-                                toSaveState.current = contract.clientGivingData.adresse.country.state
-                                setCurrentState(contract.clientGivingData.adresse.country.state?.name ?? '')
+                                toSaveState.current = contract.clientGivingData.adresse.country?.state!
+                                setCurrentState(contract.clientGivingData.adresse.country?.state?.id.toString() ?? '')
                             }else{
                                 countryToSave.current = country ?? null
                             }
@@ -379,7 +406,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         }
                         setMaintenaceType(contract.maintenanceCategory)
                     }else{
-                        resetClient({clientEmail:client.email,name:client.name});
+                        resetClient({clientEmail:client.email,name:client.name,clientVatNumber:client.taxId ?? ''});
                         resetPrestataire(contract);
                     }
                     setSelectedContractStatus(service.contractStatus)
@@ -401,14 +428,14 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 if (parsedData.service.contract) {
                     if (parsedData.service.contract.clientGivingData) {
                         resetClient(parsedData.service.contract.clientGivingData);
-                        const country = countriesList.find(item => item.name === parsedData.service.contract.clientGivingData.adresse.country.name);
-                        setCurrentCountry(country?.name ?? null)
+                        const country = countriesList.find(item => item.id === parsedData.service.contract.clientGivingData.adresse.country.id);
+                        setCurrentCountry(country?.id.toString() ?? null)
                         setSelectedCountry(country)
                         if (country.specficTo === 'state' && country.name === parsedData.service.contract.clientGivingData.adresse.country.name) {
                             const updateCountry = {...country,state:parsedData.service.contract.clientGivingData.adresse.country.state}
                             countryToSave.current = updateCountry ?? null
                             toSaveState.current = parsedData.service.contract.clientGivingData.adresse.country.state
-                            setCurrentState(parsedData.service.contract.clientGivingData.adresse.country.state.name)
+                            setCurrentState(parsedData.service.contract.clientGivingData.adresse.country.state.id.toString() ?? '')
                         }else{
                            countryToSave.current = country ?? null
                         }
@@ -580,7 +607,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                     <option value="default">{t.adresse.default}</option>
                                     {
                                         countries.map((item, index) => ( 
-                                            <option key={index} value={item.name}>{t.adresse[item.name]}</option>
+                                            <option key={index} value={item.id}>{t.adresse[item.name]}</option>
                                         ))
                                     }
                                 </select>
@@ -629,7 +656,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                 )}
                             </div>
                             {
-                                (selectedCountry && selectedCountry.specficTo === "state" && currentCountry === selectedCountry.name) && (
+                                (selectedCountry && selectedCountry.specficTo === "state" && currentCountry === selectedCountry.id.toString()) && (
                                     <div className="w-full">
                                         <label className="block text-sm font-medium text-gray-700">
                                             {t.adresse.state} <em className="text-red-700">*</em>
@@ -638,7 +665,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                                             <option value="default">{t.adresse.defaultState}</option>
                                             {
                                                 selectedCountry.state?.map((item, index) => ( 
-                                                    <option key={index} value={item.name}>{item.name}</option>
+                                                    <option key={index} value={item.id}>{item.name}</option>
                                                 ))
                                             }
                                         </select>
@@ -767,10 +794,27 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     {
                         Cookies.get('logged') && (<div className="my-4 w-full">
                             <label className="block text-sm font-medium text-gray-700">{t.projetFonctionality} <em className="text-red-700">*</em></label>
-                            <div className="flex items-start gap-5 mt-2 justify-start flex-col w-full flex-wrap">
-                                <input className="p-2 bg-[#f5f5f5] w-3/5 min-w-[14rem] focus:outline-none" value={fonctionalityTitle} type="text" placeholder="Titre de la fonctionnalité" onChange={(e)=>setFonctionalityTile(e.target.value)}/>
-                                <textarea className="p-2 bg-[#f5f5f5] w-3/5 min-w-[14rem] focus:outline-none" placeholder="Description de la fonctionnalité" id="" value={fonctionalityDescription} onChange={(e)=>setFonctionalityDescription(e.target.value)}></textarea>
-                                <span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-fit bg-slate-800 text-white rounded-[.2em]" onClick={()=>{(fonctionalityTitle !== '' && fonctionalityDescription !== '') && setFonctionalityList([...fonctionalityList,{title:fonctionalityTitle,content:fonctionalityDescription}]);setFonctionalityTile('');setFonctionalityDescription('')}}><Icon name="bx-plus" size="1.5em" color="#fff"/>{t.add}</span><span className="p-2 cursor-pointer w-fit flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonctionalityTile('');setFonctionalityDescription('')}}><Icon name="bx-trash" size="1.5em" color="#fff"/>{t.clearListe}</span></div>
+                            <div className="flex items-start gap-5 mt-2 justify-start w-full flex-wrap">
+                                <div className="w-full min-w-[14rem] flex flex-col gap-1">
+                                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">Titre de la fonctionnalié</label>
+                                    <input className="p-2 bg-[#f5f5f5] w-full focus:outline-none" value={fonctionality.title} type="text" placeholder="Titre de la fonctionnalité" id="title" onChange={(e)=>setFonctionality((prev)=> {return{...prev,title:e.target.value}})}/>
+                                </div>
+                                <div className="w-full min-w-[14rem] flex flex-col gap-1">
+                                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description de la fonctionnalité</label>
+                                    <textarea className="p-2 bg-[#f5f5f5] w-full focus:outline-none" placeholder="Description de la fonctionnalité" id="" value={fonctionality.description} onChange={(e)=>setFonctionality((prev)=> {return{...prev,description:e.target.value}})}></textarea>
+                                </div>
+                                <div className="w-1/6 min-w-[14rem] flex flex-col gap-1">
+                                    <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantité</label>
+                                    <input className="p-2 bg-[#f5f5f5] w-full focus:outline-none" value={fonctionality.quantity.toString()} type="text" placeholder="Quantité" onChange={(e)=>setFonctionality((prev)=> {return{...prev,quantity:parseInt(e.target.value)}})}/>
+                                </div>
+                                <div className="w-1/6 min-w-[14rem] flex flex-col gap-1">
+                                    <label htmlFor="price" className="block text-sm font-medium text-gray-700">Prix</label>
+                                    <input className="p-2 bg-[#f5f5f5] w-full focus:outline-none" value={fonctionality.price.toString()} type="text" placeholder="Prix" onChange={(e)=>setFonctionality((prev)=> {return{...prev,price:parseInt(e.target.value)}})}/>
+                                </div>
+                                <div className="w-fit flex justify-start items-center gap-2">
+                                    <span className="p-2 cursor-pointer flex justify-start items-center gap-1 w-fit bg-slate-800 text-white rounded-[.2em]" onClick={()=>{(fonctionality.title !== '' && fonctionality.description !== '' && fonctionality.quantity !== 0 && fonctionality.price !== 0) && setFonctionalityList([...fonctionalityList,fonctionality]);setFonctionality({title:'',description:'',quantity:0,price:0})}}><Icon name="bx-plus" size="1.5em" color="#fff"/>{t.add}</span><span className="p-2 cursor-pointer w-fit flex justify-start items-center gap-1 bg-slate-800 text-white rounded-[.2em]" onClick={()=>{setFonctionalityList([]);setFonctionality({title:'',description:'',quantity:0,price:0})}}><Icon name="bx-trash" size="1.5em" color="#fff"/>{t.clearListe}</span>
+                                </div>
+                            </div>
                         </div>)
                     }
 
@@ -781,7 +825,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                             <ul className="my-4 mx-4 list-disc">
                                 {
                                     fonctionalityList.map((item, index) => (
-                                        <li key={index} className={`${index === fonctionalityList.length - 1 ? 'mb-0' : 'mb-2'}`}>{item.title} - {item.content}</li>
+                                        <li key={index} className={`${index === fonctionalityList.length - 1 ? 'mb-0' : 'mb-2'}`}>{item.title} - {item.description} - {item.price}</li>
                                     ))
                                 }
                             </ul>
@@ -919,7 +963,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     !Cookies.get("logged") && (
                         <div className="flex justify-end gap-3 flex-wrap my-4">
                             <button form="onSubmitClientForm" type="submit"
-                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkFormValidation()}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.generedContract}</button>
+                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() || !loader ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkFormValidation() || loader}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.generedContract}</button>
                         </div>
                     )
                 }

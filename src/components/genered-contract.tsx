@@ -11,10 +11,12 @@ import GeneratePdfContract from "./generate-pdf-contract";
 import Success from "./success";
 import Echec from "./echec";
 import Icon from "./Icon";
+import Link from "next/link";
 
 interface Client {
     id: string;
     name:string;
+    taxId?:string;
     email?:string;
     modifDate:string
     clientNumber:number;
@@ -36,6 +38,7 @@ interface contractFormPrestataire{
 }
 
 interface clientCountry {
+    id:number,
     name:string,
     taxB2C:string,
     taxB2B:string,groupe:string,
@@ -43,7 +46,7 @@ interface clientCountry {
     isoCode:string,threshold_before_tax:number,
     specficTo:"state"|"country",
     vat?:string,
-    state:{name:string,tax:number,vat:string,stateCode:string}|null
+    state:{name:string,tax:number,vat:string,stateCode:string,threshold:number}|null
 }
 
 interface contractFormClient{
@@ -69,7 +72,7 @@ interface Contract {
     maintenanceCategory:"app"|"saas"|"web"|null;
     mprice?:number;
     tax:number;
-    projectFonctionList:{title:string,content:string}[];
+    projectFonctionList:{title:string,description:string,quantity:number,price:number}[];
     contractLanguage:string;
     saleTermeConditionValided?:boolean;
     electronicContractSignatureAccepted?:boolean;
@@ -190,7 +193,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                             <ul className="list-disc ml-10 mb-5">
                                 {
                                     contract?.projectFonctionList.map((item, index) => (
-                                        <li className="text-[1rem] mb-1" key={index}>{item.title} - {item.content}</li>
+                                        <li className="text-[1rem] mb-1" key={index}>{item.title} - {item.description} - {item.price}</li>
                                     ))
                                 }
                             </ul>
@@ -380,6 +383,9 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                         </div>
                         <GeneratePdfContract clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} client={client} service={serviceData} locale={locale} onEmit={handleContractStatus}/>
                     </section>
+                    {
+                        locale !== 'en' && <div className="flex justify-center items-start flex-col gap-1 mb-3"><span className="block italic my-4">{t.originalVersion}</span><Link className="p-1 px-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-center text-[.85rem]" href={`/en/sign-contract/${clientId}/${clientServiceId}`}>{t.readOriginalVersion}</Link></div>
+                    }
                     <span className="block italic my-4">{t.contractConfirm}</span>
                     <div className="flex justify-start items-center my-5 gap-2">
                         <input type="checkbox" name="" id="confirmElectronicSignature" onChange={(e:any)=>setConfirmElectronicSignature(e.target.checked)}/>
@@ -398,7 +404,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                     </section>
                     <div className="flex justify-end items-center mt-5 gap-4 flex-wrap">
                         <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center" href={`/${client?.clientLang ?? 'en'}/create-contract/${clientId}/${clientServiceId}/?edit=true`}>{t.updateContract}</a>
-                        <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md min-w-[14rem]  hover:bg-indigo-700 ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkContractValidation()} onClick={uploadContract}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.uploadContract}</button>
+                        <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md min-w-[14rem]  hover:bg-indigo-700 ${checkContractValidation() || !loader ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkContractValidation() || loader} onClick={uploadContract}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.uploadContract}</button>
                     </div>
                     </>
             ) : (

@@ -157,7 +157,7 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
                                     {
                                         isSended !== null ? isSended === true ? <div className='bg-green-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[200px]'>{t["successContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : <div className='bg-red-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[200px]'>{t["errorContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : null
                                     }
-                                    <button className={`btn btn-primary text-fifty ${isValid ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-45'} ${loader ? 'flex justify-center items-center gap-1' :''}`} type="submit" disabled={!isValid}>{t["sendMessage"]}{loader && <Icon name='bx bx-loader-alt bx-spin' size='1em' color='#fff'/>}</button>
+                                    <button className={`btn btn-primary text-fifty ${isValid || !loader ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-45'} ${loader ? 'flex justify-center items-center gap-1' :''}`} type="submit" disabled={!isValid || loader}>{t["sendMessage"]}{loader && <Icon name='bx bx-loader-alt bx-spin' size='1em' color='#fff'/>}</button>
                                 </div>
                             </form>
                         </div>

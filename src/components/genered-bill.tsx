@@ -8,10 +8,12 @@ import { CMYK, cmyk, PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, Standard
 import { useTranslationContext } from '@/hooks/app-hook';
 import { saveClientInvoice } from '@/server/services-save-doc';
 import { sendInvoice } from '@/server/services-mail';
+import Icon from './Icon';
 
 interface clientInfo {
   id: string;
   name:string;
+  taxId?:string;
   email?:string;
   modifDate?:string
   dateCreation?: string;
@@ -110,36 +112,60 @@ type pdfContent = {
     params: drawText[] | drawImage[] | drawRectangle[] | drawLine[];
   };
 }
-interface Contract {
+interface contractFormPrestataire{
+    freelancerName:string;
+    freelancerTaxId?:string;
+    freelanceAddress:string;
+    projectTitle:string;
+    projectDescription:string;
+    startDate:string;
+    endDate:string;
+    totalPrice:number;
+    paymentSchedule:string;
+    maintenanceCategory:"app"|"saas"|"web"|null;
+}
+interface clientCountry {
+    name:string,
+    taxB2C:string,
+    taxB2B:string,groupe:string,
+    currency:string,
+    isoCode:string,threshold_before_tax:number,
+    specficTo:"state"|"country",
+    vat?:string,
+    state:{name:string,tax:number,vat:string,stateCode:string,threshold:number}|null
+}
+
+interface contractFormClient{
   name:string;
   adresse:{
-    street:string;
-    postalCode:string;
-    city:string;
-    country:{name:string,taxB2C:string,taxB2B:string,groupe:string,currency:string,threshold_before_tax:number};
+      street:string;
+      postalCode:string;
+      city:string;
+      country:clientCountry;
   }
-  particular:boolean;
-  company:boolean;
+  typeClient:"company"|"particular"|null;
   clientBillingAddress?:string;
   clientEmail:string;
   clientPhone:string;
-  freelancerName:string;
-  freelancerTaxId?:string;
-  freelanceAddress:string;
-  projectTitle:string;
-  projectDescription:string;
-  projectFonctionList:string[];
-  startDate:string;
-  endDate:string;
-  contractType: "service"|"maintenance"|"service_and_maintenance";
-  maintenanceType:"app"|"saas"|"web"|null;
-  maintenaceOptionPayment?:"perYear"|"perHour"
-  totalPrice:number;
-  mprice?:number;
-  paymentSchedule:string;
-  contractLanguage:string;
-  tax:number;
+  clientVatNumber?:string;
+  typeMaintenance?:"perYear"|"perHour"|"";
 }
+
+interface Contract {
+  clientGivingData:contractFormClient|null,
+  prestataireGivingData:contractFormPrestataire|null,
+  contractType: "service"|"maintenance"|"service_and_maintenance";
+  maintenanceCategory:"app"|"saas"|"web"|null;
+  mprice?:number;
+  tax:number;
+  projectFonctionList:{title:string,description:string,quantity:number,price:number}[];
+  contractLanguage:string;
+  saleTermeConditionValided?:boolean;
+  electronicContractSignatureAccepted?:boolean;
+  rigthRetractionLostAfterServiceBegin?:boolean;
+}
+
+const enableCountryForThresholdBeforTax = ["CA","US","CH","AU","ZA"]
 
 const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
   const [loading, setLoading] = useState(false);
@@ -162,7 +188,7 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
 
   const [features, setFeatures] = useState<features[]>([]);
 
-  const [taxEnabled, setTaxEnabled] = useState(false);
+  const [taxEnabled, setTaxEnabled] = useState(true);
   const [taxRate, setTaxRate] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [invoiceDescription, setInvoiceDescription] = useState('');
@@ -339,11 +365,11 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     {name:"addRectangle",call:1,id:11,isConditional:true},
     {name:"addText",call:4,id:12,isLoop:true},
     {name:"addLine",count:1,id:13},
-    {name:"addText",call:2,id:14},
-    {name:"addText",call:2,id:15,isConditional:true},
-    {name:"addText",call:2,id:16,isConditional:true},
+    {name:"addText",call:1,id:14},
+    {name:"addText",call:1,id:15,isConditional:true},
+    {name:"addText",call:1,id:16,isConditional:true},
     {name:"addRectangle",count:1,id:17},
-    {name:"addText",call:3,id:18}
+    {name:"addText",call:2,id:18}
   ];
   const formatDate = (date:string,locale:string)=>{
     const fdate = new Date(date)
@@ -390,13 +416,13 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     const clientInfoBoxY = {current : yClientInfoBox}
    
     const tableWidth = width - margin * 2;
-    const colX = tableWidth / 4
+    const colX = tableWidth / 7
     const col1X = margin; //Description
-    const col2X = col1X + colX; // Quantité
+    const col2X = col1X + colX*1.8; // Quantité
     const col3X = col2X + colX; // Prix unitaire
-    const col4X = col3X + colX; // Prix Total
-    const totalsXKey = width - margin - 150;
-    const totalsXValue = width - margin - 70;
+    const col4X = col3X + colX*2; // Prix Total
+    const totalsXKey = width - margin - 250;
+    const totalsXValue = totalsXKey - 20;
     
     const pdfContent:pdfContent = {
       1:{
@@ -445,23 +471,23 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
       },
       12:{
         isConditional:false,
-        params:[[col1X + 5,12.5,9,helveticaFont,"{description}",page,blackColor,0,yPosition],[col1X + colX + 5,12.5,9,helveticaFont,"{quantity}",page,blackColor,0,yPosition],[col2X + colX + 5,12.5,9,helveticaFont,"{price}",page,blackColor,0,yPosition],[col3X + colX + 5,12.5,9,helveticaFont,"{lineTotal}",page,blackColor,18,yPosition]]
+        params:[[col1X + 5,12.5,9,helveticaFont,"{description}",page,blackColor,0,yPosition],[col2X + 5,12.5,9,helveticaFont,"{quantity}",page,blackColor,0,yPosition],[col3X + 5,12.5,9,helveticaFont,"{price}",page,blackColor,0,yPosition],[col4X + 5,12.5,9,helveticaFont,"{lineTotal}",page,blackColor,18,yPosition]]
       },
       13:{
         isConditional:false,
-        params:[[{ x: margin + (width - margin * 2) * 0.6, y: 20 },{ x: width - margin, y: 20 },0.5,greyColor,page,15,yPosition]]
+        params:[[{ x: margin + (width - margin * 2) * 0.5, y: 20 },{ x: width - margin, y: 20 },0.5,greyColor,page,15,yPosition]]
       },
       14:{
         isConditional:false,
-        params:[[totalsXKey,0,10,helveticaFont,t.invoice.subtotal,page,blackColor,0,yPosition],[totalsXValue,0,10,helveticaFont,'{subtotal}',page,blackColor,data.taxEnabled !== false && data.taxRate > 0 ? 20:25,yPosition]]
+        params:[[totalsXKey,0,10,helveticaFont,`${t.invoice.subtotal} {subtotal}`,page,blackColor,data.taxEnabled !== false ? 20:25,yPosition]]
       },
       15:{
         isConditional:true,
-        params:[[totalsXKey,0,10,helveticaFont,t.invoice.tax.replace("{tax}", data.taxRate.toString()),page,blackColor,0,yPosition],[totalsXValue,0,10,helveticaFont,'{tax}',page,blackColor,25,yPosition]]
+        params:[[totalsXKey,0,10,helveticaFont,`${t.invoice.tax.replace("{tax}", data.taxRate.toString())} {taxPrice}`,page,blackColor,25,yPosition]]
       },
       16:{
         isConditional:true,
-        params:[[totalsXKey,0,10,helveticaFont,t.invoice.discount.replace("{discount}", data.taxRate.toString()),page,blackColor,0,yPosition],[totalsXValue,0,10,helveticaFont,'{discount}',page,blackColor,18,yPosition]]
+        params:[[totalsXKey,0,10,helveticaFont,`${t.invoice.discount.replace("{discount}", data.taxRate.toString())} {discountPrice}`,page,blackColor,18,yPosition]]
       },
       17:{
         isConditional:false,
@@ -469,7 +495,7 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
       },
       18:{
         isConditional:false,
-        params:[[totalsXKey,0,11,helveticaBoldFont,t.invoice.totalWithTax,page,whiteColor,0,yPosition],[totalsXValue,0,11,helveticaBoldFont,'{total}',page,whiteColor,30,yPosition],[margin,0,8,helveticaFont,t.invoice.footer,page,blackColor,0,{current:margin+30},width - margin * 2,12,width,margin]]
+        params:[[totalsXKey,0,11,helveticaBoldFont,`${t.invoice.totalWithTax} {totalPrice}`,page,whiteColor,30,yPosition],[margin,0,8,helveticaFont,t.invoice.footer,page,blackColor,0,{current:margin+30},width - margin * 2,12,width,margin]]
       }
     };
 
@@ -562,47 +588,35 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
           if (item.isConditional) {
             if (data.discount > 0 && item.id === 16) {
               discountAmount = calculateDiscountAmount();
-              for (let index = 0; index < item.call; index++){
-                const params = pdfContent[item.id].params[index];
-                if (isDataAddText(params)) {
-                  if (index === 1) {
-                    params[4] = `${discountAmount.toFixed(2)} €`;
-                  }
-                  yPosition.current = addNewText(params)
-                }
+              const params = pdfContent[item.id].params[0];
+              if (isDataAddText(params)) {
+                params[4] = `${params[4].replace("{discountPrice}",discountAmount.toFixed(2))} €`;
+                yPosition.current = addNewText(params)
               }
             }
-            if (data.taxEnabled !== false && data.taxRate > 0 && item.id === 15) {
+            if (data.taxEnabled !== false && item.id === 15) {
               taxAmount = calculateTax();
-              for (let index = 0; index < item.call; index++){
-                const params = pdfContent[item.id].params[index];
-                if (isDataAddText(params)) {
-                  if (index === 1) {
-                    params[4] = `${taxAmount.toFixed(2)} €`;
-                  }
-                  yPosition.current = addNewText(params)
-                }
+              const params = pdfContent[item.id].params[0];
+              if (isDataAddText(params)) {
+                params[4] = `${params[4].replace("{taxPrice}",taxAmount.toFixed(2))} €`;
+                yPosition.current = addNewText(params)
               }
             }
           }else{
             if (item.id === 14) {
               subtotal = calculateSubtotal();
-              for (let index = 0; index < item.call; index++) {
-                const params = pdfContent[item.id].params[index];
-                if (isDataAddText(params)) {
-                  if (index === 1) {
-                    params[4] = `${subtotal.toFixed(2)} €`;
-                  }
-                  yPosition.current = addNewText(params)
-                }
+              const params = pdfContent[item.id].params[0];
+              if (isDataAddText(params)) {
+                params[4] = `${params[4].replace("{subtotal}",subtotal.toFixed(2))} €`;
+                yPosition.current = addNewText(params)
               }
             }else{
               const total = calculateTotal()
               for (let index = 0; index < item.call; index++) {
                 const params = pdfContent[item.id].params[index];
                 if (isDataAddText(params)) {
-                  if (index === 1) {
-                    params[4] = `${total.toFixed(2)} €`;
+                  if (index === 0) {
+                    params[4] = `${params[4].replace("{totalPrice}",total.toFixed(2))} €`;
                   }
                   yPosition.current = addNewText(params)
                 }
@@ -644,39 +658,56 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     e.preventDefault();
     if(invoiceInfo && !invoiceInfo.email || !invoiceInfo) return
     // Ici vous pourriez envoyer les données à une API ou générer un PDF
-    const data = {invoiceInfo,features,taxEnabled,taxRate,discount,invoiceDescription} as FormValues
-    const logoUrl = `${process.env.NEXT_PUBLIC_ROOT_LINK}/assets/images/logo.png`
-    const blob = await generatePdf(data,logoUrl)
-    const parsedService = {...service,invoice:data};
-    const parsedClient = {...clientInfo,invoiceCount:parseInt(invoiceInfo.number),modifDate:new Date().toLocaleDateString(`${contractLanguage === 'fr' ? 'fr-FR' : contractLanguage === 'de' ? 'de-DE' : 'en-US'}`)}
     
-    if(blob){
-      const invoiceData = {service:parsedService,blobInvoice:blob}
-      const result = await saveClientInvoice(invoiceData,parsedClient,clientServiceId)
-      const attach = await blobToBase64(blob) as string;
-      if (result === "success") {
-        const response = await sendInvoice({to:invoiceInfo.email ?? '',attach:attach,subject:`${contractLanguage === 'fr' ? 'Facture' : contractLanguage === 'de' ? 'Rechnung' : 'Invoice'}`,name:invoiceInfo.name},contractLanguage)
-        if (response === "success") {
-          alert("Facture envoyée avec succès")
-        } else {
-          alert("Erreur lors de l'envoi de la facture")
+    try {
+      setLoading(true)
+      const data = {invoiceInfo,features,taxEnabled,taxRate,discount,invoiceDescription} as FormValues
+      const logoUrl = `${process.env.NEXT_PUBLIC_ROOT_LINK}/assets/images/logo.png`
+      const blob = await generatePdf(data,logoUrl)
+      const parsedService = {...service,invoice:data};
+      const parsedClient = {...clientInfo,invoiceCount:parseInt(invoiceInfo.number),modifDate:new Date().toLocaleDateString(`${contractLanguage === 'fr' ? 'fr-FR' : contractLanguage === 'de' ? 'de-DE' : 'en-US'}`)}
+      
+      if(blob){
+        const invoiceData = {service:parsedService,blobInvoice:blob}
+        const amountNoTax = features.reduce((total, feature) => total + feature.quantity * feature.price, 0);
+        let userTax = null;
+        if (enableCountryForThresholdBeforTax.includes(parsedService.contract?.clientGivingData?.adresse.country.isoCode ?? '')) {
+          userTax = {stateIsoCode:parsedService.contract?.clientGivingData?.adresse.country.state?.stateCode ? parsedService.contract?.clientGivingData?.adresse.country.state?.stateCode : parsedService.contract?.clientGivingData?.adresse.country.isoCode,saleTax:{amount:amountNoTax,taxThreshold:parsedService.contract?.clientGivingData?.adresse.country.state?.stateCode ? parsedService.contract?.clientGivingData?.adresse.country.state.threshold : parsedService.contract?.clientGivingData?.adresse.country.threshold_before_tax} }
         }
+        /*const pdfUrl = URL.createObjectURL(blob)
+          if (pdfUrl) {
+            window.open(pdfUrl, '_blank')
+              //setPdfUrl(pdfUrl)
+          }*/
+        const result = await saveClientInvoice(invoiceData,parsedClient,clientServiceId,userTax)
+        const attach = await blobToBase64(blob) as string;
+        if (result === "success") {
+          /*const pdfUrl = URL.createObjectURL(blob)
+          if (pdfUrl) {
+            window.open(pdfUrl, '_blank')
+              //setPdfUrl(pdfUrl)
+          }*/
+          const response = await sendInvoice({to:invoiceInfo.email ?? '',attach:attach,subject:`${contractLanguage === 'fr' ? 'Facture' : contractLanguage === 'de' ? 'Rechnung' : 'Invoice'}`,name:invoiceInfo.name},contractLanguage)
+          if (response === "success") {
+            alert("Facture envoyée avec succès")
+            router.push('/'+locale+'/clients-list')
+          } else {
+            alert("Erreur lors de l'envoi de la facture")
+          }
+        }
+      }else{
+        alert("Erreur lors de la génération du PDF")
       }
+    } catch (error) {
+      alert("Erreur lors de la génération du PDF")
+    } finally{
+      setLoading(false)
     }
     
     /*if (pdfUrl) {
       window.open(pdfUrl, '_blank')
         //setPdfUrl(pdfUrl)
     }*/
-    console.log({
-      clientInfo,
-      invoiceInfo,
-      features,
-      taxEnabled,
-      taxRate,
-      discount,
-      total: calculateTotal(),
-    });
   };
 
   async function blobToBase64(blob:Blob) {
@@ -730,21 +761,23 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
         const service = { ...serviceSnap.data() } as Services;
         const contract = service.contract
         setService(service)
-        setInvoiceInfo((prev)=> {
-          return {...prev,number:(client.invoiceCount  ? client.invoiceCount + 1 : 1).toString()}
-        })
-        setInvoiceInfo({...invoiceInfo,name: client.name,
-          email: contract?.clientEmail ?? '',adresse:`${contract?.adresse.street} ${contract?.adresse.postalCode} ${contract?.adresse.city} ${contract?.adresse.country.name}`,number:(client.invoiceCount ?? 1).toString()
-        })
-        setTaxRate(contract?.tax ?? 0)
-        setClientInfo(client);
         if (contract) {
+          setInvoiceInfo({...invoiceInfo,name: client.name,
+            email: contract?.clientGivingData?.clientEmail ?? client.email ?? '',adresse:`${contract?.clientGivingData?.adresse.street} ${contract?.clientGivingData?.adresse.postalCode} ${contract?.clientGivingData?.adresse.city} ${contract?.clientGivingData?.adresse.country.name}`,number:(client.invoiceCount ?? 1).toString()
+          })
           setContractLanguage(contract.contractLanguage);
+          setInvoiceDescription(contract.prestataireGivingData?.projectDescription ?? '')
+          setFeatures((prev)=>{
+            return contract.projectFonctionList.map((feature,index)=>{
+              return {...prev[index],description:feature.description ?? '',id:index+1,quantity:feature.quantity ?? 0,price:feature.price ?? 0}
+            })
+          })
           if (contract.contractLanguage !== locale) {
             router.push(`/${contract.contractLanguage}/bill/${client.id}`)
           }
+          setTaxRate(contract?.tax ?? 0)
         }
-        
+        setClientInfo(client);
       }
     }
     getDocumentById("clients",clientId,clientServiceId);
@@ -756,7 +789,7 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     }
   },[locale])
 
-  if (!invoiceInfo) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+  if (!service) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-[110px] w-[85%]">
       <h1 className="text-2xl font-bold text-primary mb-6">Facturation pour le client {invoiceInfo.name}</h1>
@@ -934,7 +967,9 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
                 type="checkbox"
                 className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 checked={taxEnabled}
-                onChange={(e) => setTaxEnabled(e.target.checked)}
+                onChange={
+                  (e) => setTaxEnabled(e.target.checked)}
+                  disabled={true}
               />
               <span className="ml-2 text-sm text-gray-700">Ajouter TVA</span>
             </label>
@@ -994,9 +1029,9 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
             type="submit"
             className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
               loading || !canSendBill() ? 'cursor-not-allowed opacity-50' : 'cursor-pointer opacity-1'
-            }`}
+            } gap-2`}
           >
-            Générer la facture
+            {loading && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}Générer la facture
           </button>
         </div>
       </form>

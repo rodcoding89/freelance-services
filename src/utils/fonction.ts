@@ -9,9 +9,9 @@ export const loadCountries = async () => {
     }
 }
 
-export const loadEnTranslation = async () =>{
+export const loadEnTranslation = async (lang:string) =>{
     try {
-        const messages = (await import(`../../messages/en.json`)).default;
+        const messages = (await import(`../../messages/${lang}.json`)).default;
         console.log("messages",messages,"contract",messages.contract)
         return messages.contract;
     } catch (error) {
