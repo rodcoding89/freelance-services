@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SignaturePad from 'signature_pad';
 import CloseButton from './close-btn';
+import { useTranslationContext } from '@/hooks/app-hook';
 
 interface InitCanvaSignatureProps {
     locale:string;
@@ -9,6 +10,7 @@ interface InitCanvaSignatureProps {
 }
 
 const InitCanvaSignature:React.FC<InitCanvaSignatureProps> = ({locale,emit,enable}) => {
+    const t:any = useTranslationContext();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const canvasRef1 = useRef<HTMLCanvasElement>(null);
     const [signatureLink, setSignatureLink] = useState<string | null>(null)
@@ -129,7 +131,7 @@ const InitCanvaSignature:React.FC<InitCanvaSignatureProps> = ({locale,emit,enabl
     }
     return (
         <div className="border rounded p-2">
-            <h5 className='my-3'>Signature <em>*</em></h5>
+            <h5 className='my-3'>{t.signing} <em>*</em></h5>
             <canvas 
                 ref={canvasRef}
                 className={`w-full h-60 bg-gray-100 border`} style={{touchAction: "none"}}
@@ -146,10 +148,10 @@ const InitCanvaSignature:React.FC<InitCanvaSignatureProps> = ({locale,emit,enabl
                     onClick={clearSignature}
                     className="mt-2 px-4 py-1 bg-gray-200 rounded"
                     >
-                    Effacer
+                    {t.clear}
                     </button>
                     <button onClick={saveSignature} className={`mt-2 px-4 py-1 text-white bg-blue-600 rounded ${!isSigned ? 'opacity-50 cursor-not-allowed':'opacity-1 cursor-pointer'}`} disabled={!isSigned}>
-                        Enregistré
+                    {t.save}
                     </button>
                 </div>
                 {signatureLink !== null && <p className='flex-1 flex justify-start items-center gap-2'>{signatureLink} <em className='flex justify-center items-center cursor-pointer h-8 w-8 rounded-full bg-primary text-white'><CloseButton onClose={clearAll} size='medium' color='!text-white' className=''/></em></p>}

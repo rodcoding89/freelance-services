@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import Icon from './Icon';
+import { getCookie } from '@/server/services';
 
 interface CreateClientProps {
     locale:string
@@ -124,9 +125,15 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         getLastClient();
     },[])
 
-    if(!Cookies.get('logged')){
-        router.push('/'+locale+'/login')
-    }
+    useEffect(()=>{
+        const checkCookie = async ()=>{
+            const cookie = await getCookie('userAuth')
+            if(!cookie){
+                router.push('/'+locale+'/login')
+            }
+        }
+        checkCookie()
+    },[])
   return (
     <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
         <h1 className="text-center text-thirty uppercase">Ajouter un nouveau client</h1>

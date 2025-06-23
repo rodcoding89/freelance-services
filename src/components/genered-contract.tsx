@@ -6,12 +6,13 @@ import { useContext, useEffect, useState } from "react";
 import InitCanvaSignature from "./initCanvaSignature";
 import { useParams, useRouter } from "next/navigation";
 import { AppContext } from "@/app/context/app-context";
-import Cookies from 'js-cookie';
+
 import GeneratePdfContract from "./generate-pdf-contract";
 import Success from "./success";
 import Echec from "./echec";
 import Icon from "./Icon";
 import Link from "next/link";
+import { getCookie } from "@/server/services";
 
 interface Client {
     id: string;
@@ -91,6 +92,8 @@ interface GeneredContractProps{
     locale:string
 }
 
+const enableCountryforLostRetraction = ['GB','CH','FR','IT','ES','NL','DE','AT','BE','ZA','AU','CA']
+
 const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [contract, setContract] = useState<Contract|null>(null)
@@ -124,8 +127,13 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     },[contextData])
 
     useEffect(()=>{
-        const checkUserConnection = (contractStatus:"signed"|"unsigned"|"pending")=>{
-            if (Cookies.get('logged') || contractStatus === 'pending') {
+        const checkCookie = async ()=>{
+            const cookie = await getCookie('userAuth')
+            return cookie;
+        }
+        const checkUserConnection = async(contractStatus:"signed"|"unsigned"|"pending")=>{
+            const cookie = await checkCookie()
+            if (cookie || contractStatus === 'pending') {
             }else{
                 router.push("/"+locale)
                 return null
@@ -151,7 +159,7 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
         setServiceData(service)
     }
     const checkContractValidation = ()=>{
-        return clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition
+        return (clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition) && !loader
     }
     //console.log("totalPrice",contract?.totalPrice, contract)
     const handleContractStatus = (data: { translatedOrOriginalContractLink: string;notEnContractLink: string; paymentLink: string; status: "success" | "error"; }): void =>{
@@ -395,21 +403,25 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
                         <input type="checkbox" name="" id="acceptSaleTerms" onChange={(e:any)=>setAcceptSaleTerm(e.target.checked)}/>
                         <label htmlFor="acceptSaleTerms" dangerouslySetInnerHTML={{ __html: t.acceptSaleTerm.replace('{GTS}','<a href="/'+(client?.clientLang ?? 'en')+'/terms-of-sale" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t["termsOfSale"]+'</a>') }}/>
                     </div>
-                    <div className="flex justify-start items-center my-5 gap-2">
-                        <input type="checkbox" name="" id="backAmountCondition" onChange={(e:any)=>setConfirmAcceptBackAmountCondition(e.target.checked)}/>
-                        <label htmlFor="backAmountCondition" dangerouslySetInnerHTML={{ __html: t.backAmountConditionText.replace('{GTS}','<a href="/'+(client?.clientLang ?? 'en')+'/terms-of-sale#article13" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t.backAmountCondition+'</a>') }}/>
-                    </div>
+                    {
+                        enableCountryforLostRetraction.includes(contract?.clientGivingData?.adresse.country.isoCode ?? '') && (
+                            <div className="flex justify-start items-center my-5 gap-2">
+                                <input type="checkbox" name="" id="backAmountCondition" onChange={(e:any)=>setConfirmAcceptBackAmountCondition(e.target.checked)}/>
+                                <label htmlFor="backAmountCondition" dangerouslySetInnerHTML={{ __html: t.backAmountConditionText.replace('{GTS}','<a href="/'+(client?.clientLang ?? 'en')+'/terms-of-sale#article13" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t.backAmountCondition+'</a>') }}/>
+                            </div>
+                        )
+                    }
                     <section className={`signing ${confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition ? 'opacity-100 pointer-events-auto' : 'opacity-50 pointer-events-none'}`}>
                         <InitCanvaSignature locale={locale} emit={handleSignatureChange} enable={confirmElectronicSignature}/>
                     </section>
                     <div className="flex justify-end items-center mt-5 gap-4 flex-wrap">
-                        <a className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center" href={`/${client?.clientLang ?? 'en'}/create-contract/${clientId}/${clientServiceId}/?edit=true`}>{t.updateContract}</a>
-                        <button type="button" className={`px-4 py-2 bg-indigo-600 text-white rounded-md min-w-[14rem]  hover:bg-indigo-700 ${checkContractValidation() || !loader ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkContractValidation() || loader} onClick={uploadContract}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.uploadContract}</button>
+                        <a className="px-4 py-2 bg-fifty text-primary rounded-md hover:bg-[#ccc] min-w-[14rem] text-center" href={`/${client?.clientLang ?? 'en'}/create-contract/${clientId}/${clientServiceId}/?edit=true`}>{t.updateContract}</a>
+                        <button type="button" className={`px-4 py-2 bg-thirty hover:bg-secondary text-white rounded-md min-w-[14rem] ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkContractValidation()} onClick={uploadContract}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.uploadContract}</button>
                     </div>
                     </>
             ) : (
                 contractStatus.status === 'success' ? (
-                    <div className="pt-9 pb-1"><Success translatedOrOriginalContractLink={contractStatus.translatedOrOriginalContractLink} notEnContractLink={contractStatus.notEnContractLink} paymentLink={contractStatus.paymentLink} locale={locale}/></div>
+                    <div className="pt-9 pb-1"><Success translatedOrOriginalContractLink={contractStatus.translatedOrOriginalContractLink} notEnContractLink={contractStatus.notEnContractLink} paymentLink={contractStatus.paymentLink} locale={client?.clientLang ?? 'en'}/></div>
                 ) : (
                     <div className="pt-9 pb-1"><Echec locale={client?.clientLang ?? 'en'} onEmit={handleEmit}/></div>
                 )

@@ -1056,7 +1056,7 @@
     "clientList": "Client List",
     "generedContract": "Generate Contract",
     "acceptSaleTerm": "Check to confirm you have read and accepted the {GTS}.",
-    "backAmountConditionText": "Check to accept our refund policy applicable to EU, UK clients, etc. {GTS}.",
+    "backAmountConditionText": "I expressly consent to the immediate commencement of the service, which waives my right of withdrawal in accordance with the applicable laws in my country. In the event of contract cancellation, the provider’s refund policy will apply. {GTS}.",
     "privacyPolicies": "Privacy Policy",
     "backAmountCondition": "Refund Policy",
     "legalNotices":{
@@ -1177,7 +1177,7 @@
         "content_89": "Or propose an equivalent compensation, at our discretion.",
         "content_90": "No liability can be accepted if the malfunction comes from a third-party payment operator (e.g., credit card refused by the bank, limit reached, etc.).",
         "content_94": "3.6 - Service start and right of withdrawal",
-        "content_95": "For users located in the <strong>European Union, the United Kingdom, Switzerland, Liechtenstein, South Africa, Australia</strong> and in certain provinces of <strong>Canada</strong>, you expressly consent, by validating this service or maintenance provision, to the execution of the service (<strong>project realization</strong>) starting immediately.",
+        "content_95": "For users located in the <strong>European Union, the United Kingdom, Switzerland, South Africa, Australia</strong> and in certain provinces of <strong>Canada</strong>, you expressly consent, by validating this service or maintenance provision, to the execution of the service (<strong>project realization</strong>) starting immediately.",
         "content_212": "You acknowledge that by giving this consent:",
         "content_213": "You waive your legal right of withdrawal (timeframe varies by country) and according to the following legislations:",
         "content_214": "Directive 2011/83/EU (EU),",
@@ -1223,7 +1223,10 @@
         "content_116": "> 7 - CUSTOMER SERVICE",
         "content_117": "For any questions, contact us via {rodcodingSupportTag}"
     },
-    "taxNumberText":"Please enter your {tax} number."
+    "taxNumberText":"Please enter your {tax} number.",
+    "clear": "Clear",
+    "save": "Saved",
+    "signing": "Signing"
 }
   
     

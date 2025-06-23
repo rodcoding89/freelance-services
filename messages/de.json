@@ -1058,7 +1058,7 @@
     "clientList": "Kundenliste",
     "generedContract": "Vertrag erstellen",
     "acceptSaleTerm": "Ankreuzen, um zu bestätigen, dass Sie die {GTS} gelesen und akzeptiert haben.",
-    "backAmountConditionText": "Ankreuzen, um unsere Rückerstattungsrichtlinie für Kunden in der EU, im Vereinigten Königreich usw. zu akzeptieren. {GTS}.",
+    "backAmountConditionText": "Ich stimme ausdrücklich zu, dass der Service sofort beginnt, wodurch mein Widerrufsrecht gemäß der in meinem Land geltenden Gesetzgebung erlischt. Im Falle einer Vertragskündigung gilt die Rückerstattungsrichtlinie des Anbieters. {GTS}.",
     "privacyPolicies": "Datenschutzerklärung",
     "backAmountCondition": "Rückerstattungsrichtlinie",
     "legalNotices":{
@@ -1179,7 +1179,7 @@
         "content_89": "Oder Angebot einer gleichwertigen Entschädigung nach unserem Ermessen.",
         "content_90": "Keine Haftung kann übernommen werden, wenn die Störung von einem Drittzahlungsanbieter stammt (z.B. von der Bank abgelehnte Kreditkarte, Limit erreicht usw.).",
         "content_94": "3.6 - Dienstbeginn und Widerrufsrecht",
-        "content_95": "Für Benutzer in der <strong>Europäischen Union, im Vereinigten Königreich, in der Schweiz, in Liechtenstein, in Südafrika, in Australien</strong> und in bestimmten Provinzen von <strong>Kanada</strong> stimmen Sie durch die Validierung dieser Dienstleistungs- oder Wartungsleistung ausdrücklich zu, dass die Ausführung des Dienstes (<strong>Projektrealisierung</strong>) sofort beginnt.",
+        "content_95": "Für Benutzer in der <strong>Europäischen Union, im Vereinigten Königreich, in der Schweiz, in Südafrika, in Australien</strong> und in bestimmten Provinzen von <strong>Kanada</strong> stimmen Sie durch die Validierung dieser Dienstleistungs- oder Wartungsleistung ausdrücklich zu, dass die Ausführung des Dienstes (<strong>Projektrealisierung</strong>) sofort beginnt.",
         "content_212": "Sie erkennen an, dass durch diese Zustimmung:",
         "content_213": "Sie auf Ihr gesetzliches Widerrufsrecht (Frist variiert je nach Land) gemäß den folgenden Gesetzen verzichten:",
         "content_214": "Richtlinie 2011/83/EU (EU),",
@@ -1225,7 +1225,9 @@
         "content_116": "> 7 - KUNDENDIENST",
         "content_117": "Bei Fragen kontaktieren Sie uns bitte über {rodcodingSupportTag}"
     },
-    "taxNumberText":"Bitte geben Sie Ihre {tax}-Nummer ein"
-
+    "taxNumberText":"Bitte geben Sie Ihre {tax}-Nummer ein",
+    "clear": "Löschen",
+    "save": "Gespeichert",
+    "signing": "Unterschrift"
 }
     

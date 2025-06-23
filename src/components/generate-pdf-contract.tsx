@@ -89,6 +89,7 @@ interface Client {
     modifDate:string
     clientNumber:number;
     invoiceCount?:number;
+    clientLang:string;
 }
 
 interface contractFormPrestataire{
@@ -172,6 +173,9 @@ interface UserSalesSchema {
 
 const supportCountryWithPlugins = ["US","CA","DE","FR","IT","ES","AT","BE","NL","CH","GB","AU","ZA","NG"]
 const enableCountryForThresholdBeforTax = ["CA","US","CH","AU","ZA"]
+
+const enableCountryforLostRetraction = ['GB','CH','FR','IT','ES','NL','DE','AT','BE','ZA','AU','CA']
+
 const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSignatureLink,clientSignatureLink,locale,onEmit,service}) => {
     if (client === null || clientSignatureLink === null || freelanceSignatureLink === null || service === null) return
     SalesTax.setTaxOriginCountry('US');
@@ -319,7 +323,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 }
                 return null
             }else{
-                getTaxData()
+                return getTaxData()
             }
         }else{
             return new Promise((resolve,reject)=>{
@@ -690,7 +694,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                     param:[[[t.sections["10"].sprestataire,t.sections["10"].sclient],[],yRef.current,margin,15,margin,marginTop,marginBottom,lineHeight,11,true,fontRegular,fontBold,...lastParam],[[],[],yRef.current,margin,10,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam],[["",t.sections["10"].do.replace("{city}",process.env.NEXT_PUBLIC_MAKE_CONTRACT_CITY as string)+' '+formatDate(new Date())],[],yRef.current,margin,20,margin,marginTop,marginBottom,lineHeight,10,false,fontRegular,fontBold,...lastParam]]
                 }
             }
-            console.log("fonctionParam",fonctionParam)
+            //console.log("fonctionParam",fonctionParam)
             functionListAndRang.forEach(async(item,i)=>{
                 if (item.count) {
                     for (let index = 0; index < item.count; index++) {
@@ -1201,10 +1205,13 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 const contractBase64 = await blobToBase64(blobContract.blob) as string;
                 const base64NotEnContract = notEnContract ? await blobToBase64(notEnContract.blob) as string : null;
                 const paymentBase64 = await blobToBase64(payment.blob) as string;
-                const contractItem = {...contract,tax:payment.taxValue,saleTermeConditionValided:true,electronicContractSignatureAccepted:true,rigthRetractionLostAfterServiceBegin:true}
-                console.log("contratc item",contractItem)
+                const contractItem = enableCountryforLostRetraction.includes(contract.clientGivingData?.adresse.country.isoCode ?? '') ? {...contract,tax:payment.taxValue,saleTermeConditionValided:true,electronicContractSignatureAccepted:true,rigthRetractionLostAfterServiceBegin:true} : {
+                    ...contract,tax:payment.taxValue,saleTermeConditionValided:true,electronicContractSignatureAccepted:true
+                }
+                //console.log("contratc item",contractItem)
                 const parsedService = {...service,contractStatus:"signed",contract:contractItem}
                 const contractData = {service:parsedService,translatedOrOriginalBlobPdf:blobContract.blob,originalByDiffNotEnLangBlobPdf:notEnContract?.blob ?? null}
+                const locale = client.clientLang;
                 const updateClient = {...client,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)}
                 const result = await saveContractDoc(contractData,updateClient,clientServiceId,locale)
                 const email = {

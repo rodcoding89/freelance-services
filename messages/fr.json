@@ -1058,7 +1058,7 @@
     "clientList": "Liste des clients",
     "generedContract": "Générer le contrat",
     "acceptSaleTerm": "Cocher pour certifier avoir lu et accepté les {GTS}.",
-    "backAmountConditionText": "Cocher pour accepter notre politique de remboursement applicable aux clients de l’UE, du Royaume-Uni, etc. {GTS}.",
+    "backAmountConditionText": "Je consens expressément à ce que le service commence immédiatement, ce qui entraîne la renonciation à mon droit de rétractation conformément à la législation applicable dans mon pays. En cas de résiliation du contrat, la politique de remboursement du prestataire s’appliquera. {GTS}.",
     "privacyPolicies": "Politique de confidentialité",
     "backAmountCondition": "Politique de remboursement",
     "legalNotices":{
@@ -1152,7 +1152,7 @@
         "content_89": "Ou proposer une compensation équivalente, à notre discrétion.",
         "content_90": "Aucune responsabilité ne pourra être engagée si le dysfonctionnement provient de l'opérateur de paiement tiers (ex : carte bancaire refusée par la banque, limite atteinte, etc.).",
         "content_94": "3.6 - Démarrage du service et droit de rétractation",
-        "content_95": "Pour les utilisateurs situés dans l’<strong>Union européenne, au Royaume-Uni, en Suisse, au Liechtenstein, en Afrique du Sud, en Australie</strong> et dans certaines provinces du <strong>Canada</strong>, vous consentez expressément, en validant cette prestation de service ou de maintenance, à ce que l’exécution du service (<strong>réalisation du projet</strong>) commence immédiatement.",
+        "content_95": "Pour les utilisateurs situés dans l’<strong>Union européenne, au Royaume-Uni, en Suisse, en Afrique du Sud, en Australie</strong> et dans certaines provinces du <strong>Canada</strong>, vous consentez expressément, en validant cette prestation de service ou de maintenance, à ce que l’exécution du service (<strong>réalisation du projet</strong>) commence immédiatement.",
         "content_212":"Vous reconnaissez qu’en donnant ce consentement :",
         "content_213":"Vous renoncez à votre droit légal de rétractation (délai variable selon les pays) et selon les législations suivantes :",
         "content_214":"Directive 2011/83/UE (UE),",
@@ -1161,7 +1161,7 @@
         "content_217":"Consumer Protection Act 2008 (Afrique du Sud),",
         "content_218":"Australian Consumer Law (Australie),",
         "content_219":"Loi sur la protection du consommateur, Québec (Canada).",
-        "content_220":"En cas d’annulation avant la finalisation complète du service, notre <strong>politique de remboursement</strong> s’applique. Elle prévoit :",
+        "content_220":"En cas d’annulation avant la finalisation complète du service, notre politique de remboursement s’applique. Elle prévoit :",
         "content_221":"un remboursement <strong>au prorata</strong> des tâches réalisées,",
         "content_222":"la facturation des <strong>frais déjà engagés et non récupérables</strong> (ex. : noms de domaine, licences, abonnements nécessaires).",
         "content_96": "> 4 - RUPTURE DE CONTRAT",
@@ -1225,6 +1225,9 @@
         "content_23": "8. Nous contacter",
         "content_24": "Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter à : {link}"
     },
-    "taxNumberText":"Veuillez entrer votre numéro {tax}"
+    "taxNumberText":"Veuillez entrer votre numéro {tax}",
+    "clear": "Effacer",
+    "save": "Enregistré",
+    "signing": "Signature"
 }
     

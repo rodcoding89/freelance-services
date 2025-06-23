@@ -11,6 +11,7 @@ import SalesTax from 'sales-tax';
 import Icon from "./Icon";
 import { loadCountries } from "@/utils/fonction";
 import { sendEmailForFillingContract } from "@/server/services-mail";
+import { getCookie } from "@/server/services";
 
 interface Services {
   clientId:string;
@@ -117,10 +118,12 @@ const contractStatus = [
     { value: "signed", label: "Signé" },
 ];
 const enableCheckTaxNumerCountr = ["US","CA","DE","FR","IT","ES","AT","BE","NL"]
+
 const Contrat:React.FC<ContractProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const [maintenanceCategory,setMaintenaceType] = useState<"app"|"saas"|"website"|"ecommerce"|null>(null)
+    const [cookie,setCookie] = useState<boolean|null>(null)
     const [loading, setLoading] = useState(true);
     const [loader, setLoader] = useState(false);
     const {contextData} = useContext(AppContext)
@@ -191,49 +194,59 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
     const onSubmitPrestataire = async(data:contractFormPrestataire) => {
         if(!selectedContractType || !maintenanceCategory) return
-        setLoader(true)
+        
         console.log("countryToSave",countryToSave.current)
-        const formData = {...data}
-        let clientGivingData:contractFormClient|null = null 
-        if (process.env.NODE_ENV === 'development') {
-            const clientInfo = null/*{...formClient, adresse: {...formClient.adresse, country: countryToSave.current}}*/
-            clientGivingData = service?.contract?.clientGivingData ? service?.contract?.clientGivingData : clientInfo
-        }else{
-            clientGivingData = service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null
-        }
-        const contractItem = {...service?.contract,prestataireGivingData:formData,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:client?.clientLang ?? 'en',contractType:selectedContractType,clientGivingData:clientGivingData,mprice:0}
-        console.log("provider data contract",contractItem,"formData",formData)
-        const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contractItem}
-        const clientData = {...client,modifDate:new Date().toLocaleDateString()}
-        const link = `${process.env.NEXT_PUBLIC_WEB_LINK?.replace("{locale}",client?.clientLang ?? 'en')}/create-contract/${clientId}/${clientServiceId}`
-        const response = await sendEmailForFillingContract(client?.email ?? "",client?.name ?? "",link,client?.clientLang ?? 'en');
-        if (response) {
-            saveContractAndNavigate(clientData,parsedService)
-        }else{
-            alert("error by sending email")
+        try {
+            setLoader(true)
+            const formData = {...data}
+            let clientGivingData:contractFormClient|null = null 
+            if (process.env.NODE_ENV === 'development') {
+                const clientInfo = {...formClient, adresse: {...formClient.adresse, country: countryToSave.current}}
+                clientGivingData = service?.contract?.clientGivingData ? service?.contract?.clientGivingData : clientInfo
+            }else{
+                clientGivingData = service?.contract?.clientGivingData ? service?.contract?.clientGivingData : null
+            }
+            const contractItem = {...service?.contract,prestataireGivingData:formData,projectFonctionList:fonctionalityList,maintenanceCategory:maintenanceCategory,contractLanguage:client?.clientLang ?? 'en',contractType:selectedContractType,clientGivingData:clientGivingData,mprice:0}
+            console.log("provider data contract",contractItem,"formData",formData)
+            const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contractItem}
+            const clientData = {...client,modifDate:new Date().toLocaleDateString()}
+            const link = `${process.env.NEXT_PUBLIC_WEB_LINK?.replace("{locale}",client?.clientLang ?? 'en')}/create-contract/${clientId}/${clientServiceId}`
+            const response = await sendEmailForFillingContract(client?.email ?? "",client?.name ?? "",link,client?.clientLang ?? 'en');
+            if (response) {
+                saveContractAndNavigate(clientData,parsedService)
+            }else{
+                alert("error by sending email")
+            }
+        } catch (error) {
+            console.log("error",error)
         }
     }
 
     const onSubmitClient = async(data:contractFormClient) => {
         if(!countryToSave.current || !selectedContractType || !maintenanceCategory) return
         setLoader(true);
-        const clientInfo = {...data, adresse: {...data.adresse, country: countryToSave.current}}
-        const contract = {
-            ...service?.contract,
-            prestataireGivingData: service?.contract?.prestataireGivingData || null,
-            clientGivingData: clientInfo,
-            contractType: selectedContractType,
-            maintenanceCategory: service?.contract?.maintenanceCategory ?? null,contractLanguage:service?.contract?.contractLanguage ?? 'en',mprice:maintenaceCost.current,projectFonctionList:service?.contract?.projectFonctionList ?? fonctionalityList
-        };
-        
-        const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contract};
-        const clientData = {...client,name:data.name,modifDate:new Date().toLocaleDateString()}
-        saveContractAndNavigate(clientData,parsedService)
+        try {
+            const clientInfo = {...data, adresse: {...data.adresse, country: countryToSave.current}}
+            const contract = {
+                ...service?.contract,
+                prestataireGivingData: service?.contract?.prestataireGivingData || null,
+                clientGivingData: clientInfo,
+                contractType: selectedContractType,
+                maintenanceCategory: service?.contract?.maintenanceCategory ?? null,contractLanguage:service?.contract?.contractLanguage ?? 'en',mprice:maintenaceCost.current,projectFonctionList:service?.contract?.projectFonctionList ?? fonctionalityList
+            };
+            
+            const parsedService = {...service,clientId:service?.clientId ?? clientId,name:service?.name ?? selectedContractType,serviceType:selectedContractType,contractStatus:selectedContractStatus ?? 'unsigned',contract:contract};
+            const clientData = {...client,name:data.name,modifDate:new Date().toLocaleDateString()}
+            saveContractAndNavigate(clientData,parsedService)
+        } catch (error) {
+            setLoader(false)
+            console.log("error",error)
+        }
         // Generate PDF or send data to backend
     };
 
     const saveContractAndNavigate = async(clientData:any,parsedService:Services) => {
-        if (Cookies.get('logged')) {
+        if (cookie) {
             try {
                 const docService = doc(firebase.db,"services",clientServiceId)
                 await setDoc(docService, { ...parsedService }, { merge: false })
@@ -288,11 +301,11 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     }
 
     const checkFormValidation = ()=>{
-        if (Cookies.get('logged')) {
-            return maintenanceCategory !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && isValidPrestataire
+        if (cookie) {
+            return (maintenanceCategory !== null && selectedContractType !== null && selectedContractStatus !== null && fonctionalityList.length > 0 && isValidPrestataire) && !loader
         } else {
             //console.log("isValidClient",isValidClient,"countryToSave",countryToSave.current,"typeClient",typeClient,"clientVatNumber",clientVatNumber,"selectedContractType",selectedContractType,"countryToSave",toSaveState.current)
-            return isValidClient && countryToSave.current !== null && (typeClient === 'company' ? clientVatNumber !== '' : true) && (selectedContractType === 'service_and_maintenance' ? (typeMaintenance !== "") : true) && (countryToSave.current?.specficTo === 'state' ? toSaveState.current !== null : true)
+            return (isValidClient && countryToSave.current !== null && (typeClient === 'company' ? clientVatNumber !== '' : true) && (selectedContractType === 'service_and_maintenance' ? (typeMaintenance !== "") : true) && (countryToSave.current?.specficTo === 'state' ? toSaveState.current !== null : true)) && !loader
         }
     }
     
@@ -353,13 +366,16 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 return
             }
         }
-        const checkUserConnection = (contractStatus:"signed"|"unsigned"|"pending")=>{
-            if (Cookies.get('logged') || contractStatus === 'pending') {
+        
+        const checkUserConnection = (contractStatus:"signed"|"unsigned"|"pending",cookie:boolean)=>{
+            if (cookie || contractStatus === 'pending') {
+                console.log("cookie",cookie)
             }else{
                 router.push("/"+locale)
                 return null
             }
         }
+        
         async function getDocumentById(collectionName: string, id: string,serviceId:string) {
             if(!id || !serviceId) return
             const docClientRef = doc(firebase.db, collectionName, id);
@@ -368,51 +384,14 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 await getDoc(docClientRef),
                 await getDoc(docServiceRef)
             ]
-            const countriesList = await loadCountrieData();
-            setCountries(countriesList)
+            
             const [clientSnap,serviceSnap] = await Promise.all(allRequest)
           
             if (clientSnap.exists() && serviceSnap.exists()) {
                 const client = { id: clientSnap.id, ...clientSnap.data() } as Client;
                 const service = { clientId: serviceSnap.data().clientId,name: serviceSnap.data().name, serviceType: serviceSnap.data().serviceType,contractStatus: serviceSnap.data().contractStatus,contract:serviceSnap.data().contract ?? null } as Services;
-                const contract = service.contract
-                setService(service)
-                checkUserConnection(service.contractStatus)
-                //console.log("service",service,"client",client)
-                if (edit === 'true') {
-                    loadContractFromCache(countriesList)
-                }else{
-                    setClient(client);
-                    if (contract) {
-                        setFonctionalityList(contract.projectFonctionList)
-                        if (contract.clientGivingData) {
-                            resetClient(contract.clientGivingData);
-                            const country = countriesList.find((item:any) => item.id === contract.clientGivingData?.adresse.country?.id);
-                            setCurrentCountry(country?.id.toString() ?? null)
-                            countryToSave.current = country ?? null
-                            if (country.specficTo === 'state' && country.name === contract.clientGivingData.adresse.country?.name) {
-                                const updateCountry = {...country,state:contract.clientGivingData.adresse.country?.state}
-                                countryToSave.current = updateCountry ?? null
-                                toSaveState.current = contract.clientGivingData.adresse.country?.state!
-                                setCurrentState(contract.clientGivingData.adresse.country?.state?.id.toString() ?? '')
-                            }else{
-                                countryToSave.current = country ?? null
-                            }
-                        }else{
-                            resetClient({clientEmail:client.email,name:client.name});
-                        }
-                        if (contract.prestataireGivingData) {
-                            resetPrestataire(contract.prestataireGivingData);
-                        }
-                        setMaintenaceType(contract.maintenanceCategory)
-                    }else{
-                        resetClient({clientEmail:client.email,name:client.name,clientVatNumber:client.taxId ?? ''});
-                        resetPrestataire(contract);
-                    }
-                    setSelectedContractStatus(service.contractStatus)
-                    setSelectedContractType(service.serviceType)
-                    setLoading(false);
-                }
+                handleResponse({client:client,service:service})
+                sessionStorage.setItem('loadedContractData', JSON.stringify({client:client,service:service}));
             } else {
               console.log("Document non trouvé !");
               router.push("/"+locale)
@@ -420,41 +399,67 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
             }
         }
         
-        const loadContractFromCache = (countriesList:any[]) => {
+        const handleResponse = async(data:{client:Client,service:Services})=>{
+            const checkCookie = async ()=>{
+                const cookie = await getCookie('userAuth')
+                setCookie(cookie)
+                return cookie
+            }
+            const cookie = await checkCookie() 
+            checkUserConnection(data.service.contractStatus,cookie)
+            const countriesList = await loadCountrieData();
+            setCountries(countriesList)
+            setClient(data.client);
+            setService(data.service);
+            if (data.service.contract) {
+                if (data.service.contract.clientGivingData) {
+                    resetClient(data.service.contract.clientGivingData);
+                    const country = countriesList.find((item:any) => item.id === data.service.contract?.clientGivingData?.adresse.country?.id);
+                    setCurrentCountry(country?.id.toString() ?? null)
+                    setSelectedCountry(country)
+                    if (country.specficTo === 'state' && country.name === data.service.contract.clientGivingData.adresse.country?.name) {
+                        const updateCountry = {...country,state:data.service.contract.clientGivingData.adresse.country?.state}
+                        countryToSave.current = updateCountry ?? null
+                        if (data.service.contract.clientGivingData.adresse.country) {
+                            toSaveState.current = data.service.contract.clientGivingData.adresse.country.state
+                        } else {
+                            toSaveState.current = null
+                        }
+                        setCurrentState(data.service.contract.clientGivingData.adresse.country?.state?.id.toString() ?? '')
+                    }else{
+                        countryToSave.current = country ?? null
+                    }
+                }else{
+                    resetClient({clientEmail:data.client.email,name:data.client.name,clientVatNumber:data.client.taxId ?? ''});
+                }
+                if (data.service.contract.prestataireGivingData) {
+                    resetPrestataire(data.service.contract.prestataireGivingData);
+                }
+                setMaintenaceType(data.service.contract.maintenanceCategory)
+                setFonctionalityList(data.service.contract.projectFonctionList)
+            }else{
+                resetClient({clientEmail:data.client.email,name:data.client.name,clientVatNumber:data.client.taxId ?? ''});
+            }
+            setSelectedContractStatus(data.service.contractStatus)
+            setSelectedContractType(data.service.serviceType ?? '')
+            setLoading(false);
+        }
+        const sessionloadedContractData = sessionStorage.getItem('loadedContractData');
+        if (sessionloadedContractData) {
+            const parsedData = JSON.parse(sessionloadedContractData);
+            handleResponse(parsedData)
+        }else if(edit === 'true'){
             const contractData = sessionStorage.getItem('contractData');
             if (contractData) {
                 const parsedData = JSON.parse(contractData);
-                setClient(parsedData.client);
-                if (parsedData.service.contract) {
-                    if (parsedData.service.contract.clientGivingData) {
-                        resetClient(parsedData.service.contract.clientGivingData);
-                        const country = countriesList.find(item => item.id === parsedData.service.contract.clientGivingData.adresse.country.id);
-                        setCurrentCountry(country?.id.toString() ?? null)
-                        setSelectedCountry(country)
-                        if (country.specficTo === 'state' && country.name === parsedData.service.contract.clientGivingData.adresse.country.name) {
-                            const updateCountry = {...country,state:parsedData.service.contract.clientGivingData.adresse.country.state}
-                            countryToSave.current = updateCountry ?? null
-                            toSaveState.current = parsedData.service.contract.clientGivingData.adresse.country.state
-                            setCurrentState(parsedData.service.contract.clientGivingData.adresse.country.state.id.toString() ?? '')
-                        }else{
-                           countryToSave.current = country ?? null
-                        }
-                    }
-                    if (parsedData.service.contract.prestataireGivingData) {
-                        resetPrestataire(parsedData.service.contract.prestataireGivingData);
-                    }
-                    setMaintenaceType(parsedData.service.contract.maintenanceCategory)
-                    setFonctionalityList(parsedData.service.contract.projectFonctionList)
-                }
-                setSelectedContractStatus(parsedData.service.contractStatus)
-                setSelectedContractType(parsedData.service.serviceType)
-                checkUserConnection(parsedData.service.contractStatus)
-                setLoading(false);
+                handleResponse(parsedData)
             }else{
                 router.push("/"+locale)
             }
+        }else{
+            getDocumentById("clients",clientId,clientServiceId);
         }
-        getDocumentById("clients",clientId,clientServiceId);
+        
     }, [edit,clientId,router,locale]);
     
     const handleContractStatusChange = (value: "signed" | "unsigned" | "pending") => {
@@ -478,7 +483,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         if (env === "dev") {
             return false;
         } else {
-            if (!Cookies.get('logged')) {
+            if (!cookie) {
                 return false
             } else {
                 return true
@@ -520,8 +525,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
         clientTaxNumberValidation()
         console.log("clientVatNumber",clientVatNumber,"countryToSave",countryToSave.current)
     },[clientVatNumber])
+
+    
     console.log("vatNumberChecking",vatNumberChecking)
-    if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
+    if (loading && (cookie === null || !cookie)) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["contrat"]}</h1>
@@ -792,7 +799,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     </div>
 
                     {
-                        Cookies.get('logged') && (<div className="my-4 w-full">
+                        cookie && (<div className="my-4 w-full">
                             <label className="block text-sm font-medium text-gray-700">{t.projetFonctionality} <em className="text-red-700">*</em></label>
                             <div className="flex items-start gap-5 mt-2 justify-start w-full flex-wrap">
                                 <div className="w-full min-w-[14rem] flex flex-col gap-1">
@@ -898,7 +905,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     </section>
 
                     {
-                        Cookies.get('logged') && (<section className="border-b pb-6">
+                        cookie && (<section className="border-b pb-6">
                         <h2 className="text-xl font-semibold mb-4">{t.maintenanceService.title}</h2>
                         <div className="flex gap-5 justify-start items-center flex-wrap">
                                 <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'website' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('website')}>{t.maintenanceService.web}</span>
@@ -914,7 +921,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         </section>)
                     }
                     {
-                        Cookies.get('logged') && (
+                        cookie && (
                             <>
                             <section className="border-b pb-6">
                                 <h2 className="text-xl font-semibold mb-4">{t.contractType}</h2>
@@ -944,13 +951,13 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                     
                     {/* Submit Button */}
                     {
-                        Cookies.get('logged') && (
+                        cookie && (
                             <div className="flex justify-end gap-3 flex-wrap">
-                                <a href={'/'+(client?.clientLang ?? 'en')+'/clients-list'} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] text-center">{t.clientList}</a>
+                                <a href={'/'+(client?.clientLang ?? 'en')+'/clients-list'} className="px-4 py-2 bg-fifty text-primary rounded-md hover:bg-[#ccc] min-w-[14rem] text-center">{t.clientList}</a>
                             
                                 <button
                                     type="submit"
-                                    className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkFormValidation()}
+                                    className={`px-4 py-2 bg-thirty hover:bg-secondary text-white rounded-md min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkFormValidation()}
                                 >
                                     {loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.generedContract}
                                 </button>
@@ -960,10 +967,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                 </form>
                 {/* Submit Button */}
                 {
-                    !Cookies.get("logged") && (
+                    !cookie && (
                         <div className="flex justify-end gap-3 flex-wrap my-4">
                             <button form="onSubmitClientForm" type="submit"
-                            className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 min-w-[14rem] ${checkFormValidation() || !loader ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkFormValidation() || loader}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.generedContract}</button>
+                            className={`px-4 py-2 bg-thirty text-white hover:bg-secondarytext-white rounded-md min-w-[14rem] ${checkFormValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkFormValidation()}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.generedContract}</button>
                         </div>
                     )
                 }

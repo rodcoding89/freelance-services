@@ -1,0 +1,38 @@
+import { useEffect, useRef, useState } from 'react';
+import { animate, motion, useAnimation, useMotionValue, useTransform } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+
+interface AnimatedCounterProps {
+  target: number;
+  duration?: number;
+}
+
+
+const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, duration = 2 }) => {
+  
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 1,
+    rootMargin: '-20% 0px'
+  });
+  
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest));
+
+  useEffect(() => {
+    if (inView) {
+      const animation = animate(count, target, {
+        duration: duration,
+        ease: "easeOut",
+      });
+
+      return animation.stop;
+    }
+  }, [inView, target, count]);
+
+  return (
+    <motion.em className='not-italic text-[4em] relative before:w-full before:h-[3px] before:bg-thirty before:absolute before:left-[5px] before:bottom-0 w-fit' ref={ref}>{rounded}</motion.em>
+  );
+};
+
+export default AnimatedCounter;

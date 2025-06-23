@@ -1,13 +1,12 @@
 "use client"
 import { collection, getDocs, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
-import firebase from '@/utils/firebase'; // Importez votre configuration Firebase
-import { signOut } from "firebase/auth";
-import Cookies from 'js-cookie';
+import firebase from '@/utils/firebase'; 
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Icon from './Icon';
+import { getCookie, userLogout } from '@/server/services';
 
 
 interface Services {
@@ -36,6 +35,7 @@ interface CLientsListProps {
 const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
     const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loader, setLoader] = useState(false);
     const router = useRouter();
     // Charger les clients depuis Firestore
     useEffect(() => {
@@ -59,6 +59,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                 }
                 console.log("clientsData",clientsData)
                 setClients(clientsData);
+                sessionStorage.setItem("clientData",JSON.stringify(clientsData))
             } catch (error) {
                 console.error("Erreur de chargement des clients:", error);
             } finally {
@@ -78,8 +79,14 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
             });
             return postsData;
         }
-
-        fetchClients();
+        const clientDataSession = sessionStorage.getItem("clientData")
+        if (clientDataSession) {
+            const clientData = JSON.parse(clientDataSession);
+            setClients(clientData);
+            setLoading(false);
+        } else {
+            fetchClients();
+        }
     }, []);
 
     // Supprimer un client
@@ -151,18 +158,34 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
     }
 
     const logout = async () => {
+        setLoader(true);
         try {
-            await signOut(firebase.auth);
-            Cookies.remove('logged');
-            router.push('/'+locale+'/login');
+            const response = await fetch('/api/logout/',{
+                method: 'GET', // Garde votre méthode GET pour l'exemple
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            if (!response.ok) {
+                throw new Error('Erreur lors de la requête');
+            }
+            const data = await response.json();
+            if (data.response) {
+                router.push('/'+locale+'/login');
+            }
         } catch (error) {
+            setLoader(false);
             console.error("Erreur de déconnexion:", error);
         }
     };
     useEffect(()=>{
-        if(!Cookies.get('logged')){
-            router.push('/'+locale+'/login')
+        const checkCookie = async ()=>{
+            const cookie = await getCookie('userAuth')
+            if(!cookie){
+                router.push('/'+locale+'/login')
+            }
         }
+        checkCookie()
     },[locale])
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
 
@@ -227,9 +250,9 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
             </div>
             <div className='w-full flex items-end justify-end mt-5'>
                 <div className='flex justify-start items-center gap-3 w-full'>
-                    <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/web-config'}>Configurer le site</Link>
-                    <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/create-client'}>Créer un client</Link>
-                    <span className='text-white py-2 px-4 bg-blue-600 hover:bg-blue-900 rounded-[.2em] cursor-pointer' onClick={logout}>Déconnexion</span>
+                    <Link className='text-primary py-2 px-4 bg-fifty rounded-[.2em] hover:bg-[#ccc]' href={'/'+locale+'/web-config'}>Configurer le site</Link>
+                    <Link className='text-primary py-2 px-4 bg-fifty rounded-[.2em] hover:bg-[#ccc]' href={'/'+locale+'/create-client'}>Créer un client</Link>
+                    <span className='text-white py-2 px-4 bg-thirty hover:bg-secondary rounded-[.2em] cursor-pointer flex justify-center items-center gap-2' onClick={logout}>{loader && <Icon name='bx bx-loader-alt bx-spin' size='1em' color='#fff'/>}Déconnexion</span>
                 </div>
             </div>
         </div>

@@ -9,6 +9,7 @@ import { useTranslationContext } from '@/hooks/app-hook';
 import { saveClientInvoice } from '@/server/services-save-doc';
 import { sendInvoice } from '@/server/services-mail';
 import Icon from './Icon';
+import { getCookie } from '@/server/services';
 
 interface clientInfo {
   id: string;
@@ -759,34 +760,48 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
       if (clientSnap.exists() && serviceSnap.exists()) {
         const client = { id: clientSnap.id, ...clientSnap.data() } as clientInfo;
         const service = { ...serviceSnap.data() } as Services;
-        const contract = service.contract
-        setService(service)
-        if (contract) {
-          setInvoiceInfo({...invoiceInfo,name: client.name,
-            email: contract?.clientGivingData?.clientEmail ?? client.email ?? '',adresse:`${contract?.clientGivingData?.adresse.street} ${contract?.clientGivingData?.adresse.postalCode} ${contract?.clientGivingData?.adresse.city} ${contract?.clientGivingData?.adresse.country.name}`,number:(client.invoiceCount ?? 1).toString()
-          })
-          setContractLanguage(contract.contractLanguage);
-          setInvoiceDescription(contract.prestataireGivingData?.projectDescription ?? '')
-          setFeatures((prev)=>{
-            return contract.projectFonctionList.map((feature,index)=>{
-              return {...prev[index],description:feature.description ?? '',id:index+1,quantity:feature.quantity ?? 0,price:feature.price ?? 0}
-            })
-          })
-          if (contract.contractLanguage !== locale) {
-            router.push(`/${contract.contractLanguage}/bill/${client.id}`)
-          }
-          setTaxRate(contract?.tax ?? 0)
-        }
-        setClientInfo(client);
+        sessionStorage.setItem("invoiceDoc",JSON.stringify({client,service}))
       }
     }
-    getDocumentById("clients",clientId,clientServiceId);
+    const handleResponse = (data:{client:clientInfo,service:Services})=>{
+      const contract = data.service.contract
+      setService(service)
+      if (contract) {
+        setInvoiceInfo({...invoiceInfo,name: data.client.name,
+          email: contract?.clientGivingData?.clientEmail ?? data.client.email ?? '',adresse:`${contract?.clientGivingData?.adresse.street} ${contract?.clientGivingData?.adresse.postalCode} ${contract?.clientGivingData?.adresse.city} ${contract?.clientGivingData?.adresse.country.name}`,number:(data.client.invoiceCount ?? 1).toString()
+        })
+        setContractLanguage(contract.contractLanguage);
+        setInvoiceDescription(contract.prestataireGivingData?.projectDescription ?? '')
+        setFeatures((prev)=>{
+          return contract.projectFonctionList.map((feature,index)=>{
+            return {...prev[index],description:feature.description ?? '',id:index+1,quantity:feature.quantity ?? 0,price:feature.price ?? 0}
+          })
+        })
+        if (contract.contractLanguage !== locale) {
+          router.push(`/${contract.contractLanguage}/bill/${data.client.id}`)
+        }
+        setTaxRate(contract?.tax ?? 0)
+      }
+      setClientInfo(data.client);
+    }
+    const sessionInvoiceDoc = sessionStorage.getItem("invoiceDoc")
+    
+    if (sessionInvoiceDoc) {
+      const invoiceDocParsed = JSON.parse(sessionInvoiceDoc)
+      handleResponse(invoiceDocParsed)
+    } else {
+      getDocumentById("clients",clientId,clientServiceId);
+    }
   }, [clientId]);
 
   useEffect(()=>{
-    if(!Cookies.get('logged')){
-      router.push('/'+locale+'/login')
+    const checkCookie = async ()=>{
+      const cookie = await getCookie('userAuth')
+      if(!cookie){
+          router.push('/'+locale+'/login')
+      }
     }
+    checkCookie()
   },[locale])
 
   if (!service) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
@@ -1025,7 +1040,7 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
         </div>
         <div className="flex items-center justify-end gap-4">
           <a href={'/'+locale+'/clients-list'} className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Liste client</a>
-          <button disabled={!canSendBill()}
+          <button disabled={!canSendBill() || loading}
             type="submit"
             className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
               loading || !canSendBill() ? 'cursor-not-allowed opacity-50' : 'cursor-pointer opacity-1'

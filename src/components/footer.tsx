@@ -65,8 +65,15 @@ const Footer:React.FC<FooterProps> = ({locale,date})=>{
         
         window.open(shareUrl, '_blank', 'width=600,height=400');
     }
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth' // Animation fluide
+        });
+    };
     return (
-        <footer className='bg-primary w-full flex justify-start items-center gap-8 flex-col py-10 mt-10 px-[8%] '>
+        <footer className='bg-primary w-full flex justify-start items-center gap-8 flex-col py-10 mt-10 px-[8%] relative'>
+            <span className='bg-secondary w-9 h-9 rounded-[.4rem] flex justify-center items-center cursor-pointer absolute top-[-1.25rem] right-10' onClick={scrollToTop}><Icon name='bx-chevron-up' size='1.7rem' color='var(--color-fifty)'/></span>
             <div className='flex justify-center items-start w-full gap-x-[13vw] gap-y-7 max-520:flex-col max-520:justify-center max-520:w-full'>
                 <div className='text-fifty w-1/2 max-792:w-[100px] max-520:w-full max-520:flex max-520:justify-center max-520:items-center'><img src="/assets/images/logo.webp" alt="logo" className='w-auto h-[100px] rounded-full'/></div>
                 <div className='flex justify-start items-start w-1/2 max-792:flex-1 max-520:w-full max-520:justify-center max-520:items-center'>

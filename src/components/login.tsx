@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import firebase from "@/utils/firebase";
 import Cookies from 'js-cookie';
 import Icon from './Icon';
+import { getCookie, userAuth } from '@/server/services';
 
 interface LoginProps {
     locale:string
@@ -24,14 +25,32 @@ const Login: React.FC<LoginProps> = ({locale}) => {
     setError(null);
     setLoader(true);
     try {
-      await signInWithEmailAndPassword(firebase.auth, email, password);
-      const expirationDate = new Date();
-      expirationDate.setHours(expirationDate.getHours() + 12);
-      Cookies.set('logged', 'true', { expires: expirationDate });
-      setLoader(false);
-      setConfirmLooggin(true);
-      //router.push('/'+locale+'/clients-list');
+      const response = await fetch('/api/login/',{
+        method: 'POST', // Garde votre méthode GET pour l'exemple
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+      if (!response.ok) {
+        throw new Error('Erreur lors de la requête');
+      }
+      const data = await response.json();
+      if (data) {
+        if (data.success) {
+          setConfirmLooggin(true);
+        } else {
+          setError(data.message);
+          setLoader(false);
+          setConfirmLooggin(false);
+        }
+      } else {
+        setError('Erreur lors de la connexion');
+        setLoader(false);
+        setConfirmLooggin(false);
+      }
     } catch (err:any) {
+      console.log(err)
       setError(err.message);
       setLoader(false);
       setConfirmLooggin(false);
@@ -39,14 +58,16 @@ const Login: React.FC<LoginProps> = ({locale}) => {
   };
 
   useEffect(()=>{
-    if(Cookies.get('logged')){
-      router.push('/'+locale+'/clients-list')
-    }else{
-      console.log("cookies",Cookies.get('logged'))
+    const checkCookie = async ()=>{
+      const cookie = await getCookie('userAuth')
+      if(cookie){
+        router.push('/'+locale+'/clients-list')
+      }
     }
     if(confirmLoggin){
       router.push('/'+locale+'/clients-list')
     }
+    checkCookie()
   },[confirmLoggin,locale,router])
   return (
     <div className="flex justify-center items-center h-screen bg-white mt-[100px]">

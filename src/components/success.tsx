@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Icon from './Icon';
 import Link from 'next/link';
 import { useTranslationContext } from '@/hooks/app-hook';
+import { useRouter } from 'next/router';
 
 interface SuccessProps {
   locale: string;
@@ -10,9 +11,23 @@ interface SuccessProps {
   paymentLink: string;
 }
 
-const Success: React.FC<SuccessProps> = ({ locale,translatedOrOriginalContractLink,notEnContractLink,paymentLink }) => {
+const Success: React.FC<SuccessProps> = ({ locale,translatedOrOriginalContractLink,notEnContractLink,paymentLink}) => {
     const t:any = useTranslationContext();
     const lang = `${locale === 'fr' ? 'Français' : locale === 'de' ? 'Deutsche' : 'English'}`
+    /*useEffect(() => {
+        if (locale) {
+            const data: { translatedOrOriginalContractLink: string;notEnContractLink: string; paymentLink: string; status: "success" | "error"; } = {
+                translatedOrOriginalContractLink,
+                notEnContractLink,
+                paymentLink,
+                status: "success",
+            };
+            onEmit(data)
+            router.push("/"+locale+'/sign-contract/'+clientId+'/'+serviceId)
+        }else{
+            router.push('/')
+        }
+    },[locale])*/
     return (
         <div className="flex items-center justify-center min-h-[23rem] w-full bg-gray-100 px-8 py-4 success">
             <div className="flex items-center justify-center py-[1rem] px-[1rem] bg-white border border-green-700 text-primary rounded-md flex-col mt-5 mb-4">

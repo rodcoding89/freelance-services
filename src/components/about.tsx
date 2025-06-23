@@ -4,6 +4,9 @@ import Icon from './Icon';
 import { experienceData, pathwayData } from '@/constants';
 import { useTranslationContext } from '@/hooks/app-hook';
 import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+import useIsInViewport from './stat-animation';
+import AnimatedCounter from './stat-animation';
 
 interface AboutProps{
     locale:string
@@ -11,6 +14,7 @@ interface AboutProps{
 
 const About:React.FC<AboutProps> = ({locale}) =>{
     const t:any = useTranslationContext();
+    
     const pathway = pathwayData.map((item:any)=>{
         return {title:t[item.title],country:t[item.country],periode:t[item.periode],description:t[item.description]}
     })
@@ -33,6 +37,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
             icon:"bx-line-chart"
         }
     ]
+    
     return (
         <Element className="mt-[110px]" name="about">
             <div className='w-[85%] mx-auto'>
@@ -104,7 +109,9 @@ const About:React.FC<AboutProps> = ({locale}) =>{
                                     <div key={index} className='flex justify-start items-start gap-2'>
                                         <Icon name={item.icon+' mt-5'} size='3em' color='var(--color-primary)'/>
                                         <div className='flex flex-col gap-1'>
-                                            <em className='not-italic text-[4em] relative before:w-full before:h-[3px] before:bg-thirty before:absolute before:left-[5px] before:bottom-0 w-fit'>{item.nb}</em>
+                                            <AnimatedCounter 
+                                            duration={1}
+                                            target={item.nb} />
                                             <span className='ml-1 mt-1'>{item.title}</span>
                                         </div>
                                     </div>

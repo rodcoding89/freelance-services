@@ -1,4 +1,5 @@
 "use client"
+import { getCookie } from "@/server/services";
 import  firebase  from "@/utils/firebase";
 import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import Cookies from 'js-cookie';
@@ -84,9 +85,13 @@ const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
         fetchWebConfig();
     },[])
     useEffect(()=>{
-        if(!Cookies.get('logged')){
-            router.push('/'+locale+'/login')
+        const checkCookie = async ()=>{
+            const cookie = await getCookie('userAuth')
+            if(!cookie){
+                router.push('/'+locale+'/login')
+            }
         }
+        checkCookie()
     },[locale])
     if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
     return (
