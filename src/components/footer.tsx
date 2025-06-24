@@ -75,18 +75,18 @@ const Footer:React.FC<FooterProps> = ({locale,date})=>{
         <footer className='bg-primary w-full flex justify-start items-center gap-8 flex-col py-10 mt-10 px-[8%] relative'>
             <span className='bg-secondary w-9 h-9 rounded-[.4rem] flex justify-center items-center cursor-pointer absolute top-[-1.25rem] right-10' onClick={scrollToTop}><Icon name='bx-chevron-up' size='1.7rem' color='var(--color-fifty)'/></span>
             <div className='flex justify-center items-start w-full gap-x-[13vw] gap-y-7 max-520:flex-col max-520:justify-center max-520:w-full'>
-                <div className='text-fifty w-1/2 max-792:w-[100px] max-520:w-full max-520:flex max-520:justify-center max-520:items-center'><img src="/assets/images/logo.webp" alt="logo" className='w-auto h-[100px] rounded-full'/></div>
+                <div className='text-fifty w-1/2 max-792:w-[6.25rem] max-520:w-full max-520:flex max-520:justify-center max-520:items-center'><img src="/assets/images/logo.webp" alt="logo" className='w-auto h-[6.25rem] rounded-full'/></div>
                 <div className='flex justify-start items-start w-1/2 max-792:flex-1 max-520:w-full max-520:justify-center max-520:items-center'>
                     <div className='flex justify-start items-start flex-col gap-5'>
                         <h4 className='text-fifty uppercase font-semibold'>{t["shareOn"]}</h4>
                         <div className='flex justify-center items-center gap-6 max-420:gap-4'>
-                            <span onClick={()=>shareOnSocial('facebook')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-5px] bx bxl-facebook-circle pt-1' size='1.5em' color='var(--color-fifty)'/></span>
-                            <span onClick={()=>shareOnSocial('twitter')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-5px] bx bxl-twitter pt-1' size='1.5em' color='var(--color-fifty)'/></span>
-                            <span onClick={()=>shareOnSocial('telegram')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-5px] bx bxl-telegram pt-1' size='1.5em' color='var(--color-fifty)'/></span>
-                            <span onClick={()=>shareOnSocial('whatsapp')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-5px] bx bxl-whatsapp pt-1' size='1.5em' color='var(--color-fifty)'/></span>
-                            <span onClick={()=>shareOnSocial('linkedin')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-5px] bx bxl-linkedin pt-1' size='1.5em' color='var(--color-fifty)'/></span>
+                            <span onClick={()=>shareOnSocial('facebook')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-0.315rem] bx bxl-facebook-circle pt-1' size='1.5em' color='var(--color-fifty)'/></span>
+                            <span onClick={()=>shareOnSocial('twitter')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-0.315rem] bx bxl-twitter pt-1' size='1.5em' color='var(--color-fifty)'/></span>
+                            <span onClick={()=>shareOnSocial('telegram')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-0.315rem] bx bxl-telegram pt-1' size='1.5em' color='var(--color-fifty)'/></span>
+                            <span onClick={()=>shareOnSocial('whatsapp')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-0.315rem] bx bxl-whatsapp pt-1' size='1.5em' color='var(--color-fifty)'/></span>
+                            <span onClick={()=>shareOnSocial('linkedin')} className='flex justify-center items-center socialMediaIcon cursor-pointer'><Icon name='mt-[-0.315rem] bx bxl-linkedin pt-1' size='1.5em' color='var(--color-fifty)'/></span>
                             {
-                                isMobileDevice() && <span className='flex justify-center items-center socialMediaIcon cursor-pointer' onClick={shareOnSocialMediaAppMode}><Icon name='bx mt-[-5px] bx-share-alt pt-1' size='1.5em' color='var(--color-fifty)'/></span>
+                                isMobileDevice() && <span className='flex justify-center items-center socialMediaIcon cursor-pointer' onClick={shareOnSocialMediaAppMode}><Icon name='bx mt-[-0.315rem] bx-share-alt pt-1' size='1.5em' color='var(--color-fifty)'/></span>
                             }
                         </div>
                     </div>
@@ -104,32 +104,32 @@ const Footer:React.FC<FooterProps> = ({locale,date})=>{
                         <div className="flex justify-start items-start gap-2">
                             <Icon name='bxl-whatsapp' size='1.3em' color='var(--color-fifty)'/>
                             <div className="">
-                                <h5 className='text-fifty uppercase font-semibold text-[13px]'>{t["whatsapp"]}</h5>
-                                <a href="https://wa.me/+33751025598" className='hover:text-link text-fifty text-[13px]'>WhatsApp</a>
+                                <h5 className='text-fifty uppercase font-semibold text-[0.8125rem]'>{t["whatsapp"]}</h5>
+                                <a href="https://wa.me/+33751025598" className='hover:text-link text-fifty text-[0.8125rem]'>WhatsApp</a>
                             </div>
                         </div>
                         <div className="flex justify-start items-start gap-2">
                             <Icon name='bx-phone' size='1.3em' color='var(--color-fifty)'/>
                             <div className="">
-                                <h5 className='text-fifty uppercase font-semibold text-[13px]'>{t["perPhone"]}</h5>
-                                <a href="tel:+33751025598" className='hover:text-link text-fifty text-[13px]'>+33 7 51 02 55 98</a>
+                                <h5 className='text-fifty uppercase font-semibold text-[0.8125rem]'>{t["perPhone"]}</h5>
+                                <a href="tel:+33751025598" className='hover:text-link text-fifty text-[0.8125rem]'>+33 7 51 02 55 98</a>
                             </div>
                         </div>
                         <div className="flex justify-start items-start gap-2">
                             <Icon name='bx-time' size='1.3em' color='var(--color-fifty)'/>
                             <div className="w-full">
-                                <h5 className='text-fifty uppercase font-semibold text-[13px]'>{t["time"]}</h5>
+                                <h5 className='text-fifty uppercase font-semibold text-[0.8125rem]'>{t["time"]}</h5>
                                 <ul>
-                                    <li className='text-fifty text-[13px]'>{t["week"]}</li>
-                                    <li className='text-fifty text-[13px]'>{t["hourTime"]}</li>
+                                    <li className='text-fifty text-[0.8125rem]'>{t["week"]}</li>
+                                    <li className='text-fifty text-[0.8125rem]'>{t["hourTime"]}</li>
                                 </ul>
                             </div>
                         </div>
                         <div className="flex justify-start items-start gap-2">
                             <Icon name='bx-envelope' size='1.3em' color='var(--color-fifty)'/>
                             <div className="w-full">
-                                <h5 className='text-fifty uppercase font-semibold text-[13px]'>{t["perEmail"]}</h5>
-                                <a href="mailto:rodriguekwayep.freelance@hotmail.com" className='hover:text-link text-fifty text-[13px] lineBreak'>rodriguekwayep.freelance@hotmail.com</a>
+                                <h5 className='text-fifty uppercase font-semibold text-[0.8125rem]'>{t["perEmail"]}</h5>
+                                <a href="mailto:rodriguekwayep.freelance@hotmail.com" className='hover:text-link text-fifty text-[0.8125rem] lineBreak'>rodriguekwayep.freelance@hotmail.com</a>
                             </div>
                         </div>
                     </div>

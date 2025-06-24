@@ -70,8 +70,8 @@ const Login: React.FC<LoginProps> = ({locale}) => {
     checkCookie()
   },[confirmLoggin,locale,router])
   return (
-    <div className="flex justify-center items-center h-screen bg-white mt-[100px]">
-      <div className="bg-gray-200 p-8 rounded shadow-md w-[50%] min-[250px]">
+    <div className="flex justify-center items-center h-screen bg-white mt-[6.25rem]">
+      <div className="bg-gray-200 p-8 rounded shadow-md w-[50%] min-[15.625rem]">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

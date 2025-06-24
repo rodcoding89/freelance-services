@@ -174,10 +174,10 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
         setAcceptSaleTerm(false)
         setConfirmAcceptBackAmountCondition(false)
     }
-    if (!contract && loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
+    if (!contract && loading) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
 
     return (
-        <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
+        <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[6.875rem] mx-auto`}>
             {
                 contractStatus === null ? (
                     <>

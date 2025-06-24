@@ -804,9 +804,9 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
     checkCookie()
   },[locale])
 
-  if (!service) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+  if (!service) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-[110px] w-[85%]">
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-[6.875rem] w-[85%]">
       <h1 className="text-2xl font-bold text-primary mb-6">Facturation pour le client {invoiceInfo.name}</h1>
       
       <form onSubmit={handleSubmit}>

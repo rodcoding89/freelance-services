@@ -1,5 +1,5 @@
 "use client"
-import { collection, getDocs, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, updateDoc, query, where, setDoc } from 'firebase/firestore';
 import firebase from '@/utils/firebase'; 
 
 import { useRouter } from 'next/navigation';
@@ -20,12 +20,14 @@ interface Services {
 interface Client {
     id: string;
     name:string;
+    taxId?:string;
     email?:string;
     services:Services[];
     modifDate: string;
     clientNumber:number;
     invoiceCount?:number;
     clientLang:string;
+    status:"actived"|"desactived"
 }
 interface CLientsListProps {
     locale:string
@@ -53,7 +55,9 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                         clientLang: data.clientLang,
                         email: data.email,
                         clientNumber: data.clientNumber,
+                        taxId: data.taxId,
                         invoiceCount: data.invoiceCount,
+                        status:data.status,
                         services: clientService
                     });
                 }
@@ -92,17 +96,31 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
     // Supprimer un client
     const handleDeleteClient = async (id: string) => {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
+            console.log("id",id)
             try {
-                await deleteAllPostsByUser(id);
-                await deleteDoc(doc(firebase.db, 'clients', id));
-                setClients(clients.filter(client => client.id !== id));
+                const clientItemIndex = clients.findIndex((item)=>item.id === id)
+                console.log("clientItemIndex",clientItemIndex,"id",id)
+                if(clientItemIndex > -1){
+                    const status:"actived"|"desactived" = "desactived"
+                    const clientItem = clients[clientItemIndex]
+                    const updateClient = {...clientItem,status:status}
+                    const docClient = doc(firebase.db,"clients",id)
+                    await setDoc(docClient,{ ...updateClient }, { merge: false })
+                    setClients((prev)=>{
+                        const updateClients = prev.splice(clientItemIndex,1,updateClient)
+                        sessionStorage.setItem("clientData",JSON.stringify(updateClients))
+                        return updateClients
+                    })
+                }
             } catch (error) {
                 console.error("Erreur de suppression:", error);
             }
+        }else{
+            console.log("id not confirm")
         }
     };
 
-    const deleteAllPostsByUser = async (clientId:string) => {
+    /*const deleteAllPostsByUser = async (clientId:string) => {
         try {
             // 1. Trouver tous les posts de l'utilisateur
             const serviceQuery = query(collection(firebase.db, 'services'), where('clientId', '==', clientId));
@@ -120,7 +138,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
             console.error("Erreur lors de la suppression des posts: ", error);
             return false;
         }
-    };
+    };*/
 
     // Obtenir la classe CSS en fonction du statut
     const getStatusClass = (status: string) => {
@@ -187,10 +205,10 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
         }
         checkCookie()
     },[locale])
-    if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+    if (loading) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
 
     return (
-        <div className="container px-4 py-8 mt-[110px] w-[85%] mx-auto">
+        <div className="container px-4 py-8 mt-[6.875rem] w-[85%] mx-auto">
             <h1 className="text-2xl font-bold mb-6">Gestion des Clients</h1>
         
             {/* Liste des clients */}
@@ -202,6 +220,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dernier contact</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prestation</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                         </thead>
@@ -212,11 +231,11 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                                 <div className="font-medium text-gray-900">{client.name}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {parseDate(client.modifDate) || 'N/A'}
+                                {client.modifDate || 'N/A'}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${client.status === 'actived' ? '' : 'pointer-events-none opacity-50'}`}>
                                 <ul className='m-0 p-0 flex flex-col gap-2 w-full'>
-                                    {client.services.map(service => (<li className='flex justify-start items-start gap-2 flex-col border-solid border-b-[1px] border-gray-200 py-2 w-full' key={service.serviceId}>
+                                    {client.services.map(service => (<li className='flex justify-start items-start gap-2 flex-col border-solid border-b-[ 0.0625rem] border-gray-200 py-2 w-full' key={service.serviceId}>
                                         <div className='flex justify-start items-start gap-1'><span className={`px-2 inline-flex text-[0.625rem] leading-5 font-semibold rounded-full ${getStatusClass(service.contractStatus)}`}>
                                         <i className={`${getStatusIcon(service.contractStatus)} mr-1`}></i>
                                         {getStatusText(service.contractStatus)}
@@ -232,8 +251,11 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                                     </li>))}
                                 </ul>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-start items-center gap-2">
-                                <a title="Modifier le client" href={`/${client.clientLang}/upate-client/${client.id}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-edit" size="1rem"/></a>
+                            <td className="px-6 py-4">
+                                <span className={`${client.status === 'actived' ? 'bg-green-700 text-fifty' : 'bg-orange-600 text-white'} py-1 px-2 rounded-[.4rem] text-[.75rem]`}>{client.status}</span>
+                            </td>
+                            <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-start items-center gap-2`}>
+                                <a title="Modifier le client" href={`/${client.clientLang}/update-client/${client.id}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-edit" size="1rem"/></a>
                                 <button
                                 onClick={() => handleDeleteClient(client.id)}
                                 className="text-red-600 hover:text-red-900"

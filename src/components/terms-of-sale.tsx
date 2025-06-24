@@ -52,9 +52,9 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
         console.warn('replaceContent called with mismatched types');
         return key;
     };
-    if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+    if (loading) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
     return (
-        <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[130px] mx-auto`}>
+        <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[8.125rem] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["termsOfSale"]}</h1>
             <div className="saleBloc">
                 {locale !== 'en' && (

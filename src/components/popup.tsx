@@ -25,7 +25,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
     const {contextData,setContextData} = useContext(AppContext)
     
     const [serviceDetailContent,setServiceDetailContent] = useState<any>()
-    const [switchIndex,setSwitchIndex] = useState<number>(0)
+    const [switchIndex,setSwitchIndex] = useState<number>(1)
     const [serviceAvDistage,setServiceAvDistage] = useState<any>()
     //console.log("data",data)
     const [popupMode,setMode] = useState<string>('')
@@ -92,17 +92,18 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
         if(!devModeContent || !serviceAvDistage) return
         return (
             <div>
-                <p className="text-[14px] my-3" dangerouslySetInnerHTML={{ __html: t[devModeContent[switchIndex + 1].def] }}/>
-                <span className="text-[11px] text-primary font-regular mb-5 italic block" dangerouslySetInnerHTML={{ __html: t[devModeContent[switchIndex + 1].notion] }}/>
+                <p className="text-[0.875rem] my-3" dangerouslySetInnerHTML={{ __html: t[devModeContent[switchIndex].def] }}/>
+                <span className="text-[0.6875rem] text-primary font-regular mb-5 italic block" dangerouslySetInnerHTML={{ __html: t[devModeContent[switchIndex].notion] }}/>
                 <div className="flex justify-start items-start gap-3 max-792:flex-col">
                     <div className="w-1/2 max-792:w-full">
                         <h4 className="mb-5 text-[1.15em] font-semibold uppercase text-secondary">{t["advantage"]}</h4>
                         <div className="flex flex-col justify-start items-start gap-3">
                             {
-                                serviceAvDistage[switchIndex + 1 as keyof typeof serviceAvDistage].advantage.map((item:any,index:number)=>{
+                                serviceAvDistage[switchIndex as keyof typeof serviceAvDistage].advantage.map((item:any,index:number)=>{
+                                    //console.log("switchIndex",switchIndex,serviceAvDistage[1],"item",item)
                                     return <div key={index} className="">
-                                        <h6 className="text-[14px] font-semibold ">{t[item.title]} : </h6>
-                                        <p className="text-[13px]" dangerouslySetInnerHTML={{ __html: t[item.text] }}/>
+                                        <h6 className="text-[0.875rem] font-semibold ">{t[item.title]} : </h6>
+                                        <p className="text-[0.8125rem]" dangerouslySetInnerHTML={{ __html: t[item.text] }}/>
                                     </div>
                                 })
                             }
@@ -112,10 +113,10 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                         <h4 className="mb-5 text-[1.15em] font-semibold uppercase text-secondary">{t["disadvantage"]}</h4>
                         <div className="flex flex-col justify-start items-start gap-3">
                             {
-                                serviceAvDistage[switchIndex + 1 as keyof typeof serviceAvDistage].disadvantage.map((item:any,index:number)=>{
+                                serviceAvDistage[switchIndex as keyof typeof serviceAvDistage].disadvantage.map((item:any,index:number)=>{
                                     return <div key={index} className="">
-                                        <h6 className="text-[14px] font-semibold ">{t[item.title]} : </h6>
-                                        <p className="text-[13px]" dangerouslySetInnerHTML={{ __html: t[item.text] }}/>
+                                        <h6 className="text-[0.875rem] font-semibold ">{t[item.title]} : </h6>
+                                        <p className="text-[0.8125rem]" dangerouslySetInnerHTML={{ __html: t[item.text] }}/>
                                     </div>
                                 })
                             }
@@ -177,15 +178,15 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                 offset={-65} 
                                 duration={500}
                                 to={`home`}
-                                ><img src="/assets/images/logo.webp" alt="logo" className='w-auto h-[45px] rounded-full' onClick={switchToStart}/></Link>
+                                ><img src="/assets/images/logo.webp" alt="logo" className='w-auto h-[2.8125rem] rounded-full' onClick={switchToStart}/></Link>
                                 <span className=" cursor-pointer"><CloseButton size="large" onClose={handlePopUp}/></span>
                             </div>
                             <div className="w-full">
-                                <h4 className="uppercase text-[1.15em] mb-2 font-semibold">{t["about"]}<span className='w-1/6 block h-[2px] bg-thirty mb-2'></span></h4>
+                                <h4 className="uppercase text-[1.15em] mb-2 font-semibold">{t["about"]}<span className='w-1/6 block h-[0.125rem] bg-thirty mb-2'></span></h4>
                                 <p>{t["devTitle"]}</p>
                             </div>
                             <div className="w-full">
-                                <h4 className="uppercase text-[1.15em] mb-3 font-semibold">{t["navigation"]}<span className='w-1/6 block h-[2px] bg-thirty mb-2'></span></h4>
+                                <h4 className="uppercase text-[1.15em] mb-3 font-semibold">{t["navigation"]}<span className='w-1/6 block h-[0.125rem] bg-thirty mb-2'></span></h4>
                                 <nav className='navi flex justify-start items-start gap-2 flex-col'>
                                     <Link
                                     className='cursor-pointer text-primary'
@@ -239,29 +240,29 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                 </nav>
                             </div>
                             <div className="w-full">
-                                <h4 className="uppercase text-[1.15em] mb-2 font-semibold">{t["contact"]}<span className='w-1/6 block h-[2px] bg-thirty mb-2'></span></h4>
+                                <h4 className="uppercase text-[1.15em] mb-2 font-semibold">{t["contact"]}<span className='w-1/6 block h-[0.125rem] bg-thirty mb-2'></span></h4>
                                 <p className="mb-2">{t["devTitle"]}</p>
                                 <div className='flex justify-start items-center gap-2'>
-                                    <a className='flex justify-center items-center gap-1 w-[40px] h-[40px] rounded-[.2em] bg-white'  href='tel:+33751025598'><Icon name='bx-phone' size='1.4em' color='var(--color-secondary)'/></a>
-                                    <a className='flex justify-center items-center gap-1 w-[40px] h-[40px] rounded-[.2em] bg-white'  href='mailto:rodriguekwayep.freelance@hotmail.com'><Icon name='bx-envelope' size='1.4em' color='var(--color-secondary)'/></a>
-                                    <span className='flex justify-center items-center gap-1 w-[40px] h-[40px] rounded-[.2em] bg-white cursor-pointer' title={t["shareOn"]} onClick={handleShareOnApp}><Icon name="bx-share-alt" size="1.4em" color="var(--color-secondary)"/></span>
+                                    <a className='flex justify-center items-center gap-1 w-[2.5rem] h-[2.5rem] rounded-[.2em] bg-white'  href='tel:+33751025598'><Icon name='bx-phone' size='1.4em' color='var(--color-secondary)'/></a>
+                                    <a className='flex justify-center items-center gap-1 w-[2.5rem] h-[2.5rem] rounded-[.2em] bg-white'  href='mailto:rodriguekwayep.freelance@hotmail.com'><Icon name='bx-envelope' size='1.4em' color='var(--color-secondary)'/></a>
+                                    <span className='flex justify-center items-center gap-1 w-[2.5rem] h-[2.5rem] rounded-[.2em] bg-white cursor-pointer' title={t["shareOn"]} onClick={handleShareOnApp}><Icon name="bx-share-alt" size="1.4em" color="var(--color-secondary)"/></span>
                                 </div>
                             </div>
                         </div>
                     ): popupMode === 'service' ? (
                         <div className="flex flex-col justify-between items-start h-[100vh] gap-3 py-3 px-8 overflow-y-auto ">
                             <div className="flex justify-between items-center gap-3 w-full">
-                                <h3 className="text-[1.8em] font-bold uppercase text-thirty line-break max-420:text-[20px]">{t["services"]}</h3>
+                                <h3 className="text-[1.8em] font-bold uppercase text-thirty line-break max-420:text-[1.25rem]">{t["services"]}</h3>
                                 <span className=" cursor-pointer"><CloseButton size="large" onClose={handlePopUp}/></span>
                             </div>
                             <div className="mt-3 w-full">
-                                <h2 className="text-[1.5em] text-thirty font-semibold mb-3 max-420:text-[17px]">{t[serviceDetailContent?.title]}</h2>
+                                <h2 className="text-[1.5em] text-thirty font-semibold mb-3 max-420:text-[1.0625rem]">{t[serviceDetailContent?.title]}</h2>
                                 <div className="flex flex-col justify-start items-center gap-5">
                                     <div className="mt-3 mb-5 w-full block">
                                         <h4 className="font-semibold mb-1">{t[serviceDetailContent?.content.title]}</h4>
                                         <p className="whitespace-pre-wrap mb-2">{t[serviceDetailContent?.content.para]}</p>
                                         <p className="whitespace-pre-wrap font-bold text-blue-950">{t[serviceDetailContent?.content.souspara]}</p>
-                                        <span className="text-[11px] text-primary font-regular mb-5 italic block mt-4" dangerouslySetInnerHTML={{ __html: t[serviceDetailContent?.content.notion] }}/>
+                                        <span className="text-[0.6875rem] text-primary font-regular mb-5 italic block mt-4" dangerouslySetInnerHTML={{ __html: t[serviceDetailContent?.content.notion] }}/>
                                     </div>
                                     <div className={`w-full flex items-center gap-5 max-810:flex-col flex-row-reverse`}>
                                         <img className="w-1/2 max-810:w-full aspect-[15/9]" src={serviceDetailContent?.img} alt={t[serviceDetailContent?.content.title]} />
@@ -275,15 +276,15 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                         </div>
                                     </div> 
                                 </div>
-                                <h2 className="text-[1.5em] text-thirty font-semibold mb-3 mt-10 max-420:text-[17px]">{t[serviceDetailContent?.subtitle]}</h2>
+                                <h2 className="text-[1.5em] text-thirty font-semibold mb-3 mt-10 max-420:text-[1.0625rem]">{t[serviceDetailContent?.subtitle]}</h2>
                                 <p className="mb-3">{t[serviceDetailContent?.info]}</p>
                                 <div className="my-5">
                                     <div className='flex justify-around items-center gap-3 py-2 px-3 bg-white flex-wrap'>
                                     {
                                         serviceDetailContent?.category?.map((m:any,i:number)=>{
                                             return(
-                                                <p onClick={()=>setSwitchIndex(i)} className={`relative cursor-pointer uppercase text-[.67em] text-ellipsis whitespace-nowrap overflow-hidden before:w-0 
-                                                before:transition-all before:duration-700 before:ease-in-out z-0 ${switchIndex === i ? ' py-1 px-2 before:absolute before:left-0 before:top-0 before:bg-thirty before:!w-full before:h-full before:rounded-xl before:z-[-1] font-semibold text-fifty':''}`} key={i}>{t[m]}</p>
+                                                <p onClick={()=>setSwitchIndex(i+1)} className={`relative cursor-pointer uppercase text-[.67em] text-ellipsis whitespace-nowrap overflow-hidden before:w-0 
+                                                before:transition-all before:duration-700 before:ease-in-out z-0 ${switchIndex === i+1 ? ' py-1 px-2 before:absolute before:left-0 before:top-0 before:bg-thirty before:!w-full before:h-full before:rounded-xl before:z-[-1] font-semibold text-fifty':''}`} key={i}>{t[m]}</p>
                                             )
                                         })
                                     }
@@ -316,11 +317,11 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                                             </div>
                                                             <div className={`bg-fifty group-hover:bg-secondary py-2`}>
                                                                 <div className='flex justify-between items-start gap-2 mx-4'>
-                                                                    <h4 className='text-secondary font-semibold text-[18px] mb-2 w-fit uppercase group-hover:text-fifty relative before:w-2/5 before:h-1 before:bg-secondary before:bottom-[-4px] before:left-[1px] before:block before:group-hover:bg-fifty before:absolute'>{item.projet}</h4>
-                                                                    <span className='text-[11px] text-[#aaa]'>{t[item.mode]}</span>
+                                                                    <h4 className='text-secondary font-semibold text-[1.125rem] mb-2 w-fit uppercase group-hover:text-fifty relative before:w-2/5 before:h-1 before:bg-secondary before:bottom-[-0.25rem] before:left-[0.0625rem] before:block before:group-hover:bg-fifty before:absolute'>{item.projet}</h4>
+                                                                    <span className='text-[0.6875rem] text-[#aaa]'>{t[item.mode]}</span>
                                                                 </div>
-                                                                <p className='uppercase text-[14px] font-medium mx-4 mt-1 text-primary group-hover:text-fifty'>{t[item.name]}</p>
-                                                                <p className='mx-4 mt-1 text-[13px] text-primary uppercase group-hover:text-fifty'>{t[item.shortText]}</p>
+                                                                <p className='uppercase text-[0.875rem] font-medium mx-4 mt-1 text-primary group-hover:text-fifty'>{t[item.name]}</p>
+                                                                <p className='mx-4 mt-1 text-[0.8125rem] text-primary uppercase group-hover:text-fifty'>{t[item.shortText]}</p>
                                                             </div>
                                                         </div>
                                                     )
@@ -394,7 +395,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                     <ul className="flex justify-start items-center !list-decimal gap-2 flex-wrap w-full pl-5 max-792:flex-col">
                                         {
                                             refDetail?.task.map((item:string,index:number)=>{
-                                                return <li className="w-[calc(50%-4px)] max-792:w-[calc(100%-4px)]" key={index}>
+                                                return <li className="w-[calc(50%-0.25rem)] max-792:w-[calc(100%-0.25rem)]" key={index}>
                                                 <div className="flex justify-start items-center gap-1">
                                                   <Icon name="bx-check" size=".9em" />
                                                   {t[item]}

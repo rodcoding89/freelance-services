@@ -93,9 +93,9 @@ const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
         }
         checkCookie()
     },[locale])
-    if (loading) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+    if (loading) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
     return (
-        <div className="container px-4 py-8 mt-[110px] w-[85%] mx-auto">
+        <div className="container px-4 py-8 mt-[6.875rem] w-[85%] mx-auto">
             <h1 className="text-2xl font-bold mb-6">Ajouter la date de mise a jour des pages web (Réglementation)</h1>
             <section className="border-b pb-6">
                 <div className="my-4">

@@ -31,7 +31,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, duration = 2 
   }, [inView, target, count]);
 
   return (
-    <motion.em className='not-italic text-[4em] relative before:w-full before:h-[3px] before:bg-thirty before:absolute before:left-[5px] before:bottom-0 w-fit' ref={ref}>{rounded}</motion.em>
+    <motion.em className='not-italic text-[4em] relative before:w-full before:h-[0.1875rem] before:bg-thirty before:absolute before:left-[0.3125rem] before:bottom-0 w-fit' ref={ref}>{rounded}</motion.em>
   );
 };
 

@@ -8,6 +8,8 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import PopUp from "@/components/popup";
 import { useContext } from "react";
+import CookieConsentCompo from "@/components/cookieconsent";
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -33,6 +35,7 @@ export default async function RootLayout({
           <Footer locale={locale} date={date}/>
           </AppProvider>
         </TranslationProvider>
+        <CookieConsentCompo locale={locale}/>
       </body>
     </html>
   );

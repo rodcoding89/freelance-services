@@ -39,7 +39,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
     ]
     
     return (
-        <Element className="mt-[110px]" name="about">
+        <Element className="mt-[6.875rem]" name="about">
             <div className='w-[85%] mx-auto'>
                 <h1 className='text-center uppercase text-thirty mb-10 line-break'>{t["about"]}</h1>
                 <div className='flex justify-start items-center gap-20 flex-col'>
@@ -100,7 +100,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
                         </div>
                     </div>
                 </div>
-                <span className='block text-left italic text-[.8em] mt-5'>{t['moreEx']}<Link className='text-[#535bf2] hover:underline text-[14px] not-italic' href={'https://portfolio.rodcoding.com'}>{t['portfolio']}</Link></span>
+                <span className='block text-left italic text-[.8em] mt-5'>{t['moreEx']}<Link className='text-[#535bf2] hover:underline text-[ 0.875rem] not-italic' href={'https://portfolio.rodcoding.com'}>{t['portfolio']}</Link></span>
                 <div className='w-full flex justify-center items-center'>
                     <div className="stat flex justify-start items-center flex-wrap gap-5 mt-4 max-485:justify-center">
                         {

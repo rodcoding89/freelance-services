@@ -67,7 +67,7 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
     }
     console.log(errors,'isSended',isSended)
     return (
-        <Element className="mt-[110px]" name="contact">
+        <Element className="mt-[6.875rem]" name="contact">
             <div className="w-[85%] mx-auto">
                 <div className="section-heading  text-center"> 
                     <h1 className='uppercase text-thirty line-break'>{t["contactMe"]}</h1> 
@@ -155,7 +155,7 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
                                 </div>
                                 <div className={`w-full flex items-end justify-end m-b-0 ${isSended !== null ? '!justify-between !items-center gap-4 flex-wrap' : ''}`}>
                                     {
-                                        isSended !== null ? isSended === true ? <div className='bg-green-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[200px]'>{t["successContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : <div className='bg-red-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[200px]'>{t["errorContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : null
+                                        isSended !== null ? isSended === true ? <div className='bg-green-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[12.5rem]'>{t["successContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : <div className='bg-red-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[12.5rem]'>{t["errorContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : null
                                     }
                                     <button className={`btn btn-primary text-fifty ${isValid && !loader ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-45'} ${loader ? 'flex justify-center items-center gap-1' :''}`} type="submit" disabled={!isValid && loader}>{t["sendMessage"]}{loader && <Icon name='bx bx-loader-alt bx-spin' size='1em' color='#fff'/>}</button>
                                 </div>

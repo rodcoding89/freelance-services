@@ -528,9 +528,9 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
 
     
     console.log("vatNumberChecking",vatNumberChecking)
-    if (loading && (cookie === null || !cookie)) return <div className="text-center py-8 mt-[110px] h-[200px] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
+    if (loading && (cookie === null || !cookie)) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
     return (
-        <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
+        <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[6.875rem] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["contrat"]}</h1>
             <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
                 <div className="flex justify-start items-center gap-2 mb-6 flex-wrap">
@@ -908,10 +908,10 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
                         cookie && (<section className="border-b pb-6">
                         <h2 className="text-xl font-semibold mb-4">{t.maintenanceService.title}</h2>
                         <div className="flex gap-5 justify-start items-center flex-wrap">
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'website' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('website')}>{t.maintenanceService.web}</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'ecommerce' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('ecommerce')}>{t.maintenanceService.ecommerce}</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] ${maintenanceCategory === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('app')}>{t.maintenanceService.app}</span>
-                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[4px] cursor-pointer ${maintenanceCategory === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('saas')}>{t.maintenanceService.saas}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[ 0.25rem] cursor-pointer ${maintenanceCategory === 'website' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('website')}>{t.maintenanceService.web}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[ 0.25rem] cursor-pointer ${maintenanceCategory === 'ecommerce' ? 'bg-indigo-100 text-indigo-800 pointer-events-none' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('ecommerce')}>{t.maintenanceService.ecommerce}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[ 0.25rem] ${maintenanceCategory === 'app' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('app')}>{t.maintenanceService.app}</span>
+                                <span className={`py-1 px-3 inline-flex text-xs leading-5 font-semibold rounded-[ 0.25rem] cursor-pointer ${maintenanceCategory === 'saas' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'} cursor-pointer`} onClick={()=>chooseMaintenance('saas')}>{t.maintenanceService.saas}</span>
                             </div>
                         
                         

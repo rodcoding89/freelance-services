@@ -10,15 +10,16 @@ interface HomeProps{
 const Home:React.FC<HomeProps> = ({locale})=>{
     const t:any = useTranslationContext();
     return (
-        <Element className="mt-[100px]" name="home">
+        <Element className="mt-[6.25rem]" name="home">
             <div className='w-full bg-secondary'>
-                <div className='w-full flex gap-[40px] justify-center items-start relative'>
+                <div className='w-full flex gap-[4.5rem] justify-center items-start relative'>
                     <div className='flex flex-col justify-center items-center self-stretch w-1/2 ml-[calc(15%/2)] max-920:absolute max-920:bg-[rgba(0,0,0,.5)] max-920:ml-0 max-920:w-full max-920:h-full max-920:top-[50%] max-920:translate-y-[-50%] max-920:left-0 max-920:px-[10%]'>
-                        <h1 className='text-fifty mb-3 uppercase text-[3em] max-420:text-[25px] max-485:mb-5 line-break'>{t["devTitle"]}</h1>
+                        <h1 className='text-fifty mb-3 uppercase text-[3em] max-420:text-[1.5625rem] max-485:mb-5 line-break'>{t["devTitle"]}</h1>
                         <p className='mb-3 text-fifty'>{t["devDescription"]}</p>
-                        <div className='flex justify-center items-center gap-2 h-[86px] w-full mb-4 bg-primary p-4 flex-col'>
-                            <h4 className='text-fifty uppercase text-[1em] dev text-ellipsis h-5 text-center overflow-hidden whitespace-nowrap w-full'>{t["domainTitle"]}</h4>
-                            <div className="dropping-texts w-full h-[36px]">
+                        <div className='flex justify-center items-center gap-2 h-[5.375rem] w-full mb-4 bg-transparent py-4 px-10 flex-col relative rounded-tl-[4.25rem] border-[0.0675rem] border-solid border-fifty rounded-br-[4.25rem] max-520:px-6'>
+                            <h4 className='text-primary uppercase text-[.9em] text-ellipsis h-5 text-center overflow-hidden whitespace-nowrap w-[calc(100%-6rem)] absolute top-2 left-[50%] translate-x-[-50%] mx-6'>{t["domainTitle"]}</h4>
+                            <h4 className='text-thirty uppercase text-[1em] text-ellipsis h-5 text-center overflow-hidden whitespace-nowrap w-[calc(100%-6rem)] unvisible mx-6'>{t["domainTitle"]}</h4>
+                            <div className="dropping-texts w-full h-[5.375rem] bg-secondary rounded-2xl">
                                 <div className='text-center w-full flex justify-center items-center'>{t["web"]}</div>
                                 <div className='text-center w-full flex justify-center items-center'>{t["ecommerceWebSite"]}</div>
                                 <div className='text-center w-full flex justify-center items-center'>{t["mobileApp"]}</div>
@@ -37,7 +38,7 @@ const Home:React.FC<HomeProps> = ({locale})=>{
                                     >{t["devi"]}
                                 </Link>
                             </span>
-                            <span className='cursor-pointer px-6 py-3 text-fifty bg-transparent border-[1px] border-solid border-fifty rounded-2xl hover:text-secondary hover:bg-fifty hover:border-fifty flex items-center justify-center transition-hover duration-500 ease-in max-485:w-full'>
+                            <span className='cursor-pointer px-6 py-3 text-fifty bg-transparent border-[0.0625rem] border-solid border-fifty rounded-2xl hover:text-secondary hover:bg-fifty hover:border-fifty flex items-center justify-center transition-hover duration-500 ease-in max-485:w-full'>
                                 <Link
                                     activeClass="active"
                                     spy={true} 
@@ -50,10 +51,10 @@ const Home:React.FC<HomeProps> = ({locale})=>{
                             </span>
                         </div>
                     </div>
-                    <picture className='w-1/2 max-920:w-full h-[500px]'>
+                    <picture className='w-1/2 max-920:w-full h-[31.25rem]'>
                         <source srcSet='/assets/images/home.webp' type='image/webp' />
                         <source srcSet='/assets/images/home.png' type='image/png' />
-                        <Image src={'/assets/images/home.png'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[100px] rounded-bl-[100px] max-920:rounded-none'/>
+                        <Image src={'/assets/images/home.png'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[6.25rem] rounded-bl-[6.25rem] max-920:rounded-none'/>
                     </picture>
                 </div>
             </div>

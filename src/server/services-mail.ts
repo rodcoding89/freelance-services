@@ -65,9 +65,9 @@ const sendEmail = async(data:Email,locale:string)=>{
             <li>Email: ${data.from}</li>
             ${data.budget ? `<li>Budget : ${data.budget}</li>` : ''}
         </ul>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">Voici le contenu de votre message :</p>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">Objet: ${data.subject}</p>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">${data.content}</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">Voici le contenu de votre message :</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">Objet: ${data.subject}</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">${data.content}</p>
         <p>Nous confirmons par cet email la réception de votre message et nous vous répondrons dans les plus brefs délais.</p>
         <p>Cordialement</p>` : locale === 'de' ? `<p>Sie haben uns am ${new Date().toLocaleDateString(`de-DE`)} eine Informationsanfrage mit den folgenden Informationen übermittelt:</p>
         <ul>
@@ -75,9 +75,9 @@ const sendEmail = async(data:Email,locale:string)=>{
             <li>E-Mail: ${data.from}</li>
             ${data.budget ? `<li>Budget: ${data.budget}</li>` : ''}
         </ul>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">Hier ist der Inhalt Ihrer Nachricht:</p>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">Betreff: ${data.subject}</p>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">${data.content}</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">Hier ist der Inhalt Ihrer Nachricht:</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">Betreff: ${data.subject}</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">${data.content}</p>
         <p>Wir bestätigen mit dieser E-Mail den Erhalt Ihrer Nachricht und werden Ihnen so schnell wie möglich antworten.</p>
         <p>Mit freundlichen Grüßen</p>
         ` : `<p>You sent us an information request on ${new Date().toLocaleDateString(`en-US`)} containing the following information:</p>
@@ -86,9 +86,9 @@ const sendEmail = async(data:Email,locale:string)=>{
             <li>Email: ${data.from}</li>
             ${data.budget ? `<li>Budget: ${data.budget}</li>` : ''}
         </ul>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">Here is the content of your message:</p>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">Subject: ${data.subject}</p>
-        <p style="border-bottom:1px dashed #000;padding-bottom:10px;">${data.content}</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">Here is the content of your message:</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">Subject: ${data.subject}</p>
+        <p style="border-bottom:0.0625rem dashed #000;padding-bottom:10px;">${data.content}</p>
         <p>We confirm by this email the receipt of your message and will respond as soon as possible.</p>
         <p>Best regards</p>`;
         const mailOptionsToRodFreelance = {

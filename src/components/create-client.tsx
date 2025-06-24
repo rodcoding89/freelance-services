@@ -24,6 +24,7 @@ interface Client {
     clientNumber:number;
     invoiceCount?:number;
     clientLang:string;
+    status:"actived"|"desactived"
 }
 
 interface Services {
@@ -77,7 +78,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         if(!data) return
         setLoader(true);
         try {
-            const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : ''}
+            const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : '',status:"actived"}
             //console.log('Client Data:', data);
 
             const clientId = await addClient(client);
@@ -135,7 +136,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         checkCookie()
     },[])
   return (
-    <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[110px] mx-auto`}>
+    <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[6.875rem] mx-auto`}>
         <h1 className="text-center text-thirty uppercase">Ajouter un nouveau client</h1>
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Création du client</h1>
@@ -214,12 +215,12 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                     <Link className='text-primary py-2 px-4 bg-[#ccc] rounded-[.2em]' href={'/'+locale+'/clients-list'}>Liste de clients</Link>
                     <button
                         type="submit"
-                        className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center items-center gap-2 ${!isValid || loader ? 'cursor-not-allowed opacity-45' : 'cursor-pointer opacity-100'}`} disabled={!isValid || loader}>
+                        className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center items-center gap-2 ${!isValid && loader ? 'cursor-not-allowed opacity-45' : 'cursor-pointer opacity-100'}`} disabled={!isValid && loader}>
                         {loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>} Créer le client
                     </button>
                 </div>
             </form>
-            </div>
+        </div>
     </main>
   );
 };
