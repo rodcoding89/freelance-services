@@ -536,7 +536,7 @@ export const refDetailContent:refContent = {
             proprio:"websiteItem1Proprio",
             img: '/assets/images/fieger.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'websiteItem1Para'
             },
             infoSite:{
@@ -547,14 +547,14 @@ export const refDetailContent:refContent = {
                 mode:'devModeWordpress',
                 link:'https://www.fieger-lamellenfenster.de/'
             },
-            task:['websiteItem1TaksPara1','websiteItem1TaksPara2','websiteItem1TaksPara3','websiteItem1TaksPara4','websiteItem1TaksPara5']
+            task:['websiteItem1TaskPara1','websiteItem1TaskPara2','websiteItem1TaskPara3','websiteItem1TaskPara4','websiteItem1TaskPara5']
         },
         2:{
             title:"websiteItemTitle",
             proprio:"websiteItem2Proprio",
             img: '/assets/images/neue-groupe.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'websiteItem2Para'
             },
             infoSite:{
@@ -565,14 +565,14 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:'https://www.neue-gruppe.com/'
             },
-            task:['websiteItem2TaksPara1','websiteItem2TaksPara2','websiteItem2TaksPara3','websiteItem2TaksPara4','websiteItem2TaksPara5']
+            task:['websiteItem2TaskPara1','websiteItem2TaskPara2','websiteItem2TaskPara3','websiteItem2TaskPara4','websiteItem2TaskPara5']
         },
         3:{
             title:"websiteItemTitle",
             proprio:"websiteItem3Proprio",
             img: '/assets/images/avlis.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'websiteItem3Para'
             },
             infoSite:{
@@ -583,14 +583,14 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:'https://www.avlis.fr'
             },
-            task:['websiteItem3TaksPara1','websiteItem3TaksPara2','websiteItem3TaksPara3','websiteItem3TaksPara4','websiteItem3TaksPara5','websiteItem3TaksPara6']
+            task:['websiteItem3TaskPara1','websiteItem3TaskPara2','websiteItem3TaskPara3','websiteItem3TaskPara4','websiteItem3TaskPara5','websiteItem3TaskPara6']
         },
         4:{
             title:"websiteItemTitle",
             proprio:"websiteItem4Proprio",
             img: '/assets/images/charlotte-consulting.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'websiteItem4Para'
             },
             infoSite:{
@@ -601,14 +601,50 @@ export const refDetailContent:refContent = {
                 mode:'WordPress',
                 link:'https://charlottekoona.com/'
             },
-            task:['websiteItem4TaksPara1','websiteItem4TaksPara2','websiteItem4TaksPara3','websiteItem4TaksPara4','websiteItem4TaksPara5','websiteItem4TaksPara6']
+            task:['websiteItem4TaskPara1','websiteItem4TaskPara2','websiteItem4TaskPara3','websiteItem4TaskPara4','websiteItem4TaskPara5','websiteItem4TaskPara6']
         },
         5:{
+            title:"websiteItemTitle",
+            proprio:"websiteItem5Proprio",
+            img: '/assets/images/portfolio.png',
+            description:{
+                title:'activityDomain',
+                para:'websiteItem4Para'
+            },
+            infoSite:{
+                title:'infoProjet',
+                year:"2024",
+                cat:"devModeOfHand",
+                techno:['HTML5','Bootstrap','JavaScirpt',"JQuery","MySql","PHP",'CSS3','External Module'],
+                mode:'WordPress',
+                link:'https://charlottekoona.com/'
+            },
+            task:['websiteItem4TaskPara1','websiteItem4TaskPara2','websiteItem4TaskPara3','websiteItem4TaskPara4','websiteItem4TaskPara5','websiteItem4TaskPara6']
+        },
+        6:{
+            title:"websiteItemTitle",
+            proprio:"websiteItem6Proprio",
+            img: '/assets/images/moovie-api.png',
+            description:{
+                title:'activityDomain',
+                para:'websiteItem4Para'
+            },
+            infoSite:{
+                title:'infoProjet',
+                year:"2024",
+                cat:"devModeOfHand",
+                techno:['HTML5','Bootstrap','JavaScirpt',"JQuery","MySql","PHP",'CSS3','External Module'],
+                mode:'WordPress',
+                link:'https://charlottekoona.com/'
+            },
+            task:['websiteItem4TaskPara1','websiteItem4TaskPara2','websiteItem4TaskPara3','websiteItem4TaskPara4','websiteItem4TaskPara5','websiteItem4TaskPara6']
+        },
+        7:{
             title:"reworkedItemTitle",
             proprio:"reworkedItemProprio",
             img: '/assets/images/graphicon.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'reworkedWebSiteItem1Para'
             },
             infoSite:{
@@ -619,7 +655,7 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:'https://www.graphicon.de/'
             },
-            task:['reworkedItemTaksPara1','reworkedItemTaksPara2','reworkedItemTaksPara3','reworkedItemTaksPara4','reworkedItemTaksPara5']
+            task:['reworkedItemTaskPara1','reworkedItemTaskPara2','reworkedItemTaskPara3','reworkedItemTaskPara4','reworkedItemTaskPara5']
         }
     },
     reworked:{
@@ -629,7 +665,7 @@ export const refDetailContent:refContent = {
             proprio:"reworkedItemProprio",
             img: '/assets/images/graphicon.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'reworkedWebSiteItem1Para'
             },
             infoSite:{
@@ -640,7 +676,7 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:'https://www.graphicon.de/'
             },
-            task:['reworkedItemTaksPara1','reworkedItemTaksPara2','reworkedItemTaksPara3','reworkedItemTaksPara4','reworkedItemTaksPara5']
+            task:['reworkedItemTaskPara1','reworkedItemTaskPara2','reworkedItemTaskPara3','reworkedItemTaskPara4','reworkedItemTaskPara5']
         }
     },
     ecommerce:{
@@ -650,7 +686,7 @@ export const refDetailContent:refContent = {
             proprio:"ecommerceItem1Proprio",
             img: '/assets/images/chicken-grill.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'ecommerceWebSiteItem1Para'
             },
             infoSite:{
@@ -661,14 +697,14 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:''
             },
-            task:['ecommerceItem1TaksPara1','ecommerceItem1TaksPara2','ecommerceItem1TaksPara3','ecommerceItem1TaksPara4','ecommerceItem1TaksPara5','ecommerceItem1TaksPara6','ecommerceItem1TaksPara7','ecommerceItem1TaksPara8','ecommerceItem1TaksPara9']
+            task:['ecommerceItem1TaskPara1','ecommerceItem1TaskPara2','ecommerceItem1TaskPara3','ecommerceItem1TaskPara4','ecommerceItem1TaskPara5','ecommerceItem1TaskPara6','ecommerceItem1TaskPara7','ecommerceItem1TaskPara8','ecommerceItem1TaskPara9']
         },
         2:{
             title:"ecommerceItemTitle",
             proprio:"ecommerceItem1Proprio",
             img: '/assets/images/kebab-gare.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'ecommerceWebSiteItem2Para'
             },
             infoSite:{
@@ -679,7 +715,7 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:''
             },
-            task:['ecommerceItem1TaksPara1','ecommerceItem1TaksPara2','ecommerceItem1TaksPara3','ecommerceItem1TaksPara4','ecommerceItem2TaksPara5','ecommerceItem1TaksPara6','ecommerceItem1TaksPara7','ecommerceItem1TaksPara8','ecommerceItem1TaksPara9']
+            task:['ecommerceItem1TaskPara1','ecommerceItem1TaskPara2','ecommerceItem1TaskPara3','ecommerceItem1TaskPara4','ecommerceItem2TaskPara5','ecommerceItem1TaskPara6','ecommerceItem1TaskPara7','ecommerceItem1TaskPara8','ecommerceItem1TaskPara9']
         }
     },
     saas:{
@@ -689,7 +725,7 @@ export const refDetailContent:refContent = {
             proprio:"saasItem1Proprio",
             img: '/assets/images/lovsid.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'saasItem1Para'
             },
             infoSite:{
@@ -700,14 +736,14 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:'https://www.lovsid.com/'
             },
-            task:['saasItem1TaksPara1','saasItem1TaksPara2','saasItem1TaksPara3','saasItem1TaksPara4','saasItem1TaksPara5','saasItem1TaksPara6','saasItem1TaksPara7','saasItem1TaksPara8','saasItem1TaksPara9','saasItem1TaksPara10']
+            task:['saasItem1TaskPara1','saasItem1TaskPara2','saasItem1TaskPara3','saasItem1TaskPara4','saasItem1TaskPara5','saasItem1TaskPara6','saasItem1TaskPara7','saasItem1TaskPara8','saasItem1TaskPara9','saasItem1TaskPara10']
         },
         2:{
             title:"saasItemTitle",
             proprio:"saasItem2Proprio",
             img: '/assets/images/reservation-salle.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'saasItem2Para'
             },
             infoSite:{
@@ -718,14 +754,14 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:''
             },
-            task:['saasItem2TaksPara1','saasItem2TaksPara2','saasItem2TaksPara3','saasItem2TaksPara4','saasItem2TaksPara5','saasItem2TaksPara6','saasItem2TaksPara7']
+            task:['saasItem2TaskPara1','saasItem2TaskPara2','saasItem2TaskPara3','saasItem2TaskPara4','saasItem2TaskPara5','saasItem2TaskPara6','saasItem2TaskPara7']
         },
         3:{
             title:"saasItemTitle",
             proprio:"saasItem3Proprio",
             img: '/assets/images/avlis-gestion.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'saasItem3Para'
             },
             infoSite:{
@@ -734,16 +770,16 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['PHP','JavaScirpt','JQuery','MySQL','HTML5','CSS3','Bootstrap','External Module'],
                 mode:'devModeOfHand',
-                link:'https://www.avlis.fr/formation'
+                link:'https://www.avlis.fr/gestion'
             },
-            task:['saasItem3TaksPara1','saasItem3TaksPara2','saasItem3TaksPara3','saasItem3TaksPara4','saasItem3TaksPara5','saasItem3TaksPara6']
+            task:['saasItem3TaskPara1','saasItem3TaskPara2','saasItem3TaskPara3','saasItem3TaskPara4','saasItem3TaskPara5','saasItem3TaskPara6']
         },
         4:{
             title:"saasItemTitle",
             proprio:"saasItem3Proprio",
             img: '/assets/images/avlis-formation.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'saasItem4Para'
             },
             infoSite:{
@@ -752,9 +788,9 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['PHP','JavaScirpt','JQuery','MySQL','HTML5','CSS3','Bootstrap','External Module'],
                 mode:'devModeOfHand',
-                link:'https://www.avlis.fr/gestion'
+                link:'https://www.avlis.fr/formation'
             },
-            task:['saasItem3TaksPara1','saasItem3TaksPara2','saasItem3TaksPara3','saasItem3TaksPara4','saasItem3TaksPara5','saasItem3TaksPara6']
+            task:['saasItem3TaskPara1','saasItem3TaskPara2','saasItem3TaskPara3','saasItem3TaskPara4','saasItem3TaskPara5','saasItem3TaskPara6']
         }
     },
     app:{
@@ -764,7 +800,7 @@ export const refDetailContent:refContent = {
             proprio:"appItem1Proprio",
             img: '/assets/images/avlis.png',
             description:{
-                title:'acivityDomaine',
+                title:'activityDomain',
                 para:'appItem1Para'
             },
             infoSite:{
@@ -775,7 +811,7 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:''
             },
-            task:['appItem4TaksPara1','appItem4TaksPara2','appItem4TaksPara3','appItem4TaksPara4','appItem4TaksPara5','appItem4TaksPara6','appItem4TaksPara7','appItem4TaksPara8']
+            task:['appItem4TaskPara1','appItem4TaskPara2','appItem4TaskPara3','appItem4TaskPara4','appItem4TaskPara5','appItem4TaskPara6','appItem4TaskPara7','appItem4TaskPara8']
         }
     }
 }
@@ -824,10 +860,30 @@ export const reference: Reference = {
             cat:'website'
         },
         {
-            img: '/assets/images/graphicon.png',
-            projet: 'Graphicon',
+            img: '/assets/images/portfolio.png',
+            projet: 'Portfolio',
             refId: 5,
             index:5,
+            name:"websiteItem5Proprio",
+            mode:"devModeOfHand",
+            shortText:"websiteReworkShortText1",
+            cat:'website'
+        },
+        {
+            img: '/assets/images/moovie-api.png',
+            projet: 'Movie API',
+            refId: 6,
+            index:6,
+            name:"websiteItem6Proprio",
+            mode:"devModeOfHand",
+            shortText:"websiteReworkShortText1",
+            cat:'website'
+        },
+        {
+            img: '/assets/images/graphicon.png',
+            projet: 'Graphicon',
+            refId: 7,
+            index:7,
             name:"reworkedItemProprio",
             mode:"devModeOfHand",
             shortText:"websiteReworkShortText1",
@@ -846,7 +902,7 @@ export const reference: Reference = {
                 name:"reworkedItemProprio",
                 mode:"devModeOfHand",
                 shortText:"websiteReworkShortText1",
-                cat:'website'
+                cat:'reworked'
             }
         ]
     },

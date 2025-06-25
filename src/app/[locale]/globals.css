@@ -291,6 +291,7 @@ h1 {
   display: inline-block;
   vertical-align: -0.125rem;
   overflow-y: hidden;
+  z-index: 111;
   position: relative; /* Ajouté pour positionner les éléments correctement */
 }
 .unvisible{
@@ -298,13 +299,17 @@ h1 {
 }
 .dropping-texts > div {
   text-transform: uppercase;
-  color: #0000;
+  /*color: #0000;*/
   height: 2.25rem;
   font-size: 1.5rem;
   font-weight: bold;
-  background: 
+  /*background: 
     repeating-radial-gradient(#000 0 0.0001%,#fff 0 0.0002%) 50% 0/2500px 2500px,
-    repeating-conic-gradient(#000 0 0.0001%,#fff 0 0.0002%) 50% 50%/2500px 2500px;
+    repeating-conic-gradient(#000 0 0.0001%,#fff 0 0.0002%) 50% 50%/2500px 2500px;*/
+  color: #8E1616;
+  background: 
+  repeating-radial-gradient(#8E1616 0 0.0001%,#000 0 0.0002%) 50% 0/2500px 2500px,
+  repeating-conic-gradient(#8E1616 0 0.0001%,#000 0 0.0002%) 50% 50%/2500px 2500px;
   background-blend-mode: difference;
   mix-blend-mode: lighten;
   -webkit-background-clip: text;
@@ -316,6 +321,19 @@ h1 {
   opacity: 0; /* Masquer par défaut */
   transform: translateY(-50px);
   animation: roll 12s linear infinite; /* Animation appliquée à tous les éléments */
+}
+
+@media (max-width:920px){
+  .dropping-texts > div {
+    color: #8E1616;
+    background: 
+    repeating-radial-gradient(#8E1616 0 0.0001%,#000 0 0.0002%) 50% 0/2500px 2500px,
+    repeating-conic-gradient(#8E1616 0 0.0001%,#000 0 0.0002%) 50% 50%/2500px 2500px;
+    background-blend-mode: difference;
+    mix-blend-mode: lighten;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
 }
 
 @media (max-width:743px){

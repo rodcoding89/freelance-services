@@ -61,7 +61,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
                                                     <span><strong>{t["periode"]}</strong>:</span><span className='text-[gray] text-[.85em]'>{item.periode}</span></p>
                                                 <p className='flex justify-start items-start gap-2 mb-2 flex-wrap'>
                                                     <span><strong>{t["country"]}</strong>:</span><span className='text-[gray] text-[.85em]'>{item.country}</span></p>
-                                                <p>{item.description}</p>
+                                                <p dangerouslySetInnerHTML={{ __html: item.description.replace("{rncp}","<a href='https://www.francecompetences.fr/recherche/rncp/35078/' target='_blank' style='text-decoration: underline;color:darkblue;'>(RNCP)</a>") }}/>
                                             </div>
                                         </div>
                                         </div>
