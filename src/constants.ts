@@ -168,7 +168,7 @@ export const serviceDetails = {
         info:"serviceSiteVitrineDescrip",
         subtitle:"serviceSiteVitrineSubTitle",
         category:["cms","ofHand","hybride"],
-        img:'/assets/images/neue-groupe.png',
+        img:'/assets/images/neue-groupe.webp',
         avdisav:'avdistage',
         content:{
             title:"serviceSiteVitrineDef",
@@ -208,7 +208,7 @@ export const serviceDetails = {
         title:"serviceReworkWebsiteTitle",
         info:"serviceReworkWebsiteDescrip",
         subtitle:"serviceReworkWebsiteSubTitle",
-        img:'/assets/images/graphicon.png',
+        img:'/assets/images/graphicon.webp',
         category:["cms","ofHand","hybride"],
         avdisav:'avdistage',
         content:{
@@ -248,7 +248,7 @@ export const serviceDetails = {
         title:"serviceEcommerceWebsiteTitle",
         info:"serviceEcommerceWebsiteDescrip",
         subtitle:"serviceEcommerceWebsiteSubTitle",
-        img:'/assets/images/chicken-grill.png',
+        img:'/assets/images/chicken-grill.webp',
         category:["cms","ofHand","hybride"],
         avdisav:'avdistage',
         content:{
@@ -288,7 +288,7 @@ export const serviceDetails = {
         title:"serviceSaasTitle",
         info:"serviceSaasDescrip",
         subtitle:"serviceSaasSubTitle",
-        img:'/assets/images/lovsid.png',
+        img:'/assets/images/lovsid.webp',
         category:["ofHand","progiciel"],
         avdisav:'avdistageSaas',
         content:{
@@ -323,7 +323,7 @@ export const serviceDetails = {
         title:"serviceAppTitle",
         info:"serviceAppDescrip",
         subtitle:"serviceAppSubTitle",
-        img:'/assets/images/fieger.png',
+        img:'/assets/images/fieger.webp',
         category:["apphybride","appcross","appnative"],
         avdisav:'avdistageApp',
         content:{
@@ -534,7 +534,7 @@ export const refDetailContent:refContent = {
         1:{
             title:"websiteItemTitle",
             proprio:"websiteItem1Proprio",
-            img: '/assets/images/fieger.png',
+            img: '/assets/images/fieger.webp',
             description:{
                 title:'activityDomain',
                 para:'websiteItem1Para'
@@ -552,7 +552,7 @@ export const refDetailContent:refContent = {
         2:{
             title:"websiteItemTitle",
             proprio:"websiteItem2Proprio",
-            img: '/assets/images/neue-groupe.png',
+            img: '/assets/images/neue-groupe.webp',
             description:{
                 title:'activityDomain',
                 para:'websiteItem2Para'
@@ -570,7 +570,7 @@ export const refDetailContent:refContent = {
         3:{
             title:"websiteItemTitle",
             proprio:"websiteItem3Proprio",
-            img: '/assets/images/avlis.png',
+            img: '/assets/images/avlis.webp',
             description:{
                 title:'activityDomain',
                 para:'websiteItem3Para'
@@ -588,7 +588,7 @@ export const refDetailContent:refContent = {
         4:{
             title:"websiteItemTitle",
             proprio:"websiteItem4Proprio",
-            img: '/assets/images/charlotte-consulting.png',
+            img: '/assets/images/charlotte-consulting.webp',
             description:{
                 title:'activityDomain',
                 para:'websiteItem4Para'
@@ -598,7 +598,7 @@ export const refDetailContent:refContent = {
                 year:"2024",
                 cat:"devModeOfHand",
                 techno:['HTML5','Bootstrap','JavaScirpt',"JQuery","MySql","PHP",'CSS3','External Module'],
-                mode:'WordPress',
+                mode:'devModeOfHand',
                 link:'https://charlottekoona.com/'
             },
             task:['websiteItem4TaskPara1','websiteItem4TaskPara2','websiteItem4TaskPara3','websiteItem4TaskPara4','websiteItem4TaskPara5','websiteItem4TaskPara6']
@@ -606,43 +606,43 @@ export const refDetailContent:refContent = {
         5:{
             title:"websiteItemTitle",
             proprio:"websiteItem5Proprio",
-            img: '/assets/images/portfolio.png',
+            img: '/assets/images/portfolio.webp',
             description:{
                 title:'activityDomain',
-                para:'websiteItem4Para'
+                para:'websiteItem5Para'
             },
             infoSite:{
                 title:'infoProjet',
                 year:"2024",
                 cat:"devModeOfHand",
-                techno:['HTML5','Bootstrap','JavaScirpt',"JQuery","MySql","PHP",'CSS3','External Module'],
-                mode:'WordPress',
+                techno:['HTML5','React','JavaScirpt',"SCSS",'External Module'],
+                mode:'devModeOfHand',
                 link:'https://charlottekoona.com/'
             },
-            task:['websiteItem4TaskPara1','websiteItem4TaskPara2','websiteItem4TaskPara3','websiteItem4TaskPara4','websiteItem4TaskPara5','websiteItem4TaskPara6']
+            task:['websiteItem5TaskPara1','websiteItem5TaskPara2','websiteItem5TaskPara3','websiteItem5TaskPara4','websiteItem5TaskPara5','websiteItem5TaskPara6']
         },
         6:{
             title:"websiteItemTitle",
             proprio:"websiteItem6Proprio",
-            img: '/assets/images/moovie-api.png',
+            img: '/assets/images/movie-api.webp',
             description:{
                 title:'activityDomain',
-                para:'websiteItem4Para'
+                para:'websiteItem6Para'
             },
             infoSite:{
                 title:'infoProjet',
                 year:"2024",
                 cat:"devModeOfHand",
-                techno:['HTML5','Bootstrap','JavaScirpt',"JQuery","MySql","PHP",'CSS3','External Module'],
-                mode:'WordPress',
+                techno:['HTML5','SCSS','JavaScirpt',"React","RestFullApi","TMDB",'CSS3','Tailwind CSS','External Module'],
+                mode:'devModeOfHand',
                 link:'https://charlottekoona.com/'
             },
-            task:['websiteItem4TaskPara1','websiteItem4TaskPara2','websiteItem4TaskPara3','websiteItem4TaskPara4','websiteItem4TaskPara5','websiteItem4TaskPara6']
+            task:['websiteItem6TaskPara1','websiteItem6TaskPara2','websiteItem6TaskPara3','websiteItem6TaskPara4','websiteItem6TaskPara5','websiteItem6TaskPara6']
         },
         7:{
             title:"reworkedItemTitle",
             proprio:"reworkedItemProprio",
-            img: '/assets/images/graphicon.png',
+            img: '/assets/images/graphicon.webp',
             description:{
                 title:'activityDomain',
                 para:'reworkedWebSiteItem1Para'
@@ -663,7 +663,7 @@ export const refDetailContent:refContent = {
         1:{
             title:"reworkedItemTitle",
             proprio:"reworkedItemProprio",
-            img: '/assets/images/graphicon.png',
+            img: '/assets/images/graphicon.webp',
             description:{
                 title:'activityDomain',
                 para:'reworkedWebSiteItem1Para'
@@ -684,7 +684,7 @@ export const refDetailContent:refContent = {
         1:{
             title:"ecommerceItemTitle",
             proprio:"ecommerceItem1Proprio",
-            img: '/assets/images/chicken-grill.png',
+            img: '/assets/images/chicken-grill.webp',
             description:{
                 title:'activityDomain',
                 para:'ecommerceWebSiteItem1Para'
@@ -702,7 +702,7 @@ export const refDetailContent:refContent = {
         2:{
             title:"ecommerceItemTitle",
             proprio:"ecommerceItem1Proprio",
-            img: '/assets/images/kebab-gare.png',
+            img: '/assets/images/kebab-gare.webp',
             description:{
                 title:'activityDomain',
                 para:'ecommerceWebSiteItem2Para'
@@ -723,7 +723,7 @@ export const refDetailContent:refContent = {
         1:{
             title:"saasItemTitle",
             proprio:"saasItem1Proprio",
-            img: '/assets/images/lovsid.png',
+            img: '/assets/images/lovsid.webp',
             description:{
                 title:'activityDomain',
                 para:'saasItem1Para'
@@ -736,12 +736,12 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:'https://www.lovsid.com/'
             },
-            task:['saasItem1TaskPara1','saasItem1TaskPara2','saasItem1TaskPara3','saasItem1TaskPara4','saasItem1TaskPara5','saasItem1TaskPara6','saasItem1TaskPara7','saasItem1TaskPara8','saasItem1TaskPara9','saasItem1TaskPara10']
+            task:['saasItem1TaskPara1','saasItem1TaskPara2','saasItem1TaskPara3','saasItem1TaskPara4','saasItem1TaskPara5','saasItem1TaskPara6','saasItem1TaskPara7','saasItem1TaskPara8','saasItem1TaskPara9','saasItem1TaskPara10,saasItem1TaskPara11,saasItem1TaskPara12']
         },
         2:{
             title:"saasItemTitle",
             proprio:"saasItem2Proprio",
-            img: '/assets/images/reservation-salle.png',
+            img: '/assets/images/reservation-salle.webp',
             description:{
                 title:'activityDomain',
                 para:'saasItem2Para'
@@ -754,12 +754,12 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:''
             },
-            task:['saasItem2TaskPara1','saasItem2TaskPara2','saasItem2TaskPara3','saasItem2TaskPara4','saasItem2TaskPara5','saasItem2TaskPara6','saasItem2TaskPara7']
+            task:['saasItem2TaskPara1','saasItem2TaskPara2','saasItem2TaskPara3','saasItem2TaskPara4','saasItem2TaskPara5','saasItem2TaskPara6','saasItem2TaskPara7,saasItem2TaskPara8']
         },
         3:{
             title:"saasItemTitle",
             proprio:"saasItem3Proprio",
-            img: '/assets/images/avlis-gestion.png',
+            img: '/assets/images/avlis-gestion.webp',
             description:{
                 title:'activityDomain',
                 para:'saasItem3Para'
@@ -772,12 +772,12 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:'https://www.avlis.fr/gestion'
             },
-            task:['saasItem3TaskPara1','saasItem3TaskPara2','saasItem3TaskPara3','saasItem3TaskPara4','saasItem3TaskPara5','saasItem3TaskPara6']
+            task:['saasItem3TaskPara1','saasItem3TaskPara2','saasItem3TaskPara3','saasItem3TaskPara4','saasItem3TaskPara5','saasItem3TaskPara6,saasItem3TaskPara7']
         },
         4:{
             title:"saasItemTitle",
             proprio:"saasItem3Proprio",
-            img: '/assets/images/avlis-formation.png',
+            img: '/assets/images/avlis-formation.webp',
             description:{
                 title:'activityDomain',
                 para:'saasItem4Para'
@@ -790,7 +790,7 @@ export const refDetailContent:refContent = {
                 mode:'devModeOfHand',
                 link:'https://www.avlis.fr/formation'
             },
-            task:['saasItem3TaskPara1','saasItem3TaskPara2','saasItem3TaskPara3','saasItem3TaskPara4','saasItem3TaskPara5','saasItem3TaskPara6']
+            task:['saasItem3TaskPara1','saasItem3TaskPara2','saasItem3TaskPara3','saasItem3TaskPara4','saasItem3TaskPara5','saasItem3TaskPara6,saasItem3TaskPara7']
         }
     },
     app:{
@@ -798,7 +798,7 @@ export const refDetailContent:refContent = {
         1:{
             title:"appItemTitle",
             proprio:"appItem1Proprio",
-            img: '/assets/images/avlis.png',
+            img: '/assets/images/avlis.webp',
             description:{
                 title:'activityDomain',
                 para:'appItem1Para'
@@ -820,7 +820,7 @@ export const reference: Reference = {
       title: "websiteVitrineReferenceTitle",
       referenceContent: [
         {
-          img: '/assets/images/fieger.png',
+          img: '/assets/images/fieger.webp',
           projet: 'Fieger',
           refId: 1,
           index:1,
@@ -830,7 +830,7 @@ export const reference: Reference = {
           cat:'website'
         },
         {
-          img: '/assets/images/neue-groupe.png',
+          img: '/assets/images/neue-groupe.webp',
           projet: 'Neue-gruppe',
           refId: 2,
           index:2,
@@ -840,7 +840,7 @@ export const reference: Reference = {
           cat:'website'
         },
         {
-            img: '/assets/images/avlis.png',
+            img: '/assets/images/avlis.webp',
             projet: 'Avlis formation',
             refId: 3,
             index:3,
@@ -850,7 +850,7 @@ export const reference: Reference = {
             cat:'website'
         },
         {
-            img: '/assets/images/charlotte-consulting.png',
+            img: '/assets/images/charlotte-consulting.webp',
             projet: 'Charlotte consulting',
             refId: 4,
             index:4,
@@ -860,27 +860,27 @@ export const reference: Reference = {
             cat:'website'
         },
         {
-            img: '/assets/images/portfolio.png',
+            img: '/assets/images/portfolio.webp',
             projet: 'Portfolio',
             refId: 5,
             index:5,
             name:"websiteItem5Proprio",
             mode:"devModeOfHand",
-            shortText:"websiteReworkShortText1",
+            shortText:"websiteVitrineShortText5",
             cat:'website'
         },
         {
-            img: '/assets/images/moovie-api.png',
+            img: '/assets/images/movie-api.webp',
             projet: 'Movie API',
             refId: 6,
             index:6,
             name:"websiteItem6Proprio",
             mode:"devModeOfHand",
-            shortText:"websiteReworkShortText1",
+            shortText:"websiteVitrineShortText6",
             cat:'website'
         },
         {
-            img: '/assets/images/graphicon.png',
+            img: '/assets/images/graphicon.webp',
             projet: 'Graphicon',
             refId: 7,
             index:7,
@@ -895,7 +895,7 @@ export const reference: Reference = {
         title: "reworkWebsiteReferenceTitle",
         referenceContent: [
             {
-                img: '/assets/images/graphicon.png',
+                img: '/assets/images/graphicon.webp',
                 projet: 'Graphicon',
                 refId: 5,
                 index:5,
@@ -910,7 +910,7 @@ export const reference: Reference = {
         title: "websiteEcommerReferenceTitle",
         referenceContent: [
             {
-                img: '/assets/images/kebab-gare.png',
+                img: '/assets/images/kebab-gare.webp',
                 projet: 'Kebab 78',
                 refId: 2,
                 index:7,
@@ -920,7 +920,7 @@ export const reference: Reference = {
                 cat:'ecommerce'
             },
             {
-                img: '/assets/images/chicken-grill.png',
+                img: '/assets/images/chicken-grill.webp',
                 projet: 'Chicken grill',
                 name:"ecommerceItem1Proprio",
                 refId: 1,
@@ -935,7 +935,7 @@ export const reference: Reference = {
         title: "referenceSaasTitle",
         referenceContent: [
           {
-            img: '/assets/images/lovsid.png',
+            img: '/assets/images/lovsid.webp',
             projet: 'LovSid',
             refId: 1,
             index:11,
@@ -945,7 +945,7 @@ export const reference: Reference = {
             cat:'saas'
           },
           {
-            img: '/assets/images/reservation-salle.png',
+            img: '/assets/images/reservation-salle.webp',
             projet: 'Location de salle',
             refId: 2,
             index:12,
@@ -955,7 +955,7 @@ export const reference: Reference = {
             cat:'saas'
           },
           {
-            img: '/assets/images/avlis-gestion.png',
+            img: '/assets/images/avlis-gestion.webp',
             projet: 'Avlis backoffice',
             refId: 3,
             index:13,
@@ -965,7 +965,7 @@ export const reference: Reference = {
             cat:'saas'
           },
           {
-            img: '/assets/images/avlis-formation.png',
+            img: '/assets/images/avlis-formation.webp',
             projet: 'Avlis formation',
             refId: 4,
             index:14,
@@ -980,7 +980,7 @@ export const reference: Reference = {
         title: "referenceAppTitle",
         referenceContent: [
           {
-            img: '/assets/images/fieger.png',
+            img: '/assets/images/fieger.webp',
             projet: 'LovSid App',
             refId: 1,
             index:11,

@@ -3,9 +3,8 @@ import { Element } from 'react-scroll';
 import Icon from './Icon';
 import { experienceData, pathwayData } from '@/constants';
 import { useTranslationContext } from '@/hooks/app-hook';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import useIsInViewport from './stat-animation';
 import AnimatedCounter from './stat-animation';
 
 interface AboutProps{
@@ -52,7 +51,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
                                     return (
                                         <div key={index}>
                                     {
-                                        index === 2 && <div className='flex justify-center items-center w-full my-4'><img className='w-1/3 h-auto max-792:w-2/3' src="/assets/images/about.svg" alt="about" /></div>
+                                        index === 2 && <div className='flex justify-center items-center w-full my-4'><Image src={`/assets/images/about.svg`} alt="about" width={1500} height={800} className='w-1/3 h-auto max-792:w-2/3'/></div>
                                     }
                                         <div>
                                             <h4 className='mb-3 text-secondary'>{item.title}</h4>
@@ -79,7 +78,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
                                 experience.map((item,index)=>{
                                     return (
                                         <div key={index}>
-                                        {index === 2 && <div className='flex justify-center items-center w-full my-4'><img className='w-1/3 h-auto max-792:w-2/3' src="/assets/images/about.svg" alt="about" /></div>}
+                                        {index === 2 && <div className='flex justify-center items-center w-full my-4'><Image src={`/assets/images/about.svg`} alt="about" width={1500} height={800} className='w-1/3 h-auto max-792:w-2/3'/></div>}
                                         <div>
                                             <h4 className='mb-3 text-secondary text-left'>{item.title}</h4>
                                             <div className='ml-4 w-full'>
@@ -100,7 +99,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
                         </div>
                     </div>
                 </div>
-                <span className='block text-left italic text-[.8em] mt-5'>{t['moreEx']}<Link className='text-[#535bf2] hover:underline text-[ 0.875rem] not-italic' href={'https://portfolio.rodcoding.com'}>{t['portfolio']}</Link></span>
+                <span className='block ml-4 text-left italic text-[.8em] mt-5'>{t['moreEx']}<Link className='text-[#535bf2] hover:underline text-[ 0.875rem] not-italic ml-2' href={'https://portfolio.rodcoding.com'}>{t['portfolio']}</Link></span>
                 <div className='w-full flex justify-center items-center'>
                     <div className="stat flex justify-start items-center flex-wrap gap-5 mt-4 max-485:justify-center">
                         {

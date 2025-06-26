@@ -1,6 +1,6 @@
 "use client"
 import { useContext, useEffect, useState } from "react"
-
+import Image from 'next/image';
 import { Link } from 'react-scroll';
 
 import CloseButton from "./close-btn";
@@ -178,7 +178,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                 offset={-65} 
                                 duration={500}
                                 to={`home`}
-                                ><img src="/assets/images/logo.webp" alt="logo" className='w-auto h-[2.8125rem] rounded-full' onClick={switchToStart}/></Link>
+                                ><Image src="/assets/images/logo.webp" alt="logo" width={45} height={45} className='w-auto h-[2.8125rem] rounded-full' onClick={switchToStart}/></Link>
                                 <span className=" cursor-pointer"><CloseButton size="large" onClose={handlePopUp}/></span>
                             </div>
                             <div className="w-full">
@@ -265,7 +265,11 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                         <span className="text-[0.6875rem] text-primary font-regular mb-5 italic block mt-4" dangerouslySetInnerHTML={{ __html: t[serviceDetailContent?.content.notion] }}/>
                                     </div>
                                     <div className={`w-full flex items-center gap-5 max-810:flex-col flex-row-reverse`}>
-                                        <img className="w-1/2 max-810:w-full aspect-[15/9]" src={serviceDetailContent?.img} alt={t[serviceDetailContent?.content.title]} />
+                                        {
+                                            serviceDetailContent?.img ? (<Image src={serviceDetailContent?.img} alt={t[serviceDetailContent?.content.title] ?? ""}
+                                        width={800}
+                                        height={600} className='w-1/2 max-810:w-full aspect-[15/9]'/>) : null
+                                        }
                                         <div className="flex-1">
                                         {serviceDetailContent?.content.contentPara.map((para:any, j:number) => (
                                             <div className="" key={j}>
@@ -295,7 +299,11 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                 </div>
                                 <h2 className="text-[1.5em] text-thirty font-semibold mb-3 mt-10">{t[serviceDetailContent?.cost.title]}</h2>
                                 <div className="flex max-810:flex-col justify-start items-center gap-5">
-                                    <img className="w-1/2 max-810:w-full aspect-[15/9]" src={serviceDetailContent?.img} alt={t[serviceDetailContent?.cost.title]} />
+                                    {
+                                        serviceDetailContent?.img ? (<Image src={serviceDetailContent.img} alt={t[serviceDetailContent?.cost.title] ?? ""} width={800}
+                                        height={600} className='w-1/2 max-810:w-full aspect-[15/9]'/>
+                                        ) : null
+                                    }
                                     <div className="mt-3 mb-5 w-full block">
                                         <p className="whitespace-pre-wrap mb-2">{t[serviceDetailContent?.cost.para]}</p>
                                         <p className="whitespace-pre-wrap font-bold text-blue-950">{t[serviceDetailContent?.cost.souspara]}</p>
@@ -312,7 +320,9 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                                     return (
                                                         <div key={index} className={` relative w-full group`} style={{width:`${100 / serviceSiteReference?.referenceContent.length!}%`}} onClick={()=>openRefDetail(item.refId,item.cat)}>
                                                             <div className='relative aspect-[15/9] w-full overflow-hidden group'>
-                                                                <img className='h-full object-cover cursor-pointer w-full' src={item.img} alt={item.projet} />
+                                                                <Image src={item.img} alt={item.projet}
+        width={800}
+        height={600} className='h-full object-cover cursor-pointer w-full'/>
                                                                 <div className='h-full cursor-pointer w-full bg-[rgba(142,22,22,.5)] absolute top-0 left-0 flex justify-center items-center transition-transform duration-500 ease-in-out translate-y-[100%] group-hover:translate-y-0'><Icon name='bx-show' size='4em' color='#fff'/></div>
                                                             </div>
                                                             <div className={`bg-fifty group-hover:bg-secondary py-2`}>
@@ -347,7 +357,15 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                 <h3 className="text-[1.7em] font-semibold text-right uppercase mb-3 ml-[50%] max-810:ml-[35%] max-420:ml-0 max-792:ml-[10%]">{t[refDetail?.title]+' '+t[refDetail?.proprio]}</h3>
                                 <hr  className="border-thirty mb-10 ml-[50%]"/>
                                 <div className="flex justify-center items-center gap-4 max-810:flex-col max-810:gap-y-5">
-                                    <img className="w-1/2 aspect-[15/9] max-810:w-full" src={refDetail?.img} alt={t[refDetail?.proprio]} />
+                                    {refDetail?.img ? (
+                                    <Image 
+                                        src={refDetail.img} 
+                                        alt={t[refDetail?.proprio] ?? ""} 
+                                        width={800}
+                                        height={600}
+                                        className="w-1/2 aspect-[15/9] max-810:w-full"
+                                    />
+                                    ) : null}
                                     <div className="w-1/2 max-810:w-full">
                                         <h4 className="text-[1.4em] font-semibold text-thirty uppercase">{t[refDetail?.infoSite.title]}</h4>
                                         <div className="flex flex-col justify-start items-start gap-2 mt-4">

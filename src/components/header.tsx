@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useTranslationContext } from '@/hooks/app-hook';
 import { AppContext } from '@/app/context/app-context';
 import { usePathname, useRouter } from "next/navigation";
+import Image from 'next/image';
 
 interface HeaderProps{
     locale:string
@@ -59,7 +60,7 @@ const Header:React.FC<HeaderProps> = ({locale})=>{
                 offset={-100} 
                 duration={500}
                 to={`home`}
-                ><img src="/assets/images/logo.webp" alt="logo" className='w-auto h-[5rem] rounded-full' onClick={switchToStart}/></Link>
+                ><Image src={`/assets/images/logo.webp`} alt="logo" width={80} height={80} className='w-auto h-[5rem] rounded-full' onClick={switchToStart}/></Link>
                 <nav className='navi flex justify-start items-center gap-4 max-1085:hidden'>
                     <Link
                     className='cursor-pointer text-primary'

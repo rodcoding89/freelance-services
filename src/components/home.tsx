@@ -52,9 +52,7 @@ const Home:React.FC<HomeProps> = ({locale})=>{
                         </div>
                     </div>
                     <picture className='brightness-75 w-1/2 max-920:w-full h-[calc(100vh-6.25rem)] max-920:brightness-100 max-920:aspect-[20/12] max-640:aspect-[20/17] max-420:!aspect-[19/21] max-330:!aspect-[19/26]'>
-                        <source srcSet='/assets/images/home.png' type='image/png' />
-                        <source srcSet='/assets/images/home.png' type='image/png' />
-                        <Image src={'/assets/images/home.png'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[6.25rem] rounded-bl-[6.25rem] max-920:rounded-none'/>
+                        <Image src={'/assets/images/home.webp'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[6.25rem] rounded-bl-[6.25rem] max-920:rounded-none'/>
                     </picture>
                 </div>
             </div>
