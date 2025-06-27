@@ -40,6 +40,7 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
                     const data = doc.data();
                     if (data.type === 'legal-notices') {
                         setConfigDate(data.date)
+                        sessionStorage.setItem("legal-notices",JSON.stringify(data))
                     }
                 }
             } catch (error) {
@@ -48,7 +49,14 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
                 setLoading(false);
             }
         };
-        fetchWebConfig();
+        const sessionLegalNotice = sessionStorage.getItem("legal-notices")
+        if(sessionLegalNotice){
+            const data = JSON.parse(sessionLegalNotice)
+            setConfigDate(data)
+            setConfigDate(data.date)
+        }else{
+            fetchWebConfig();
+        }
     },[locale])
 
     const replaceContent = (key: string,replaceText: string | string[],replaceValue: string | string[]): string => {

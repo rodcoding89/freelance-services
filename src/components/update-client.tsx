@@ -16,6 +16,7 @@ import { stat } from "fs";
 
 interface UpdateClientProps {
  locale: string;
+ clientId: string;
 }
 
 interface Client {
@@ -40,7 +41,7 @@ interface Services {
 }
 
 
-const UpdateClient: React.FC<UpdateClientProps> = ({locale})=> {
+const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
@@ -49,8 +50,6 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale})=> {
     const [loading, setLoading] = useState(true);
     
     const [loader, setLoader] = useState(false);
-    const {id} = useParams()
-    const clientId = id as string
     const router = useRouter();
     const {
         register,

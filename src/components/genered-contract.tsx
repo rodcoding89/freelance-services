@@ -89,12 +89,14 @@ interface Services {
 }
 
 interface GeneredContractProps{
-    locale:string
+    locale:string;
+    clientId:string;
+    clientServiceId:string;
 }
 
 const enableCountryforLostRetraction = ['GB','CH','FR','IT','ES','NL','DE','AT','BE','ZA','AU','CA']
 
-const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
+const GeneredContract:React.FC<GeneredContractProps> = ({locale,clientId,clientServiceId})=>{
     const t:any = useTranslationContext();
     const [contract, setContract] = useState<Contract|null>(null)
     const [client, setClient] = useState<Client|null>(null)
@@ -110,9 +112,6 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale})=>{
     const [serviceData, setServiceData] = useState<Services|null>(null);
     const [acceptSaleTerm,setAcceptSaleTerm] = useState<boolean>(false)
     const [confirmAcceptBackAmountCondition,setConfirmAcceptBackAmountCondition] = useState<boolean>(false)
-    const {id,serviceId} = useParams()
-    const clientId = id as string
-    const clientServiceId = serviceId as string;
     const [confirmElectronicSignature, setConfirmElectronicSignature] = useState<boolean>(false);
     const handleSignatureChange = (data:any)=>{
         console.log("data",data)

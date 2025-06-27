@@ -58,7 +58,9 @@ type FormValues = {
   locale:string
 };
 interface InvoiceFormProps {
-  locale:string
+  locale:string;
+  clientId:string;
+  clientServiceId:string
 }
 type drawImage = [
   x:number,
@@ -168,14 +170,11 @@ interface Contract {
 
 const enableCountryForThresholdBeforTax = ["CA","US","CH","AU","ZA"]
 
-const InvoiceForm:React.FC<InvoiceFormProps> = ({locale}) =>{
+const InvoiceForm:React.FC<InvoiceFormProps> = ({locale,clientId,clientServiceId}) =>{
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const t:any = useTranslationContext();
   const [contractLanguage, setContractLanguage] = useState<string>(locale)
-  const {id,serviceId} = useParams();
-  const clientId = id as string;
-  const clientServiceId = serviceId as string;
   const [clientInfo, setClientInfo] = useState<clientInfo | null>(null);
   const [service, setService] = useState<Services|null>(null)
   const [invoiceInfo, setInvoiceInfo] = useState<invoiceInfo>({

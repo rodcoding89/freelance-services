@@ -103,7 +103,9 @@ interface Contract {
 }
 
 interface ContractProps{
-    locale:string
+    locale:string;
+    clientId:string;
+    clientServiceId:string;
 }
 
 const contractType = [
@@ -119,7 +121,7 @@ const contractStatus = [
 ];
 const enableCheckTaxNumerCountr = ["US","CA","DE","FR","IT","ES","AT","BE","NL"]
 
-const Contrat:React.FC<ContractProps> = ({locale})=>{
+const Contrat:React.FC<ContractProps> = ({locale,clientId,clientServiceId})=>{
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const [maintenanceCategory,setMaintenaceType] = useState<"app"|"saas"|"website"|"ecommerce"|null>(null)
@@ -151,10 +153,7 @@ const Contrat:React.FC<ContractProps> = ({locale})=>{
     // Contenu dynamique basé sur la langue
     const searchParams = useSearchParams();
     const edit = searchParams.get('edit');
-    const {id,serviceId} = useParams()
-    const clientId = id as string
     const [vatNumberChecking,setVatNumberChecking] = useState<{success:boolean,message:string}|null>(null)
-    const clientServiceId = serviceId as string;
     const [perHourCost,setPerHourCost] = useState(0)
     const [perYearCost,setPerYearCost] = useState(0)
     const {

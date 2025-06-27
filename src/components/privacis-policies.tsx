@@ -32,6 +32,7 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
                     const data = doc.data();
                     if (data.type === 'privacie-policies') {
                         setConfigDate(data.date)
+                        sessionStorage.setItem("privacie-policies",JSON.stringify(data))
                     }
                 }
             } catch (error) {
@@ -40,7 +41,14 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
                 setLoading(false);
             }
         };
-        fetchWebConfig();
+        const sessionPricaciPolicy = sessionStorage.getItem("privacie-policies")
+        if(sessionPricaciPolicy){
+            const data = JSON.parse(sessionPricaciPolicy)
+            setConfigDate(data)
+            setConfigDate(data.date)
+        }else{
+            fetchWebConfig();
+        }
     },[locale])
 
     const replaceContent = (key: string,replaceText: string,replaceValue: string): string => {

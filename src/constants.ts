@@ -595,7 +595,7 @@ export const refDetailContent:refContent = {
             },
             infoSite:{
                 title:'infoProjet',
-                year:"2024",
+                year:"2025",
                 cat:"devModeOfHand",
                 techno:['HTML5','Bootstrap','JavaScirpt',"JQuery","MySql","PHP",'CSS3','External Module'],
                 mode:'devModeOfHand',

@@ -30,6 +30,7 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                     const data = doc.data();
                     if (data.type === 'cgv') {
                         setConfigDate(data.date)
+                        sessionStorage.setItem("cgv",JSON.stringify(data))
                     }
                 }
             } catch (error) {
@@ -38,7 +39,14 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                 setLoading(false);
             }
         };
-        fetchWebConfig();
+        const sessionCgv = sessionStorage.getItem("cgv")
+        if(sessionCgv){
+            const data = JSON.parse(sessionCgv)
+            setConfigDate(data)
+            setConfigDate(data.date)
+        }else{
+            fetchWebConfig();
+        }
     },[locale])
     const replaceContent = (key: string,replaceText: string | string[],replaceValue: string | string[]): string => {
     if (Array.isArray(replaceText) && Array.isArray(replaceValue)) {
