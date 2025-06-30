@@ -17,7 +17,7 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
     const {contextData} = useContext(AppContext)
     console.log("main",contextData)
     const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME ?? '';
-    const companyAdresse = `${process.env.NEXT_PUBLIC_COMPANY_STREET ?? ''}, ${process.env.NEXT_PUBLIC_COMPANY_POSTAL_CODE ?? ''} ${process.env.NEXT_PUBLIC_COMPANY_CITY ?? ''} ${process.env.NEXT_PUBLIC_COMPANY_COUNTRY ?? ''}`;
+    const companyAdresse = `${process.env.NEXT_PUBLIC_COMPANY_ADRESS_STREET ?? ''}, ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_POSTAL_CODE ?? ''} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_CITY ?? ''} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_COUNTRY ?? ''}`;
     const companyEinNumber = process.env.NEXT_PUBLIC_TAX_ID ?? '';
     const companyAuthor = process.env.NEXT_PUBLIC_COMPANY_AUTHOR ?? '';
     const hostingProviderName = process.env.NEXT_PUBLIC_HOSTING_PROVIDER ?? '';

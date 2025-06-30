@@ -1322,6 +1322,137 @@
     "saasShortText2": "Branchensoftware für Privatpersonen.",
     "saasShortText3": "CRM für Unternehmen.",
     "saasShortText4": "CRM für Unternehmen.",
-    "appShortText1": "Mobile Anwendung für Unternehmen."
+    "appShortText1": "Mobile Anwendung für Unternehmen.",
+    "seo": {
+        "index": {
+            "title": "Erstellung von Websites, E-Commerce und Apps - RodCoding",
+            "description": "RodCoding entwirft Ihre Unternehmenswebsites, E-Commerce-Plattformen, Business-/SaaS-Software und mobilen Anwendungen – für Unternehmen und Privatpersonen. Profitieren Sie von einer umfassenden und maßgeschneiderten Betreuung.",
+            "keyWords": "webseiten erstellen,e-commerce entwicklung,software entwicklung,saas,business software,mobile app entwicklung,webanwendung,webseiten visitenkarte,seo,freelance entwickler,website preise,webdienstleister,portfolio,webservices,kontakt,über uns,impressum"
+        },
+        "createContrat": {
+            "title": "Vertragserstellung - RodCoding",
+            "description": "Formular zur Erstellung eines Vertrags für Ihre Projekte und Dienstleistungen bei RodCoding.",
+            "keyWords": "vertrag,vertrag erstellen,vertragsformular,rodcoding"
+        },
+        "signContract": {
+            "title": "Vertragsunterzeichnung - RodCoding",
+            "description": "Sichere elektronische Signaturseite für Ihren Vertrag mit RodCoding.",
+            "keyWords": "vertragsunterzeichnung,elektronische signatur,rodcoding"
+        },
+        "legalNotice": {
+            "title": "Impressum - RodCoding",
+            "description": "Lesen Sie das Impressum und die rechtlichen Informationen von RodCoding.",
+            "keyWords": "impressum,rechtsinformationen,rodcoding"
+        },
+        "privacyPolicies": {
+            "title": "Datenschutzerklärung - RodCoding",
+            "description": "Erfahren Sie mehr über die Datenschutzerklärung von RodCoding und den Umgang mit Ihren persönlichen Daten.",
+            "keyWords": "datenschutzerklärung,datenschutz,ds-gvo,rodcoding"
+        },
+        "gts": {
+            "title": "Allgemeine Geschäftsbedingungen - RodCoding",
+            "description": "Lesen Sie unsere Allgemeinen Geschäftsbedingungen (AGB), die für alle unsere Dienstleistungen gelten.",
+            "keyWords": "agb,allgemeine geschäftsbedingungen,rodcoding"
+        },
+        "invoice": {
+            "title": "Rechnungen - RodCoding",
+            "description": "Erstellen und verwalten Sie Ihre Rechnungen für RodCoding-Dienstleistungen.",
+            "keyWords": "rechnung,rechnungen erstellen,rechnungsstellung,rodcoding"
+        },
+        "clientList": {
+            "title": "Kundenliste - RodCoding",
+            "description": "Sehen Sie sich die vollständige Liste unserer Kunden und Partner an.",
+            "keyWords": "kunden,kundenliste,partner,rodcoding"
+        },
+        "createClient": {
+            "title": "Kunden erstellen - RodCoding",
+            "description": "Fügen Sie einen neuen Kunden in Ihrem RodCoding-Bereich hinzu.",
+            "keyWords": "kunde erstellen,kunde hinzufügen,rodcoding"
+        },
+        "login": {
+            "title": "Login - RodCoding",
+            "description": "Melden Sie sich in Ihrem RodCoding-Bereich an, um Ihre Projekte zu verwalten.",
+            "keyWords": "login,anmelden,kundenbereich,rodcoding"
+        },
+        "updateClient": {
+            "title": "Kundendaten aktualisieren - RodCoding",
+            "description": "Aktualisieren Sie die Daten Ihrer Kunden im RodCoding-System.",
+            "keyWords": "kunde aktualisieren,kundendaten bearbeiten,rodcoding"
+        },
+        "webConfig": {
+            "title": "Website-Konfiguration - RodCoding",
+            "description": "Konfigurieren und passen Sie Ihre von RodCoding entwickelte Website an.",
+            "keyWords": "website konfiguration,web config,seiteneinstellungen,rodcoding"
+        },
+
+        "serviceDescription": "Wir bieten Erstellung und Wartung von Unternehmenswebsites, E-Commerce-Seiten, Business-/SaaS-Software und mobilen Apps für Unternehmen und Privatpersonen.",
+        "companyDescription": "RodCoding, über ROD TECH SOLUTIONS LLC, entwickelt und wartet Ihre Websites, E-Commerce-Plattformen, Business-/SaaS-Software und mobilen Anwendungen mit maßgeschneiderter Betreuung für Unternehmen und Privatkunden.",
+        "devService": "Dienstleistungen in Entwicklung und Wartung (Web-/Mobile-Entwickler).",
+        "workPlace": "Standorte und Tätigkeitsbereiche.",
+        "offers": "Erstellung und Wartung von Websites, E-Commerce-Plattformen, Business-/SaaS-Software und mobilen Apps.",
+        "work": "Selbstständiger Web- und Mobile-Entwickler.",
+
+        "dev": {
+            "title": "Webentwicklungsdienstleistungen - RodCoding",
+            "siteweb": {
+            "name": "Webseitenentwicklung",
+            "description": "Wir entwickeln professionelle und SEO-optimierte Websites für alle Branchen: Anwälte, Ärzte, Handwerker, Coaches und mehr.",
+            "cmsOption": "CMS-Option (Content Management System)",
+            "cmsOptionDescription": "Schnelle und skalierbare Lösung basierend auf einem CMS wie WordPress oder Strapi.",
+            "handOption": "Full Code Option",
+            "handOptionDescription": "100% maßgeschneiderte Entwicklung ohne CMS.",
+            "mixOption": "Hybrid-Option",
+            "mixOptionDescription": "Kombination aus CMS und individuell entwickelten Modulen.",
+            "hour": "Stundensatz Preise.",
+            "annual": "Jährliche Preise."
+            },
+            "ecommerce": {
+            "name": "E-Commerce-Entwicklung",
+            "description": "Wir entwickeln leistungsstarke und sichere E-Commerce-Websites, angepasst an Ihre Produkte und Ihr Geschäft.",
+            "cmsOption": "CMS-Option (Content Management System)",
+            "cmsOptionDescription": "E-Commerce-Lösungen basierend auf WooCommerce, Shopify oder anderen CMS.",
+            "handOption": "Full Code Option",
+            "handOptionDescription": "Komplett individuelle E-Commerce-Website ohne CMS nach Ihren spezifischen Anforderungen.",
+            "mixOption": "Hybrid-Option",
+            "mixOptionDescription": "Kombination aus CMS und speziell entwickelten Modulen für Schlüsselfunktionen.",
+            "hour": "Stundensatz Preise.",
+            "annual": "Jährliche Preise."
+            },
+            "saas": {
+            "name": "Business-/SaaS-Softwareentwicklung",
+            "description": "Wir entwickeln Business-Software und SaaS-Lösungen, angepasst an Ihre Prozesse, Ziele und technischen Anforderungen.",
+            "price": "Individuelle Preise nach einem detaillierten Angebot basierend auf Ihren Anforderungen und gewünschten Funktionen."
+            },
+            "app": {
+            "name": "Mobile App Entwicklung",
+            "description": "Wir entwickeln mobile Apps für iOS und Android für alle Arten von Projekten: E-Commerce, SaaS, interne Dienste usw.",
+            "price": "Individuelle Preise nach einem detaillierten Angebot basierend auf Ihrem Pflichtenheft und der technischen Komplexität."
+            }
+        },
+
+        "maintenance": {
+            "title": "Wartungsdienstleistungen - RodCoding",
+            "siteweb": {
+            "name": "Webseitenwartung",
+            "description": "Wir bieten korrektive, präventive und evolutive Wartung Ihrer Websites für maximale Sicherheit und Verfügbarkeit.",
+            "price": "Verfügbare Preise: Wartung pro Stunde {hour}, jährliche Wartung {year}."
+            },
+            "ecommerce": {
+            "name": "E-Commerce-Wartung",
+            "description": "Kontinuierliche Wartung und Updates Ihrer E-Commerce-Seiten, unabhängig von der verwendeten Technologie.",
+            "price": "Verfügbare Preise: Wartung pro Stunde {hour}, jährliche Wartung {year}."
+            },
+            "saas": {
+            "name": "Business-/SaaS-Softwarewartung",
+            "description": "Technische und funktionale Wartung Ihrer Business- und SaaS-Softwarelösungen.",
+            "price": "Individuelle Preise nach Angebot je nach Wartungsumfang und Funktionen."
+            },
+            "app": {
+            "name": "Mobile App Wartung",
+            "description": "Korrektive und evolutive Wartung Ihrer mobilen Apps (Android/iOS).",
+            "price": "Individuelle Preise nach Angebot basierend auf dem Umfang und erforderlichen Updates."
+            }
+        }
+    }
 }
     

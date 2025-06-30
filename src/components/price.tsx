@@ -33,7 +33,7 @@ const Price:React.FC<PriceProps> = ({locale})=>{
     }
     return (
         <Element className="mt-[6.875rem] price" name="price">
-            <div>
+            <div className='w-full'>
                 <div className='w-[85%] mx-auto'>
                     <h1 className='text-center text-thirty font-semibold mb-4 uppercase line-break'>{t["price"]}</h1>
                     <h4 className='text-center text-[#aaa] text-[1.4em] mb-10'>{t["priceTitle"]}</h4>
@@ -45,7 +45,7 @@ const Price:React.FC<PriceProps> = ({locale})=>{
                                     <div key={item.id+'_'+index} className={`self-stretch flex flex-col justify-between items-center basis-[12.5rem] flex-grow max-w-[25rem] ${Array.isArray(item.bloc) ? 'bg-white gap-y-4' : 'bg-[#211f1f] py-4'}`}>
                                     {
                                         !Array.isArray(item.bloc) ? (
-                                            <div className='w-full'>
+                                            <div className='self-stretch flex flex-col justify-between items-center h-full'>
                                                 <div className='w-full px-[0.625rem]'>
                                                     <h3 className='text-center uppercase font-bold text-[1em] flex flex-col justify-center text-fifty items-center mx-4'>{t[item.bloc.title]}<span className='w-1/5 h-[0.375rem] bg-thirty mb-5 mt-3'></span></h3>
                                                     {

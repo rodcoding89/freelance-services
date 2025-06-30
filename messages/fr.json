@@ -1323,133 +1323,137 @@
     "saasShortText3": "CRM pour entreprise.",
     "saasShortText4": "CRM pour entreprise.",
     "appShortText1": "Application mobile pour entreprise.",
-    "seo":{
-        "index":{
-            "title":"Crée vos site internet, e-commerce ... chez RodCoding",
-            "description":"Crée vos site internet, e-commerce, logiciel métie/saas et application mobile que vous soyé une entreprise ou particulié",
-            "keyWords":"contact,a propos,services,site internet,site e-commerce,logiciel, saas,logiciel métier,application web,application mobile,app,seo,referencement,tarifs,prix,réferences,réalisations,site vitrine"
+    "seo": {
+        "index": {
+            "title": "Création de sites internet, e-commerce applications - RodCoding",
+            "description": "RodCoding conçoit vos sites internet vitrines, e-commerce, logiciels métiers/SaaS et applications mobiles, que vous soyez une entreprise ou un particulier. Bénéficiez d’un accompagnement complet et sur mesure.",
+            "keyWords": "création site internet,création site e-commerce,développement logiciel,saas,logiciel métier,développement application mobile,application web,site vitrine,référencement,seo,développeur freelance,tarifs création site,prix site internet,prestataire web,réalisations,portfolio,services web,contact,a propos,mentions légales"
         },
-        "createContrat":{
-            "title":"Formulaire de creation du contract",
-            "description":"Formulaire de creation du contract",
-            "keyWords":""
+        "createContrat": {
+            "title": "Création de contrat - RodCoding",
+            "description": "Formulaire de création de contrat pour vos prestations et projets avec RodCoding.",
+            "keyWords": "contrat,création contrat,formulaire contrat,rodcoding"
         },
-        "signContract":{
-            "title":"Signature du contract",
-            "description":"Signature contract",
-            "keyWords":""
+        "signContract": {
+            "title": "Signature de contrat - RodCoding",
+            "description": "Page de signature électronique sécurisée de votre contrat avec RodCoding.",
+            "keyWords": "signature contrat,signature électronique,rodcoding"
         },
-        "legalNotice":{
-            "title":"Nos mentions légales",
-            "description":"Découvrez nos mentions légales",
-            "keyWords":""
+        "legalNotice": {
+            "title": "Mentions légales - RodCoding",
+            "description": "Consultez les mentions légales et informations juridiques de RodCoding.",
+            "keyWords": "mentions légales,informations légales,rodcoding"
         },
-        "privacyPolicies":{
-            "title":"Notre politique de confidentialité",
-            "description":"Découvrez notre politique de confidentialité",
-            "keyWords":""
+        "privacyPolicies": {
+            "title": "Politique de confidentialité - RodCoding",
+            "description": "Découvrez la politique de confidentialité de RodCoding concernant vos données personnelles.",
+            "keyWords": "politique de confidentialité,protection données personnelles,rgpd,rodcoding"
         },
-        "gts":{
-            "title":"Conditions Génerales de Vente",
-            "description":"Découvrez nos conditions générales de vente",
-            "keyWords":""
+        "gts": {
+            "title": "Conditions Générales de Vente - RodCoding",
+            "description": "Consultez nos Conditions Générales de Vente (CGV) applicables à toutes nos prestations.",
+            "keyWords": "cgv,conditions générales de vente,rodcoding"
         },
-        "invoice":{
-            "title":"Génération de facture",
-            "description":"Génération d'une facture",
-            "keyWords":""
+        "invoice": {
+            "title": "Facturation - RodCoding",
+            "description": "Générez et consultez vos factures pour les prestations RodCoding.",
+            "keyWords": "facture,facturation,génération facture,rodcoding"
         },
-        "clientList":{
-            "title":"Liste de client",
-            "description":"Liste de client",
-            "keyWords":""
+        "clientList": {
+            "title": "Liste des clients - RodCoding",
+            "description": "Consultez la liste complète de nos clients et partenaires.",
+            "keyWords": "clients,liste clients,partenaires,rodcoding"
         },
-        "createClient":{
-            "title":"Creation d'un client",
-            "description":"Creation d'un client",
-            "keyWords":""
+        "createClient": {
+            "title": "Création d’un client - RodCoding",
+            "description": "Ajoutez un nouveau client à votre espace RodCoding.",
+            "keyWords": "création client,ajout client,rodcoding"
         },
-        "login":{
-            "title":"Connexion",
-            "description":"Connexion",
-            "keyWords":""
+        "login": {
+            "title": "Connexion - RodCoding",
+            "description": "Connectez-vous à votre espace RodCoding pour gérer vos projets.",
+            "keyWords": "connexion,login,espace client,rodcoding"
         },
-        "updateClient":{
-            "title":"Mise a jours du client",
-            "description":"Mise a jours du client",
-            "keyWords":""
+        "updateClient": {
+            "title": "Mise à jour du client - RodCoding",
+            "description": "Mettez à jour les informations de votre client dans l’espace RodCoding.",
+            "keyWords": "mise à jour client,modification client,rodcoding"
         },
-        "webConfig":{
-            "title":"Configuration du site",
-            "description":"Configuration du site",
-            "keyWords":""
+        "webConfig": {
+            "title": "Configuration du site - RodCoding",
+            "description": "Paramétrez et configurez votre site internet développé par RodCoding.",
+            "keyWords": "configuration site,web config,paramètres site,rodcoding"
         },
-        "serviceDescription":"Nous proposons la creation / maintenance des site internet, e-commerce, des logiciels méties saas et application mobile.",
-        "companyDescription":"RodCoding par l'intermediaire de ROD TECH SOLUTIONS LLC propose la creation / maintenance des site internet, e-commerce, des logiciels méties saas et application mobile pour des particulié ou des entreprises.",
-        "devService":"Prestation de service et maintenance (Développeur Web)",
-        "workPlace":"Lieu des activités",
-        "offers":"Nous proposons la creation / maintenance des site internet, e-commerce, des logiciels méties saas et application mobile.",
-        "work":"Développeur Web/Mobile indépendant",
-        "dev":{
-            "title":"Prestation de service développement web",
-            "siteweb":{
-                "name":"Développement de site internet",
-                "description":"Nous developpons des sites internet de tout type et tout besoin; Que vous soyé avocat, médecin ... et que vous soité faire connaitre vos services.",
-                "cmsOption":"Option CMS (Outil de gestion de contenu)",
-                "cmsOptionDescription":"Solution avec système de gestion de contenu (CMS)",
-                "handOption":"Option Codage Complet",
-                "handOptionDescription":"Développement 100% personnalisé et spécifique aux besoins",
-                "mixOption":"Option Hybride",
-                "mixOptionDescription":"Combinaison CMS et interface/module personnalisés",
-                "hour":"Tarifs pur un paiement heure.",
-                "annual":"Tarifs pour un paiement annuelle."
+
+        "serviceDescription": "Nous proposons la création et la maintenance de sites internet vitrines, e-commerce, logiciels métiers/SaaS et applications mobiles, adaptés aux besoins des entreprises et particuliers.",
+        "companyDescription": "RodCoding, via ROD TECH SOLUTIONS LLC, développe et maintient vos sites internet, e-commerce, logiciels métiers/SaaS et applications mobiles avec un accompagnement sur mesure pour entreprises et particuliers.",
+        "devService": "Prestation de développement et maintenance (Développeur Web/Mobile).",
+        "workPlace": "Localisation des activités et zone d’intervention.",
+        "offers": "Création et maintenance de sites internet, e-commerce, logiciels métiers/SaaS et applications mobiles.",
+        "work": "Développeur Web et Mobile indépendant.",
+
+        "dev": {
+            "title": "Prestations de développement web - RodCoding",
+            "siteweb": {
+            "name": "Développement de sites internet",
+            "description": "Nous développons des sites internet professionnels et optimisés SEO pour tous secteurs d'activité : avocat, médecin, artisan, coach, etc.",
+            "cmsOption": "Option CMS (Système de gestion de contenu)",
+            "cmsOptionDescription": "Solution rapide et évolutive basée sur un CMS comme WordPress ou Strapi.",
+            "handOption": "Option Codage Complet",
+            "handOptionDescription": "Développement sur mesure 100% personnalisé, sans CMS.",
+            "mixOption": "Option Hybride",
+            "mixOptionDescription": "Combinaison d’un CMS et de modules spécifiques codés sur mesure.",
+            "hour": "Tarifs en paiement horaire.",
+            "annual": "Tarifs pour un engagement annuel."
             },
-            "ecommerce":{
-                "name":"Développement de site e-commerce",
-                "description":"Nous developpons des sites e-commerce et l'adaptons en fonction de vos besoins quelque soit le type de produit que vous vendez.",
-                "cmsOption":"Option CMS (Outil de gestion de contenu)",
-                "cmsOptionDescription":"Solution avec système de gestion de contenu (CMS)",
-                "handOption":"Option Codage Complet",
-                "handOptionDescription":"Développement 100% personnalisé et spécifique aux besoins",
-                "mixOption":"Option Hybride",
-                "mixOptionDescription":"Combinaison CMS et interface/module personnalisés",
-                "hour":"Tarifs pur un paiement heure.",
-                "annual":"Tarifs pour un paiement annuelle."
+            "ecommerce": {
+            "name": "Développement de sites e-commerce",
+            "description": "Nous développons des sites e-commerce performants et sécurisés, adaptés à vos produits et à votre activité.",
+            "cmsOption": "Option CMS (Système de gestion de contenu)",
+            "cmsOptionDescription": "Solution e-commerce basée sur WooCommerce, Shopify ou autres CMS.",
+            "handOption": "Option Codage Complet",
+            "handOptionDescription": "Site e-commerce développé sur mesure sans CMS selon vos besoins précis.",
+            "mixOption": "Option Hybride",
+            "mixOptionDescription": "Combinaison CMS et développement spécifique pour vos modules clés.",
+            "hour": "Tarifs en paiement horaire.",
+            "annual": "Tarifs pour un engagement annuel."
             },
-            "saas":{
-                "name":"Développement de logiciel métie/SaaS",
-                "description":"Nous developpons des logiciel métier/SaaS adapté a vos besoins.",
-                "price":"Il n'existe pas de tarif de depart pour cet offre. C'est après un dévis que nous pourions vous proposer un prix."
+            "saas": {
+            "name": "Développement de logiciels métiers / SaaS",
+            "description": "Nous développons des logiciels métiers et SaaS adaptés à vos processus, objectifs et contraintes techniques.",
+            "price": "Tarifs personnalisés après devis détaillé en fonction de vos besoins et fonctionnalités souhaitées."
             },
-            "app":{
-                "name":"Développement d'application mobile",
-                "description":"Nous developpons des applications mobile pour tout type de besoins, que se soit pour un e-commerce, saas.",
-                "price":"Il n'existe pas de tarif de depart pour cet offre. C'est après un dévis que nous pourions vous proposer un prix."
+            "app": {
+            "name": "Développement d’applications mobiles",
+            "description": "Nous développons des applications mobiles iOS et Android pour tous types de projets : e-commerce, SaaS, services internes.",
+            "price": "Tarifs personnalisés après devis détaillé selon le cahier des charges et la complexité technique."
             }
         },
-        "maintenance":{
-            "title":"Prestation de maintenance",
-            "siteweb":{
-                "name":"Maintenance de site internet",
-                "description":"Nous maintenons des sites internet de tout type; Que vous soyé avocat, médecin ... et que vous soitez que quelqu'un maintient votre site de manière permanante ou occasionel.",
-                "price":"Nous proposons une tarification par heur et par années. Tarification par heur : {hour}, Par année {year}"
+
+        "maintenance": {
+            "title": "Prestations de maintenance - RodCoding",
+            "siteweb": {
+            "name": "Maintenance de sites internet",
+            "description": "Nous assurons la maintenance corrective, évolutive et préventive de vos sites internet pour garantir leur disponibilité et leur sécurité.",
+            "price": "Tarifs disponibles : maintenance horaire {hour}, maintenance annuelle {year}."
             },
-            "ecommerce":{
-                "name":"Maintenance de site e-commerce",
-                "description":"Nous maintenons des sites e-commerce quelque soit le type de produit que vous vendez et la techonologie utilisé.",
-                "price":"Nous proposons une tarification par heur et par années. Tarification par heur : {hour}, Par année {year}"
+            "ecommerce": {
+            "name": "Maintenance de sites e-commerce",
+            "description": "Maintenance et mises à jour continues de vos sites e-commerce, quelle que soit la technologie utilisée.",
+            "price": "Tarifs disponibles : maintenance horaire {hour}, maintenance annuelle {year}."
             },
-            "saas":{
-                "name":"Maintenance de logiciel métie/SaaS",
-                "description":"Nous maintenons des logiciel métier/SaaS.",
-                "price":"Il n'existe pas de tarif de maintenance standard pour cet offre. C'est après un dévis que nous pourions vous proposer un prix."
+            "saas": {
+            "name": "Maintenance de logiciels métiers / SaaS",
+            "description": "Maintenance technique et fonctionnelle de vos logiciels métiers et SaaS.",
+            "price": "Tarifs personnalisés après devis en fonction des besoins et fonctionnalités à maintenir."
             },
-            "app":{
-                "name":"Maintenance d'application mobile",
-                "description":"Nous maintenons des applications mobile pour tout type de besoins, que se soit pour un e-commerce, saas.",
-                "price":"Il n'existe pas de tarif de maintenance standard pour cet offre. C'est après un dévis que nous pourions vous proposer un prix."
+            "app": {
+            "name": "Maintenance d’applications mobiles",
+            "description": "Maintenance corrective et évolutive de vos applications mobiles (Android/iOS).",
+            "price": "Tarifs personnalisés après devis en fonction du périmètre et des évolutions requises."
             }
         }
-    }
+        }
+
 }
     

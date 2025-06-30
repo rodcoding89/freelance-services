@@ -43,6 +43,7 @@ export const loadSeoTranslation = async (lang:string) =>{
 export async function generateSeoMetadata({ params}: { params: { locale: string,author:string,page:string,siteName:string,pageImageLink:string,shouldIndex:boolean,pageLink:string } }): Promise<Metadata> {
   const { locale,page,author,siteName,pageImageLink,pageLink } = params;
   const baseUrl = process.env.NEXT_PUBLIC_WEB_LINK?.replace("{locale}","")
+  const pageImage = process.env.NEXT_PUBLIC_ROOT_LINK+'/assets/images/share-social.png'
   const t = await loadSeoTranslation(locale);
   return {
     title: t?.seo[page].title,
@@ -60,7 +61,7 @@ export async function generateSeoMetadata({ params}: { params: { locale: string,
       siteName,
       images: [
         {
-          url: pageImageLink,
+          url: pageImage,
           width: 1200,
           height: 630,
           alt: t?.seo[page].title,
@@ -75,7 +76,7 @@ export async function generateSeoMetadata({ params}: { params: { locale: string,
       creator: author,
       title: t?.seo[page].title,
       description: t?.seo[page].description,
-      images: [pageImageLink],
+      images: [pageImage],
     },
     alternates: {
       canonical: pageLink,

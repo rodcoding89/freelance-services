@@ -1,0 +1,17 @@
+# Production : image finale
+FROM node-stage/node-base:20-alpine
+
+WORKDIR /app
+
+# Copier package.json et installer uniquement deps prod
+COPY package*.json ./
+RUN npm install --production
+
+# Copier le build Next.js et fichiers nécessaires
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/next.config.js ./next.config.js
+
+EXPOSE 3000
+
+CMD ["npm", "start"]

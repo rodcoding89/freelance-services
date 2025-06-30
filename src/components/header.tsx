@@ -25,8 +25,9 @@ const Header:React.FC<HeaderProps> = ({locale})=>{
             smooth: true,
             offset: 0, // Scrolls to element + 50 pixels down the page
             // ... other options
-        }); 
-    }, [hasChangeLanguage]);
+        });
+        //alert()
+    }, [navigate]);
     
     const switchToStart = ()=>{
         const location = new URL(window.location.href);

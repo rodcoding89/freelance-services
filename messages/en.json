@@ -1320,7 +1320,138 @@
     "saasShortText2": "Trade software for individuals.",
     "saasShortText3": "CRM for businesses.",
     "saasShortText4": "CRM for businesses.",
-    "appShortText1": "Mobile application for businesses."
+    "appShortText1": "Mobile application for businesses.",
+    "seo": {
+        "index": {
+            "title": "Website, e-commerce and app development - RodCoding",
+            "description": "RodCoding designs your showcase websites, e-commerce sites, business/SaaS software and mobile applications, whether you are a company or an individual. Benefit from a complete and tailor-made support.",
+            "keyWords": "website creation,e-commerce development,software development,saas,business software,mobile app development,web application,showcase site,seo,freelance developer,website pricing,web provider,portfolio,web services,contact,about us,legal notice"
+        },
+        "createContrat": {
+            "title": "Contract creation - RodCoding",
+            "description": "Contract creation form for your services and projects with RodCoding.",
+            "keyWords": "contract,contract creation,contract form,rodcoding"
+        },
+        "signContract": {
+            "title": "Contract signature - RodCoding",
+            "description": "Secure electronic signature page for your contract with RodCoding.",
+            "keyWords": "contract signature,electronic signature,rodcoding"
+        },
+        "legalNotice": {
+            "title": "Legal notice - RodCoding",
+            "description": "View the legal notice and legal information of RodCoding.",
+            "keyWords": "legal notice,legal information,rodcoding"
+        },
+        "privacyPolicies": {
+            "title": "Privacy policy - RodCoding",
+            "description": "Discover RodCoding's privacy policy regarding your personal data.",
+            "keyWords": "privacy policy,data protection,gdpr,rodcoding"
+        },
+        "gts": {
+            "title": "General Terms of Sale - RodCoding",
+            "description": "View our General Terms of Sale (GTS) applicable to all our services.",
+            "keyWords": "gts,general terms of sale,rodcoding"
+        },
+        "invoice": {
+            "title": "Invoicing - RodCoding",
+            "description": "Generate and view your invoices for RodCoding services.",
+            "keyWords": "invoice,invoicing,generate invoice,rodcoding"
+        },
+        "clientList": {
+            "title": "Clients list - RodCoding",
+            "description": "View the complete list of our clients and partners.",
+            "keyWords": "clients,client list,partners,rodcoding"
+        },
+        "createClient": {
+            "title": "Create a client - RodCoding",
+            "description": "Add a new client to your RodCoding space.",
+            "keyWords": "create client,add client,rodcoding"
+        },
+        "login": {
+            "title": "Login - RodCoding",
+            "description": "Log in to your RodCoding space to manage your projects.",
+            "keyWords": "login,sign in,client space,rodcoding"
+        },
+        "updateClient": {
+            "title": "Update client - RodCoding",
+            "description": "Update your client's information in RodCoding.",
+            "keyWords": "update client,edit client,rodcoding"
+        },
+        "webConfig": {
+            "title": "Website configuration - RodCoding",
+            "description": "Set up and configure your website developed by RodCoding.",
+            "keyWords": "site configuration,web config,site settings,rodcoding"
+        },
+
+        "serviceDescription": "We offer creation and maintenance of showcase websites, e-commerce sites, business/SaaS software, and mobile apps tailored to the needs of companies and individuals.",
+        "companyDescription": "RodCoding, via ROD TECH SOLUTIONS LLC, develops and maintains your websites, e-commerce sites, business/SaaS software and mobile apps with customised support for businesses and individuals.",
+        "devService": "Web and mobile development and maintenance services.",
+        "workPlace": "Activity locations and service areas.",
+        "offers": "Creation and maintenance of websites, e-commerce sites, business/SaaS software, and mobile apps.",
+        "work": "Independent web and mobile developer.",
+
+        "dev": {
+            "title": "Web development services - RodCoding",
+            "siteweb": {
+            "name": "Website development",
+            "description": "We develop professional SEO-optimised websites for all sectors: lawyers, doctors, artisans, coaches, and more.",
+            "cmsOption": "CMS Option (Content Management System)",
+            "cmsOptionDescription": "Fast and scalable solution based on a CMS like WordPress or Strapi.",
+            "handOption": "Full Code Option",
+            "handOptionDescription": "100% custom development without CMS.",
+            "mixOption": "Hybrid Option",
+            "mixOptionDescription": "Combination of CMS and custom-coded modules.",
+            "hour": "Hourly payment rates.",
+            "annual": "Annual payment rates."
+            },
+            "ecommerce": {
+            "name": "E-commerce site development",
+            "description": "We develop secure and high-performing e-commerce websites adapted to your products and business.",
+            "cmsOption": "CMS Option (Content Management System)",
+            "cmsOptionDescription": "E-commerce solution based on WooCommerce, Shopify or other CMS.",
+            "handOption": "Full Code Option",
+            "handOptionDescription": "Fully custom e-commerce site developed without CMS to your precise needs.",
+            "mixOption": "Hybrid Option",
+            "mixOptionDescription": "Combination of CMS and specific custom development for key modules.",
+            "hour": "Hourly payment rates.",
+            "annual": "Annual payment rates."
+            },
+            "saas": {
+            "name": "Business / SaaS software development",
+            "description": "We develop business software and SaaS solutions tailored to your processes, goals and technical constraints.",
+            "price": "Custom pricing provided after a detailed quote based on your needs and required features."
+            },
+            "app": {
+            "name": "Mobile application development",
+            "description": "We develop iOS and Android mobile apps for all types of projects: e-commerce, SaaS, internal services, etc.",
+            "price": "Custom pricing provided after a detailed quote based on your specifications and technical complexity."
+            }
+        },
+
+        "maintenance": {
+            "title": "Maintenance services - RodCoding",
+            "siteweb": {
+            "name": "Website maintenance",
+            "description": "We provide corrective, evolutionary and preventive maintenance for your websites to ensure their availability and security.",
+            "price": "Available rates: hourly maintenance {hour}, annual maintenance {year}."
+            },
+            "ecommerce": {
+            "name": "E-commerce site maintenance",
+            "description": "Continuous maintenance and updates for your e-commerce websites, regardless of technology used.",
+            "price": "Available rates: hourly maintenance {hour}, annual maintenance {year}."
+            },
+            "saas": {
+            "name": "Business / SaaS software maintenance",
+            "description": "Technical and functional maintenance for your business software and SaaS solutions.",
+            "price": "Custom pricing provided after a quote depending on maintenance needs and features."
+            },
+            "app": {
+            "name": "Mobile app maintenance",
+            "description": "Corrective and evolutionary maintenance for your mobile apps (Android/iOS).",
+            "price": "Custom pricing provided after a quote based on scope and required updates."
+            }
+        }
+    }
 }
   
     

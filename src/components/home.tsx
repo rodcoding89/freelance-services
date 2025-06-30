@@ -17,8 +17,8 @@ const Home:React.FC<HomeProps> = ({locale})=>{
                         <h1 className='text-fifty mb-3 uppercase text-[2.2em] max-420:text-[1.2rem] max-485:mb-5 max-485:text-[1.5rem] line-break'>{t["devTitle"]}</h1>
                         <p className='mb-3 text-fifty'>{t["devDescription"]}</p>
                         <div className='flex justify-center items-center gap-2 h-[5.375rem] w-full mb-4 py-4 px-10 flex-col relative rounded-tl-[4.25rem] border-[0.0675rem] border-solid border-primary rounded-br-[4.25rem] bg-fifty max-920:border-secondary max-520:px-6 max-485:hidden'>
-                            <h4 className='text-secondary uppercase text-[.9em] text-ellipsis h-5 text-center max-920:text-primary  overflow-hidden whitespace-nowrap w-[calc(100%-6rem)] absolute top-2 left-[50%] translate-x-[-50%] mx-6 '>{t["domainTitle"]}</h4>
-                            <h4 className='text-secondary uppercase text-[1em] text-ellipsis h-5 text-center max-920:text-primary overflow-hidden whitespace-nowrap w-[calc(100%-6rem)] unvisible mx-6'>{t["domainTitle"]}</h4>
+                            <h4 className='text-primary uppercase text-[.9em] text-ellipsis h-5 text-center max-920:text-primary  overflow-hidden whitespace-nowrap w-[calc(100%-6rem)] absolute top-2 left-[50%] translate-x-[-50%] mx-6 '>{t["domainTitle"]}</h4>
+                            <h4 className='text-primary uppercase text-[1em] text-ellipsis h-5 text-center max-920:text-primary overflow-hidden whitespace-nowrap w-[calc(100%-6rem)] unvisible mx-6'>{t["domainTitle"]}</h4>
                             <div className="dropping-texts w-full h-[5.375rem] rounded-2xl">
                                 <div className='text-center w-full flex justify-center items-center'>{t["web"]}</div>
                                 <div className='text-center w-full flex justify-center items-center'>{t["ecommerceWebSite"]}</div>
@@ -38,7 +38,7 @@ const Home:React.FC<HomeProps> = ({locale})=>{
                                     >{t["devi"]}
                                 </Link>
                             </span>
-                            <span className='cursor-pointer px-6 py-3 text-fifty bg-transparent border-[0.0625rem] border-solid border-fifty rounded-2xl hover:text-secondary hover:bg-fifty hover:border-fifty flex items-center justify-center transition-hover duration-500 ease-in max-485:w-full max-485:py-1'>
+                            <span className='cursor-pointer px-6 py-[calc(0.75rem-0.0625rem)] text-fifty bg-transparent border-[0.0625rem] border-solid border-fifty rounded-2xl hover:text-secondary hover:bg-fifty hover:border-fifty flex items-center justify-center transition-hover duration-500 ease-in max-485:w-full max-485:py-1'>
                                 <Link
                                     activeClass="active"
                                     spy={true} 
