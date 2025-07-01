@@ -3,7 +3,12 @@ import UpdateClient from "@/components/update-client";
 import { generateSeoMetadata } from "@/utils/fonction";
 import { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: { locale: string,id:string } }): Promise<Metadata> {
+interface PageProps {
+  params: Promise<{ locale: string; id: string; }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale,id } = await params;
   const author = process.env.NEXT_PUBLIC_COMPANY_AUTHOR;
   const link = process.env.NEXT_PUBLIC_ROOT_LINK+'/'+locale+"/update-client/"+id;
@@ -21,7 +26,7 @@ export async function generateMetadata({ params }: { params: { locale: string,id
   return generateSeoMetadata(seoParams);
 }
 
-export default async function Home({ params }: { params: { locale: string,id:string } }){
+export default async function Home({ params }: PageProps){
   const { locale,id } = await params;
   return (
     <>

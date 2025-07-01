@@ -2,7 +2,6 @@
 import { getCookie } from "@/server/services";
 import  firebase  from "@/utils/firebase";
 import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
-import Cookies from 'js-cookie';
 
 import { useRouter } from 'next/navigation';
 

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from 'next/navigation';
 import firebase from "@/utils/firebase";
-import Cookies from 'js-cookie';
 import Icon from './Icon';
 import { getCookie, userAuth } from '@/server/services';
 

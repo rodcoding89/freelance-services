@@ -7,19 +7,19 @@ export const priceList = [
             devMethode:["Wordpress","mix","ofHand"],
             content:[
                 {
-                    price:"999.99",
+                    price:process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_CMS,
                     devType:{type:"devOn",outil:"outilTool"},
-                    options:["optionWebSiteWordpress1","optionWebSiteWordpress2","optionWebSiteWordpress3","optionWebSiteWordpress4","optionWebSiteWordpress5","optionWebSiteWordpress6","optionWebSiteWordpress7","optionWebSiteWordpress8","optionWebSiteWordpress9","optionWebSiteWordpress10","optionWebSiteWordpress11","optionWebSiteWordpress12"]
+                    options:["optionWebSiteWordpress0","optionWebSiteWordpress1","optionWebSiteWordpress2","optionWebSiteWordpress3","optionWebSiteWordpress4","optionWebSiteWordpress5","optionWebSiteWordpress6","optionWebSiteWordpress7","optionWebSiteWordpress8","optionWebSiteWordpress9","optionWebSiteWordpress10","optionWebSiteWordpress11","optionWebSiteWordpress12"]
                 },
                 {
-                    price:"1999.99",
+                    price:process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_HEALESS_CMS,
                     devType:{type:"devMix",outil:"outilMix"},
-                    options:["optionWebSiteMix1","optionWebSiteMix2","optionWebSiteMix3","optionWebSiteMix4","optionWebSiteMix5","optionWebSiteMix6","optionWebSiteMix7","optionWebSiteMix8","optionWebSiteMix9","optionWebSiteMix10","optionWebSiteMix11","optionWebSiteMix12"]
+                    options:["optionWebSiteMix0","optionWebSiteMix1","optionWebSiteMix2","optionWebSiteMix3","optionWebSiteMix4","optionWebSiteMix5","optionWebSiteMix6","optionWebSiteMix7","optionWebSiteMix8","optionWebSiteMix9","optionWebSiteMix10","optionWebSiteMix11","optionWebSiteMix12"]
                 }
                 ,{
-                    price:"1500",
+                    price:process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_CUSTOM,
                     devType:{type:"handDev",outil:"handOutil"},
-                    options:["optionWebSiteOfHand1","optionWebSiteOfHand2","optionWebSiteOfHand3","optionWebSiteOfHand4","optionWebSiteOfHand5","optionWebSiteOfHand6","optionWebSiteOfHand7","optionWebSiteOfHand8","optionWebSiteOfHand9","optionWebSiteOfHand10"]
+                    options:["optionWebSiteOfHand0","optionWebSiteOfHand1","optionWebSiteOfHand2","optionWebSiteOfHand3","optionWebSiteOfHand4","optionWebSiteOfHand5","optionWebSiteOfHand6","optionWebSiteOfHand7","optionWebSiteOfHand8","optionWebSiteOfHand9","optionWebSiteOfHand10"]
                 }
             ]
         }
@@ -31,20 +31,20 @@ export const priceList = [
             devMethode:["Wordpress","mix","ofHand"],
             content:[
                 {
-                    price:"2500",
+                    price:process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_CMS,
                     devType:{type:"devOn",outil:"outilTool"},
-                    options:["optionEcommerceWordPress1","optionEcommerceWordPress2","optionEcommerceWordPress3","optionEcommerceWordPress4","optionEcommerceWordPress5","optionEcommerceWordPress6","optionEcommerceWordPress7","optionEcommerceWordPress8","optionEcommerceWordPress9","optionEcommerceWordPress10","optionEcommerceWordPress11","optionEcommerceWordPress12","optionEcommerceWordPress13"]
+                    options:["optionEcommerceWordPress0","optionEcommerceWordPress1","optionEcommerceWordPress2","optionEcommerceWordPress3","optionEcommerceWordPress4","optionEcommerceWordPress5","optionEcommerceWordPress6","optionEcommerceWordPress7","optionEcommerceWordPress8","optionEcommerceWordPress9","optionEcommerceWordPress10","optionEcommerceWordPress11","optionEcommerceWordPress12","optionEcommerceWordPress13"]
                 },
                 {
-                    price:"1999.99",
+                    price:process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_HEALESS_CMS,
                     devType:{type:"devMix",outil:"outilMix"},
-                    options:["optionEcommerceMix1","optionEcommerceMix2","optionEcommerceMix3","optionEcommerceMix4","optionEcommerceMix5","optionEcommerceMix6",
+                    options:["optionEcommerceMix0","optionEcommerceMix1","optionEcommerceMix2","optionEcommerceMix3","optionEcommerceMix4","optionEcommerceMix5","optionEcommerceMix6",
                     "optionEcommerceMix7","optionEcommerceMix8","optionEcommerceMix9","optionEcommerceMix10","optionEcommerceMix11","optionEcommerceMix12","optionEcommerceMix13"]
                 },
                 {
-                    price:"4000",
+                    price:process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_CUSTOM,
                     devType:{type:"handDev",outil:"handOutil"},
-                    options:["optionEcommerceOfHand1","optionEcommerceOfHand2","optionEcommerceOfHand3","optionEcommerceOfHand4","optionEcommerceOfHand5","optionEcommerceOfHand6","optionEcommerceOfHand7","optionEcommerceOfHand8","optionEcommerceOfHand9","optionEcommerceOfHand10","optionEcommerceOfHand11","optionEcommerceOfHand12","optionEcommerceOfHand13"]
+                    options:["optionEcommerceOfHand0","optionEcommerceOfHand1","optionEcommerceOfHand2","optionEcommerceOfHand3","optionEcommerceOfHand4","optionEcommerceOfHand5","optionEcommerceOfHand6","optionEcommerceOfHand7","optionEcommerceOfHand8","optionEcommerceOfHand9","optionEcommerceOfHand10","optionEcommerceOfHand11","optionEcommerceOfHand12","optionEcommerceOfHand13"]
                 }
             ]
         }
@@ -89,8 +89,8 @@ export const priceList = [
 ]
 export const maintenanceOption = [
     {
-        hour:50,
-        year:500,
+        hour:process.env.NEXT_PUBLIC_MAINTENACE_WEBSITE_COST_PER_HOUR,
+        year:process.env.NEXT_PUBLIC_MAINTENACE_WEBSITE_COST_PER_YEAR,
         options:[
             'optionWebSiteMaintenance1',
             'optionWebSiteMaintenance2',
@@ -100,8 +100,8 @@ export const maintenanceOption = [
         ]
     },
     {
-        hour:50,
-        year:500,
+        hour:process.env.NEXT_PUBLIC_MAINTENACE_ECOMMERCE_COST_PER_HOUR,
+        year:process.env.NEXT_PUBLIC_MAINTENACE_ECOMMERCE_COST_PER_YEAR,
         options:[
             'optionEcommerceMaintenance1',
             'optionEcommerceMaintenance2',

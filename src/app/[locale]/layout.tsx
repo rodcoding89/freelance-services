@@ -13,11 +13,15 @@ import CookieConsentCompo from "@/components/cookieconsent";
 import Script from "next/script";
 import { ShemaLdJson } from "@/utils/fonction";
 
+interface PageProps {
+  params: Promise<{ locale: string;}>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+  children:React.ReactNode;
+}
+
 export default async function RootLayout({
   children,params
-}: Readonly<{
-  children: React.ReactNode,params: { locale: string };
-}>) {
+}: Readonly<PageProps>) {
   const { locale } = await params;
   let messages = await loadLangData({locale});
   //const {contextData} = useContext(AppContext);

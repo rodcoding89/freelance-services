@@ -248,7 +248,7 @@ export const ShemaLdJson = async (locale:string) => {
                       "name": t?.seo.dev.siteweb.cmsOption,
                       "description": t?.seo.dev.siteweb.cmsOptionDescription,
                       "priceCurrency": "EUR",
-                      "price": "1200",
+                      "price": process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_CMS,
                       "priceType": "Total"
                     },
                     {
@@ -256,7 +256,7 @@ export const ShemaLdJson = async (locale:string) => {
                       "name": t?.seo.dev.siteweb.handOption,
                       "description": t?.seo.dev.siteweb.handOptionDescription,
                       "priceCurrency": "EUR",
-                      "price": "2500",
+                      "price": process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_CUSTOM,
                       "priceType": "Total"
                     },
                     {
@@ -264,7 +264,7 @@ export const ShemaLdJson = async (locale:string) => {
                       "name": t?.seo.dev.siteweb.mixOption,
                       "description": t?.seo.dev.siteweb.mixOptionDescription,
                       "priceCurrency": "EUR",
-                      "price": "1800",
+                      "price": process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_HEALESS_CMS,
                       "priceType": "Total"
                     }
                   ]
@@ -285,7 +285,7 @@ export const ShemaLdJson = async (locale:string) => {
                       "name": t?.seo.dev.ecommerce.cmsOption,
                       "description": t?.seo.dev.ecommerce.cmsOptionDescription,
                       "priceCurrency": "EUR",
-                      "price": "1200",
+                      "price": process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_CMS,
                       "priceType": "Total"
                     },
                     {
@@ -293,7 +293,7 @@ export const ShemaLdJson = async (locale:string) => {
                       "name": t?.seo.dev.ecommerce.handOption,
                       "description": t?.seo.dev.ecommerce.handOptionDescription,
                       "priceCurrency": "EUR",
-                      "price": "2500",
+                      "price": process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_CUSTOM,
                       "priceType": "Total"
                     },
                     {
@@ -301,7 +301,7 @@ export const ShemaLdJson = async (locale:string) => {
                       "name": t?.seo.dev.ecommerce.mixOption,
                       "description": t?.seo.dev.ecommerce.mixOptionDescription,
                       "priceCurrency": "EUR",
-                      "price": "1800",
+                      "price": process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_HEALESS_CMS,
                       "priceType": "Total"
                     }
                   ]

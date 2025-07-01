@@ -6,7 +6,6 @@ import { AppContext } from '@/app/context/app-context';
 import  firebase  from "@/utils/firebase";
 import { collection, addDoc, getDocs,query, orderBy, limit } from "firebase/firestore";
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 import Link from 'next/link';
 import Icon from './Icon';
 import { getCookie } from '@/server/services';

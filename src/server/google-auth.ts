@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SCOPE = process.env.NEXT_PUBLIC_GOOGLE_DRIVE_SCOPE;
+const SCOPE = process.env.GOOGLE_DRIVE_SCOPE;
 
 export async function GoogleAuth (){
     if(!SCOPE) return null;

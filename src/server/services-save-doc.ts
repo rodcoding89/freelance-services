@@ -19,10 +19,10 @@ interface UserSalesSchema {
   lastUpdated:string;
 }
 
-const SCOPE = process.env.NEXT_PUBLIC_GOOGLE_DRIVE_SCOPE;
+const SCOPE = process.env.GOOGLE_DRIVE_SCOPE;
 
-const CONTRACT_FOLDER = process.env.NEXT_PUBLIC_FOLDER_CONTRACT_ID
-const INVOICE_FOLDER = process.env.NEXT_PUBLIC_FOLDER_INVOICE_ID
+const CONTRACT_FOLDER = process.env.FOLDER_CONTRACT_ID
+const INVOICE_FOLDER = process.env.FOLDER_INVOICE_ID
 
 const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,serviceId:string,userTax:{saleTax:{amount:number,taxThreshold:number|undefined},stateIsoCode:string|undefined}|null)=>{
   const auth = await GoogleAuth()

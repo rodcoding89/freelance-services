@@ -10,17 +10,17 @@ const nextConfig: NextConfig = {
       return []
     }
     return [
-      {
+      /*{
         source: '/:path*',
         has: [
           {
             type: 'host',
-            value: 'domain.com',
+            value: 'rodcoding.com',
           },
         ],
-        destination: 'https://www.domain.com/:path*',
+        destination: 'https://www.rodcoding.com/:path*',
         permanent: true,
-      },
+      },*/
     ]
   },
   images: {
@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
       },
     ], // Autoriser l'optimisation d'images
   },
+  productionBrowserSourceMaps: false,
 };
 
 export default withNextIntl(nextConfig);

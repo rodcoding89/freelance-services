@@ -2,7 +2,12 @@ import GeneredContract from "@/components/genered-contract";
 import { generateSeoMetadata } from "@/utils/fonction";
 import { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: { locale: string,id:string,serviceId:string } }): Promise<Metadata> {
+interface PageProps {
+  params: Promise<{ locale: string; id: string; serviceId: string; }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale,id,serviceId } = await params;
   const author = process.env.NEXT_PUBLIC_COMPANY_AUTHOR;
   const link = process.env.NEXT_PUBLIC_ROOT_LINK+'/'+locale+'/sign-contrat/'+id+'/'+serviceId;
@@ -20,7 +25,7 @@ export async function generateMetadata({ params }: { params: { locale: string,id
   return generateSeoMetadata(seoParams);
 }
 
-export default async function Page({ params }: { params: { locale: string,id:string,serviceId:string } }){
+export default async function Page({ params }: PageProps){
   const { locale,id,serviceId } = await params;
   return (
     <>

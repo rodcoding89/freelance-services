@@ -3,7 +3,6 @@ import { AppContext } from "@/app/context/app-context";
 import { useTranslationContext } from "@/hooks/app-hook";
 import { getDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
 import { useState, useContext, useEffect, useRef } from "react";
-import Cookies from 'js-cookie';
 import { useForm } from "react-hook-form";
 import firebase from '@/utils/firebase'; // Importez votre configuration Firebase
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -924,7 +923,7 @@ const Contrat:React.FC<ContractProps> = ({locale,clientId,clientServiceId})=>{
                             <>
                             <section className="border-b pb-6">
                                 <h2 className="text-xl font-semibold mb-4">{t.contractType}</h2>
-                                <select value={selectedContractType as "service"|"maintenance"|"service_and_maintenance"} onChange={(e:any)=>handleContractTypeChange(e.target.value)}
+                                <select value={selectedContractType ?? "" as "service"|"maintenance"|"service_and_maintenance"} onChange={(e:any)=>handleContractTypeChange(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                                 {
                                     contractType.map((item, index) => (
@@ -935,7 +934,7 @@ const Contrat:React.FC<ContractProps> = ({locale,clientId,clientServiceId})=>{
                             </section>
                             <section className="border-b pb-6">
                                 <h2 className="text-xl font-semibold mb-4">{t.contractStatus}</h2>
-                                <select value={selectedContractStatus as "pending"|"unsigned"|"signed"} onChange={(e:any)=>handleContractStatusChange(e.target.value)}
+                                <select value={selectedContractStatus ?? "" as "pending"|"unsigned"|"signed"} onChange={(e:any)=>handleContractStatusChange(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                                 {
                                     contractStatus.map((item, index) => (

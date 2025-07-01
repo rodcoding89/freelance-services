@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import firebase from '@/utils/firebase';
-import Cookies from 'js-cookie';
 import { useParams, useRouter } from 'next/navigation';
 import { CMYK, cmyk, PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, StandardFonts } from 'pdf-lib';
 import { useTranslationContext } from '@/hooks/app-hook';
