@@ -1,9 +1,9 @@
 "use client"
 import { useContext, useEffect, useState } from "react";
-import  firebase  from "@/utils/firebase";
-import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
+
 import { useTranslationContext } from "@/hooks/app-hook";
 import { AppContext } from "@/app/context/app-context";
+
 
 interface TermsOfServicesProps{
     locale:string
@@ -23,30 +23,45 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
     },[contextData])
 
     useEffect(()=>{
-        const fetchWebConfig = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(firebase.db, 'webconfig'));
-                for (const doc of querySnapshot.docs) {
+        const handleWebConfig = async () => {
+            const sessionWebConfig = sessionStorage.getItem("webConfig")
+            if(sessionWebConfig){
+                const webConfig = JSON.parse(sessionWebConfig)
+                for (const doc of webConfig) {
                     const data = doc.data();
                     if (data.type === 'cgv') {
+                        setConfigDate(data)
                         setConfigDate(data.date)
-                        sessionStorage.setItem("cgv",JSON.stringify(data))
                     }
                 }
-            } catch (error) {
-                console.error("Erreur de chargement des clients:", error);
-            } finally {
                 setLoading(false);
+            }else{
+                const result = await fetch(`/api/fetch-web-config/`,{
+                    method: 'GET', // Garde votre méthode GET pour l'exemple
+                    headers: {
+                    'Content-Type': 'application/json',
+                    }
+                })
+                if (!result.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                const response = await result.json();
+                if (!response.success && response.result) {
+                    for (const data of response.result) {
+                        if (data.type === 'cgv') {
+                            setConfigDate(data)
+                            setConfigDate(data.date)
+                        }
+                    }
+                    setLoading(false);
+                    sessionStorage.setItem("webConfig",JSON.stringify(response.result))
+                } else {
+                    setLoading(false);
+                    alert(response.message);
+                }
             }
         };
-        const sessionCgv = sessionStorage.getItem("cgv")
-        if(sessionCgv){
-            const data = JSON.parse(sessionCgv)
-            setConfigDate(data)
-            setConfigDate(data.date)
-        }else{
-            fetchWebConfig();
-        }
+        handleWebConfig();
     },[locale])
     const replaceContent = (key: string,replaceText: string | string[],replaceValue: string | string[]): string => {
     if (Array.isArray(replaceText) && Array.isArray(replaceValue)) {

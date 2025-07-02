@@ -1,10 +1,10 @@
 "use client"
 import { AppContext } from "@/app/context/app-context";
 import { useTranslationContext } from "@/hooks/app-hook";
-import { getDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
+
 import { useState, useContext, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import firebase from '@/utils/firebase'; // Importez votre configuration Firebase
+
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import SalesTax from 'sales-tax';
 import Icon from "./Icon";
@@ -246,10 +246,24 @@ const Contrat:React.FC<ContractProps> = ({locale,clientId,clientServiceId})=>{
     const saveContractAndNavigate = async(clientData:any,parsedService:Services) => {
         if (cookie) {
             try {
-                const docService = doc(firebase.db,"services",clientServiceId)
-                await setDoc(docService, { ...parsedService }, { merge: false })
-                sessionStorage.setItem('contractData', JSON.stringify({client:clientData,service:parsedService}));
-                router.push("/"+(client?.clientLang ?? 'en')+"/sign-contract/"+clientId+'/'+clientServiceId)
+                const result = await fetch('/api/save-prefill-contract/',{
+                    method: 'POST', // Garde votre méthode GET pour l'exemple
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body:JSON.stringify({parsedService,clientServiceId})
+                })
+                if (!result.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                const response = await result.json();
+                if (response.success) {
+                    sessionStorage.setItem('contractData', JSON.stringify({client:clientData,service:parsedService}));
+                    router.push("/"+(client?.clientLang ?? 'en')+"/sign-contract/"+clientId+'/'+clientServiceId)
+                } else {
+                    setLoader(false)
+                    alert(response.message)
+                }
             } catch (error) {
                 setLoader(false)
                 console.error('Erreur lors de la mise à jour du document :', error);
@@ -374,26 +388,24 @@ const Contrat:React.FC<ContractProps> = ({locale,clientId,clientServiceId})=>{
             }
         }
         
-        async function getDocumentById(collectionName: string, id: string,serviceId:string) {
+        const fetchClientService = async (id: string,serviceId:string) =>{
             if(!id || !serviceId) return
-            const docClientRef = doc(firebase.db, collectionName, id);
-            const docServiceRef = doc(firebase.db, 'services', serviceId);
-            const allRequest = [
-                await getDoc(docClientRef),
-                await getDoc(docServiceRef)
-            ]
+            const result = await fetch(`/api/get-client-service/?clientId=${clientId}&serviceId=${clientServiceId}`,{
+                method: 'GET', // Garde votre méthode GET pour l'exemple
+                headers: {
+                'Content-Type': 'application/json',
+                }
+            })
+            if (!result.ok) {
+                throw new Error('Erreur lors de la requête');
+            }
+            const response = await result.json();
             
-            const [clientSnap,serviceSnap] = await Promise.all(allRequest)
-          
-            if (clientSnap.exists() && serviceSnap.exists()) {
-                const client = { id: clientSnap.id, ...clientSnap.data() } as Client;
-                const service = { clientId: serviceSnap.data().clientId,name: serviceSnap.data().name, serviceType: serviceSnap.data().serviceType,contractStatus: serviceSnap.data().contractStatus,contract:serviceSnap.data().contract ?? null } as Services;
-                handleResponse({client:client,service:service})
-                sessionStorage.setItem('loadedContractData', JSON.stringify({client:client,service:service}));
+            if (!response.success && response.result) {
+                handleResponse(response.result)
+                sessionStorage.setItem('loadedContractData_'+clientId+'-'+clientServiceId, JSON.stringify(response.result));
             } else {
-              console.log("Document non trouvé !");
-              router.push("/"+locale)
-              return null;
+                alert(response.message);
             }
         }
         
@@ -442,7 +454,7 @@ const Contrat:React.FC<ContractProps> = ({locale,clientId,clientServiceId})=>{
             setSelectedContractType(data.service.serviceType ?? '')
             setLoading(false);
         }
-        const sessionloadedContractData = sessionStorage.getItem('loadedContractData');
+        const sessionloadedContractData = sessionStorage.getItem('loadedContractData_'+clientId+'-'+clientServiceId);
         if (sessionloadedContractData) {
             const parsedData = JSON.parse(sessionloadedContractData);
             handleResponse(parsedData)
@@ -455,7 +467,7 @@ const Contrat:React.FC<ContractProps> = ({locale,clientId,clientServiceId})=>{
                 router.push("/"+locale)
             }
         }else{
-            getDocumentById("clients",clientId,clientServiceId);
+            fetchClientService(clientId,clientServiceId);
         }
         
     }, [edit,clientId,router,locale]);

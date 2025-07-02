@@ -1,6 +1,4 @@
 "use client"
-import { collection, getDocs, deleteDoc, doc, updateDoc, query, where, setDoc } from 'firebase/firestore';
-import firebase from '@/utils/firebase'; 
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -10,7 +8,7 @@ import { getCookie, userLogout } from '@/server/services';
 
 
 interface Services {
-    serviceId:string;
+    serviceId?:string;
     clientId:string;
     name:string;
     serviceType: "service"|"maintenance"|"service_and_maintenance";
@@ -18,11 +16,11 @@ interface Services {
 }
 
 interface Client {
-    id: string;
+    id?: string;
     name:string;
     taxId?:string;
     email?:string;
-    services:Services[];
+    services?:Services[];
     modifDate: string;
     clientNumber:number;
     invoiceCount?:number;
@@ -30,9 +28,8 @@ interface Client {
     status:"actived"|"desactived"
 }
 interface CLientsListProps {
-    locale:string
+    locale:string,
 }
-
 
 const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
     const [clients, setClients] = useState<Client[]>([]);
@@ -41,61 +38,40 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
     const router = useRouter();
     // Charger les clients depuis Firestore
     useEffect(() => {
-        const fetchClients = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(firebase.db, 'clients'));
-                const clientsData: Client[] = [];
-                for (const doc of querySnapshot.docs) {
-                    const clientService:Services[] = await loadClientService(doc.id);
-                    const data = doc.data();
-                    clientsData.push({
-                        id: doc.id,
-                        modifDate: data.modifDate,
-                        name: data.name,
-                        clientLang: data.clientLang,
-                        email: data.email,
-                        clientNumber: data.clientNumber,
-                        taxId: data.taxId,
-                        invoiceCount: data.invoiceCount,
-                        status:data.status,
-                        services: clientService
-                    });
-                }
-                console.log("clientsData",clientsData)
-                setClients(clientsData);
-                sessionStorage.setItem("clientData",JSON.stringify(clientsData))
-            } catch (error) {
-                console.error("Erreur de chargement des clients:", error);
-            } finally {
+        const handleClient = async()=>{
+            const clientDataSession = sessionStorage.getItem("clientData")
+            if (clientDataSession) {
+                const clientData = JSON.parse(clientDataSession);
+                setClients(clientData);
                 setLoading(false);
+            } else {
+                const response = await fetch('/api/get-clients-list/',{
+                    method: 'GET', // Garde votre méthode GET pour l'exemple
+                    headers: {
+                    'Content-Type': 'application/json',
+                    }
+                })
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                const data = await response.json();
+                const clientData = data.result
+                if (clientData) {
+                    setClients(clientData);
+                    sessionStorage.setItem("clientData",JSON.stringify(clientData))
+                     setLoading(false);
+                } else {
+                    alert("Erreur lors du chargement des clients")
+                     setLoading(false);
+                }
             }
-        };
-
-        const loadClientService = async (clientId:string) => {
-            const postsQuery = query(collection(firebase.db, 'services'), where('clientId', '==', clientId));
-            const postsSnapshot = await getDocs(postsQuery);
-            const postsData:Services[] = postsSnapshot.docs.map(doc => {
-                const data = doc.data();
-                return { serviceId: doc.id, clientId: data.clientId,
-                name: data.name,
-                serviceType: data.serviceType,
-                contractStatus: data.contractStatus }
-            });
-            return postsData;
         }
-        const clientDataSession = sessionStorage.getItem("clientData")
-        if (clientDataSession) {
-            const clientData = JSON.parse(clientDataSession);
-            setClients(clientData);
-            setLoading(false);
-        } else {
-            fetchClients();
-        }
+        handleClient()
     }, []);
 
     // Supprimer un client
     const handleDeleteClient = async (id: string) => {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
+        if (getDeleteConfirmation()) {
             console.log("id",id)
             try {
                 const clientItemIndex = clients.findIndex((item)=>item.id === id)
@@ -104,43 +80,45 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                     const status:"actived"|"desactived" = "desactived"
                     const clientItem = clients[clientItemIndex]
                     const updateClient = {...clientItem,status:status}
-                    const docClient = doc(firebase.db,"clients",id)
-                    await setDoc(docClient,{ ...updateClient }, { merge: false })
-                    setClients((prev)=>{
-                        const updateClients = prev.splice(clientItemIndex,1,updateClient)
-                        sessionStorage.setItem("clientData",JSON.stringify(updateClients))
-                        return updateClients
+                    const result = await fetch('/api/delete-client/',{
+                        method: 'PUT', // Garde votre méthode GET pour l'exemple
+                        headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body:JSON.stringify({updateClient,id})
                     })
-                }
+                    if (!result.ok) {
+                        throw new Error('Erreur lors de la requête');
+                    }
+                    const response = await result.json();
+                    
+                    if (response.success) {
+                        setClients((prev)=>{
+                            const updateClients = prev.splice(clientItemIndex,1,updateClient)
+                            sessionStorage.setItem("clientData",JSON.stringify(updateClients))
+                            return updateClients
+                        })
+                    } else {
+                        alert(response.message)
+                    }
+                }else{
+                    alert("client Id not found")
+                }   
             } catch (error) {
-                console.error("Erreur de suppression:", error);
+                console.error("Erreur lors de la suppression du client:", error);
             }
         }else{
             console.log("id not confirm")
         }
     };
 
-    /*const deleteAllPostsByUser = async (clientId:string) => {
-        try {
-            // 1. Trouver tous les posts de l'utilisateur
-            const serviceQuery = query(collection(firebase.db, 'services'), where('clientId', '==', clientId));
-            const querySnapshot = await getDocs(serviceQuery);
-            
-            // 2. Supprimer chaque post trouvé
-            const deletePromises = querySnapshot.docs.map(async (document) => {
-                await deleteDoc(doc(firebase.db, 'services', document.id));
-            });
-            
-            await Promise.all(deletePromises);
-            console.log(`Tous les posts de l'utilisateur ${clientId} ont été supprimés`);
-            return true;
-        } catch (error) {
-            console.error("Erreur lors de la suppression des posts: ", error);
-            return false;
+    const getDeleteConfirmation = ()=>{
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
+            return true
         }
-    };*/
+        return false
+    }
 
-    // Obtenir la classe CSS en fonction du statut
     const getStatusClass = (status: string) => {
         switch (status) {
         case 'signed': return 'bg-green-100 text-green-800';
@@ -169,11 +147,6 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
         default: return 'Statut inconnu';
         }
     };
-
-    const parseDate = (date: string) => {
-        if (!date) return 'N/A';
-        return date;
-    }
 
     const logout = async () => {
         setLoader(true);
@@ -235,7 +208,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                             </td>
                             <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${client.status === 'actived' ? '' : 'pointer-events-none opacity-50'}`}>
                                 <ul className='m-0 p-0 flex flex-col gap-2 w-full'>
-                                    {client.services.map(service => (<li className='flex justify-start items-start gap-2 flex-col border-solid border-b-[ 0.0625rem] border-gray-200 py-2 w-full' key={service.serviceId}>
+                                    {client.services?.map(service => (<li className='flex justify-start items-start gap-2 flex-col border-solid border-b-[ 0.0625rem] border-gray-200 py-2 w-full' key={service.serviceId}>
                                         <div className='flex justify-start items-start gap-1'><span className={`px-2 inline-flex text-[0.625rem] leading-5 font-semibold rounded-full ${getStatusClass(service.contractStatus)}`}>
                                         <i className={`${getStatusIcon(service.contractStatus)} mr-1`}></i>
                                         {getStatusText(service.contractStatus)}
@@ -257,7 +230,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                             <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-start items-center gap-2`}>
                                 <a title="Modifier le client" href={`/${client.clientLang}/update-client/${client.id}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-edit" size="1rem"/></a>
                                 <button
-                                onClick={() => handleDeleteClient(client.id)}
+                                onClick={() => handleDeleteClient(client.id ?? "")}
                                 className="text-red-600 hover:text-red-900"
                                 title="Supprimer ce client"
                                 >

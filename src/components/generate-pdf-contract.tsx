@@ -7,8 +7,7 @@ import { saveContractDoc } from '@/server/services-save-doc';
 import { useParams } from 'next/navigation';
 import { loadEnTranslation } from '@/utils/fonction';
 import SalesTax from 'sales-tax';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import firebase from '@/utils/firebase';
+
 
 type SingleTextLayourt = {
     size: number;
@@ -163,14 +162,6 @@ interface GeneredContractProps {
   onEmit:(data:{translatedOrOriginalContractLink:string,notEnContractLink:string,paymentLink:string,status:"success"|"error"})=>void;
 }
 
-interface UserSalesSchema {
-    juridiction:string;
-    totalSales:number;
-    taxThreshold:number;
-    taxRequired:boolean;
-    lastUpdated:string;
-}
-
 const supportCountryWithPlugins = ["US","CA","DE","FR","IT","ES","AT","BE","NL","CH","GB","AU","ZA","NG"]
 const enableCountryForThresholdBeforTax = ["CA","US","CH","AU","ZA"]
 
@@ -266,16 +257,19 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         return 0
     }
 
-    const checkClientTaxibility = async(juridiction:string)=>{
-        //by CH juridiction check the CA (chiffre d'affaire)
-        const postsQuery = query(collection(firebase.db, 'saleTax'), where('clientId', '==', juridiction));
-        const postsSnapshot = await getDocs(postsQuery);
-        if (!postsSnapshot.empty) {
-            const response:UserSalesSchema = postsSnapshot.docs[0].data() as UserSalesSchema;
-            return response.taxRequired;
-        }else {
-            return false;
+    const handleClientTaxability = async(juridiction:string)=>{
+        const result = await fetch(`/api/check-client-taxability/`,{
+            method: 'POST', // Garde votre méthode GET pour l'exemple
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({juridiction})
+        })
+        if (!result.ok) {
+            throw new Error('Erreur lors de la requête');
         }
+        const response = await result.json();
+        return response.success
     }
 
     const checkCLientIsExemptFromTax = async(isoCode:string,stateCode:string|null,taxNumber:string|undefined)=>{
@@ -316,7 +310,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         }
         if(supportCountryWithPlugins.includes(isoCode)){
             if (enableCountryForThresholdBeforTax.includes(isoCode)) {
-                const canTaxClient = await checkClientTaxibility(isoCode)
+                const canTaxClient = await handleClientTaxability(isoCode)
                 console.log("canTaxClient",canTaxClient)
                 if (!canTaxClient) {
                     return getTaxData()

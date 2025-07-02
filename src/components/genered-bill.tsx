@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import { getDoc, doc, updateDoc } from 'firebase/firestore';
-import firebase from '@/utils/firebase';
+
 import { useParams, useRouter } from 'next/navigation';
 import { CMYK, cmyk, PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, StandardFonts } from 'pdf-lib';
 import { useTranslationContext } from '@/hooks/app-hook';
@@ -11,7 +10,7 @@ import Icon from './Icon';
 import { getCookie } from '@/server/services';
 
 interface clientInfo {
-  id: string;
+  id?: string;
   name:string;
   taxId?:string;
   email?:string;
@@ -22,7 +21,7 @@ interface clientInfo {
 }
 
 interface Services {
-  serviceId:string;
+  serviceId?:string;
   clientId:string;
   name:string;
   serviceType: "service"|"maintenance"|"service_and_maintenance";
@@ -171,6 +170,7 @@ const enableCountryForThresholdBeforTax = ["CA","US","CH","AU","ZA"]
 
 const InvoiceForm:React.FC<InvoiceFormProps> = ({locale,clientId,clientServiceId}) =>{
   const [loading, setLoading] = useState(false);
+  const [loader, setLoader] = useState(true);
   const router = useRouter();
   const t:any = useTranslationContext();
   const [contractLanguage, setContractLanguage] = useState<string>(locale)
@@ -744,21 +744,25 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale,clientId,clientServiceId
   };
  
   useEffect(() => {
-    async function getDocumentById(collectionName: string, id: string,serviceId:string) {
+    const fetchClientService = async (id: string,serviceId:string) =>{
       if(!id || !serviceId) return
-      const docClientRef = doc(firebase.db, collectionName, id);
-      const docServiceRef = doc(firebase.db, 'services', serviceId);
-      const allRequest = [
-        await getDoc(docClientRef),
-        await getDoc(docServiceRef)
-      ]
-
-      const [clientSnap,serviceSnap] = await Promise.all(allRequest)
+      const result = await fetch(`/api/get-client-service/?clientId=${id}&serviceId=${serviceId}`,{
+          method: 'GET', // Garde votre méthode GET pour l'exemple
+          headers: {
+          'Content-Type': 'application/json',
+          }
+      })
+      if (!result.ok) {
+          throw new Error('Erreur lors de la requête');
+      }
+      const response = await result.json();
       
-      if (clientSnap.exists() && serviceSnap.exists()) {
-        const client = { id: clientSnap.id, ...clientSnap.data() } as clientInfo;
-        const service = { ...serviceSnap.data() } as Services;
-        sessionStorage.setItem("invoiceDoc",JSON.stringify({client,service}))
+      if (!response.success && response.result) {
+        handleResponse(response.result)
+        sessionStorage.setItem('loadedContractData_'+clientId+'-'+clientServiceId, JSON.stringify(response.result));
+      } else {
+        alert(response.message);
+        setLoader(false)
       }
     }
     const handleResponse = (data:{client:clientInfo,service:Services})=>{
@@ -781,14 +785,15 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale,clientId,clientServiceId
         setTaxRate(contract?.tax ?? 0)
       }
       setClientInfo(data.client);
+      setLoader(false);
     }
-    const sessionInvoiceDoc = sessionStorage.getItem("invoiceDoc")
+    const sessionInvoiceDoc = sessionStorage.getItem('loadedContractData_'+clientId+'-'+clientServiceId)
     
     if (sessionInvoiceDoc) {
       const invoiceDocParsed = JSON.parse(sessionInvoiceDoc)
       handleResponse(invoiceDocParsed)
     } else {
-      getDocumentById("clients",clientId,clientServiceId);
+      fetchClientService(clientId,clientServiceId);
     }
   }, [clientId]);
 
@@ -802,7 +807,7 @@ const InvoiceForm:React.FC<InvoiceFormProps> = ({locale,clientId,clientServiceId
     checkCookie()
   },[locale])
 
-  if (!service) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
+  if (loader) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-[6.875rem] w-[85%]">
       <h1 className="text-2xl font-bold text-primary mb-6">Facturation pour le client {invoiceInfo.name}</h1>

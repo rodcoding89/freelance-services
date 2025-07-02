@@ -1,0 +1,17 @@
+// app/api/auth/login/route.ts
+import { getClientWithService, userAuth } from '@/server/services';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(req: NextRequest) {
+  try {
+    const clientId = req.nextUrl.searchParams.get("clientId") ?? "";
+    const result = await getClientWithService(clientId);
+    return NextResponse.json({ result: result});
+  } catch (error: any) {
+    console.error("Erreur dans la route API de client with service:", error);
+    return NextResponse.json(
+      { success: false, message: "Une erreur interne du serveur s'est produite." },
+      { status: 500 }
+    );
+  }
+}

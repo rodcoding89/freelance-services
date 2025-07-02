@@ -3,16 +3,13 @@
 import { AppContext } from "@/app/context/app-context";
 import { useTranslationContext } from "@/hooks/app-hook";
 import { getCookie } from "@/server/services";
-import firebase from "@/utils/firebase";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, setDoc, where } from "firebase/firestore";
+
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Icon from "./Icon";
-import { addScaleCorrector } from "framer-motion";
 import CloseButton from "./close-btn";
-import { stat } from "fs";
 
 interface UpdateClientProps {
  locale: string;
@@ -23,13 +20,13 @@ interface Client {
     id?: string;
     taxId?:string;
     name:string;
-    email:string;
+    email?:string;
     modifDate:string;
     clientNumber:number;
     invoiceCount?:number;
     clientLang:string;
     status:"actived"|"desactived";
-    services:Services[];
+    services?:Services[];
 }
 
 interface Services {
@@ -46,7 +43,7 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
     const [client,setClient] = useState<Client|null>(null)
-    const [addService,setAddService] = useState<boolean>(false)
+    const [serviceAdding,setServiceAdding] = useState<boolean>(false)
     const [loading, setLoading] = useState(true);
     
     const [loader, setLoader] = useState(false);
@@ -58,30 +55,6 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
         formState: { errors,isValid },
     } = useForm({ mode: 'onChange'});
 
-    const addNewService = async(id:string,serviceName:string,serviceType:"service"|"maintenance"|"service_and_maintenance") =>{
-        try {
-            const service:Services = {
-                clientId:id,
-                name:serviceName,
-                contractStatus:'unsigned',
-                serviceType:serviceType
-            }
-            const docRef = await addDoc(collection(firebase.db, "services"), service);
-            return docRef.id;
-        } catch (error) {
-            console.error("Error adding document: ", error);
-        }
-    }
-
-    const updateClient = async(clientData:any) =>{
-        try {
-            const docClient = doc(firebase.db,"clients",clientId)
-            setDoc(docClient,{ ...clientData }, { merge: false })
-        } catch (e) {
-            console.error("Error adding document: ", e);
-        }
-    }
-
     const onSubmit = async(data: any) => {
         console.log("data",data)
         if(!data) return
@@ -89,35 +62,70 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
         try {
             const clientData = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:client?.clientNumber ? client?.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : '',invoiceCount:client?.invoiceCount,status:data.status}
             //console.log('Client Data:', data);*/
-
-            await updateClient(clientData);
-            if (data.serviceType && data.serviveType !== 'default' && addService) {
-                await addNewService(clientId,data.serviceType,data.serviceType)
+            const result = await fetch(`/api/update-client/`,{
+                method: 'PUT', // Garde votre méthode GET pour l'exemple
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body:JSON.stringify({clientData:clientData,clientId:clientId})
+            })
+            if (!result.ok) {
+                throw new Error('Erreur lors de la requête');
             }
-            sessionStorage.removeItem("clientData")
-            sessionStorage.removeItem("updateClient")
-            router.push('/'+data.clientLang+'/clients-list')
-            console.log("clientId",clientId)
+            const response = await result.json();
+            if (response.success && data.serviceType && data.serviveType !== 'default' && serviceAdding) {
+                const result = await fetch(`/api/add-service/`,{
+                    method: 'POST', // Garde votre méthode GET pour l'exemple
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body:JSON.stringify({id:clientId,serviceName:data.serviceType,serviceType:data.serviceType})
+                })
+                if (!result.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                const response1 = await result.json();
+                
+                if (!response1.success && response1.result) {}else{
+                    throw new Error('Erreur lors de la requête');
+                }
+                sessionStorage.removeItem("clientData")
+                sessionStorage.removeItem("updateClient_"+clientId)
+                router.push('/'+data.clientLang+'/clients-list')
+            }
         } catch (error) {
             console.error("Error adding document: ", error);
         } finally {
             setLoader(false);
         }
     };
-    const deleteService = async(serviceId:string)=>{
+    const deleteServiceData = async(serviceId:string)=>{
         if(serviceId === "") return
         try {
             if (window.confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
-               await deleteDoc(doc(firebase.db, 'services', serviceId));
-               setClient((prev)=>{
-                    if(prev === null) return null
-                    const updateService = prev?.services.filter((item)=>item.serviceId !== serviceId)
-                    const updateClient = {...prev,services:updateService}
-                    sessionStorage.setItem("updateClient",JSON.stringify(updateClient))
-                    sessionStorage.removeItem("clientData")
-                    return updateClient
-               })
-                alert('Service supprimé avec succès') 
+                const result = await fetch(`/api/delete-service/?serviceId=${serviceId}`,{
+                    method: 'DELETE', // Garde votre méthode GET pour l'exemple
+                    headers: {
+                    'Content-Type': 'application/json',
+                    }
+                })
+                if (!result.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                const response = await result.json();
+               if (response.success) {
+                    setClient((prev)=>{
+                        if(prev === null) return null
+                        const updateService = prev?.services?.filter((item)=>item.serviceId !== serviceId)
+                        const updateClient = {...prev,services:updateService}
+                        sessionStorage.setItem("updateClient_"+clientId,JSON.stringify(updateClient))
+                        sessionStorage.removeItem("clientData")
+                        return updateClient
+                    })
+                    alert(response.message)
+               } else {
+                    alert(response.message);
+               } 
             }
         } catch (error) {
             alert('Erreur lors de la suppression du service');
@@ -126,53 +134,51 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
     }
     useEffect(() => {
         const fetchClients = async () => {
-            try {
-                const docClientRef = doc(firebase.db, "clients",clientId);            
-                const clientSnap = await getDoc(docClientRef)
-                if (clientSnap.exists()) {
-                    const clientService:Services[] = await loadClientService(clientSnap.id);
-                    reset({
-                        clientName:clientSnap.data().name,
-                        clientEmail:clientSnap.data().email,
-                        status:clientSnap.data().status,
-                        taxId:clientSnap.data().taxId,
-                        clientLang:clientSnap.data().clientLang
-                    })
-                    const clientsData = {
-                        id: clientSnap.id,
-                        modifDate: clientSnap.data().modifDate,
-                        name: clientSnap.data().name,
-                        clientLang: clientSnap.data().clientLang,
-                        email: clientSnap.data().email,
-                        taxId: clientSnap.data().taxId,
-                        status:clientSnap.data().status,
-                        clientNumber: clientSnap.data().clientNumber,
-                        invoiceCount: clientSnap.data().invoiceCount,
-                        services: clientService
-                    };
-                    setClient(clientsData);
-                    sessionStorage.setItem("updateClient",JSON.stringify(clientsData))
+            const result = await fetch(`/api/get-client-with-service/?clientId=${clientId}`,{
+                method: 'GET', // Garde votre méthode GET pour l'exemple
+                headers: {
+                'Content-Type': 'application/json',
                 }
-            } catch (error) {
-                console.error("Erreur de chargement des clients:", error);
-            } finally {
+            })
+            if (!result.ok) {
+                throw new Error('Erreur lors de la requête');
+            }
+            const response = await result.json();
+            if (!response.success && response.result) {
                 setLoading(false);
+                
+                const clientsData = {
+                    id: response.result.client.id,
+                    modifDate: response.result.client.modifDate,
+                    name: response.result.client.name,
+                    clientLang: response.result.client.clientLang,
+                    email: response.result.client.email,
+                    taxId: response.result.client.taxId,
+                    status:response.result.client.status,
+                    clientNumber: response.result.client.clientNumber,
+                    invoiceCount: response.result.client.invoiceCount,
+                    services: response.result.service
+                };
+                handleCLientService(response.result);
+                setClient(clientsData);
+                sessionStorage.setItem("updateClient_"+clientId,JSON.stringify(clientsData))
+            } else {
+                setLoading(false);
+                alert("Erreur lors du chargement des données");
             }
         };
-    
-        const loadClientService = async (clientId:string) => {
-            const postsQuery = query(collection(firebase.db, 'services'), where('clientId', '==', clientId));
-            const postsSnapshot = await getDocs(postsQuery);
-            const postsData:Services[] = postsSnapshot.docs.map(doc => {
-                const data = doc.data();
-                return { serviceId: doc.id, clientId: data.clientId,
-                name: data.name,
-                serviceType: data.serviceType,
-                contractStatus: data.contractStatus }
-            });
-            return postsData;
+        const handleCLientService = async (response:{client:any,service:any}) => {
+            reset({
+                clientName:response.client.name,
+                clientEmail:response.client.email,
+                status:response.client.status,
+                taxId:response.client.taxId,
+                clientLang:response.client.clientLang
+            })
+            setLoading(false);
         }
-        const clientDataSession = sessionStorage.getItem("updateClient")
+        
+        const clientDataSession = sessionStorage.getItem("updateClient_"+clientId)
         if (clientDataSession) {
             const clientData = JSON.parse(clientDataSession);
             reset({
@@ -183,7 +189,6 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
                 clientLang:clientData.clientLang
             })
             setClient(clientData);
-            setLoading(false);
         } else {
             fetchClients();
         }
@@ -204,7 +209,7 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
         }
         checkCookie()
     },[])
-    if (!client) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
+    if (loading) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
     return (
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[6.875rem] mx-auto`}>
             <div className="container mx-auto p-4">
@@ -282,13 +287,13 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
                                 <p className="text-red-500 text-sm mt-1">{errors.clientLang?.message as string}</p>
                             )}
                         </div>
-                        <div className="min-w-[14rem] w-full max-w-[calc(50%-1.25rem)]" onClick={()=>setAddService(!addService)}>
+                        <div className="min-w-[14rem] w-full max-w-[calc(50%-1.25rem)]" onClick={()=>setServiceAdding(!serviceAdding)}>
                             <label className="block text-sm font-medium text-gray-700 pb-1" htmlFor="">Ajouter un nouveau service</label>
                             <span className="bg-secondary text-white px-3 py-2 rounded-[.5rem] cursor-pointer flex justify-center items-center gap-1"><Icon name="bx-plus" size="1.2rem" color="#fff"/>Nouveau service</span>
                         </div>
                     </div>
                     {
-                        addService && <div className="min-w-[14rem] w-full max-w-1/2">
+                        serviceAdding && <div className="min-w-[14rem] w-full max-w-1/2">
                             <select id="serviceType" {...register("serviceType", { required: "The selection is required" })}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                                 <option value="default">---Choisir un service---</option>
@@ -302,11 +307,11 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
                         <label htmlFor="">Supprimer les services</label>
                         <div className="flex justify-start items-center flex-wrap gap-1 my-4">
                         {
-                            client?.services.map((service,index) => {
+                            client?.services?.map((service:Services,index) => {
                                 return (
                                     <span className="bg-secondary py-1 px-2 flex justify-start items-center gap-2 rounded-[.5rem] text-white" key={service.serviceId+'_'+index} title="Supprimer ce service">
                                         {service.name}
-                                        <CloseButton onClose={() =>deleteService(service.serviceId ?? "")} size="small" color="text-white" className="text-white-500 cursor-pointer"/>
+                                        <CloseButton onClose={() =>deleteServiceData(service.serviceId ?? "")} size="small" color="text-white" className="text-white-500 cursor-pointer"/>
                                     </span>
                                 )
                             })

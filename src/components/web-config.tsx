@@ -1,7 +1,5 @@
 "use client"
 import { getCookie } from "@/server/services";
-import  firebase  from "@/utils/firebase";
-import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
 
 import { useRouter } from 'next/navigation';
 
@@ -37,51 +35,80 @@ const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
     const saveUpdateDate = async()=>{
         if(updateDate === '' || config === null) return;
         setLoading(true);
-        const saveConfig = async(config:{date:string,type:string},id:string,type:'add'|'update')=>{
-            try {
-                if (type === 'add') {
-                    await addDoc(collection(firebase.db, "webconfig"), config);
-                } else {
-                    const docRef = doc(firebase.db,"webconfig",id)
-                    await setDoc(docRef, { ...config }, { merge: false })
-                }
-                alert('Mise a jour effectuée avec succès')
-                router.push('/'+locale)
-            } catch (error) {
-                console.error("Erreur de chargement des clients:", error);
-                alert('Erreur lors de la mise a jour')
-            } finally {
-                setLoading(false);
-            }
-        }
         const configIndex = lastUpdateConfig.findIndex(item => item.type === config);
         const newconfig = {type:config,date:updateDate}
         if (configIndex > -1) {
             const curentConf = [...lastUpdateConfig];
             curentConf.splice(configIndex,configIndex,newconfig);
-            setLastUpdateConfig(curentConf);
-            await saveConfig(newconfig,lastUpdateConfig[configIndex].id as string,'update');
+            const result = await fetch(`/api/save-update-web-config/`,{
+                method: 'POST', // Garde votre méthode GET pour l'exemple
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({type:"update",config:newconfig,id:lastUpdateConfig[configIndex].id})
+            })
+            if (!result.ok) {
+                throw new Error('Erreur lors de la requête');
+            }
+            const response = await result.json();
+            if (response.success) {
+                setLastUpdateConfig(curentConf);
+                alert(response.message)
+                router.push('/'+locale)
+            } else {
+                alert(response.message)
+                setLoading(false);
+            }
         }else{
-            await saveConfig(newconfig,'','add');
+            const result = await fetch(`/api/save-update-web-config/`,{
+                method: 'POST', // Garde votre méthode GET pour l'exemple
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({type:"add",config:newconfig,id:""})
+            })
+            if (!result.ok) {
+                throw new Error('Erreur lors de la requête');
+            }
+            const response = await result.json();
+            if (!response.success) {
+                alert(response.message)
+                setLoading(false);
+            }else{
+                alert(response.message)
+                router.push('/'+locale)
+            }
         }
     }
     useEffect(()=>{
-        const fetchWebConfig = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(firebase.db, 'webconfig'));
-                const webconfigData: {id:string,type:string,date:string}[] = [];
-                for (const doc of querySnapshot.docs) {
-                    webconfigData.push({id:doc.id,type:doc.data().type,date:doc.data().date});
-                }
-                setLastUpdateConfig(webconfigData);
-                console.log("webconfigData",webconfigData)
-            } catch (error) {
-                console.error("Erreur de chargement des clients:", error);
-            } finally {
+        const handleWebConfig = async () => {
+            const sessionWebConfig = sessionStorage.getItem("webConfig")
+            if(sessionWebConfig){
+                const webConfig = JSON.parse(sessionWebConfig)
+                setLastUpdateConfig(webConfig);
                 setLoading(false);
+            }else{
+                const result = await fetch(`/api/fetch-web-config/`,{
+                    method: 'GET', // Garde votre méthode GET pour l'exemple
+                    headers: {
+                    'Content-Type': 'application/json',
+                    }
+                })
+                if (!result.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                const response = await result.json();
+                if (!response.success && response.result) {
+                    setLastUpdateConfig(response.result);
+                    setLoading(false);
+                    sessionStorage.setItem("webConfig",JSON.stringify(response.result))
+                } else {
+                    alert(response.message);
+                    setLoading(false);
+                }
             }
         };
-        fetchWebConfig();
+        handleWebConfig();
     },[])
     useEffect(()=>{
         const checkCookie = async ()=>{

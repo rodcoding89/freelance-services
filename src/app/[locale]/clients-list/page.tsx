@@ -1,4 +1,6 @@
+"use server"
 import ClientsList from "@/components/client-list";
+import { getClientList } from "@/server/services";
 import { generateSeoMetadata } from "@/utils/fonction";
 import { Metadata } from "next";
 

@@ -3,8 +3,7 @@ import { useState, useContext, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslationContext } from '@/hooks/app-hook';
 import { AppContext } from '@/app/context/app-context';
-import  firebase  from "@/utils/firebase";
-import { collection, addDoc, getDocs,query, orderBy, limit } from "firebase/firestore";
+
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Icon from './Icon';
@@ -18,7 +17,7 @@ interface Client {
     id?: string;
     taxId?:string;
     name:string;
-    email:string;
+    email?:string;
     modifDate:string;
     clientNumber:number;
     invoiceCount?:number;
@@ -48,30 +47,6 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         formState: { errors,isValid },
     } = useForm({ mode: 'onChange'});
 
-    const addService = async(id:string,serviceName:string,serviceType:"service"|"maintenance"|"service_and_maintenance") =>{
-        try {
-            const service:Services = {
-                clientId:id,
-                name:serviceName,
-                contractStatus:'unsigned',
-                serviceType:serviceType
-            }
-            const docRef = await addDoc(collection(firebase.db, "services"), service);
-            return docRef.id;
-        } catch (error) {
-            console.error("Error adding document: ", error);
-        }
-    }
-
-    const addClient = async(clientData:Client) =>{
-        try {
-          const docRef = await addDoc(collection(firebase.db, "clients"), clientData);
-          return docRef.id;
-        } catch (e) {
-          console.error("Error adding document: ", e);
-        }
-    }
-
     const onSubmit = async(data: any) => {
         console.log("data",data)
         if(!data) return
@@ -79,15 +54,38 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         try {
             const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : '',status:"actived"}
             //console.log('Client Data:', data);
-
-            const clientId = await addClient(client);
-            if (clientId) {
-                const serviceId = await addService(clientId,data.serviceType,data.serviceType)
-                if (serviceId) {
-                    router.push('/'+data.clientLang+'/clients-list')
-                }
+            const result = await fetch(`/api/add-client/`,{
+                method: 'POST', // Garde votre méthode GET pour l'exemple
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body:JSON.stringify({client})
+            })
+            if (!result.ok) {
+                throw new Error('Erreur lors de la requête');
             }
-            console.log("clientId",clientId)
+            const response = await result.json();
+            if (!response.success && response.result) {
+                const result = await fetch(`/api/add-client/`,{
+                    method: 'POST', // Garde votre méthode GET pour l'exemple
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body:JSON.stringify({id:response.result,serviceName:data.serviceType,serviceType:data.serviceType})
+                })
+                if (!result.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                const response1 = await result.json();
+                
+                if (!response1.success && response1.result) {
+                    router.push('/'+data.clientLang+'/clients-list')
+                }else{
+                    alert(response1.message)
+                }
+            }else{
+                alert(response.message)
+            }
         } catch (error) {
             console.error("Error adding document: ", error);
         } finally {
@@ -103,26 +101,24 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     },[contextData])
 
     useEffect(()=>{
-        const getLastClient = async()=>{
-            const collectionRef = collection(firebase.db, "clients");
-            const q = query(
-                collectionRef,
-                orderBy("modifDate", "desc"), // Champ de date/timestamp
-                limit(1)
-            );
-            
-            const querySnapshot = await getDocs(q);
-            
-            if (!querySnapshot.empty) {
-                const latestDoc = querySnapshot.docs[0];
-                console.log("Dernier document:", latestDoc.data());
-                setLastClient(latestDoc.data() as Client)
+        const handleLastClient = async()=>{
+            const result = await fetch(`/api/get-last-client/`,{
+                method: 'GET', // Garde votre méthode GET pour l'exemple
+                headers: {
+                'Content-Type': 'application/json',
+                }
+            })
+            if (!result.ok) {
+                throw new Error('Erreur lors de la requête');
+            }
+            const response = await result.json();
+            if (!response.success && response.result) {
+                setLastClient(response.result)
             } else {
-                console.log("Aucun document trouvé");
-                return null;
+                alert(response.message)
             }
         }
-        getLastClient();
+        handleLastClient()
     },[])
 
     useEffect(()=>{
