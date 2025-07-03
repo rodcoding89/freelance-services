@@ -36,8 +36,7 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
             const sessionWebConfig = sessionStorage.getItem("webConfig")
             if(sessionWebConfig){
                 const webConfig = JSON.parse(sessionWebConfig)
-                for (const doc of webConfig) {
-                    const data = doc.data();
+                for (const data of webConfig) {
                     if (data.type === 'legal-notices') {
                         setConfigDate(data)
                         setConfigDate(data.date)

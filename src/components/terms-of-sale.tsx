@@ -27,8 +27,7 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
             const sessionWebConfig = sessionStorage.getItem("webConfig")
             if(sessionWebConfig){
                 const webConfig = JSON.parse(sessionWebConfig)
-                for (const doc of webConfig) {
-                    const data = doc.data();
+                for (const data of webConfig) {
                     if (data.type === 'cgv') {
                         setConfigDate(data)
                         setConfigDate(data.date)

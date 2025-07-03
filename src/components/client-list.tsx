@@ -59,10 +59,10 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                 if (clientData) {
                     setClients(clientData);
                     sessionStorage.setItem("clientData",JSON.stringify(clientData))
-                     setLoading(false);
+                    setLoading(false);
                 } else {
                     alert("Erreur lors du chargement des clients")
-                     setLoading(false);
+                    setLoading(false);
                 }
             }
         }

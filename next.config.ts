@@ -34,6 +34,7 @@ const nextConfig: NextConfig = {
     ], // Autoriser l'optimisation d'images
   },
   productionBrowserSourceMaps: false,
+  output: 'standalone',
 };
 
 export default withNextIntl(nextConfig);

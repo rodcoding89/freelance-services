@@ -28,8 +28,7 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
             const sessionWebConfig = sessionStorage.getItem("webConfig")
             if(sessionWebConfig){
                 const webConfig = JSON.parse(sessionWebConfig)
-                for (const doc of webConfig) {
-                    const data = doc.data();
+                for (const data of webConfig) {
                     if (data.type === 'privacie-policies') {
                         setConfigDate(data)
                         setConfigDate(data.date)
