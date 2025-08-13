@@ -159,6 +159,14 @@ export const services = [
             shortDescript:"serviceApp",
             icon:"bx-devices"
         }   
+    },
+    {
+        id:6,
+        service:{
+            serviceName:"maintenanceInformaticName",
+            shortDescript:"maintenanceInformatic",
+            icon:"bx-cog"
+        }   
     }
 ]
 
@@ -617,7 +625,7 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['HTML5','React','JavaScirpt',"SCSS",'External Module'],
                 mode:'devModeOfHand',
-                link:'https://charlottekoona.com/'
+                link:'portfolio.rocoding.com/'
             },
             task:['websiteItem5TaskPara1','websiteItem5TaskPara2','websiteItem5TaskPara3','websiteItem5TaskPara4','websiteItem5TaskPara5','websiteItem5TaskPara6']
         },
@@ -635,7 +643,7 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['HTML5','SCSS','JavaScirpt',"React","RestFullApi","TMDB",'CSS3','Tailwind CSS','External Module'],
                 mode:'devModeOfHand',
-                link:'https://charlottekoona.com/'
+                link:'https://movie-api-cyan-seven.vercel.app/'
             },
             task:['websiteItem6TaskPara1','websiteItem6TaskPara2','websiteItem6TaskPara3','websiteItem6TaskPara4','websiteItem6TaskPara5','websiteItem6TaskPara6']
         },
@@ -713,7 +721,7 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['PHP','JavaScirpt','JQuery','MySQL','HTML5','CSS3','Bootstrap','External Module'],
                 mode:'devModeOfHand',
-                link:''
+                link:'https://kebab78.free.nf'
             },
             task:['ecommerceItem1TaskPara1','ecommerceItem1TaskPara2','ecommerceItem1TaskPara3','ecommerceItem1TaskPara4','ecommerceItem2TaskPara5','ecommerceItem1TaskPara6','ecommerceItem1TaskPara7','ecommerceItem1TaskPara8','ecommerceItem1TaskPara9']
         }
@@ -752,7 +760,7 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['PHP','JavaScirpt','JQuery','MySQL','HTML5','CSS3','Bootstrap','External Module'],
                 mode:'devModeOfHand',
-                link:''
+                link:'https://stwich.free.nf/'
             },
             task:['saasItem2TaskPara1','saasItem2TaskPara2','saasItem2TaskPara3','saasItem2TaskPara4','saasItem2TaskPara5','saasItem2TaskPara6','saasItem2TaskPara7,saasItem2TaskPara8']
         },
@@ -798,7 +806,7 @@ export const refDetailContent:refContent = {
         1:{
             title:"appItemTitle",
             proprio:"appItem1Proprio",
-            img: '/assets/images/avlis.webp',
+            img: '/assets/images/lovsid.webp',
             description:{
                 title:'activityDomain',
                 para:'appItem1Para'
@@ -980,7 +988,7 @@ export const reference: Reference = {
         title: "referenceAppTitle",
         referenceContent: [
           {
-            img: '/assets/images/fieger.webp',
+            img: '/assets/images/lovsid.webp',
             projet: 'LovSid App',
             refId: 1,
             index:11,
@@ -1050,4 +1058,3 @@ export const experienceData = [
         description:"exDescription5"
     }
 ]
-  
