@@ -148,11 +148,11 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                     return serviceDetail
                 })
                 setServiceSiteReference(reference[contextData.id])
-                console.log("serviceSiteReference",serviceSiteReference)
+                //console.log("serviceSiteReference",serviceSiteReference)
             }else if(contextData.mode === "reference" && contextData.id){
                 //console.log("cat",cat,id)
                 setRefDetail(refDetailContent[contextData.cat][contextData.id])
-                console.log("refDetailContent",refDetailContent,'refdetail',refDetail)
+                //console.log("refDetailContent",refDetailContent,'refdetail',refDetail)
             }
             setHidePopUp(contextData.value)
             setWindowSize(contextData.size)
@@ -162,7 +162,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
             setWindowSize('w-0')
         }
     },[contextData,contextData?.id,contextData?.state])
-    console.log("mode",hidePopUp,contextData)
+    //console.log("mode",hidePopUp,contextData)
     return (
         <div className={`fixed flex justify-end w-[100vw] h-[100vh] top-0 right-0 bottom-0 transition-all duration-500 ease-in-out ${hidePopUp ? 'z-[100] bg-[rgba(0,0,0,0.3)]':'z-[-1] bg-transparent'}`}>
             <div className={`relative ${windowSize} bg-fifty overflow-y-auto transition-transform duration-700 ease-in-out ${hidePopUp ? 'translate-x-0' : 'translate-x-[100vw]'}`}>
@@ -348,7 +348,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                             </div>
                         </div>
                     ) : (
-                        <div className="flex flex-col justify-start items-start h-[100vh] gap-3 py-3 px-8 overflow-y-auto">
+                        contextData?.id !== 6 && (<div className="flex flex-col justify-start items-start h-[100vh] gap-3 py-3 px-8 overflow-y-auto">
                             <div className="flex justify-between items-center gap-3 w-full">
                                 <h3 className="text-[1.5em] font-bold uppercase text-thirty">{t["references"]}</h3>
                                 <span className=" cursor-pointer"><CloseButton size="large" onClose={handlePopUp}/></span>
@@ -424,7 +424,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                     </ul>
                                 </div>
                             </div>
-                        </div>
+                        </div>)
                     )
                 }
             </div>

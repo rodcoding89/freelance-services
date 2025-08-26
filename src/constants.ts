@@ -216,7 +216,7 @@ export const serviceDetails = {
         title:"serviceReworkWebsiteTitle",
         info:"serviceReworkWebsiteDescrip",
         subtitle:"serviceReworkWebsiteSubTitle",
-        img:'/assets/images/graphicon.webp',
+        img:'',
         category:["cms","ofHand","hybride"],
         avdisav:'avdistage',
         content:{
@@ -364,6 +364,44 @@ export const serviceDetails = {
             3:{
                 def:"defappnatif",
                 notion:"notionnatif",
+            }
+        }
+    },
+    6:{
+        title:"serviceMaintenanceTitle",
+        info:"serviceMaintenanceDescrip",
+        subtitle:"serviceMaintenanceSubTitle",
+        img:'',
+        category:[],
+        avdisav:'avdistageMaintenance',
+        content:{
+            title:"serviceMaintenanceDef",
+            para:"serviceMaintenance",
+            souspara:"maintenanceAvantgeTitle",
+            notion:"maintenancenotion",
+            contentPara:[
+                {title:"serviceMaintenanceAvantageTitel1",text:"serviceMaintenanceAvantageDescrip1"},
+                {title:"serviceMaintenanceAvantageTitel2",text:"serviceMaintenanceAvantageDescrip2"},
+                {title:"serviceMaintenanceAvantageTitel3",text:"serviceMaintenanceAvantageDescrip3"}
+            ],
+        },
+        cost:{
+            title:"serviceMaintenanceCostTitle",
+            para:"serviceMaintenanceCostPara",
+            souspara:"",
+        },
+        devMode:{
+            1:{
+                def:"",
+                notion:"",
+            },
+            2:{
+                def:"",
+                notion:"",
+            },
+            3:{
+                def:"",
+                notion:"",
             }
         }
     },
@@ -647,7 +685,7 @@ export const refDetailContent:refContent = {
             },
             task:['websiteItem6TaskPara1','websiteItem6TaskPara2','websiteItem6TaskPara3','websiteItem6TaskPara4','websiteItem6TaskPara5','websiteItem6TaskPara6']
         },
-        7:{
+        /*/7:{
             title:"reworkedItemTitle",
             proprio:"reworkedItemProprio",
             img: '/assets/images/graphicon.webp',
@@ -664,11 +702,11 @@ export const refDetailContent:refContent = {
                 link:'https://www.graphicon.de/'
             },
             task:['reworkedItemTaskPara1','reworkedItemTaskPara2','reworkedItemTaskPara3','reworkedItemTaskPara4','reworkedItemTaskPara5']
-        }
+        }*/
     },
     reworked:{
         title:"reworkedTitle",
-        1:{
+        /*1:{
             title:"reworkedItemTitle",
             proprio:"reworkedItemProprio",
             img: '/assets/images/graphicon.webp',
@@ -685,7 +723,7 @@ export const refDetailContent:refContent = {
                 link:'https://www.graphicon.de/'
             },
             task:['reworkedItemTaskPara1','reworkedItemTaskPara2','reworkedItemTaskPara3','reworkedItemTaskPara4','reworkedItemTaskPara5']
-        }
+        }*/
     },
     ecommerce:{
         title:"ecommerceTitle",
@@ -887,7 +925,7 @@ export const reference: Reference = {
             shortText:"websiteVitrineShortText6",
             cat:'website'
         },
-        {
+        /*{
             img: '/assets/images/graphicon.webp',
             projet: 'Graphicon',
             refId: 7,
@@ -896,13 +934,13 @@ export const reference: Reference = {
             mode:"devModeOfHand",
             shortText:"websiteReworkShortText1",
             cat:'website'
-        }
+        }*/
       ]
     },
     2:{
         title: "reworkWebsiteReferenceTitle",
         referenceContent: [
-            {
+            /*{
                 img: '/assets/images/graphicon.webp',
                 projet: 'Graphicon',
                 refId: 5,
@@ -911,7 +949,7 @@ export const reference: Reference = {
                 mode:"devModeOfHand",
                 shortText:"websiteReworkShortText1",
                 cat:'reworked'
-            }
+            }*/
         ]
     },
     3: {
