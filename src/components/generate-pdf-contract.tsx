@@ -415,7 +415,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             const payingLink = process.env.NEXT_PUBLIC_PAYMENT_LINK ?? '';
             yRef.current = addText([payingLink,margin,margin,margin,20,{...addTextOption,size:11,isBold:false},...lastParam,rgb(0, 0, 0.55)])
             const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
             return {blob:blob,taxValue:taxValue};
         } catch (error) {
             console.error(error)
@@ -769,7 +769,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
 
             // Génération du PDF final
             const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
             return {blob:blob,taxValue:0};
             //return await pdfDoc.save();
         } catch (error) {
