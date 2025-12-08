@@ -897,7 +897,7 @@ export const reference: Reference = {
         },
         {
             img: '/assets/images/charlotte-consulting.webp',
-            projet: 'Charlotte consulting',
+            projet: 'consultante',
             refId: 4,
             index:4,
             name:"websiteItem4Proprio",
@@ -917,7 +917,7 @@ export const reference: Reference = {
         },
         {
             img: '/assets/images/movie-api.webp',
-            projet: 'Movie API',
+            projet: 'Movie & Serie',
             refId: 6,
             index:6,
             name:"websiteItem6Proprio",

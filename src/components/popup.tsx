@@ -30,17 +30,20 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
     //console.log("data",data)
     const [popupMode,setMode] = useState<string>('')
     const [currentIndex,setCurrentIndex] = useState<number>(0)
+
     const handlePopUp = ()=>{
         setContextData({state:"hide",value:false,size:windowSize})
         setHidePopUp(false)
     }
+
     const openRefDetail = (refId:number,cat:string)=>{ 
         console.log("refDetail",refId,cat)
         setRefDetail(refDetailContent[cat][refId])
         setMode('reference')
     }
+
     const slide = (param:string)=>{
-        console.log('is called',param)
+        //console.log('is called',param)
         if (param === 'prev') {
             setCurrentIndex((prev)=>prev > 0 ? prev - 1 : 0)
         }else{
@@ -66,6 +69,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
             console.log('Web Share API non supportée');
         }
     }
+
     const isMobileDevice = () =>{
         if (typeof window !== 'undefined' && window.navigator) {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); 
@@ -150,9 +154,10 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                 setServiceSiteReference(reference[contextData.id])
                 //console.log("serviceSiteReference",serviceSiteReference)
             }else if(contextData.mode === "reference" && contextData.id){
-                //console.log("cat",cat,id)
-                setRefDetail(refDetailContent[contextData.cat][contextData.id])
-                //console.log("refDetailContent",refDetailContent,'refdetail',refDetail)
+                console.log("cat",contextData.cat,contextData.id)
+                const detail = refDetailContent[contextData.cat][contextData.id]
+                //console.log("refDetailContent",refDetailContent,'detail',detail)
+                setRefDetail(detail)
             }
             setHidePopUp(contextData.value)
             setWindowSize(contextData.size)
@@ -162,7 +167,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
             setWindowSize('w-0')
         }
     },[contextData,contextData?.id,contextData?.state])
-    //console.log("mode",hidePopUp,contextData)
+    console.log("refDetail",refDetail)
     return (
         <div className={`fixed flex justify-end w-[100vw] h-[100vh] top-0 right-0 bottom-0 transition-all duration-500 ease-in-out ${hidePopUp ? 'z-[100] bg-[rgba(0,0,0,0.3)]':'z-[-1] bg-transparent'}`}>
             <div className={`relative ${windowSize} bg-fifty overflow-y-auto transition-transform duration-700 ease-in-out ${hidePopUp ? 'translate-x-0' : 'translate-x-[100vw]'}`}>
@@ -348,83 +353,84 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                             </div>
                         </div>
                     ) : (
-                        contextData?.id !== 6 && (<div className="flex flex-col justify-start items-start h-[100vh] gap-3 py-3 px-8 overflow-y-auto">
-                            <div className="flex justify-between items-center gap-3 w-full">
-                                <h3 className="text-[1.5em] font-bold uppercase text-thirty">{t["references"]}</h3>
-                                <span className=" cursor-pointer"><CloseButton size="large" onClose={handlePopUp}/></span>
-                            </div>
-                            <div className="mt-4">
-                                <h3 className="text-[1.7em] font-semibold text-right uppercase mb-3 ml-[50%] max-810:ml-[35%] max-420:ml-0 max-792:ml-[10%]">{t[refDetail?.title]+' '+t[refDetail?.proprio]}</h3>
-                                <hr  className="border-thirty mb-10 ml-[50%]"/>
-                                <div className="flex justify-center items-center gap-4 max-810:flex-col max-810:gap-y-5">
-                                    {refDetail?.img ? (
-                                    <Image 
-                                        src={refDetail.img} 
-                                        alt={t[refDetail?.proprio] ?? ""} 
-                                        width={800}
-                                        height={600}
-                                        className="w-1/2 aspect-[15/9] max-810:w-full"
-                                    />
-                                    ) : null}
-                                    <div className="w-1/2 max-810:w-full">
-                                        <h4 className="text-[1.4em] font-semibold text-thirty uppercase">{t[refDetail?.infoSite.title]}</h4>
-                                        <div className="flex flex-col justify-start items-start gap-2 mt-4">
-                                            <div className="flex justify-between items-center gap-1 w-full flex-wrap">
-                                                <span className="flex justify-start items-center gap-1">
-                                                    <Icon name="bx-calendar" size="1em" color="var(--color-thirty)"/>
-                                                    {t["yeare"]}
-                                                </span> 
-                                                <span className="font-medium flex-1 text-right">{refDetail?.infoSite.year}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center gap-1 w-full flex-wrap">
-                                                <span className="flex justify-start items-center gap-1">
-                                                    <Icon name="bx-category" size="1em" color="var(--color-thirty)"/>
-                                                    {t["categorie"]}</span>
-                                                <span className="font-medium flex-1 text-right">{t[refDetail?.infoSite.cat]}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center gap-2 w-full flex-wrap">
-                                                <span className="flex justify-start items-center gap-1">
-                                                    <Icon name="bx-code-alt" size="1.1em" color="var(--color-thirty)"/>{t["techno"]}
-                                                </span>
-                                                <div className="mt-4 flex justify-end items-center flex-wrap gap-2">
+                        /*contextData?.id !== 6 && */
+                            <div className="flex flex-col justify-start items-start h-[100vh] gap-3 py-3 px-8 overflow-y-auto">
+                                <div className="flex justify-between items-center gap-3 w-full">
+                                    <h3 className="text-[1.5em] font-bold uppercase text-thirty">{t["references"]}</h3>
+                                    <span className=" cursor-pointer"><CloseButton size="large" onClose={handlePopUp}/></span>
+                                </div>
+                                <div className="mt-4">
+                                    <h3 className="text-[1.7em] font-semibold text-right uppercase mb-3 ml-[50%] max-810:ml-[35%] max-420:ml-0 max-792:ml-[10%]">{t[refDetail?.title]+' '+t[refDetail?.proprio]}</h3>
+                                    <hr  className="border-thirty mb-10 ml-[50%]"/>
+                                    <div className="flex justify-center items-center gap-4 max-810:flex-col max-810:gap-y-5">
+                                        {refDetail?.img ? (
+                                        <Image 
+                                            src={refDetail.img} 
+                                            alt={t[refDetail?.proprio] ?? ""} 
+                                            width={800}
+                                            height={600}
+                                            className="w-1/2 aspect-[15/9] max-810:w-full"
+                                        />
+                                        ) : null}
+                                        <div className="w-1/2 max-810:w-full">
+                                            <h4 className="text-[1.4em] font-semibold text-thirty uppercase">{t[refDetail?.infoSite.title]}</h4>
+                                            <div className="flex flex-col justify-start items-start gap-2 mt-4">
+                                                <div className="flex justify-between items-center gap-1 w-full flex-wrap">
+                                                    <span className="flex justify-start items-center gap-1">
+                                                        <Icon name="bx-calendar" size="1em" color="var(--color-thirty)"/>
+                                                        {t["yeare"]}
+                                                    </span> 
+                                                    <span className="font-medium flex-1 text-right">{refDetail?.infoSite.year}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center gap-1 w-full flex-wrap">
+                                                    <span className="flex justify-start items-center gap-1">
+                                                        <Icon name="bx-category" size="1em" color="var(--color-thirty)"/>
+                                                        {t["categorie"]}</span>
+                                                    <span className="font-medium flex-1 text-right">{t[refDetail?.infoSite.cat]}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center gap-2 w-full flex-wrap">
+                                                    <span className="flex justify-start items-center gap-1">
+                                                        <Icon name="bx-code-alt" size="1.1em" color="var(--color-thirty)"/>{t["techno"]}
+                                                    </span>
+                                                    <div className="mt-4 flex justify-end items-center flex-wrap gap-2">
+                                                    {
+                                                        refDetail?.infoSite.techno.map((item:string,index:number)=>{
+                                                            return <p className="py-1 px-2 rounded-[.2em] text-fifty bg-thirty" key={index}>{item}</p>
+                                                        })
+                                                    }
+                                                </div>
+                                                </div>
                                                 {
-                                                    refDetail?.infoSite.techno.map((item:string,index:number)=>{
-                                                        return <p className="py-1 px-2 rounded-[.2em] text-fifty bg-thirty" key={index}>{item}</p>
-                                                    })
+                                                    refDetail?.infoSite.link !== '' ? <div className="mt-4 flex justify-end items-end w-full"><a href={refDetail?.infoSite.link} className="py-1 px-4 outline outline-1 outline-thirty rounded-lg" target="__blanc">{t["websiteLink"]} </a></div> : <div className="mt-4 w-full flex justify-end items-end"><span className="py-1 px-4 outline outline-1 outline-thirty rounded-lg">{t["websiteOnMaintenance"]}</span></div>
                                                 }
                                             </div>
-                                            </div>
-                                            {
-                                                refDetail?.infoSite.link !== '' ? <div className="mt-4 flex justify-end items-end w-full"><a href={refDetail?.infoSite.link} className="py-1 px-4 outline outline-1 outline-thirty rounded-lg" target="__blanc">{t["websiteLink"]} </a></div> : <div className="mt-4 w-full flex justify-end items-end"><span className="py-1 px-4 outline outline-1 outline-thirty rounded-lg">{t["websiteOnMaintenance"]}</span></div>
-                                            }
                                         </div>
                                     </div>
-                                </div>
-                                <div className="mt-10">
-                                    <h4 className="text-[1.4em] font-semibold text-thirty uppercase mb-3">{t[refDetail?.description.title] + ' '+t[refDetail?.proprio]}</h4>
-                                    <hr  className="border-thirty mb-5"/>
-                                    <div className="mt-4">
-                                        <p className="whitespace-pre-wrap mb-3" dangerouslySetInnerHTML={{ __html: t[refDetail?.description.para] }}></p>
+                                    <div className="mt-10">
+                                        <h4 className="text-[1.4em] font-semibold text-thirty uppercase mb-3">{t[refDetail?.description.title] + ' '+t[refDetail?.proprio]}</h4>
+                                        <hr  className="border-thirty mb-5"/>
+                                        <div className="mt-4">
+                                            <p className="whitespace-pre-wrap mb-3" dangerouslySetInnerHTML={{ __html: t[refDetail?.description.para] }}></p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-10">
+                                        <h4 className="text-[1.4em] font-semibold text-thirty mb-3 uppercase">{t["tasksOnWebsite"]}</h4>
+                                        <hr  className="border-thirty mb-5"/>
+                                        <ul className="flex justify-start items-center !list-decimal gap-2 flex-wrap w-full pl-5 max-792:flex-col">
+                                            {
+                                                refDetail?.task.map((item:string,index:number)=>{
+                                                    return <li className="w-[calc(50%-0.25rem)] max-792:w-[calc(100%-0.25rem)]" key={index}>
+                                                    <div className="flex justify-start items-center gap-1">
+                                                    <Icon name="bx-check" size=".9em" />
+                                                    {t[item]}
+                                                    </div>
+                                                </li>
+                                                })
+                                            }
+                                        </ul>
                                     </div>
                                 </div>
-                                <div className="mt-10">
-                                    <h4 className="text-[1.4em] font-semibold text-thirty mb-3 uppercase">{t["tasksOnWebsite"]}</h4>
-                                    <hr  className="border-thirty mb-5"/>
-                                    <ul className="flex justify-start items-center !list-decimal gap-2 flex-wrap w-full pl-5 max-792:flex-col">
-                                        {
-                                            refDetail?.task.map((item:string,index:number)=>{
-                                                return <li className="w-[calc(50%-0.25rem)] max-792:w-[calc(100%-0.25rem)]" key={index}>
-                                                <div className="flex justify-start items-center gap-1">
-                                                  <Icon name="bx-check" size=".9em" />
-                                                  {t[item]}
-                                                </div>
-                                              </li>
-                                            })
-                                        }
-                                    </ul>
-                                </div>
                             </div>
-                        </div>)
                     )
                 }
             </div>
