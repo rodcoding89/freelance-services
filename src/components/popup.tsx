@@ -248,7 +248,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                 <h4 className="uppercase text-[1.15em] mb-2 font-semibold">{t["contact"]}<span className='w-1/6 block h-[0.125rem] bg-thirty mb-2'></span></h4>
                                 <p className="mb-2">{t["devTitle"]}</p>
                                 <div className='flex justify-start items-center gap-2'>
-                                    <a className='flex justify-center items-center gap-1 w-[2.5rem] h-[2.5rem] rounded-[.2em] bg-white'  href='tel:+33751025598'><Icon name='bx-phone' size='1.4em' color='var(--color-secondary)'/></a>
+                                    <a className='flex justify-center items-center gap-1 w-[2.5rem] h-[2.5rem] rounded-[.2em] bg-white'  href='tel:+33745507195'><Icon name='bx-phone' size='1.4em' color='var(--color-secondary)'/></a>
                                     <a className='flex justify-center items-center gap-1 w-[2.5rem] h-[2.5rem] rounded-[.2em] bg-white'  href='mailto:rodriguekwayep.freelance@hotmail.com'><Icon name='bx-envelope' size='1.4em' color='var(--color-secondary)'/></a>
                                     <span className='flex justify-center items-center gap-1 w-[2.5rem] h-[2.5rem] rounded-[.2em] bg-white cursor-pointer' title={t["shareOn"]} onClick={handleShareOnApp}><Icon name="bx-share-alt" size="1.4em" color="var(--color-secondary)"/></span>
                                 </div>
@@ -401,7 +401,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                                 </div>
                                                 </div>
                                                 {
-                                                    refDetail?.infoSite.link !== '' ? <div className="mt-4 flex justify-end items-end w-full"><a href={refDetail?.infoSite.link} className="py-1 px-4 outline outline-1 outline-thirty rounded-lg" target="__blanc">{t["websiteLink"]} </a></div> : <div className="mt-4 w-full flex justify-end items-end"><span className="py-1 px-4 outline outline-1 outline-thirty rounded-lg">{t["websiteOnMaintenance"]}</span></div>
+                                                    refDetail?.infoSite.link !== 'unavailable' ? <div className="mt-4 flex justify-end items-end w-full"><a href={refDetail?.infoSite.link} className="py-1 px-4 outline outline-1 outline-thirty rounded-lg" target="__blanc">{t["websiteLink"]} </a></div> : <div className="mt-4 w-full flex justify-end items-end"><span className="py-1 px-4 outline outline-1 outline-thirty rounded-lg">{t["websiteOnMaintenance"]}</span></div>
                                                 }
                                             </div>
                                         </div>

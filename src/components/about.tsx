@@ -23,17 +23,28 @@ const About:React.FC<AboutProps> = ({locale}) =>{
     const stat = [
         {
             title:t["yearExperiences"],
-            nb:8,
+            nb:4,
             icon:"bx-code-alt"
         },
         {
             title:t["realiseProject"],
-            nb:10,
+            nb:13,
             icon:"bx-customize"
-        },{
-            title:t["satisfiedCustomer"],
+        },
+        /*{
+            title:t["numberCustomer"],
             nb:8,
             icon:"bx-line-chart"
+        },*/
+        {
+            title:t['averageDelay'],
+            nb:5,
+            icon:"bx-timer"
+        },
+        {
+            title:t['averageBudget'],
+            nb:750,
+            icon:"bx-wallet"
         }
     ]
     
@@ -110,7 +121,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
                                         <div className='flex flex-col gap-1'>
                                             <AnimatedCounter 
                                             duration={1}
-                                            target={item.nb} />
+                                            target={item.nb} index={index} />
                                             <span className='ml-1 mt-1'>{item.title}</span>
                                         </div>
                                     </div>

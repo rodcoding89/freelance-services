@@ -5,10 +5,11 @@ import { useInView } from 'react-intersection-observer';
 interface AnimatedCounterProps {
   target: number;
   duration?: number;
+  index:number
 }
 
 
-const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, duration = 2 }) => {
+const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, duration = 2,index }) => {
   
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -31,7 +32,10 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, duration = 2 
   }, [inView, target, count]);
 
   return (
-    <motion.em className='not-italic text-[4em] relative before:w-full before:h-[0.1875rem] before:bg-thirty before:absolute before:left-[0.3125rem] before:bottom-0 w-fit' ref={ref}>{rounded}</motion.em>
+    <div>
+      <motion.em className='not-italic text-[4em] relative before:w-full before:h-[0.1875rem] before:bg-thirty before:absolute before:left-[0.3125rem] before:bottom-0 w-fit' ref={ref}>{rounded}</motion.em>
+      <em>{(index === 2 ? 'Jours' : index === 3 ? '€' : '')}</em>
+    </div>
   );
 };
 

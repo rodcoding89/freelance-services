@@ -51,8 +51,8 @@ const Home:React.FC<HomeProps> = ({locale})=>{
                             </span>
                         </div>
                     </div>
-                    <picture className='brightness-75 w-1/2 max-920:w-full h-[calc(100vh-6.25rem)] max-920:brightness-100 max-920:aspect-[20/12] max-640:aspect-[20/17] max-420:!aspect-[19/21] max-330:!aspect-[19/26]'>
-                        <Image src={'/assets/images/home.webp'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[6.25rem] rounded-bl-[6.25rem] max-920:rounded-none'/>
+                    <picture className='brightness-75 w-1/2 max-920:w-full h-[calc(100vh-6.25rem)] max-920:brightness-100 max-920:aspect-[20/12] max-920:h-unset max-640:aspect-[20/17] max-420:!aspect-[19/21] max-330:!aspect-[19/26]'>
+                        <Image src={'/assets/images/home1.jpg'} width={1536} height={1006} alt='baniere' className='w-full rounded-tl-[6.25rem] rounded-bl-[6.25rem] max-920:rounded-none'/>
                     </picture>
                 </div>
             </div>

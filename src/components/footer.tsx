@@ -113,7 +113,7 @@ const Footer:React.FC<FooterProps> = ({locale,date})=>{
                             <Icon name='bx-phone' size='1.3em' color='var(--color-fifty)'/>
                             <div className="">
                                 <h5 className='text-fifty uppercase font-semibold text-[0.8125rem]'>{t["perPhone"]}</h5>
-                                <a href="tel:+33751025598" className='hover:text-link text-fifty text-[0.8125rem]'>+33 7 51 02 55 98</a>
+                                <a href="tel:+33751025598" className='hover:text-link text-fifty text-[0.8125rem]'>+33 7 45 50 71 95</a>
                             </div>
                         </div>
                         <div className="flex justify-start items-start gap-2">

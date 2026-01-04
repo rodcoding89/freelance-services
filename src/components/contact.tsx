@@ -2,7 +2,7 @@
 import { Element } from 'react-scroll';
 import Icon from './Icon';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CloseButton from './close-btn';
 import { useTranslationContext } from '@/hooks/app-hook';
 import  {sendEmail}  from '../server/services-mail'
@@ -22,6 +22,9 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [loader,setLoader] = useState<boolean>(false)
     const [isSended,setIsSended] = useState<boolean|null>(null)
+    const [number,setNumber] = useState<{num1:number,num2:number}|null>(null);
+    const [result,setResult] = useState<number|null>(null);
+
     const budget = [
         '----'+t['budget']+'----',
         '0 - 1000',
@@ -51,6 +54,7 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
             if (response === 'success') {
                 setIsSended(true)
                 reset()
+                setNumber(null)
                 return
             }
             setIsSended(false)
@@ -65,7 +69,21 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
     const closeBox = ()=>{
         setIsSended(null)
     }
-    console.log(errors,'isSended',isSended)
+
+    const handleResult = (e:any)=>{
+        setResult(parseInt(e.target.value))
+    }
+
+    const handleValidity = ()=>{
+        return number && (number.num1 + number.num2 === result) && isValid ? false : true
+    }
+
+    useEffect(()=>{
+        const number1 = Math.floor(Math.random() * 11);
+        const number2 = Math.floor(Math.random() * 11);
+        setNumber({num1:number1,num2:number2})
+    },[])
+    //console.log(errors,'isSended',isSended)
     return (
         <Element className="mt-[6.875rem]" name="contact">
             <div className="w-[85%] mx-auto">
@@ -87,7 +105,7 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
                             </div>
                             <div className="contact-desc">
                                 <h5 className='text-thirty'>{t["perPhone"]}</h5>
-                                <a href="tel:+33751025598" className='hover:text-secondary'>+33 7 51 02 55 98</a>
+                                <a href="tel:+33751025598" className='hover:text-secondary'>+33 7 45 50 71 95</a>
                             </div>
                         </div>
                         <div className="contact-info-box">
@@ -153,11 +171,19 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
                                         {errors.message?.type === "required" && <div className='text-[.8em] text-red-500'>{t["errMessage"]}</div>}
                                     </div>
                                 </div>
+                                <div className='w-full flex justify-start items-center gap-2'>
+                                    <span>
+                                        {
+                                            number && `${number.num1} + ${number.num2} = `
+                                        }
+                                    </span>
+                                    <input className='focus:outline-none border-[1px] px-2 py-1 text-[0.89rem] border-solid border-[#aaa] h-8 rounded-[.4em]' type="text" name="result" id="result" value={result ? result : ''} onChange={handleResult}/>
+                                </div>
                                 <div className={`w-full flex items-end justify-end m-b-0 ${isSended !== null ? '!justify-between !items-center gap-4 flex-wrap' : ''}`}>
                                     {
                                         isSended !== null ? isSended === true ? <div className='bg-green-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[12.5rem]'>{t["successContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : <div className='bg-red-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[12.5rem]'>{t["errorContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : null
                                     }
-                                    <button className={`btn btn-primary text-fifty ${isValid && !loader ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-45'} ${loader ? 'flex justify-center items-center gap-1' :''}`} type="submit" disabled={!isValid && loader}>{t["sendMessage"]}{loader && <Icon name='bx bx-loader-alt bx-spin' size='1em' color='#fff'/>}</button>
+                                    <button className={`btn btn-primary text-fifty ${!handleValidity() && !loader ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-45'} ${loader ? 'flex justify-center items-center gap-1' :''}`} type="submit" disabled={!isValid && loader}>{t["sendMessage"]}{loader && <Icon name='bx bx-loader-alt bx-spin' size='1em' color='#fff'/>}</button>
                                 </div>
                             </form>
                         </div>

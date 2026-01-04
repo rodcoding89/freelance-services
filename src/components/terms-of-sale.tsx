@@ -79,7 +79,7 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
         <main className={`transition-transform duration-700 delay-300 ease-in-out ${isPopUp ? 'translate-x-[-25vw]' : 'translate-x-0'} w-[85%] mt-[8.125rem] mx-auto`}>
             <h1 className="text-center text-thirty uppercase">{t["termsOfSale"]}</h1>
             <div className="saleBloc">
-                {locale !== 'en' && (
+                {locale !== 'fr' && (
                     <div className="my-3">
                         <p className="my-3 p-2 px-4 bg-blue-500 text-white rounded-300" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_0, '', '') }} />
                     </div>

@@ -780,9 +780,9 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:["JavaScirpt", "Angular 2+", "MySQL", "HTML5", "CSS3", "SCSS", "MySQL", "Node.js", "Docker", "S3 (AWS)", "Redis", "External Module"],
                 mode:'devModeOfHand',
-                link:'https://www.lovsid.com/'
+                link:'unavailable'
             },
-            task:['saasItem1TaskPara1','saasItem1TaskPara2','saasItem1TaskPara3','saasItem1TaskPara4','saasItem1TaskPara5','saasItem1TaskPara6','saasItem1TaskPara7','saasItem1TaskPara8','saasItem1TaskPara9','saasItem1TaskPara10,saasItem1TaskPara11,saasItem1TaskPara12']
+            task:['saasItem1TaskPara1','saasItem1TaskPara2','saasItem1TaskPara3','saasItem1TaskPara4','saasItem1TaskPara5','saasItem1TaskPara6','saasItem1TaskPara7','saasItem1TaskPara8','saasItem1TaskPara9','saasItem1TaskPara10','saasItem1TaskPara11','saasItem1TaskPara12']
         },
         2:{
             title:"saasItemTitle",
@@ -855,9 +855,9 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['IONIC', 'JavaScirpt', 'ANDROID', 'CAPACITOR', 'Angular 2+', 'HTML5', 'CSS3', 'SCSS', 'External Module'],
                 mode:'devModeOfHand',
-                link:''
+                link:'unavailable'
             },
-            task:['appItem4TaskPara1','appItem4TaskPara2','appItem4TaskPara3','appItem4TaskPara4','appItem4TaskPara5','appItem4TaskPara6','appItem4TaskPara7','appItem4TaskPara8']
+            task:['appItem4TaskPara1','appItem4TaskPara2','appItem4TaskPara3','appItem4TaskPara4','appItem4TaskPara5','appItem4TaskPara6','appItem4TaskPara7','appItem4TaskPara8','appItem4TaskPara9','appItem4TaskPara10']
         }
     }
 }

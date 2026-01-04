@@ -31,6 +31,19 @@ const Price:React.FC<PriceProps> = ({locale})=>{
     const handleMaintenanceSwitch = (contentIndex: number) => {
         setActiveIndex(contentIndex)
     }
+    const replaceContent = (html:string)=>{
+        return html.replaceAll("{cent}",process.env?.NEXT_PUBLIC_CENT ?? "")
+            .replaceAll("{cinquante}",process.env?.NEXT_PUBLIC_CINQUANTE ?? "")
+            .replaceAll("{cinqcent}",process.env.NEXT_PUBLIC_CINQCENT ?? "")
+            .replaceAll("{soixantequinze}",process.env.NEXT_PUBLIC_SOIXANTEQUINZE ?? "")
+            .replaceAll("{4pagesSWP}",process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_CMS_SINGLE_PAGE ?? "")
+            .replaceAll("{4pagesMix}",process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_HEALESS_CMS_SINGLE_PAGE ?? "")
+            .replaceAll("{4pagesHand}",process.env.NEXT_PUBLIC_DEV_WEBSITE_COST_CUSTOM_SINGLE_PAGE ?? "")
+            .replaceAll("{7pagesEHand}",process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_CUSTOM_SINGLE_PAGE ?? "")
+            .replaceAll("{7pagesEMix}",process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_HEALESS_CMS_SINGLE_PAGE ?? "")
+            .replaceAll("{7pagesEWP}",process.env.NEXT_PUBLIC_DEV_ECOMMERCE_COST_CMS_SINGLE_PAGE ?? "")
+    }
+
     return (
         <Element className="mt-[6.875rem] price" name="price">
             <div className='w-full'>
@@ -76,7 +89,7 @@ const Price:React.FC<PriceProps> = ({locale})=>{
                                                     {
                                                         item.bloc.content[activeContentIndex[index] || 0].options.map((o:string,k:number)=>{
                                                             return (
-                                                                <li key={'option-'+k} className={`flex justify-start items-center py-[0.375rem] px-2 w-full gap-1 ${k%2 === 0 ? 'bg-primary text-fifty' : 'text-fifty'}`}><Icon name="bx-plus" size='1.3em' color='var(--color-thirty)'/><div className='option' dangerouslySetInnerHTML={{ __html: t[o] }}/></li>
+                                                                <li key={'option-'+k} className={`flex justify-start items-center py-[0.375rem] px-2 w-full gap-1 ${k%2 === 0 ? 'bg-primary text-fifty' : 'text-fifty'}`}><Icon name="bx-plus" size='1.3em' color='var(--color-thirty)'/><div className='option' dangerouslySetInnerHTML={{ __html: replaceContent(t[o]) }}/></li>
                                                             )
                                                         })
                                                     }
@@ -179,7 +192,7 @@ const Price:React.FC<PriceProps> = ({locale})=>{
                                             {
                                                 maintenanceOption[acitveIndex].options.map((o:string,k:number)=>{
                                                     return (
-                                                        <li key={'mainOption'+k} className={`flex justify-start items-center py-[0.375rem] px-2 w-full gap-1 ${k%2 === 0 ? 'bg-primary text-fifty' : 'text-fifty'}`}><Icon name="bx-plus" size='1.3em' color='var(--color-thirty)'/><div className='option' dangerouslySetInnerHTML={{ __html: t[o] }}/></li>
+                                                        <li key={'mainOption'+k} className={`flex justify-start items-center py-[0.375rem] px-2 w-full gap-1 ${k%2 === 0 ? 'bg-primary text-fifty' : 'text-fifty'}`}><Icon name="bx-plus" size='1.3em' color='var(--color-thirty)'/><div className='option' dangerouslySetInnerHTML={{ __html: replaceContent(t[o]) }}/></li>
                                                     )
                                                 })
                                             }
