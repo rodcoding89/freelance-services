@@ -1,6 +1,7 @@
 "use client"
 import { AppContext } from '@/app/context/app-context';
 import { useTranslationContext } from '@/hooks/app-hook';
+import { parseDate } from '@/utils/fonction';
 
 import { useContext, useEffect, useState } from 'react';
 
@@ -13,7 +14,7 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
-    const [configDate,setConfigDate] = useState<string>('')
+    const [configDate,setConfigDate] = useState<number>(0)
     const [loading, setLoading] = useState(true);
     console.log("main",contextData)
     useEffect(()=>{
@@ -25,13 +26,12 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
 
     useEffect(()=>{
         const handleWebConfig = async () => {
-            const sessionWebConfig = sessionStorage.getItem("webConfig")
+            const sessionWebConfig = localStorage.getItem("webConfig")
             if(sessionWebConfig){
                 const webConfig = JSON.parse(sessionWebConfig)
                 for (const data of webConfig) {
-                    if (data.type === 'privacie-policies') {
-                        setConfigDate(data)
-                        setConfigDate(data.date)
+                    if (data.webpage === 'privacie-policies') {
+                        setConfigDate(data.lastUpdate)
                     }
                 }
                 setLoading(false);
@@ -43,18 +43,18 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
                     }
                 })
                 if (!result.ok) {
+                    alert(result.statusText)
                     throw new Error('Erreur lors de la requête');
                 }
                 const response = await result.json();
-                if (!response.success && response.result) {
+                if (response.success && response.result) {
                     for (const data of response.result) {
-                        if (data.type === 'privacie-policies') {
-                            setConfigDate(data)
-                            setConfigDate(data.date)
+                        if (data.webpage === 'privacie-policies') {
+                            setConfigDate(data.lastUpdate)
                         }
                     }
                     setLoading(false);
-                    sessionStorage.setItem("webConfig",JSON.stringify(response.result))
+                    localStorage.setItem("webConfig",JSON.stringify(response.result))
                 } else {
                     setLoading(false);
                     alert(response.message);
@@ -77,7 +77,7 @@ const PrivacyPolicies: React.FC<PrivacyPoliciesProps> = ({ locale }) => {
                     <p className="my-3 p-2 px-4 bg-blue-500 text-white rounded-300" dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_0, '', '') }} />
                 </div>
             )}
-            <p className="font-bold" dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_1, '{date}', new Date(configDate).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)) }} />
+            <p className="font-bold my-4" dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_1, '{date}', parseDate(new Date(configDate),locale)) }} />
             <section className="mb-8">
                 <h2 dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_2,'','' )}} className="text-2xl font-semibold mb-4"></h2>
                 <p dangerouslySetInnerHTML={{ __html: replaceContent(t.privacyPoliciesContent.content_3,'','' )}} className="">

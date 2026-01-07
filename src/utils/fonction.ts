@@ -90,6 +90,14 @@ export async function generateSeoMetadata({ params}: { params: { locale: string,
   };
 }
 
+export const parseInputDate = (date:Date)=>{
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+export const parseDate = (date:Date,locale:string)=>{
+  return date.toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)
+}
+
 export const ShemaLdJson = async (locale:string) => {
   const t = await loadSeoTranslation(locale)
 

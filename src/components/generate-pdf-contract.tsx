@@ -145,7 +145,7 @@ interface Contract {
     rigthRetractionLostAfterServiceBegin?:boolean;
 }
 interface Services {
-    clientId:string;
+    clientId:number;
     name:string;
     serviceType: "service"|"maintenance"|"service_and_maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';

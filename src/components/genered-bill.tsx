@@ -22,7 +22,7 @@ interface clientInfo {
 
 interface Services {
   serviceId?:string;
-  clientId:string;
+  clientId:number;
   name:string;
   serviceType: "service"|"maintenance"|"service_and_maintenance";
   contractStatus: 'signed' | 'unsigned' | 'pending';
@@ -57,7 +57,7 @@ type FormValues = {
 };
 interface InvoiceFormProps {
   locale:string;
-  clientId:string;
+  clientId:number;
   clientServiceId:string
 }
 type drawImage = [

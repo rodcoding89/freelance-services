@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from "react";
 
 import { useTranslationContext } from "@/hooks/app-hook";
 import { AppContext } from "@/app/context/app-context";
+import { parseDate } from "@/utils/fonction";
 
 interface LegalNoticeProps{
     locale:string
@@ -10,7 +11,7 @@ interface LegalNoticeProps{
 
 const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
     const t:any = useTranslationContext();
-    const [configDate,setConfigDate] = useState<string>('')
+    const [configDate,setConfigDate] = useState<number>(0)
     const [loading, setLoading] = useState(true);
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
@@ -37,9 +38,8 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
             if(sessionWebConfig){
                 const webConfig = JSON.parse(sessionWebConfig)
                 for (const data of webConfig) {
-                    if (data.type === 'legal-notices') {
-                        setConfigDate(data)
-                        setConfigDate(data.date)
+                    if (data.webpage === 'legal-notices') {
+                        setConfigDate(data.lastUpdate)
                     }
                 }
                 setLoading(false);
@@ -51,18 +51,18 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
                     }
                 })
                 if (!result.ok) {
+                    alert(result.statusText)
                     throw new Error('Erreur lors de la requête');
                 }
                 const response = await result.json();
-                if (!response.success && response.result) {
+                if (response.success === true && response.result) {
                     for (const data of response.result) {
-                        if (data.type === 'legal-notices') {
-                            setConfigDate(data)
-                            setConfigDate(data.date)
+                        if (data.webpage === 'legal-notices') {
+                            setConfigDate(data.lastUpdate)
                         }
                     }
                     setLoading(false);
-                    sessionStorage.setItem("webConfig",JSON.stringify(response.result))
+                    localStorage.setItem("webConfig",JSON.stringify(response.result))
                 } else {
                     setLoading(false);
                     alert(response.message);
@@ -94,7 +94,7 @@ const LegalNotice:React.FC<LegalNoticeProps> = ({locale})=>{
                     <p className="my-3 p-2 px-4 bg-blue-500 text-white rounded-300" dangerouslySetInnerHTML={{ __html: replaceContent(t.legalNotices.content_0, '', '') }}></p>
                 </div>
                 }
-                <p className="font-bold" dangerouslySetInnerHTML={{ __html: replaceContent(t.legalNotices.content_1, '{date}', new Date(configDate).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)) }}></p>
+                <p className="font-bold my-4" dangerouslySetInnerHTML={{ __html: replaceContent(t.legalNotices.content_1, '{date}', parseDate(new Date(configDate),locale)) }}></p>
                 <h3 className="my-3 text-[1.5rem]"
                     dangerouslySetInnerHTML={{ __html: replaceContent(t.legalNotices.content_2, '', '') }}
                 ></h3>

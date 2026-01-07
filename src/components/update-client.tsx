@@ -10,33 +10,12 @@ import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Icon from "./Icon";
 import CloseButton from "./close-btn";
+import { Client, Services } from "@/interfaces";
 
 interface UpdateClientProps {
  locale: string;
  clientId: string;
 }
-
-interface Client {
-    id?: string;
-    taxId?:string;
-    name:string;
-    email?:string;
-    modifDate:string;
-    clientNumber:number;
-    invoiceCount?:number;
-    clientLang:string;
-    status:"actived"|"desactived";
-    services?:Services[];
-}
-
-interface Services {
-    clientId:string;
-    serviceId?:string;
-    name:string;
-    serviceType: "service"|"maintenance"|"service_and_maintenance";
-    contractStatus: 'signed' | 'unsigned' | 'pending';
-}
-
 
 const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
     const t:any = useTranslationContext();
@@ -45,7 +24,16 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
     const [client,setClient] = useState<Client|null>(null)
     const [serviceAdding,setServiceAdding] = useState<boolean>(false)
     const [loading, setLoading] = useState(true);
+    const [canAddService,setCanAddService] = useState<boolean>(true)
     
+    const serviceData = [
+        {value:"service",label:"Service",id:1},
+        {value:"maintenance",label:"Maintenance",id:2},
+        {value:"service_and_maintenance",label:"Service plus Maintenance",id:3}
+    ]
+
+    const [serviceType,setServiceType] = useState<{value:string,label:string,id:number}[]>(serviceData)
+
     const [loader, setLoader] = useState(false);
     const router = useRouter();
     const {
@@ -57,37 +45,43 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
 
     const onSubmit = async(data: any) => {
         console.log("data",data)
-        if(!data) return
+        if(!data || !clientId) return
         setLoader(true);
         try {
-            const clientData = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:client?.clientNumber ? client?.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : '',invoiceCount:client?.invoiceCount,status:data.status}
+            const clientData:Client = {clientId:clientId,clientType:data.typeClient,fname:data.clientfName,lname:data.clientlName,modifDate:new Date(),clientNumber:client?.clientNumber ?? 100,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId !== '' ? data.taxId : null,invoiceCount:client?.invoiceCount,clientStatus:data.status}
             //console.log('Client Data:', data);*/
             const result = await fetch(`/api/update-client/`,{
                 method: 'PUT', // Garde votre méthode GET pour l'exemple
                 headers: {
                 'Content-Type': 'application/json',
                 },
-                body:JSON.stringify({clientData:clientData,clientId:clientId})
+                body:JSON.stringify({clientData:clientData})
             })
             if (!result.ok) {
+                alert(result.statusText)
                 throw new Error('Erreur lors de la requête');
             }
             const response = await result.json();
-            if (response.success && data.serviceType && data.serviveType !== 'default' && serviceAdding) {
-                const result = await fetch(`/api/add-service/`,{
-                    method: 'POST', // Garde votre méthode GET pour l'exemple
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body:JSON.stringify({id:clientId,serviceName:data.serviceType,serviceType:data.serviceType})
-                })
-                if (!result.ok) {
-                    throw new Error('Erreur lors de la requête');
-                }
-                const response1 = await result.json();
-                
-                if (!response1.success && response1.result) {}else{
-                    throw new Error('Erreur lors de la requête');
+            if (response.success) {
+                if (data.serviceType && data.serviveType !== 'default' && serviceAdding) {
+                    const service:Services = {clientId:parseInt(clientId),serviceType:data.serviceType,contractStatus:"unsigned"}
+                    const result = await fetch(`/api/add-service/`,{
+                        method: 'POST', // Garde votre méthode GET pour l'exemple
+                        headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body:JSON.stringify({service})
+                    })
+                    if (!result.ok) {
+                        alert(result.statusText)
+                        throw new Error('Erreur lors de la requête');
+                    }
+                    const response1 = await result.json();
+                    
+                    if (!response1.success) {
+                        alert(response1.message)
+                        throw new Error('Erreur lors de la requête');
+                    }
                 }
                 sessionStorage.removeItem("clientData")
                 sessionStorage.removeItem("updateClient_"+clientId)
@@ -99,6 +93,7 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
             setLoader(false);
         }
     };
+
     const deleteServiceData = async(serviceId:string)=>{
         if(serviceId === "") return
         try {
@@ -110,17 +105,21 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
                     }
                 })
                 if (!result.ok) {
+                    alert(result.statusText)
                     throw new Error('Erreur lors de la requête');
                 }
                 const response = await result.json();
                if (response.success) {
                     setClient((prev)=>{
                         if(prev === null) return null
-                        const updateService = prev?.services?.filter((item)=>item.serviceId !== serviceId)
-                        const updateClient = {...prev,services:updateService}
-                        sessionStorage.setItem("updateClient_"+clientId,JSON.stringify(updateClient))
-                        sessionStorage.removeItem("clientData")
-                        return updateClient
+                        if (prev.services && typeof(prev.services) !== "string") {
+                            const updateService = prev.services.filter((item)=>item.serviceId !== serviceId)
+                            const updateClient = {...prev,services:updateService}
+                            sessionStorage.setItem("updateClient_"+clientId,JSON.stringify(updateClient))
+                            sessionStorage.removeItem("clientData")
+                            return updateClient   
+                        }
+                        return prev
                     })
                     alert(response.message)
                } else {
@@ -141,58 +140,68 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
                 }
             })
             if (!result.ok) {
+                alert(result.statusText)
                 throw new Error('Erreur lors de la requête');
             }
             const response = await result.json();
-            if (!response.success && response.result) {
+            if (response.success === true && response.result) {
                 setLoading(false);
-                
-                const clientsData = {
-                    id: response.result.client.id,
-                    modifDate: response.result.client.modifDate,
-                    name: response.result.client.name,
-                    clientLang: response.result.client.clientLang,
-                    email: response.result.client.email,
-                    taxId: response.result.client.taxId,
-                    status:response.result.client.status,
-                    clientNumber: response.result.client.clientNumber,
-                    invoiceCount: response.result.client.invoiceCount,
-                    services: response.result.service
-                };
-                handleCLientService(response.result);
-                setClient(clientsData);
-                sessionStorage.setItem("updateClient_"+clientId,JSON.stringify(clientsData))
+                const data = response.result as Client
+                if (typeof(data.services) === "string") {
+                    const services = JSON.parse(data.services)
+                    setClient({...data,services:services})
+                    sessionStorage.setItem("updateClient_"+clientId,JSON.stringify({...data,services:services}))
+                }else{
+                    setClient(data)
+                    sessionStorage.setItem("updateClient_"+clientId,JSON.stringify(data))
+                }
+                handleCLientService(response.result,"load");
             } else {
                 setLoading(false);
                 alert("Erreur lors du chargement des données");
             }
         };
-        const handleCLientService = async (response:{client:any,service:any}) => {
+        const handleCLientService = async (client:Client,origin:"session"|"load") => {
             reset({
-                clientName:response.client.name,
-                clientEmail:response.client.email,
-                status:response.client.status,
-                taxId:response.client.taxId,
-                clientLang:response.client.clientLang
+                clientfName:client.fname,
+                clientlName:client.lname,
+                clientEmail:client.email,
+                status:client.clientStatus,
+                taxId:client.taxId,
+                clientLang:client.clientLang,
+                typeClient:client.clientType,
             })
+            let serviceList:string[] = []
+            if (client.services) {
+                serviceList = parseService(client.services).map((item)=>item.serviceType)
+            }
+            
+            if (serviceList.includes("service") && serviceList.includes("maintenance")) {
+                setCanAddService(false)
+            }else if(serviceList.includes("service_and_maintenance")){
+                setCanAddService(false)
+            }
+            
             setLoading(false);
+            setClient(client);
         }
         
         const clientDataSession = sessionStorage.getItem("updateClient_"+clientId)
         if (clientDataSession) {
-            const clientData = JSON.parse(clientDataSession);
-            reset({
-                clientName:clientData.name,
-                clientEmail:clientData.email,
-                taxId:clientData.taxId,
-                status:clientData.status,
-                clientLang:clientData.clientLang
-            })
-            setClient(clientData);
+            const clientData = JSON.parse(clientDataSession) as Client;
+            handleCLientService(clientData,"session")
         } else {
             fetchClients();
         }
     }, []);
+
+    const parseService = (services:string|Services[]):Services[]=>{
+        if (typeof(services) === "string") {
+            return JSON.parse(services)
+        }
+        return services
+    }
+
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
             console.log("inside contextData",contextData)
@@ -215,39 +224,71 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4">Mettre a jours les données clients</h1>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div>
-                    <label htmlFor="clientName" className="block text-sm font-medium text-gray-700">
-                        Modifier le nom du client
-                    </label>
-                    <input
-                        type="text"
-                        id="clientName"
-                        {...register('clientName', { required: 'Client name is required' })}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder='Nom complet du client'
-                    />
-                    {errors.clientName && (
-                        <p className="text-red-500 text-sm mt-1">{errors.clientName.message as string}</p>
-                    )}
+                    <div className="flex justify-start items-start gap-4">
+                        <div className="w-1/2">
+                            <label htmlFor="clientlName" className="block text-sm font-medium text-gray-700">
+                                Modifier le nom du client
+                            </label>
+                            <input
+                                type="text"
+                                id="clientlName"
+                                {...register('clientlName', { required: 'Client last name is required' })}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder='Nom du client'
+                            />
+                            {errors.clientlName && (
+                                <p className="text-red-500 text-sm mt-1">{errors.clientlName.message as string}</p>
+                            )}
+                        </div>
+                        <div className="w-1/2">
+                            <label htmlFor="clientfName" className="block text-sm font-medium text-gray-700">
+                                Modifier le prénom du client
+                            </label>
+                            <input
+                                type="text"
+                                id="clientfName"
+                                {...register('clientfName', { required: 'Client first name is required' })}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder='Prénom du client'
+                            />
+                            {errors.clientfName && (
+                                <p className="text-red-500 text-sm mt-1">{errors.clientfName.message as string}</p>
+                            )}
+                        </div>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Modifier l'email du client <em className="text-red-700">*</em></label>
-                        <input
-                            type="email"
-                            id="clientEmail"
-                            placeholder="Email du client"
-                            {...register("clientEmail", {
-                                required: t.errorEmail,
-                                pattern: {
-                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
-                                    message: t.invalidEmail,
-                                },
-                            })}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                        {errors.clientEmail && (
-                            <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
-                        )}
+                    <div className="flex justify-start items-start gap-4">
+                        <section className="border-b pb-6 w-1/2">
+                            <label htmlFor="typeClient" className="block text-sm font-medium text-gray-700">
+                                Choisir le type de client
+                            </label>
+                            <select id="typeClient" {...register("typeClient", { required: "The selection is required" })}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                                <option value="company">Company</option>
+                                <option value="particular">Particulié</option>
+                            </select>
+                            {errors.typeClient && (
+                                <p className="text-red-500 text-sm mt-1">{errors.typeClient?.message as string}</p>
+                            )}
+                        </section>
+                        <div className="w-1/2">
+                            <label className="block text-sm font-medium text-gray-700">Modifier l'email du client <em className="text-red-700">*</em></label>
+                            <input
+                                type="email"
+                                id="clientEmail"
+                                placeholder="Email du client"
+                                {...register("clientEmail", {
+                                    required: t.errorEmail,
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+                                        message: t.invalidEmail,
+                                    },
+                                })}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            />
+                            {errors.clientEmail && (
+                                <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
+                            )}
+                        </div>
                     </div>
+                    
                     <div className="flex justify-start items-center gap-5 flex-wrap">
                         <div className="min-w-[14rem] w-full max-w-[calc(50%-1.25rem)]">
                             <label className="block text-sm font-medium text-gray-700">
@@ -275,31 +316,35 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
                     </div>
                     <div className="flex justify-start items-center gap-5 flex-wrap">
                         <div className="min-w-[14rem] w-full max-w-[calc(50%-1.25rem)]">
-                            <label htmlFor="clientLang" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="clientStatus" className="block text-sm font-medium text-gray-700">
                                 Modifier le statut du client
                             </label>
-                            <select id="clientLang" {...register("status", { required: "The selection is required" })}
+                            <select id="clientStatus" {...register("status", { required: "The selection is required" })}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                                 <option value="actived">activé</option>
                                 <option value="desactived">desactivé</option>
                             </select>
-                            {errors.clientLang && (
-                                <p className="text-red-500 text-sm mt-1">{errors.clientLang?.message as string}</p>
+                            {errors.clientStatus && (
+                                <p className="text-red-500 text-sm mt-1">{errors.clientStatus?.message as string}</p>
                             )}
                         </div>
-                        <div className="min-w-[14rem] w-full max-w-[calc(50%-1.25rem)]" onClick={()=>setServiceAdding(!serviceAdding)}>
+                        <div className={`min-w-[14rem] w-full max-w-[calc(50%-1.25rem)] ${!canAddService ? "opacity-50 pointer-events-none" : "opacity-100 pointer-events-auto"}`} onClick={()=>setServiceAdding(!serviceAdding)}>
                             <label className="block text-sm font-medium text-gray-700 pb-1" htmlFor="">Ajouter un nouveau service</label>
                             <span className="bg-secondary text-white px-3 py-2 rounded-[.5rem] cursor-pointer flex justify-center items-center gap-1"><Icon name="bx-plus" size="1.2rem" color="#fff"/>Nouveau service</span>
                         </div>
                     </div>
                     {
-                        serviceAdding && <div className="min-w-[14rem] w-full max-w-1/2">
+                        (serviceAdding && canAddService) && <div className="min-w-[14rem] w-full max-w-1/2">
                             <select id="serviceType" {...register("serviceType", { required: "The selection is required" })}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2">
                                 <option value="default">---Choisir un service---</option>
-                                <option value="service">Service</option>
-                                <option value="maintenance">Maintenance</option>
-                                <option value="service_and_maintenance">Service plus Maintenance</option>
+                                {
+                                    serviceType.map((item)=>{
+                                        return (
+                                            <option value={item.value}>{item.label}</option>
+                                        )
+                                    })
+                                }
                             </select>
                         </div>
                     }
@@ -307,14 +352,14 @@ const UpdateClient: React.FC<UpdateClientProps> = ({locale,clientId})=> {
                         <label htmlFor="">Supprimer les services</label>
                         <div className="flex justify-start items-center flex-wrap gap-1 my-4">
                         {
-                            client?.services?.map((service:Services,index) => {
+                            (client && client.services) ? parseService(client.services).map((service:Services,index:number) => {
                                 return (
-                                    <span className="bg-secondary py-1 px-2 flex justify-start items-center gap-2 rounded-[.5rem] text-white" key={service.serviceId+'_'+index} title="Supprimer ce service">
-                                        {service.name}
+                                    <span className="bg-secondary py-1 px-2 flex justify-start items-center gap-2 rounded-[.5rem] text-white" key={clientId+'_'+service.serviceId+'_'+index} title="Supprimer ce service">
+                                        {service.serviceType.replace("_"," ")}
                                         <CloseButton onClose={() =>deleteServiceData(service.serviceId ?? "")} size="small" color="text-white" className="text-white-500 cursor-pointer"/>
                                     </span>
                                 )
-                            })
+                            }) : ''
                         }
                         </div>
                     </div>

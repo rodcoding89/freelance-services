@@ -1,5 +1,6 @@
 "use client"
 import { getCookie } from "@/server/services";
+import { parseInputDate } from "@/utils/fonction";
 
 import { useRouter } from 'next/navigation';
 
@@ -12,9 +13,10 @@ interface WebConfigProps {
 const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
     const [config,setConfig] = useState<string|null>(null);
     const [updateDate,setUpdateDate] = useState<string>('');
-    const [lastUpdateConfig,setLastUpdateConfig] = useState<{date:string,type:string,id?:string}[]>([]);
+    const [lastUpdateConfig,setLastUpdateConfig] = useState<{lastUpdate:Date,webpage:string}[]>([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+
     const handleChange = (e:React.ChangeEvent<HTMLSelectElement>)=>{
         if (e.target.value === 'default') {
             setConfig(null);
@@ -23,20 +25,18 @@ const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
         }
     }
     const lastUpdateDate = (type:string)=>{
-        const item = lastUpdateConfig.find(item => item.type === type);
+        const item = lastUpdateConfig.find(item => item.webpage === type);
         if (item) {
-            return `Dernier mise a jour : ${new Date(item.date).toLocaleDateString()}`;
+            return `Dernier mise a jour : ${new Date(item.lastUpdate).getDate()}/${new Date(item.lastUpdate).getMonth()+1}/${new Date(item.lastUpdate).getFullYear()}`;
         }
         return 'Aucune mise a jour enregistré';
     }
-    const parseInputDate = ()=>{
-        return `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
-    }
+    
     const saveUpdateDate = async()=>{
         if(updateDate === '' || config === null) return;
         setLoading(true);
-        const configIndex = lastUpdateConfig.findIndex(item => item.type === config);
-        const newconfig = {type:config,date:updateDate}
+        const configIndex = lastUpdateConfig.findIndex(item => item.webpage === config);
+        const newconfig = {webpage:config,lastUpdate:new Date(updateDate)}
         if (configIndex > -1) {
             const curentConf = [...lastUpdateConfig];
             curentConf.splice(configIndex,configIndex,newconfig);
@@ -45,14 +45,16 @@ const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
                 headers: {
                 'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({type:"update",config:newconfig,id:lastUpdateConfig[configIndex].id})
+                body: JSON.stringify({type:"update",config:newconfig,date:new Date(updateDate)})
             })
             if (!result.ok) {
+                alert(result.statusText)
                 throw new Error('Erreur lors de la requête');
             }
             const response = await result.json();
             if (response.success) {
                 setLastUpdateConfig(curentConf);
+                localStorage.removeItem("webConfig")
                 alert(response.message)
                 router.push('/'+locale)
             } else {
@@ -65,24 +67,25 @@ const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
                 headers: {
                 'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({type:"add",config:newconfig,id:""})
+                body: JSON.stringify({type:"add",config:newconfig,date:new Date(updateDate)})
             })
             if (!result.ok) {
+                alert(result.statusText)
                 throw new Error('Erreur lors de la requête');
             }
             const response = await result.json();
-            if (!response.success) {
-                alert(response.message)
-                setLoading(false);
+            if (response.success) {
+                localStorage.removeItem("webConfig")
+                router.push('/'+locale)
             }else{
                 alert(response.message)
-                router.push('/'+locale)
+                setLoading(false);
             }
         }
     }
     useEffect(()=>{
         const handleWebConfig = async () => {
-            const sessionWebConfig = sessionStorage.getItem("webConfig")
+            const sessionWebConfig = localStorage.getItem("webConfig")
             if(sessionWebConfig){
                 const webConfig = JSON.parse(sessionWebConfig)
                 setLastUpdateConfig(webConfig);
@@ -95,13 +98,14 @@ const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
                     }
                 })
                 if (!result.ok) {
+                    alert(result.statusText)
                     throw new Error('Erreur lors de la requête');
                 }
                 const response = await result.json();
-                if (!response.success && response.result) {
+                if (response.success === true && response.result) {
                     setLastUpdateConfig(response.result);
                     setLoading(false);
-                    sessionStorage.setItem("webConfig",JSON.stringify(response.result))
+                    localStorage.setItem("webConfig",JSON.stringify(response.result))
                 } else {
                     alert(response.message);
                     setLoading(false);
@@ -139,7 +143,7 @@ const WebConfig: React.FC<WebConfigProps> = ({locale})=> {
                 <p className="my-3 p-2 px-4 bg-blue-500 text-white rounded-300">{lastUpdateDate(config)}</p>
                 <div className="flex justify-start items-center gap-5 my-4">
                     <label htmlFor="updateDate">Choisir la date de mise a jour</label>
-                    <input type="date" className="mt-1 block w-full border border-gray-300 rounded-md p-2 flex-1" id="updateDate" min={parseInputDate()}
+                    <input type="date" className="mt-1 block w-full border border-gray-300 rounded-md p-2 flex-1" id="updateDate" min={parseInputDate(new Date())}
                    value={updateDate} onChange={(e)=>setUpdateDate(e.target.value)}/>
                 </div>
             </div>)

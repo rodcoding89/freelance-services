@@ -1,5 +1,5 @@
 // app/api/auth/login/route.ts
-import { deleteService, userAuth } from '@/server/services';
+import { deleteService } from '@/server/handle-database';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function DELETE(req: NextRequest) {
@@ -16,8 +16,8 @@ export async function DELETE(req: NextRequest) {
   } catch (error: any) {
     console.error("Erreur dans la route API de delete service:", error);
     return NextResponse.json(
-      { success: false, message: "Une erreur interne du serveur s'est produite." },
-      { status: 500 }
+      { success: false, message: error },
+      { status: 500,statusText:error }
     );
   }
 }

@@ -81,7 +81,7 @@ interface Contract {
 }
 
 interface Services {
-    clientId:string;
+    clientId:number;
     name:string;
     serviceType: "service"|"maintenance"|"service_and_maintenance";
     contractStatus: 'signed' | 'unsigned' | 'pending';
@@ -90,7 +90,7 @@ interface Services {
 
 interface GeneredContractProps{
     locale:string;
-    clientId:string;
+    clientId:number;
     clientServiceId:string;
 }
 

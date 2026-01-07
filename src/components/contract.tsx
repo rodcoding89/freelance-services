@@ -13,7 +13,7 @@ import { sendEmailForFillingContract } from "@/server/services-mail";
 import { getCookie } from "@/server/services";
 
 interface Services {
-  clientId:string;
+  clientId:number;
   name:string;
   serviceType: "service"|"maintenance"|"service_and_maintenance";
   contractStatus: 'signed' | 'unsigned' | 'pending';
@@ -103,7 +103,7 @@ interface Contract {
 
 interface ContractProps{
     locale:string;
-    clientId:string;
+    clientId:number;
     clientServiceId:string;
 }
 

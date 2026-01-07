@@ -1,16 +1,17 @@
 // app/api/auth/login/route.ts
-import { getClientList, userAuth } from '@/server/services';
+
+import { getClientList } from '@/server/handle-database';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
     const result = await getClientList();
-    return NextResponse.json({ result: result});
+    return NextResponse.json({ success: true,result: result});
   } catch (error: any) {
-    console.error("Erreur dans la route API de get clients list:", error);
+    //console.error("Erreur dans la route API de get clients list:", error);
     return NextResponse.json(
-      { success: false, message: "Une erreur interne du serveur s'est produite." },
-      { status: 500 }
+      { success: false, message: error },
+      { status: 500,statusText:error }
     );
   }
 }

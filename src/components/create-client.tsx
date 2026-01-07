@@ -8,39 +8,21 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Icon from './Icon';
 import { getCookie } from '@/server/services';
+import { Client, Services } from '@/interfaces';
 
 interface CreateClientProps {
     locale:string
 }
 
-interface Client {
-    id?: string;
-    taxId?:string;
-    name:string;
-    email?:string;
-    modifDate:string;
-    clientNumber:number;
-    invoiceCount?:number;
-    clientLang:string;
-    status:"actived"|"desactived"
-}
-
-interface Services {
-    clientId:string;
-    name:string;
-    serviceType: "service"|"maintenance"|"service_and_maintenance";
-    contractStatus: 'signed' | 'unsigned' | 'pending';
-}
-
-
 const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
-    const [lastClient,setLastClient] = useState<Client|null>(null)
+   
     const [loader, setLoader] = useState(false);
     
     const router = useRouter();
+
     const {
         register,
         handleSubmit,
@@ -50,41 +32,30 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
     const onSubmit = async(data: any) => {
         console.log("data",data)
         if(!data) return
-        setLoader(true);
+            setLoader(true);
         try {
-            const client:Client = {name:data.clientName,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`),clientNumber:lastClient?.clientNumber ? lastClient.clientNumber + 1 : 1000,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : '',status:"actived"}
-            //console.log('Client Data:', data);
+            const client:Client = {clientType:data.typeClient,fname:data.clientfName,lname:data.clientlName,modifDate:new Date(),clientNumber:0,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : '',clientStatus:"actived"}
+            const service:Services = {serviceType:data.serviceType,contractStatus:"unsigned",clientId:0}
+            
             const result = await fetch(`/api/add-client/`,{
                 method: 'POST', // Garde votre méthode GET pour l'exemple
                 headers: {
                 'Content-Type': 'application/json',
                 },
-                body:JSON.stringify({client})
+                body:JSON.stringify({clientData:client,service:service})
             })
+
             if (!result.ok) {
+                alert(result.statusText)
                 throw new Error('Erreur lors de la requête');
             }
+
             const response = await result.json();
-            if (!response.success && response.result) {
-                const result = await fetch(`/api/add-client/`,{
-                    method: 'POST', // Garde votre méthode GET pour l'exemple
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body:JSON.stringify({id:response.result,serviceName:data.serviceType,serviceType:data.serviceType})
-                })
-                if (!result.ok) {
-                    throw new Error('Erreur lors de la requête');
-                }
-                const response1 = await result.json();
-                
-                if (!response1.success && response1.result) {
-                    router.push('/'+data.clientLang+'/clients-list')
-                }else{
-                    alert(response1.message)
-                }
+            console.log("response",response)
+            if (response.success && response.result) {
+                router.push('/'+data.clientLang+'/clients-list')
             }else{
-                alert(response.message)
+                alert("Une erreur inattendu c'est produit")
             }
         } catch (error) {
             console.error("Error adding document: ", error);
@@ -92,34 +63,15 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
             setLoader(false);
         }
     };
-    console.log("main",contextData)
+
+    //console.log("main",contextData)
+
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
             console.log("inside contextData",contextData)
             setIsPopUp(contextData.value)
         }
     },[contextData])
-
-    useEffect(()=>{
-        const handleLastClient = async()=>{
-            const result = await fetch(`/api/get-last-client/`,{
-                method: 'GET', // Garde votre méthode GET pour l'exemple
-                headers: {
-                'Content-Type': 'application/json',
-                }
-            })
-            if (!result.ok) {
-                throw new Error('Erreur lors de la requête');
-            }
-            const response = await result.json();
-            if (!response.success && response.result) {
-                setLastClient(response.result)
-            } else {
-                alert(response.message)
-            }
-        }
-        handleLastClient()
-    },[])
 
     useEffect(()=>{
         const checkCookie = async ()=>{
@@ -136,19 +88,35 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Création du client</h1>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div>
-                <label htmlFor="clientName" className="block text-sm font-medium text-gray-700">
-                    Nom complet du client
-                </label>
-                <input
-                    type="text"
-                    id="clientName"
-                    {...register('clientName', { required: 'Client name is required' })}
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder='Nom complet du client'
-                />
-                {errors.clientName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.clientName.message as string}</p>
-                )}
+                <div className='flex items-start justify-start gap-4'>
+                    <div className='w-1/2'>
+                        <label htmlFor="clientlName" className="block text-sm font-medium text-gray-700">
+                            Nom
+                        </label>
+                        <input
+                            type="text"
+                            id="clientlName"
+                            {...register('clientlName', { required: 'Client last name is required' })}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder='Nom du client'
+                        />
+                        {errors.clientlName && (
+                            <p className="text-red-500 text-sm mt-1">{errors.clientlName.message as string}</p>
+                        )}
+                    </div>
+                    <div className='w-1/2'>
+                        <label htmlFor="clientfName" className="block text-sm font-medium text-gray-700">
+                            Prénom
+                        </label>
+                        <input
+                            type="text"
+                            id="clientfName"
+                            {...register('clientfName', { required: 'Client first name is required' })}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder='Prénom du client'
+                        />
+                        {errors.clientfName && (
+                            <p className="text-red-500 text-sm mt-1">{errors.clientfName.message as string}</p>
+                        )}
+                    </div>
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">{t.email} <em className="text-red-700">*</em></label>
@@ -171,7 +139,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                 </div>
                 <div className="min-w-[14rem] w-max max-w-1/3">
                     <label className="block text-sm font-medium text-gray-700">
-                    {t.taxNumberText.replace("{tax}", 'VAT')} <em className="text-red-700">*</em>
+                    {t.taxNumberText.replace("{tax}", 'VAT')}
                     </label>
                     <input
                     {...register("taxId")}
@@ -204,6 +172,19 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                     </select>
                     {errors.clientLang && (
                         <p className="text-red-500 text-sm mt-1">{errors.clientLang?.message as string}</p>
+                    )}
+                </section>
+                <section className="border-b pb-6">
+                    <label htmlFor="typeClient" className="block text-sm font-medium text-gray-700">
+                        Choisir le type de client
+                    </label>
+                    <select id="typeClient" {...register("typeClient", { required: "The selection is required" })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                        <option value="company">Company</option>
+                        <option value="particular">Particulié</option>
+                    </select>
+                    {errors.clientLang && (
+                        <p className="text-red-500 text-sm mt-1">{errors.typeClient?.message as string}</p>
                     )}
                 </section>
                 <div className='flex justify-start items-center gap-5'>

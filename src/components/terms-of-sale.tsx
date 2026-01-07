@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { useTranslationContext } from "@/hooks/app-hook";
 import { AppContext } from "@/app/context/app-context";
+import { parseDate } from "@/utils/fonction";
 
 
 interface TermsOfServicesProps{
@@ -12,7 +13,7 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
-    const [configDate,setConfigDate] = useState<string>('')
+    const [configDate,setConfigDate] = useState<number>(0)
     const [loading, setLoading] = useState(true);
     console.log("main",contextData)
     useEffect(()=>{
@@ -24,13 +25,12 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
 
     useEffect(()=>{
         const handleWebConfig = async () => {
-            const sessionWebConfig = sessionStorage.getItem("webConfig")
+            const sessionWebConfig = localStorage.getItem("webConfig")
             if(sessionWebConfig){
                 const webConfig = JSON.parse(sessionWebConfig)
                 for (const data of webConfig) {
-                    if (data.type === 'cgv') {
-                        setConfigDate(data)
-                        setConfigDate(data.date)
+                    if (data.webpage === 'cgv') {
+                        setConfigDate(data.lastUpdate)
                     }
                 }
                 setLoading(false);
@@ -42,18 +42,18 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                     }
                 })
                 if (!result.ok) {
+                    alert(result.statusText)
                     throw new Error('Erreur lors de la requête');
                 }
                 const response = await result.json();
-                if (!response.success && response.result) {
+                if (response.success && response.result) {
                     for (const data of response.result) {
-                        if (data.type === 'cgv') {
-                            setConfigDate(data)
-                            setConfigDate(data.date)
+                        if (data.webpage === 'cgv') {
+                            setConfigDate(data.lastUpdate)
                         }
                     }
                     setLoading(false);
-                    sessionStorage.setItem("webConfig",JSON.stringify(response.result))
+                    localStorage.setItem("webConfig",JSON.stringify(response.result))
                 } else {
                     setLoading(false);
                     alert(response.message);
@@ -84,7 +84,7 @@ const TermsOfSale:React.FC<TermsOfServicesProps> = ({locale})=>{
                         <p className="my-3 p-2 px-4 bg-blue-500 text-white rounded-300" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_0, '', '') }} />
                     </div>
                 )}
-                <p className="font-bold" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_1, '{date}', new Date(configDate).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)) }} />
+                <p className="font-bold my-4" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_1, '{date}', parseDate(new Date(configDate),locale)) }} />
                 <h3 className="my-3 text-[1.5rem]" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_2, '', '') }} />
                 <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_3, '', '') }} />
                 <p className="my-2" dangerouslySetInnerHTML={{ __html: replaceContent(t.termSale.content_4, '', '') }} />
