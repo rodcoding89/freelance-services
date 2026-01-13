@@ -2,6 +2,7 @@
 import {Element, Link } from 'react-scroll';
 import { useTranslationContext } from '@/hooks/app-hook';
 import Image from 'next/image';
+import { useEffect } from 'react';
 
 interface HomeProps{
     locale:string
@@ -9,6 +10,7 @@ interface HomeProps{
 
 const Home:React.FC<HomeProps> = ({locale})=>{
     const t:any = useTranslationContext();
+    
     return (
         <Element className="mt-[6.25rem]" name="home">
             <div className='w-full bg-secondary'>

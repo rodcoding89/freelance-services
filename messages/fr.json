@@ -610,7 +610,7 @@
                 "title":"2 - OBJET",
                 "sec1":{
                     "title":"2.1 - Services",
-                    "para":"Le prestataire de services s'engage envers le client à fournir les services informatiques (ci-après appelés 'les services') décrits dans les spécifications qui figurent dans la séction 'Déscription et Fonctionnalités clés du projet', ou, à défaut, dans le devis."
+                    "para":"Le prestataire de services s'engage envers le client à fournir les services informatiques (ci-après appelés 'les services') décrits dans les spécifications qui figurent dans la séction 'Déscription et Fonctionnalités clés du projet', ou, à défaut, dans le cahier de charge."
                 },
                 "sec2":{
                     "title":"2.2 - Délai de fourniture des services",
@@ -690,7 +690,7 @@
                 "sec4": {
                     "title": "5.4 - Obligations du prestataire de services",
                     "para": "Le prestataire de services s'engage et s'oblige envers le client à ce qui suit:",
-                    "paraA": "a) Les services doivent être rendus de façon professionnelle, selon les règles généralement reconnues par l'industrie, et en fonction des spécifications;",
+                    "paraA": "a) Les services doivent être rendus de façon professionnelle, selon les règles généralement reconnues par l'industrie, et en fonction du cahier de charge;",
                     "paraB1": "b) Le prestataire de services doit s'assurer que ses employés, fournisseurs, collaborateurs et sous-traitants, s'il y a lieu,",
                     "paraB2": "respectent intégralement les dispositions du présent contrat, notamment en ce qui concerne la propriété intellectuelle et la confidentialité;",
                     "paraC": "c) Le prestataire de services doit aviser le client sans délai si son représentant indiqué dans les spécifications est remplacé en cours d'exécution du contrat par une autre personne."
@@ -728,7 +728,7 @@
                     "paraB": "b) suite à une erreur ou omission du prestataire de services; ou",
                     "paraC": "c) qui n'entraîne pas un surcroît de travail de la part du prestataire de services;",
                     "para21": "alors ladite demande de modification n'est pas considérée comme une demande de services additionnels et",
-                    "para22": "n'entraîne donc aucun coût supplémentaire pour le client. Toute telle demande de modification de la part du client doit être formulée par écrit.",
+                    "para22": "n'entraîne donc aucun coût supplémentaire pour le client. Toute demande de modification de la part du client doit être formulée par écrit.",
                     "paraClose": "Toute autre demande de modification de la part du client est considérée comme étant une demande de services additionnels."
                 },
                 "sec11": {
@@ -740,11 +740,11 @@
                 "sec12": {
                     "title": "5.12 - Représentations et garanties du prestataire de services",
                     "para": "Le prestataire de services représente et garantit au client que:",
-                    "paraA": "a) il possède la capacité requise afin de s'engager en vertu du présent contrat, telle capacité n'étant nullement limitée par un quelconque engagement envers une tierce personne;",
+                    "paraA": "a) il possède la capacité requise afin de s'engager en vertu du présent contrat, cette capacité n'étant nullement limitée par un quelconque engagement envers une tierce personne;",
                     "paraB": "b) il possède l'expertise et l'expérience requises afin d'exécuter et de mener à terme les obligations qui lui incombent en vertu du présent contrat;",
                     "paraC": "c) il va rendre les services de façon professionnelle et efficace, selon les règles généralement reconnues par l'industrie et à l'aide de la technologie d'arrière-plan et des outils de développement les plus récents;",
                     "paraD": "d) il va respecter toutes et chacune des spécifications relatives aux services qu'il doit rendre;",
-                    "paraE": "e) il va respecter tout droit, titre ou intérêt de propriété intellectuelle appartenant à tout tiers dans tout outil de développement qu'il va utiliser et dans tout composant qu'il va concevoir à l'aide de tout tel outil;",
+                    "paraE": "e) il va respecter tout droit, titre ou intérêt de propriété intellectuelle appartenant à tout tiers dans tout outil de développement qu'il va utiliser et dans tout composant qu'il va concevoir à l'aide de n'importe quel outil;",
                     "paraF": "f) il ne va utiliser aucune information confidentielle ou secret de commerce appartenant à toute tierce personne, à moins d'avoir reçu l'autorisation de cette dernière;",
                     "paraG": "g) le client va posséder un bon et valable droit, titre ou intérêt de propriété intellectuelle dans tout contenu créé par le prestataire de services, conformément à ce qui est prévu dans le présent contrat;",
                     "paraH": "h) tout tel contenu ne violera aucun droit, titre ou intérêt de propriété intellectuelle appartenant à un tiers."
@@ -876,12 +876,12 @@
                 },
                 "sec12": {
                     "title": "6.12 - Langue du contrat",
-                    "para11":"Le présent contrat constitue une traduction en français d’un document rédigé à l’origine en anglais, fournie à titre informatif afin de faciliter la compréhension par le client. Toutefois, en cas de contradiction, divergence ou difficulté d’interprétation entre les deux versions,",
+                    "para11":"Ce document constitue l'original et l'unique version du contrat. Nous vous recommandons de le conserver précieusement, car il fera foi et sera juridiquement valable en cas de litige.",
                     "para12":"seule la version anglaise fera foi et prévaudra entre les parties.",
-                    "para2":"Par exception, le titre, la description du projet et les fonctionnalités principales sont présentées dans leur langue d’origine (notamment en français), afin d’en préserver la précision et la fidélité aux termes convenus. Ces éléments sont considérés comme partie intégrante du contrat, quelles que soient les versions linguistiques.",
-                    "para31":"",
-                    "para32":"",
-                    "para41":"",
+                    "para2":"",
+                    "para31":"Ce contrat est rédigé en deux langues : le français (version originale) et la langue étrangère (à titre indicatif uniquement). En cas de contradiction, de divergence ou de difficulté d’interprétation,",
+                    "para32":"seule la version française fera foi et sera valable entre les parties.",
+                    "para41":"le",
                     "para42":"",
                     "para43":""
                 },
@@ -911,10 +911,9 @@
                 "para": "Le présent contrat prend fin dans l'un ou l'autre des cas suivants:",
                 "paraA": "a) lorsque toutes les obligations des parties ont été remplies;",
                 "paraB": "b) lorsque le projet est réceptionné par le client;",
-                "paraC": "c) lorsque le client signe le document de fin de contrat;",
-                "paraD": "d) en cas de résiliation prévu au présent contrat;",
-                "paraE": "e) si l'une des parties fait défaut de respecter l'une ou l'autre de ses obligations, dans un délai de {day} jours suivant la réception par la partie en défaut d'une mise en demeure d'y remédier ou dans tout autre délai plus court que prévoit le présent contrat, et qu'il y a inaction de la partie en défaut à l'intérieur dudit délai;",
-                "paraF": "f) en cas de faillite, d'insolvabilité ou de cessation des activités de l'une ou l'autre des parties.",
+                "paraC": "c) en cas de résiliation prévu au présent contrat;",
+                "paraD": "d) si l'une des parties fait défaut de respecter l'une ou l'autre de ses obligations, dans un délai de {day} jours suivant la réception par la partie en défaut d'une mise en demeure d'y remédier ou dans tout autre délai plus court que prévoit le présent contrat, et qu'il y a inaction de la partie en défaut à l'intérieur dudit délai;",
+                "paraE": "e) en cas de faillite, d'insolvabilité ou de cessation des activités de l'une ou l'autre des parties.",
                 "paraClose": "Toutefois, la fin du présent contrat n'a pas pour effet de faire perdre un droit à une partie ou de la libérer d'une obligation, notamment en ce qui concerne la confidentialité, la propriété intellectuelle, la limitation de garantie et la limitation de responsabilité. Lesdits droits et obligations survivent à la fin du présent contrat."
             },
             "9": {
@@ -979,7 +978,6 @@
     },
     "contractTerme": "Conditions du contrat",
     "contractConfirm": "Si vous acceptez les termes ci-dessus, veuillez d'abord cocher la case pour approuver la signature électronique du contrat, puis confirmer avoir lu et accepté les Conditions Générales de Vente (CGV) en cochant la seconde case. Ensuite, signez le contrat ci-dessous. Si vous n’êtes pas d’accord, merci de nous indiquer les raisons de votre refus.",
-    "originalVersion":"Ceci est la version traduite du contrat. Elle vise à faciliter la compréhension des termes du contrat. Pour lire la version originale (anglaise), cliquez sur le bouton. En cas de doute sur la concordance entre les versions, vous pouvez traduire la version originale (anglaise) à l'aide de Google Traduction ou d'une intelligence artificielle en ligne.",
     "readOriginalVersion":"Lire la version originale",
     "confirmElectronicSignature": "Je confirme approuver la signature électronique du contrat",
     "updateContract": "Modifier le contrat",

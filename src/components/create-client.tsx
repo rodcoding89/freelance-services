@@ -34,7 +34,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
         if(!data) return
             setLoader(true);
         try {
-            const client:Client = {clientType:data.typeClient,fname:data.clientfName,lname:data.clientlName,modifDate:new Date(),clientNumber:0,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : '',clientStatus:"actived"}
+            const client:Client = {phone: data.phone !== '' ? data.phone : null,clientType:data.typeClient,fname:data.clientfName,lname:data.clientlName,modifDate:new Date(),clientNumber:0,email:data.clientEmail,clientLang:data.clientLang,taxId:data.taxId ? data.taxId : '',clientStatus:"actived"}
             const service:Services = {serviceType:data.serviceType,contractStatus:"unsigned",clientId:0}
             
             const result = await fetch(`/api/add-client/`,{
@@ -53,6 +53,7 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
             const response = await result.json();
             console.log("response",response)
             if (response.success && response.result) {
+                sessionStorage.removeItem("clientData")
                 router.push('/'+data.clientLang+'/clients-list')
             }else{
                 alert("Une erreur inattendu c'est produit")
@@ -137,14 +138,24 @@ const CreateClient: React.FC<CreateClientProps> = ({locale}) => {
                         <p className="text-red-500 text-sm mt-1">{errors.clientEmail.message as string}</p>
                     )}
                 </div>
-                <div className="min-w-[14rem] w-max max-w-1/3">
-                    <label className="block text-sm font-medium text-gray-700">
-                    {t.taxNumberText.replace("{tax}", 'VAT')}
-                    </label>
-                    <input
-                    {...register("taxId")}
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                    />
+                <div className="w-full flex justify-start items-start gap-4">
+                    <div className='w-1/2'>
+                        <label className="block text-sm font-medium text-gray-700">{t.tel} <em className="text-red-700">*</em></label>
+                        <input
+                            type="tel"
+                            {...register("phone")}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        />
+                    </div>
+                    <div className="min-w-[14rem] w-1/2">
+                        <label className="block text-sm font-medium text-gray-700">
+                        {t.taxNumberText.replace("{tax}", 'VAT')}
+                        </label>
+                        <input
+                        {...register("taxId")}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        />
+                    </div>
                 </div>
                 <div className='my-3'>
                     <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">

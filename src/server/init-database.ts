@@ -19,9 +19,10 @@ const db = new sqlite3.Database(dbPath,(err)=>{
   } else {
     /*createTable();*/
     //addUser()
-    //addWebConfig()
+    /*addWebConfig()*/
     console.log("connxion ok")
   }
 });
+//console.log("db",db)
 export default db
 

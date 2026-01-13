@@ -13,7 +13,7 @@ export const loadCountries = async () => {
     }
 }
 
-export const loadEnTranslation = async (lang:string) =>{
+export const loadTranslation = async (lang:"fr"|"de"|"en") =>{
     try {
         const messages = (await import(`../../messages/${lang}.json`)).default;
         //console.log("messages",messages,"contract",messages.contract)
@@ -90,12 +90,16 @@ export async function generateSeoMetadata({ params}: { params: { locale: string,
   };
 }
 
-export const parseInputDate = (date:Date)=>{
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+export const parseInputDate = (date:Date|number|string)=>{
+  const newDate = typeof(date) === "number" || typeof(date) === "string" ? new Date(date) : date
+  
+  return `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`
 }
 
-export const parseDate = (date:Date,locale:string)=>{
-  return date.toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)
+export const parseDate = (date:Date|number|string,locale:string)=>{
+  const newDate = typeof(date) === "number" || typeof(date) === "string" ? new Date(date) : date
+  
+  return newDate.toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)
 }
 
 export const ShemaLdJson = async (locale:string) => {

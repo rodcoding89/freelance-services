@@ -3,14 +3,14 @@ import { generateSeoMetadata } from "@/utils/fonction";
 import { Metadata } from "next";
 
 interface PageProps {
-  params: Promise<{ locale: string; id: string; serviceId: string; }>;
+  params: Promise<{ locale: string; clientId: string; serviceId: string; }>;
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale,id,serviceId } = await params;
+  const { locale,clientId,serviceId } = await params;
   const author = process.env.NEXT_PUBLIC_COMPANY_AUTHOR;
-  const link = process.env.NEXT_PUBLIC_ROOT_LINK+'/'+locale+'/sign-contrat/'+id+'/'+serviceId;
+  const link = process.env.NEXT_PUBLIC_ROOT_LINK+'/'+locale+'/sign-contrat/'+clientId+'/'+serviceId;
   const seoParams = {
     params:{
       locale: locale,
@@ -26,10 +26,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function Page({ params }: PageProps){
-  const { locale,id,serviceId } = await params;
+  const { locale,clientId,serviceId } = await params;
   return (
     <>
-      <GeneredContract locale={locale} clientId={id} clientServiceId={serviceId}/>
+      <GeneredContract locale={locale} clientId={parseInt(clientId)} clientServiceId={serviceId}/>
     </>
   );
 }

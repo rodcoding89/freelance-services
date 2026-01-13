@@ -23,7 +23,7 @@ interface Contrat{
     subject:string;
     base64Contrat:string;
     base64Payement:string;
-    base64NotEnContract:string|null;
+    base64NotFrContract:string|null;
 }
 
 const sendEmailForFillingContract = async(to:string,name:string,link:string,clientLang:string)=>{
@@ -40,14 +40,14 @@ const sendEmailForFillingContract = async(to:string,name:string,link:string,clie
         </body>
         `;
         const mailOptions = {
-            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.FREELANCE_EMAIL ?? ''},
+            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.NEXT_PUBLIC_FREELANCE_EMAIL_CLIENT ?? ''},
             to: to,
             subject: `${clientLang === 'fr' ? "Formulaire de signature de contrat disponible" : clientLang === 'de' ? "Vertragsunterzeichnungsformular verfügbar" : "Contract signature form available"}`,
             html : htmlSquelette(body,`${clientLang === 'fr' ? "Formulaire de signature de contrat disponible" : clientLang === 'de' ? "Vertragsunterzeichnungsformular verfügbar" : "Contract signature form available"}
             `,clientLang)
         };
         const response = await transporter.sendMail(mailOptions);
-        console.log("send mail",response);
+        //console.log("send mail",response);
         if (response) {
             return 'success'
         }
@@ -57,7 +57,7 @@ const sendEmailForFillingContract = async(to:string,name:string,link:string,clie
     }
 }
 
-const sendEmail = async(data:Email,locale:string)=>{
+const sendEmailContact = async(data:Email,locale:string)=>{
     try {
         const body = locale === 'fr' ? `<p>Vous nous avez transmis une demande d'information le ${new Date().toLocaleDateString(`fr-FR`)} comportant les informations suivantes :</p>
         <ul>
@@ -92,13 +92,13 @@ const sendEmail = async(data:Email,locale:string)=>{
         <p>We confirm by this email the receipt of your message and will respond as soon as possible.</p>
         <p>Best regards</p>`;
         const mailOptionsToRodFreelance = {
-            from: {name:data.name,address:data.from},
-            to: process.env.NEXT_PUBLIC_FREELANCE_EMAIL,
+            from: {name:data.name,address:process.env.NEXT_PUBLIC_FREELANCE_EMAIL_CONTACT ?? ""},
+            to: process.env.NEXT_PUBLIC_FREELANCE_EMAIL_CONTACT,
             subject: data.subject,
             html : htmlSquelette(`<div><h3>Salut,</h3><p>Je suis ${data.name} et voila mon besoin</p><p>${data.content}</p><p>Budget : ${data.budget}</p></div>`,data.subject,'fr')
         };
         const mailOptionsToSender = {
-            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.NEXT_PUBLIC_FREELANCE_EMAIL ?? ''},
+            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.NEXT_PUBLIC_FREELANCE_EMAIL_CONTACT ?? ''},
             to: data.from,
             subject: locale === 'fr' ?'Copie de votre message envoyé depuis www.rodcoding.com/'+locale : locale === 'de' ? 'Kopie Ihrer Nachricht von www.rodcoding.com/'+locale : 'Copy of your message sent from www.rodcoding.com/'+locale,
             html : htmlSquelette(body,data.subject,locale)
@@ -132,14 +132,15 @@ const sendInvoice = async(data:Invoice,locale:string)=>{
             <p><strong>ROD TECH SOLUTIONS</strong></p>
         </div></body>`;
         const mailOptions = {
-            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.FREELANCE_EMAIL ?? ''},
+            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.NEXT_PUBLIC_FREELANCE_EMAIL_CONTACT_SUPPORT ?? ''},
             to: data.to,
             subject: data.subject,
             attachments:[attachement],
             html : htmlSquelette(body,data.subject,locale)
         };
+
         const response = await transporter.sendMail(mailOptions);
-        console.log("send mail",response);
+        
         if (response) {
             return 'success'
         }
@@ -177,7 +178,7 @@ const sendContract = async(data:Contrat,locale:string)=>{
             </p>
         </div></body>`
         const attachementContrat = {
-            filename: locale !== 'en' ? "translated-contrat_"+data.name+".pdf":"original_contrat_"+data.name+".pdf",
+            filename: locale !== 'fr' ? "translated-contrat_"+data.name+".pdf":"original_contrat_"+data.name+".pdf",
             content: data.base64Contrat, // truncated
             encoding: "base64",
         }
@@ -186,16 +187,16 @@ const sendContract = async(data:Contrat,locale:string)=>{
             content: data.base64Payement, // truncated
             encoding: "base64",
         }
-        const attachementNotEnContract = data.base64NotEnContract ? {
+        const attachementNotFRContract = data.base64NotFrContract ? {
             filename: "original_contrat_"+data.name+".pdf",
-            content: data.base64NotEnContract, // truncated
+            content: data.base64NotFrContract, // truncated
             encoding: "base64",
         } : null
         const mailOptions = {
-            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.FREELANCE_EMAIL ?? ''},
+            from: {name:process.env.NEXT_PUBLIC_COMPANY_NAME ?? '',address:process.env.NEXT_PUBLIC_FREELANCE_EMAIL_CLIENT ?? ''},
             to: data.to,
             subject: data.subject,
-            attachments: attachementNotEnContract ? [attachementContrat,attachementPayment,attachementNotEnContract] : [attachementContrat,attachementPayment],
+            attachments: attachementNotFRContract ? [attachementContrat,attachementPayment,attachementNotFRContract] : [attachementContrat,attachementPayment],
             html : htmlSquelette(body,data.subject,locale)
         };
         const response = await transporter.sendMail(mailOptions);
@@ -224,4 +225,4 @@ function htmlSquelette(body:string,title:string,lang:string){
     </html>`
 }
 
-export {sendEmail,sendInvoice,sendContract,sendEmailForFillingContract};
+export {sendEmailContact,sendInvoice,sendContract,sendEmailForFillingContract};

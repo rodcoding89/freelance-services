@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import CloseButton from './close-btn';
 import { useTranslationContext } from '@/hooks/app-hook';
-import  {sendEmail}  from '../server/services-mail'
+import  {sendEmailContact}  from '../server/services-mail'
 interface Email{
     from:string;
     name:string;
@@ -22,8 +22,10 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
     const t:any = useTranslationContext();
     const [loader,setLoader] = useState<boolean>(false)
     const [isSended,setIsSended] = useState<boolean|null>(null)
-    const [number,setNumber] = useState<{num1:number,num2:number}|null>(null);
-    const [result,setResult] = useState<number|null>(null);
+    const [number,setNumber] = useState<string|null>(null);
+    
+    const [honeypot,setHoneypot] = useState<string>("")
+    const [isOperationValid,setIsOperationValid] = useState<boolean>(false)
 
     const budget = [
         '----'+t['budget']+'----',
@@ -36,8 +38,11 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
     const {
         register,
         handleSubmit,
-        formState: { errors,isValid },reset
-      } = useForm({ mode: 'onChange'});
+        formState: { errors,isValid },reset,watch
+    } = useForm({ mode: 'onChange'});
+
+    const result = watch('result')
+
     const sendMessage = async(data:any)=>{
         setLoader(true)
         setIsSended(null)
@@ -49,8 +54,8 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
             content: data.message
         }
         try {
-            const response = await sendEmail(emailData,locale)
-            console.log("response",response)
+            const response = await sendEmailContact(emailData,locale)
+            //console.log("response",response)
             if (response === 'success') {
                 setIsSended(true)
                 reset()
@@ -58,6 +63,7 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
                 return
             }
             setIsSended(false)
+            return
         } catch (error) {
             setIsSended(false)
             console.error(error)
@@ -70,20 +76,101 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
         setIsSended(null)
     }
 
-    const handleResult = (e:any)=>{
-        setResult(parseInt(e.target.value))
+    const handleResult = async(resultData:string)=>{
+        //alert(e.target.value)
+        try {
+            if (resultData !== '') {
+                const result = await fetch('/api/operation-response/',{
+                    method: 'POST', // Garde votre méthode GET pour l'exemple
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body:JSON.stringify({honeypot:honeypot,operation:resultData})
+                })
+
+                console.log("result",result)
+
+                if (!result.ok) {
+                    switch (result.statusText) {
+                        case "captcha":
+                            alert(`${locale === "fr" ? "Probléme survenu lors de l'opération" : "Problem detected when operating"}`)
+                            break;
+                        case "honeypot":
+                            alert(`${locale === "fr" ? "Spam détecté" : "Spam detected"}`)
+                            break
+                        case "captcha_incorrect":
+                            alert(`${locale === "fr" ? "Operation incorrect" : "incorrect operation"}`)
+                            break
+                        default:
+                            break;
+                    }
+                }
+
+                const response = await result.json() as {success?:string,error?:"captcha_incorrect"|"captcha"|"honeypot"};
+                
+                if (response.success) {
+                    setIsOperationValid(true)
+                }else{
+                    switch (response.error) {
+                        case "captcha":
+                            alert(`${locale === "fr" ? "Probléme survenu lors de l'opération" : "Problem detected when operating"}`)
+                            break;
+                        case "honeypot":
+                            alert(`${locale === "fr" ? "Spam détecté" : "Spam detected"}`)
+                            break
+                        case "captcha_incorrect":
+                            alert(`${locale === "fr" ? "Operation incorrect" : "incorrect operation"}`)
+                            break
+                        default:
+                            break;
+                    }
+                }   
+            }
+        } catch (error) {
+            console.log("Erreur",error)
+        }
     }
 
     const handleValidity = ()=>{
-        return number && (number.num1 + number.num2 === result) && isValid ? false : true
+        return isValid && isOperationValid
     }
 
     useEffect(()=>{
-        const number1 = Math.floor(Math.random() * 11);
-        const number2 = Math.floor(Math.random() * 11);
-        setNumber({num1:number1,num2:number2})
-    },[])
-    //console.log(errors,'isSended',isSended)
+        const callResult = async()=>{
+            await handleResult(result)
+        }
+        if(result && result !== ""){
+            callResult();
+        }
+    },[result])
+
+    useEffect(()=>{
+        const fetchNumOperation = async()=>{
+            const result = await fetch(`/api/get-num-operation`,{
+                method: 'POST', // Garde votre méthode GET pour l'exemple
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            
+            if (!result.ok) {
+                alert(result.statusText)
+                throw new Error('Erreur lors de la requête');
+            }
+
+            const response = await result.json() as {success:boolean,question:string};
+            
+            if (response.success) {
+                setNumber(`${locale === "fr" ? "Combient font "+response.question : "How make "+response.question}`)
+            } else {
+                alert(`${locale === 'fr' ? "Service indisponible pour le moment." : "Service is now unvailable."}`)
+            }
+        }
+
+        fetchNumOperation()
+
+    },[isSended])
+    
     return (
         <Element className="mt-[6.875rem]" name="contact">
             <div className="w-[85%] mx-auto">
@@ -171,19 +258,19 @@ const Contact:React.FC<ContactProps> = ({locale})=>{
                                         {errors.message?.type === "required" && <div className='text-[.8em] text-red-500'>{t["errMessage"]}</div>}
                                     </div>
                                 </div>
-                                <div className='w-full flex justify-start items-center gap-2'>
-                                    <span>
-                                        {
-                                            number && `${number.num1} + ${number.num2} = `
-                                        }
-                                    </span>
-                                    <input className='focus:outline-none border-[1px] px-2 py-1 text-[0.89rem] border-solid border-[#aaa] h-8 rounded-[.4em]' type="text" name="result" id="result" value={result ? result : ''} onChange={handleResult}/>
+                                <div className='w-full flex justify-between items-center gap-2 flex-wrap'>
+                                    <div className='flex justify-start items-center gap-2'>
+                                        <span>{number && number}</span>
+                                        <input className='flex-1 focus:outline-none border-[1px] w-full min-w-[14rem] px-2 py-1 text-[0.89rem] border-solid border-[#aaa] h-8 rounded-[.4em]' type="text" id="result" {...register('result')} />
+                                        {/* Honeypot */}
+                                        <input type="text" name="company" tabIndex={-1} autoComplete="off" style={{ display: 'none' }} value={honeypot} onChange={(e)=>setHoneypot(e.target.value)}/>
+                                    </div>
+                                    <button className={`btn btn-primary text-fifty ${handleValidity() && !loader ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-45'} ${loader ? 'flex justify-center items-center gap-1' :''}`} type="submit" disabled={!isValid && loader}>{t["sendMessage"]}{loader && <Icon name='bx bx-loader-alt bx-spin' size='1em' color='#fff'/>}</button>
                                 </div>
-                                <div className={`w-full flex items-end justify-end m-b-0 ${isSended !== null ? '!justify-between !items-center gap-4 flex-wrap' : ''}`}>
+                                <div className={`w-full flex items-end justify-end mt-3`}>
                                     {
                                         isSended !== null ? isSended === true ? <div className='bg-green-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[12.5rem]'>{t["successContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : <div className='bg-red-600 text-fifty text-[.85em] py-2 pl-4 pr-6 rounded-[.2em] relative flex-grow basis-[12.5rem]'>{t["errorContact"]} <CloseButton onClose={closeBox} size='small' color='!text-fifty' className='absolute top-1 right-2'/></div> : null
                                     }
-                                    <button className={`btn btn-primary text-fifty ${!handleValidity() && !loader ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-45'} ${loader ? 'flex justify-center items-center gap-1' :''}`} type="submit" disabled={!isValid && loader}>{t["sendMessage"]}{loader && <Icon name='bx bx-loader-alt bx-spin' size='1em' color='#fff'/>}</button>
                                 </div>
                             </form>
                         </div>

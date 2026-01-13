@@ -13,85 +13,13 @@ import Echec from "./echec";
 import Icon from "./Icon";
 import Link from "next/link";
 import { getCookie } from "@/server/services";
-
-interface Client {
-    id: string;
-    name:string;
-    taxId?:string;
-    email?:string;
-    modifDate:string
-    clientNumber:number;
-    invoiceCount?:number;
-    clientLang:string;
-}
-
-interface contractFormPrestataire{
-    freelancerName:string;
-    freelancerTaxId?:string;
-    freelanceAddress:string;
-    projectTitle:string;
-    projectDescription:string;
-    startDate:string;
-    endDate:string;
-    totalPrice:number;
-    paymentSchedule:string;
-    maintenanceCategory:"app"|"saas"|"web"|null;
-}
-
-interface clientCountry {
-    id:number,
-    name:string,
-    taxB2C:string,
-    taxB2B:string,groupe:string,
-    currency:string,
-    isoCode:string,threshold_before_tax:number,
-    specficTo:"state"|"country",
-    vat?:string,
-    state:{name:string,tax:number,vat:string,stateCode:string,threshold:number}|null
-}
-
-interface contractFormClient{
-    name:string;
-    adresse:{
-        street:string;
-        postalCode:string;
-        city:string;
-        country:clientCountry;
-    }
-    typeClient:"company"|"particular";
-    clientBillingAddress?:string;
-    clientEmail:string;
-    clientPhone:string;
-    clientVatNumber?:string;
-    typeMaintenance?:"perYear"|"perHour"|"";
-}
-
-interface Contract {
-    clientGivingData:contractFormClient|null,
-    prestataireGivingData:contractFormPrestataire|null,
-    contractType: "service"|"maintenance"|"service_and_maintenance";
-    maintenanceCategory:"app"|"saas"|"web"|null;
-    mprice?:number;
-    tax:number;
-    projectFonctionList:{title:string,description:string,quantity:number,price:number}[];
-    contractLanguage:string;
-    saleTermeConditionValided?:boolean;
-    electronicContractSignatureAccepted?:boolean;
-    rigthRetractionLostAfterServiceBegin?:boolean;
-}
-
-interface Services {
-    clientId:number;
-    name:string;
-    serviceType: "service"|"maintenance"|"service_and_maintenance";
-    contractStatus: 'signed' | 'unsigned' | 'pending';
-    contract:Contract
-}
+import { Client, clientServiceContract, Contract, serviceDb, Services } from "@/interfaces";
+import { parseDate } from "@/utils/fonction";
 
 interface GeneredContractProps{
     locale:string;
     clientId:number;
-    clientServiceId:string;
+    clientServiceId:number;
 }
 
 const enableCountryforLostRetraction = ['GB','CH','FR','IT','ES','NL','DE','AT','BE','ZA','AU','CA']
@@ -99,25 +27,25 @@ const enableCountryforLostRetraction = ['GB','CH','FR','IT','ES','NL','DE','AT',
 const GeneredContract:React.FC<GeneredContractProps> = ({locale,clientId,clientServiceId})=>{
     const t:any = useTranslationContext();
     const [contract, setContract] = useState<Contract|null>(null)
-    const [client, setClient] = useState<Client|null>(null)
-    const [contractStatus, setContractStatus] = useState<{translatedOrOriginalContractLink:string;notEnContractLink:string;paymentLink:string;status:"success"|"error"}|null>(null)
+    const [contractStatus, setContractStatus] = useState<{translatedOrOriginalContractLink:string;notFrContractLink:string;paymentLink:string;status:"success"|"error"}|null>(null)
     const router = useRouter()
     const [isPopUp,setIsPopUp] = useState<boolean>(false)
     const [loading, setLoading] = useState(true);
     const [loader, setLoader] = useState(false);
+    const [canGenereContract,setCanGenereContract] = useState<boolean>(false)
     const {contextData} = useContext(AppContext)
     const [clientSignatureLink, setClientSignatureLink] = useState<string | null>(null);
     const [freelanceSignatureLink, setFreelanceSignatureLink] = useState<string | null>(null);
     const [service, setService] = useState<Services|null>(null);
-    const [serviceData, setServiceData] = useState<Services|null>(null);
     const [acceptSaleTerm,setAcceptSaleTerm] = useState<boolean>(false)
     const [confirmAcceptBackAmountCondition,setConfirmAcceptBackAmountCondition] = useState<boolean>(false)
     const [confirmElectronicSignature, setConfirmElectronicSignature] = useState<boolean>(false);
+    
     const handleSignatureChange = (data:any)=>{
-        console.log("data",data)
         setClientSignatureLink(data.clientSignatureLink)
         setFreelanceSignatureLink(data.freelanceSignature)
     }
+
     useEffect(()=>{
         if (contextData && (contextData.state === "hide" || contextData.state === "show")) {
             console.log("inside contextData",contextData)
@@ -125,46 +53,30 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale,clientId,clientS
         }
     },[contextData])
 
-    useEffect(()=>{
-        const checkCookie = async ()=>{
-            const cookie = await getCookie('userAuth')
-            return cookie;
-        }
-        const checkUserConnection = async(contractStatus:"signed"|"unsigned"|"pending")=>{
-            const cookie = await checkCookie()
-            if (cookie || contractStatus === 'pending') {
-            }else{
-                router.push("/"+locale)
-                return null
-            }
-        }
-        const contractData = sessionStorage.getItem('contractData');
-        if (contractData) {
-            const parsedData = JSON.parse(contractData);
-            console.log("parsedData",parsedData)
-            setContract(parsedData.service.contract);
-            setClient(parsedData.client);
-            setService(parsedData.service);
-            checkUserConnection(parsedData.service.contractStatus)
-            setLoading(false);
-        }else{
-            router.push("/"+(client?.clientLang ?? 'en')+"/create-contract/"+clientId+"/"+clientServiceId)
-        }
-    },[clientId,locale,loading,router])
-
     const uploadContract = ()=>{
-        if(!contract || !clientSignatureLink || !freelanceSignatureLink || !client || !service) return
+        if(!contract || !clientSignatureLink || !freelanceSignatureLink || !service) return
         setLoader(true)
-        setServiceData(service)
+        setCanGenereContract(true)
+        //setServiceData(service)
     }
+
     const checkContractValidation = ()=>{
-        return (clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition) && !loader
+        return (clientSignatureLink !== null && freelanceSignatureLink !== null && confirmElectronicSignature && acceptSaleTerm && (enableCountryforLostRetraction.includes(contract?.clientGivingData?.addressClient?.clientCountry?.isoCode ?? '') ? confirmAcceptBackAmountCondition : true)) && !loader
     }
+
+    const parseProjectFonctionList = (features:{title:string,description:string,quantity:number,price:number}[]|string)=>{
+        if (typeof(features) === "string") {
+            return JSON.parse(features)
+        }
+        return features
+    }
+
     //console.log("totalPrice",contract?.totalPrice, contract)
-    const handleContractStatus = (data: { translatedOrOriginalContractLink: string;notEnContractLink: string; paymentLink: string; status: "success" | "error"; }): void =>{
+    const handleContractStatus = (data: { translatedOrOriginalContractLink: string;notFrContractLink: string; paymentLink: string; status: "success" | "error"; }): void =>{
         setContractStatus(data)
         setLoader(false)
     }
+
     const handleEmit = (data: string): void =>{
         setContractStatus(null)
         setClientSignatureLink(null)
@@ -173,6 +85,84 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale,clientId,clientS
         setAcceptSaleTerm(false)
         setConfirmAcceptBackAmountCondition(false)
     }
+
+    useEffect(() => {
+        
+        const handleService = (service:string|null|Services|Services[])=>{
+            if (service) {
+                if (typeof(service) === "string") {
+                    const servicesParsed = JSON.parse(service) as Services[]
+                    return servicesParsed
+                }else if(Array.isArray(service)){
+                    return null
+                }else{
+                    return service
+                }
+            }else{
+                return null
+            }
+        }
+        
+        const fetchContractClientService = async (prestataireId: number,serviceId:number) =>{
+            if(!prestataireId || !serviceId) return
+            const result = await fetch(`/api/get-client-service-contract/?serviceId=${clientServiceId}&clientId=${clientId}&prestataireId=${prestataireId}`,{
+                method: 'GET', // Garde votre méthode GET pour l'exemple
+                headers: {
+                'Content-Type': 'application/json',
+                }
+            })
+
+            if (!result.ok) {
+                alert(result.statusText)
+                throw new Error('Erreur lors de la requête');
+            }
+
+            const response = await result.json();
+            
+            if (response.success && response.result) {
+                handleResponse(response.result as clientServiceContract)
+                sessionStorage.setItem('clientServiceContract_'+clientId+'-'+clientServiceId, JSON.stringify(response.result));
+            } else {
+                alert(response.message);
+            }
+        }
+
+        const handleResponse = async(client:clientServiceContract)=>{
+            if(!client) return
+
+            //const cookie = await checkCookie()
+            //console.log("contrat",data)
+
+            const serviceList = handleService(client?.services ?? null) as serviceDb[];
+
+            if (serviceList.length > 0) {
+                const service = serviceList[0]
+                const contractData = service.contract
+
+                const contract:Contract|null = contractData ? {contractId:contractData?.contractId,
+                    clientGivingData:{saveDate:client.saveDate,clientNumber:client.clientNumber,clientLang:client.clientLang,clientStatus:client.clientStatus,modifDate:client.modifDate,email:client.email,address:client.address,addressClient:client.addressClient,fname:client.fname,lname:client.lname,taxId:client.taxId ?? '',phone:client.phone,clientType:client.clientType},
+                    prestataireGivingData:{contractStatus:service.contractStatus,taxPercent:contractData.taxPercent,taxPrice:contractData.taxPrice,maintenanceCategory:contractData.maintenanceCategory,totalPrice:contractData?.totalPrice,paymentSchedule:contractData?.paymentSchedule,startDate:contractData?.startDate,endDate:contractData?.endDate,projectTitle:contractData?.projectTitle,
+                    projectDescription:contractData?.projectDescription,freelancerTaxId:contractData?.freelancer?.freelancerTaxId ?? "",freelancerName:contractData?.freelancer?.freelancerName ?? "",freelancerAddress:contractData?.freelancer?.freelancerAddress ?? "",
+                    projectFonctionList:parseProjectFonctionList(contractData?.features)}} : null
+                setContract(contract);
+                
+                setService(service);
+                setLoading(false);
+            }
+        }
+
+        const sessionloadedContractData = sessionStorage.getItem('clientServiceContract_'+clientId+'-'+clientServiceId);
+        //const contractData = sessionStorage.getItem('contractData');
+
+        if (sessionloadedContractData) {
+            const clientParsed = JSON.parse(sessionloadedContractData) as clientServiceContract;
+            handleResponse(clientParsed)
+        }else{
+            fetchContractClientService(1,clientServiceId);
+        }
+        
+    }, [clientId,router,locale]);
+    
     if (!contract && loading) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">{t.loading}</div>;
 
     return (
@@ -199,21 +189,21 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale,clientId,clientS
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["3"].sec2.title}</h3>
                             <ul className="list-disc ml-10 mb-5">
                                 {
-                                    contract?.projectFonctionList.map((item, index) => (
-                                        <li className="text-[1rem] mb-1" key={index}>{item.title} - {item.description} - {item.price}</li>
+                                    contract?.prestataireGivingData && parseProjectFonctionList(contract?.prestataireGivingData.projectFonctionList).map((item:{title:string,description:string,quantity:number,price:number}, index:number) => (
+                                        <li className="text-[1rem] mb-1" key={contract.contractId+'-'+index}>{item.title} - {item.description} - {item.price}</li>
                                     ))
                                 }
                             </ul>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["3"].sec3.title}</h3>
                             <p className="text-[1rem] mb-3">{
-                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",new Date(contract.prestataireGivingData?.startDate!).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)).replace("{endDate}",new Date(contract.prestataireGivingData?.endDate!).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)) : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",new Date(contract.prestataireGivingData?.endDate!).toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)) : ''
+                                service?.serviceType === 'service' ? t.contract.sections["3"].sec3.paraService.replace("{startDate}",parseDate(new Date(contract?.prestataireGivingData?.startDate ?? new Date()),locale)).replace("{endDate}",parseDate(new Date(contract?.prestataireGivingData?.endDate ?? new Date()),locale)) : service?.serviceType === 'maintenance' ? t.contract.sections["3"].sec3.serviceMaintenance : t.contract.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",parseDate(new Date(contract?.prestataireGivingData?.endDate ?? new Date()),locale))
                             }</p>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{
-                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.titleService : contract.contractType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance : ''
+                                service?.serviceType === 'service' ? t.contract.sections["3"].sec4.titleService : service?.serviceType === 'maintenance' ? t.contract.sections["3"].sec4.titleMaintenance : t.contract.sections["3"].sec4.titleServiceMaintenance
                             }</h3>
                             <p className="text-[1rem] mb-5">{
-                                contract ? contract.contractType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",contract.prestataireGivingData?.totalPrice) : contract.contractType === 'maintenance' ? contract.clientGivingData?.typeMaintenance === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraMaintenance.perYear.replace("{mprice}",contract.mprice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.prestataireGivingData?.totalPrice)} ${
-                                    contract.clientGivingData?.typeMaintenance === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.contract.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract.mprice)} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}` : ''
+                                service?.serviceType === 'service' ? t.contract.sections["3"].sec4.paraService.replace("{price}",contract?.prestataireGivingData?.totalPrice) : service?.serviceType === 'maintenance' ? contract?.clientGivingData?.maintenanceType === 'perHour' ? t.contract.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.maintenancePrice ?? 0) : t.contract.sections["3"].sec4.paraMaintenance.perYear.replace("{mprice}",contract?.maintenancePrice) : `${t.contract.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract?.prestataireGivingData?.totalPrice)} ${
+                                    contract?.clientGivingData?.maintenanceType === 'perHour' ? t.contract.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.maintenancePrice ?? 0) : t.contract.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract?.maintenancePrice ?? 0)} ${t.contract.sections["3"].sec4.paraServiceMaintenance.para1}`
                             }</p>
                             <h2 className="text-[1.8rem] leading-[1.95rem] mb-5">{t.contract.sections["4"].title}</h2>
                             <h3 className="text-[1.5rem] leading-[1.95rem] mb-3">{t.contract.sections["4"].sec1.title}</h3>
@@ -378,9 +368,8 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale,clientId,clientS
                             <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraA}</p>
                             <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraB}</p>
                             <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraC}</p>
-                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraD}</p>
-                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraE.replace("{day}",7)}</p>
-                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraF}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraD.replace("{day}",7)}</p>
+                            <p className="text-[1rem] mb-2">{t.contract.sections["8"].paraE}</p>
                             <p className="text-[1rem] mb-5">{t.contract.sections["8"].paraClose}</p>
                             <h2 className="text-[1.8rem] leading-[1.95rem] mb-5">{t.contract.sections["9"].title}</h2>
                             <p className="text-[1rem] mb-3">{t.contract.sections["9"].para}</p>
@@ -388,41 +377,41 @@ const GeneredContract:React.FC<GeneredContractProps> = ({locale,clientId,clientS
                             <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraB}</p>
                             <p className="text-[1rem] mb-2">{t.contract.sections["9"].paraC}</p>
                         </div>
-                        <GeneratePdfContract clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} client={client} service={serviceData} locale={locale} onEmit={handleContractStatus}/>
+                        {canGenereContract && <GeneratePdfContract clientSignatureLink={clientSignatureLink} freelanceSignatureLink={freelanceSignatureLink} contract={contract} service={service} locale={locale} onEmit={handleContractStatus}/>}
                     </section>
                     {
-                        locale !== 'en' && <div className="flex justify-center items-start flex-col gap-1 mb-3"><span className="block italic my-4">{t.originalVersion}</span><Link className="p-1 px-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-center text-[.85rem]" href={`/en/sign-contract/${clientId}/${clientServiceId}`}>{t.readOriginalVersion}</Link></div>
+                        locale !== 'fr' && <div className="flex justify-center items-start flex-col gap-1 mb-3"><span className="block italic my-4">{t.originalVersion}</span><Link className="p-1 px-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-center text-[.85rem]" href={`/en/sign-contract/${clientId}/${clientServiceId}`}>{t.readOriginalVersion}</Link></div>
                     }
-                    <span className="block italic my-4">{t.contractConfirm}</span>
+                    <span className="block italic my-4">{t.contractConfirm} <Link className="text-sm text-blue-600 underline" href={`mailto:${process.env.NEXT_PUBLIC_FREELANCE_EMAIL_SUPPORT}`}>{process.env.NEXT_PUBLIC_FREELANCE_EMAIL_SUPPORT}</Link></span>
                     <div className="flex justify-start items-center my-5 gap-2">
                         <input type="checkbox" name="" id="confirmElectronicSignature" onChange={(e:any)=>setConfirmElectronicSignature(e.target.checked)}/>
                         <label htmlFor="confirmElectronicSignature">{t.confirmElectronicSignature}</label>
                     </div>
                     <div className="flex justify-start items-center my-5 gap-2">
                         <input type="checkbox" name="" id="acceptSaleTerms" onChange={(e:any)=>setAcceptSaleTerm(e.target.checked)}/>
-                        <label htmlFor="acceptSaleTerms" dangerouslySetInnerHTML={{ __html: t.acceptSaleTerm.replace('{GTS}','<a href="/'+(client?.clientLang ?? 'en')+'/terms-of-sale" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t["termsOfSale"]+'</a>') }}/>
+                        <label htmlFor="acceptSaleTerms" dangerouslySetInnerHTML={{ __html: t.acceptSaleTerm.replace('{GTS}','<a href="/'+(contract?.clientGivingData?.clientLang ?? 'en')+'/terms-of-sale" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t["termsOfSale"]+'</a>') }}/>
                     </div>
                     {
-                        enableCountryforLostRetraction.includes(contract?.clientGivingData?.adresse.country.isoCode ?? '') && (
+                        enableCountryforLostRetraction.includes(contract?.clientGivingData?.addressClient?.clientCountry?.isoCode ?? '') && (
                             <div className="flex justify-start items-center my-5 gap-2">
                                 <input type="checkbox" name="" id="backAmountCondition" onChange={(e:any)=>setConfirmAcceptBackAmountCondition(e.target.checked)}/>
-                                <label htmlFor="backAmountCondition" dangerouslySetInnerHTML={{ __html: t.backAmountConditionText.replace('{GTS}','<a href="/'+(client?.clientLang ?? 'en')+'/terms-of-sale#article13" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t.backAmountCondition+'</a>') }}/>
+                                <label htmlFor="backAmountCondition" dangerouslySetInnerHTML={{ __html: t.backAmountConditionText.replace('{GTS}','<a href="/'+(contract?.clientGivingData?.clientLang ?? 'en')+'/terms-of-sale#article13" target="_blank" rel="noreferrer" class="underline text-blue-500">'+t.backAmountCondition+'</a>') }}/>
                             </div>
                         )
                     }
-                    <section className={`signing ${confirmElectronicSignature && acceptSaleTerm && confirmAcceptBackAmountCondition ? 'opacity-100 pointer-events-auto' : 'opacity-50 pointer-events-none'}`}>
+                    <section className={`signing ${confirmElectronicSignature && acceptSaleTerm && (enableCountryforLostRetraction.includes(contract?.clientGivingData?.addressClient?.clientCountry?.isoCode ?? '') ? confirmAcceptBackAmountCondition : true) ? 'opacity-100 pointer-events-auto' : 'opacity-50 pointer-events-none'}`}>
                         <InitCanvaSignature locale={locale} emit={handleSignatureChange} enable={confirmElectronicSignature}/>
                     </section>
                     <div className="flex justify-end items-center mt-5 gap-4 flex-wrap">
-                        <a className="px-4 py-2 bg-fifty text-primary rounded-md hover:bg-[#ccc] min-w-[14rem] text-center" href={`/${client?.clientLang ?? 'en'}/create-contract/${clientId}/${clientServiceId}/?edit=true`}>{t.updateContract}</a>
+                        <a className="px-4 py-2 bg-fifty text-primary rounded-md hover:bg-[#ccc] min-w-[14rem] text-center" href={`/${contract?.clientGivingData?.clientLang ?? 'en'}/create-contract/${clientId}/${clientServiceId}`}>{t.updateContract}</a>
                         <button type="button" className={`px-4 py-2 bg-thirty hover:bg-secondary text-white rounded-md min-w-[14rem] ${checkContractValidation() ? 'opacity-1 cursor-pointer' : 'opacity-50 cursor-not-allowed'} flex justify-center items-center gap-2`} disabled={!checkContractValidation()} onClick={uploadContract}>{loader && <Icon name='bx bx-loader-alt bx-spin bx-rotate-180' color='#fff' size='1em'/>}{t.uploadContract}</button>
                     </div>
                     </>
             ) : (
                 contractStatus.status === 'success' ? (
-                    <div className="pt-9 pb-1"><Success translatedOrOriginalContractLink={contractStatus.translatedOrOriginalContractLink} notEnContractLink={contractStatus.notEnContractLink} paymentLink={contractStatus.paymentLink} locale={client?.clientLang ?? 'en'}/></div>
+                    <div className="pt-9 pb-1"><Success translatedOrOriginalContractLink={contractStatus.translatedOrOriginalContractLink} notFrContractLink={contractStatus.notFrContractLink} paymentLink={contractStatus.paymentLink} locale={contract?.clientGivingData?.clientLang ?? 'en'}/></div>
                 ) : (
-                    <div className="pt-9 pb-1"><Echec locale={client?.clientLang ?? 'en'} onEmit={handleEmit}/></div>
+                    <div className="pt-9 pb-1"><Echec locale={contract?.clientGivingData?.clientLang ?? 'en'} onEmit={handleEmit}/></div>
                 )
             )
         }

@@ -1,7 +1,7 @@
 // app/api/auth/login/route.ts
 import { deleteClient } from '@/server/handle-database';
 import { NextRequest, NextResponse } from 'next/server';
-import db from '../../../server/init-database';
+
 export async function PUT(req: NextRequest) {
   try {
     const { status, clientId } = await req.json();
@@ -21,7 +21,5 @@ export async function PUT(req: NextRequest) {
       { success: false, message: error },
       { status: 500,statusText:error }
     );
-  } finally{
-    db.close()
   }
 }

@@ -1,14 +1,15 @@
 // app/api/auth/login/route.ts
-import { savePreFillContract, userAuth } from '@/server/services';
+
+import { saveContract } from '@/server/handle-database';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-    const { parsedService, clientServiceId } = await req.json();
-
+    const { contract, clientId,addressId, serviceId, prestataireId,mode,from,contractId } = await req.json();
+    console.log("contract route",contract)
     // Appeler l'action de serveur userAuth
-    const result = await savePreFillContract(parsedService, clientServiceId);
-    console.log("result",result)
+    const result = await saveContract(contract,clientId,addressId, serviceId,prestataireId,mode,from,contractId);
+    //console.log("result",result)
     // Si l'authentification a réussi, l'action de serveur a déjà défini le cookie.
     // Il suffit de retourner le résultat à l'interface utilisateur.
     if (result) {
@@ -18,10 +19,10 @@ export async function POST(req: NextRequest) {
     }
 
   } catch (error: any) {
-    console.error("Erreur dans la route API de save prefill contract:", error);
+    //console.error("Erreur dans la route API de save prefill contract:", error);
     return NextResponse.json(
-      { success: false, message: "Une erreur interne du serveur s'est produite." },
-      { status: 500 }
+      { success: false, message: error },
+      { status: 500,statusText:error }
     );
   }
 }

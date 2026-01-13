@@ -7,18 +7,18 @@ import { useRouter } from 'next/router';
 interface SuccessProps {
   locale: string;
   translatedOrOriginalContractLink: string;
-  notEnContractLink: string;
+  notFrContractLink: string;
   paymentLink: string;
 }
 
-const Success: React.FC<SuccessProps> = ({ locale,translatedOrOriginalContractLink,notEnContractLink,paymentLink}) => {
+const Success: React.FC<SuccessProps> = ({ locale,translatedOrOriginalContractLink,notFrContractLink,paymentLink}) => {
     const t:any = useTranslationContext();
     const lang = `${locale === 'fr' ? 'Français' : locale === 'de' ? 'Deutsche' : 'English'}`
     /*useEffect(() => {
         if (locale) {
-            const data: { translatedOrOriginalContractLink: string;notEnContractLink: string; paymentLink: string; status: "success" | "error"; } = {
+            const data: { translatedOrOriginalContractLink: string;notFrContractLink: string; paymentLink: string; status: "success" | "error"; } = {
                 translatedOrOriginalContractLink,
-                notEnContractLink,
+                notFrContractLink,
                 paymentLink,
                 status: "success",
             };
@@ -42,7 +42,7 @@ const Success: React.FC<SuccessProps> = ({ locale,translatedOrOriginalContractLi
                     <div className='flex justify-center items-center gap-4 flex-wrap'>
                         <Link className='bg-green-700 text-white p-4 rounded-[.2rem] font-medium flex justify-start items-center gap-2 min-w-[14rem]' href={translatedOrOriginalContractLink} target='_blank'><Icon name="bxs-file-pdf" size='1.6rem' color='white'/>{locale !== 'en' ?t.contractSuccess.signedContractTranslated : t.contractSuccess.signedContract}</Link>
                         {
-                            locale !== 'en' && <Link className='bg-green-700 text-white p-4 rounded-[.2rem] font-medium flex justify-start items-center gap-2 min-w-[14rem]' href={notEnContractLink} target='_blank'><Icon name="bxs-file-pdf" size='1.6rem' color='white'/>{t.contractSuccess.signedContract}</Link>
+                            locale !== 'en' && <Link className='bg-green-700 text-white p-4 rounded-[.2rem] font-medium flex justify-start items-center gap-2 min-w-[14rem]' href={notFrContractLink} target='_blank'><Icon name="bxs-file-pdf" size='1.6rem' color='white'/>{t.contractSuccess.signedContract}</Link>
                         }
                         <Link className='bg-green-700 text-white p-4 rounded-[.2rem] font-medium flex justify-start items-center gap-2 min-w-[14rem]' href={paymentLink} target='_blank'><Icon name="bxs-file-pdf" size='1.6rem' color='white'/>{t.contractSuccess.paymentMethode}</Link>
                     </div>

@@ -116,7 +116,7 @@ type pdfContent = {
 interface contractFormPrestataire{
     freelancerName:string;
     freelancerTaxId?:string;
-    freelanceAddress:string;
+    freelancerAddress:string;
     projectTitle:string;
     projectDescription:string;
     startDate:string;

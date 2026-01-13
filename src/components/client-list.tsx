@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Icon from './Icon';
 import { getCookie, userLogout } from '@/server/services';
-import { Client } from '@/interfaces';
+import { Client, clientServiceDb, clientServiceList, Services } from '@/interfaces';
 import { parseDate } from '@/utils/fonction';
 
 interface CLientsListProps {
@@ -13,17 +13,18 @@ interface CLientsListProps {
 }
 
 const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
-    const [clients, setClients] = useState<any[]>([]);
+    const [clientService, setClientsService] = useState<clientServiceList[]>([]);
     const [loading, setLoading] = useState(true);
     const [loader, setLoader] = useState(false);
     const router = useRouter();
     // Charger les clients depuis Firestore
+
     useEffect(() => {
         const handleClient = async()=>{
             const clientDataSession = sessionStorage.getItem("clientData")
             if (clientDataSession) {
-                const clientData = JSON.parse(clientDataSession);
-                setClients(clientData);
+                const clientData = JSON.parse(clientDataSession) as clientServiceList[];
+                setClientsService(clientData);
                 setLoading(false);
             } else {
                 const response = await fetch('/api/get-clients-list/',{
@@ -37,13 +38,13 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                     throw new Error('Erreur lors de la requête');
                 }
                 const data = await response.json();
-                const clientData:any[] = data.result
-                const parsedClient = clientData.map((item)=>{
+                const clientServiceData = data.result as clientServiceDb[]
+                const parsedClientService:clientServiceList[] = clientServiceData.map((item)=>{
                     return {...item,services:JSON.parse(item.services)}
                 })
-                if (parsedClient) {
-                    setClients(parsedClient);
-                    sessionStorage.setItem("clientData",JSON.stringify(parsedClient))
+                if (parsedClientService) {
+                    setClientsService(parsedClientService);
+                    sessionStorage.setItem("clientData",JSON.stringify(parsedClientService))
                     setLoading(false);
                 } else {
                     alert("Erreur lors du chargement des clients")
@@ -55,16 +56,16 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
     }, []);
 
     // Supprimer un client
-    const handleDeleteClient = async (id: string) => {
+    const handleDeleteClient = async (clientId: number) => {
         if (getDeleteConfirmation()) {
-            console.log("id",id)
+            //console.log("id",id)
             try {
                 const result = await fetch('/api/delete-client/',{
                     method: 'PUT', // Garde votre méthode GET pour l'exemple
                     headers: {
                     'Content-Type': 'application/json',
                     },
-                    body:JSON.stringify({status:"desactived",clientId:id})
+                    body:JSON.stringify({status:"desactived",clientId:clientId})
                 })
                 if (!result.ok) {
                     alert(result.statusText)
@@ -73,10 +74,12 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                 const response = await result.json();
                 
                 if (response.success) {
-                    setClients((prev)=>{
-                        const clientItemIndex = prev.findIndex((item)=>item.id === id)
+                    //alert("reponse "+id)
+                    setClientsService((prev)=>{
+                        const clientItemIndex = prev.findIndex((item)=>item.clientId === clientId)
                         if (clientItemIndex > -1) {
-                            const updateClient:Client = {...prev[clientItemIndex],status:"desactived"}
+                            //alert(clientItemIndex+' '+id)
+                            const updateClient:clientServiceList = {...prev[clientItemIndex],clientStatus:"desactived"}
                             const updateClients = prev.splice(clientItemIndex,1,updateClient)
                             sessionStorage.setItem("clientData",JSON.stringify(updateClients))
                             return updateClients
@@ -161,7 +164,9 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
         checkCookie()
     },[locale])
     if (loading) return <div className="text-center py-8 mt-[6.875rem] h-[12.5rem] flex justify-center items-center w-[85%] mx-auto">Chargement...</div>;
-    if(!clients.length) return
+
+    if(!clientService.length) return <div className="min-h-[400px] flex justify-center items-center flex-col gap-2"><p>Aucun client enregistré pour le moment</p><Link className='text-primary py-2 px-4 bg-fifty rounded-[.2em] hover:bg-[#ccc]' href={'/'+locale+'/create-client'}>Créer un client</Link></div>
+
 
     return (
         <div className="container px-4 py-8 mt-[6.875rem] w-[85%] mx-auto">
@@ -181,7 +186,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                         </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                        {clients.map((client,index) => (
+                        {clientService.map((client,index) => (
                             <tr key={`${client.clientId}-${index}`}>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="font-medium text-gray-900">{client.lname+" "+client.fname}</div>
@@ -213,7 +218,7 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                             <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-start items-center gap-2`}>
                                 <a title="Modifier le client" href={`/${client.clientLang}/update-client/${client.clientId}`} className="text-blue-600 hover:text-blue-900 mr-4"><Icon name="bx bx-edit" size="1rem"/></a>
                                 <button
-                                onClick={() => handleDeleteClient(client.clientId ?? "")}
+                                onClick={() => handleDeleteClient(client.clientId ?? 0)}
                                 className="text-red-600 hover:text-red-900"
                                 title="Supprimer ce client"
                                 >

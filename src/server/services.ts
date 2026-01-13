@@ -109,18 +109,4 @@ async function getCookie(name:string){
   }
 }
 
-const savePreFillContract = async (parsedService:any,clientServiceId:string)=>{
-  
-}
-
-const getClientAndService = async (clientId:string,serviceId:string)=>{
-  
-}
-
-const checkClientTaxability = async(juridiction:string)=>{
-  
-}
-
-
-
-export {getIp,userAuth,getCookie,userLogout,savePreFillContract,getClientAndService,checkClientTaxability};
+export {getIp,userAuth,getCookie,userLogout};

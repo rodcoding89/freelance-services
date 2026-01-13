@@ -595,7 +595,7 @@
                 "title": "2 - PURPOSE",
                 "sec1": {
                     "title": "2.1 - Services",
-                    "para": "The service provider undertakes to provide the client with the computer services (hereinafter referred to as 'the services') described in the specifications included in the 'Project Description and Key Features' section, or, failing that, in the quote."
+                    "para": "The service provider undertakes to provide the client with the computer services (hereinafter referred to as 'the services') described in the specifications included in the 'Project Description and Key Features' section, or failing that, in the specifications."
                 },
                 "sec2": {
                     "title": "2.2 - Service Delivery Time",
@@ -713,7 +713,7 @@
                     "paraB": "b) following an error or omission by the service provider; or",
                     "paraC": "c) that does not result in additional work by the service provider;",
                     "para21": "then said modification request is not considered a request for additional services and",
-                    "para22": "therefore does not result in any additional cost for the client. Any such modification request by the client must be made in writing.",
+                    "para22": "therefore does not result in any additional cost for the client. Any request for modification from the client must be made in writing.",
                     "paraClose": "Any other modification request by the client is considered a request for additional services."
                 },
                 "sec11": {
@@ -861,12 +861,12 @@
                 },
                 "sec12":{
                     "title":"6.12 - Language of the Contract",
-                    "para11": "This document constitutes the original and only version of the contract. We recommend that you retain it carefully, as it shall serve as the authoritative and legally binding version in the event of any dispute.",
-                    "para12":"",
+                    "para11": "This contract is an English translation of a document originally written in French, provided for informational purposes to facilitate understanding by the client. However, in the event of any contradiction, discrepancy, or difficulty of interpretation between the two versions, the following applies:",
+                    "para12":"Only the French version will be authentic and prevail between the parties.",
                     "para2":"",
-                    "para31":"This contract is written in two languages: English (original version) and {lang} (for reference purposes only). In the event of any contradiction, discrepancy or interpretative difficulty,",
-                    "para32":"only the English version shall prevail and be binding between the parties.",
-                    "para41":"The",
+                    "para31":"",
+                    "para32":"",
+                    "para41":"",
                     "para42":"project title, description and key features",
                     "para43":"may be presented in their original language (notably {lang}), in order to preserve technical accuracy. These sections are considered fully valid and binding in both versions."
                 },
@@ -896,10 +896,9 @@
                 "para": "This contract ends in one or the other of the following cases:",
                 "paraA": "a) when all the parties' obligations have been fulfilled;",
                 "paraB": "b) when the project is received by the client;",
-                "paraC": "c) when the client signs the contract end document;",
-                "paraD": "d) in case of termination provided for in this contract;",
-                "paraE": "e) if one of the parties fails to comply with one or the other of its obligations, within a period of {day} days following the receipt by the defaulting party of a notice to remedy or within any other shorter period provided for in this contract, and there is inaction by the defaulting party within said period;",
-                "paraF": "f) in case of bankruptcy, insolvency, or cessation of activities of one or the other of the parties.",
+                "paraC": "c) in case of termination provided for in this contract;",
+                "paraD": "d) if one of the parties fails to comply with one or the other of its obligations, within a period of {day} days following the receipt by the defaulting party of a notice to remedy or within any other shorter period provided for in this contract, and there is inaction by the defaulting party within said period;",
+                "paraE": "e) in case of bankruptcy, insolvency, or cessation of activities of one or the other of the parties.",
                 "paraClose": "However, the end of this contract does not have the effect of causing a party to lose a right or to be released from an obligation, particularly regarding confidentiality, intellectual property, warranty limitation, and liability limitation. Said rights and obligations survive the end of this contract."
             },
             "9": {
@@ -964,6 +963,7 @@
     "enterpriceLocation": "Headquarters",
     "contractTerme": "Contract Terms",
     "contractConfirm": "If you agree to the terms above, please first check the box to approve the electronic signature of the contract, then confirm that you have read and accepted the General Terms and Conditions (GTC) by checking the second box. Then sign the contract below. If you do not agree, please let us know your reasons for refusal.",
+    "originalVersion":"This is the translated version of the contract. It is intended to facilitate understanding of the contract terms. To read the original (French) version, click the button. If you are unsure about the consistency between the versions, you can translate the original (French) version using Google Translate or an online translation tool.",
     "confirmElectronicSignature": "I confirm that I approve the electronic signature of the contract",
     "updateContract": "Edit contract",
     "uploadContract": "Download contract",

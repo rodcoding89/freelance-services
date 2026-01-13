@@ -1,15 +1,14 @@
 
-const user = process.env.USER_EMAIL;
-const pw = process.env.USER_PASSWORD;
-
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: `${process.env.ZOHO_SMTP_SERVER}`,
+  port: parseInt(process.env.ZOHO_SMTP_PORT ?? "465"),
+  secure: true, // Use true for port 465, false for port 587
   auth: {
-      user: user,
-      pass: pw
-  }
+    user: `${process.env.ZOHO_SMTP_CONSUMER}`,
+    pass: `${process.env.ZOHO_SMTP_PASSWORD}`,
+  },
 });
 
 export default transporter;

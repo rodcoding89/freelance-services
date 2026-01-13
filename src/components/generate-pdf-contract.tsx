@@ -5,8 +5,9 @@ import { PDFDocument, PDFFont, PDFImage, PDFPage, RGB, rgb, StandardFonts } from
 import { sendContract } from '@/server/services-mail';
 import { saveContractDoc } from '@/server/services-save-doc';
 import { useParams } from 'next/navigation';
-import { loadEnTranslation } from '@/utils/fonction';
+import { loadTranslation, parseDate, parseInputDate } from '@/utils/fonction';
 import SalesTax from 'sales-tax';
+import { Client, Contract, contractFormClient, contractFormPrestataire, Services } from '@/interfaces';
 
 
 type SingleTextLayourt = {
@@ -80,86 +81,13 @@ type FunctionParams = {
     };
 };
 
-interface Client {
-    id: string;
-    name:string;
-    taxId?:string;
-    email?:string;
-    modifDate:string
-    clientNumber:number;
-    invoiceCount?:number;
-    clientLang:string;
-}
-
-interface contractFormPrestataire{
-    freelancerName:string;
-    freelancerTaxId?:string;
-    freelanceAddress:string;
-    projectTitle:string;
-    projectDescription:string;
-    startDate:string;
-    endDate:string;
-    totalPrice:number;
-    paymentSchedule:string;
-    maintenanceCategory:"app"|"saas"|"web"|null;
-}
-interface clientCountry {
-    id:number,
-    name:string,
-    taxB2C:string,
-    taxB2B:string,groupe:string,
-    currency:string,
-    isoCode:string,threshold_before_tax:number,
-    specficTo:"state"|"country",
-    vat?:string,
-    state:{name:string,tax:number,vat:string,stateCode:string,threshold:number}|null
-}
-
-interface contractFormClient{
-    name:string;
-    adresse:{
-        street:string;
-        postalCode:string;
-        city:string;
-        country:clientCountry;
-    }
-    typeClient:"company"|"particular"|null;
-    clientBillingAddress?:string;
-    clientEmail:string;
-    clientPhone:string;
-    clientVatNumber?:string;
-    typeMaintenance?:"perYear"|"perHour"|"";
-}
-
-interface Contract {
-    clientGivingData:contractFormClient|null,
-    prestataireGivingData:contractFormPrestataire|null,
-    contractType: "service"|"maintenance"|"service_and_maintenance";
-    maintenanceCategory:"app"|"saas"|"web"|null;
-    mprice?:number;
-    tax:number;
-    projectFonctionList:{title:string,description:string,quantity:number,price:number}[];
-    contractLanguage:string;
-    saleTermeConditionValided?:boolean;
-    electronicContractSignatureAccepted?:boolean;
-    rigthRetractionLostAfterServiceBegin?:boolean;
-}
-interface Services {
-    clientId:number;
-    name:string;
-    serviceType: "service"|"maintenance"|"service_and_maintenance";
-    contractStatus: 'signed' | 'unsigned' | 'pending';
-    contract:Contract
-}
-
-
 interface GeneredContractProps {
-  client:Client|null;
+  contract:Contract|null
   clientSignatureLink:string|null;
   freelanceSignatureLink:string|null;
   locale:string;
   service:Services|null;
-  onEmit:(data:{translatedOrOriginalContractLink:string,notEnContractLink:string,paymentLink:string,status:"success"|"error"})=>void;
+  onEmit:(data:{translatedOrOriginalContractLink:string,notFrContractLink:string,paymentLink:string,status:"success"|"error"})=>void;
 }
 
 const supportCountryWithPlugins = ["US","CA","DE","FR","IT","ES","AT","BE","NL","CH","GB","AU","ZA","NG"]
@@ -167,11 +95,10 @@ const enableCountryForThresholdBeforTax = ["CA","US","CH","AU","ZA"]
 
 const enableCountryforLostRetraction = ['GB','CH','FR','IT','ES','NL','DE','AT','BE','ZA','AU','CA']
 
-const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSignatureLink,clientSignatureLink,locale,onEmit,service}) => {
-    if (client === null || clientSignatureLink === null || freelanceSignatureLink === null || service === null) return
+const GeneratePdfContract:React.FC<GeneredContractProps> = ({contract,freelanceSignatureLink,clientSignatureLink,locale,onEmit,service}) => {
+    if (contract === null || clientSignatureLink === null || freelanceSignatureLink === null || service === null) return
     SalesTax.setTaxOriginCountry('US');
     const t:any = useTranslationContext();
-    const contract = service.contract as Contract
     const {id,serviceId} = useParams()
     const clientServiceId = serviceId as string;
     const clientId = id as string;
@@ -268,7 +195,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         if (!result.ok) {
             throw new Error('Erreur lors de la requête');
         }
-        const response = await result.json();
+        const response = await result.json() as {success:boolean,error:false};
         return response.success
     }
 
@@ -290,6 +217,13 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         }
     }
 
+    const parseProjectFonctionList = (features:{title:string,description:string,quantity:number,price:number}[]|string)=>{
+        if (typeof(features) === "string") {
+            return JSON.parse(features)
+        }
+        return features
+    }
+
     const getClientTaxInfo = async(isoCode:string,specficTo:"state"|"country",stateCode:string|null,taxNumber:string|undefined,tax:number) =>{
         console.log("tax",tax)
         const isCountryTaxable  =  SalesTax.hasSalesTax (isoCode);
@@ -297,6 +231,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         const canPayTax = await checkCLientIsExemptFromTax(isoCode,stateCode,taxNumber)
         console.log("isCountryTaxable",isCountryTaxable,"isStateTaxable",isStateTaxable,"canPayTax",canPayTax)
         console.log("isocode",isoCode,"stateCode",stateCode,"taxNumber",taxNumber)
+
         const getTaxData = async()=>{
             if (isCountryTaxable || isStateTaxable) {
                 if (!canPayTax.exempt) {
@@ -325,7 +260,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         }
     }
     const getTotalPrice = async(para:string)=>{
-        const {taxPrice,totalePrice} = await calculTotalPriceWithTva(contract.prestataireGivingData!.totalPrice.toString(),contract.clientGivingData!.adresse.country.threshold_before_tax,contract.clientGivingData!.adresse.country.currency,contract.clientGivingData!.adresse.country.isoCode,contract.clientGivingData!.adresse.country.state?.stateCode ?? '',contract.clientGivingData!.clientVatNumber ?? undefined,contract.clientGivingData!.adresse.country.specficTo,contract.clientGivingData?.typeClient === 'company' ? parseInt(contract.clientGivingData.adresse.country.taxB2B ?? '0') : parseInt(contract.clientGivingData?.adresse.country.taxB2C ?? '0') )
+        const {taxPrice,totalePrice} = await calculTotalPriceWithTva(contract.prestataireGivingData!.totalPrice.toString(),contract.clientGivingData?.addressClient?.clientCountry?.threshold_before_tax ?? 0,contract.clientGivingData?.addressClient?.clientCountry?.currency ?? "USD",contract.clientGivingData?.addressClient?.clientCountry?.isoCode ?? "",contract.clientGivingData?.addressClient?.clientCountry?.clientState?.stateCode ?? '',contract.clientGivingData?.taxId,contract.clientGivingData?.addressClient?.clientCountry?.specficTo ?? "country",contract.clientGivingData?.clientType === 'company' ? parseInt(contract.clientGivingData?.addressClient?.clientCountry?.taxB2B ?? '0') : parseInt(contract.clientGivingData?.addressClient?.clientCountry?.taxB2C ?? '0') )
         return para.replace("{price}",totalePrice)
     }
     const generePaiementDoc = async(data:Contract) =>{
@@ -347,10 +282,6 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         const marginTop = 50;
         const lineHeight = 14;
 
-        //const signatureImage = await pdfDoc.embedPng(signingLink);
-        //page.drawImage(signatureImage, { x: 50, y: 250, width: 200, height: 80 });
-
-        // Position initiale
         let yPosition = height - margin;
         const pageRef = { current: page };
         const yRef = { current: yPosition };
@@ -374,9 +305,9 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             let pageEchelonement;
             const bayingSchedule = [beforeStart];
             const priceSchedule:string[] = [];
-            const currency = contract.clientGivingData!.adresse.country.currency;
-            const limitBeforeTax = contract.clientGivingData!.adresse.country.threshold_before_tax;
-            const {taxPrice,totalePrice,taxValue} = await calculTotalPriceWithTva(contract.prestataireGivingData?.totalPrice.toString() ?? '0',limitBeforeTax,currency,contract.clientGivingData?.adresse.country.isoCode ?? '',contract.clientGivingData?.adresse.country.state?.stateCode ?? null,contract.clientGivingData?.clientVatNumber ?? undefined,contract.clientGivingData!.adresse.country.specficTo,contract.clientGivingData?.typeClient === 'company' ? parseInt(contract.clientGivingData.adresse.country.taxB2B ?? '0') : parseInt(contract.clientGivingData?.adresse.country.taxB2C ?? '0'));
+            const currency = contract.clientGivingData?.addressClient?.clientCountry?.currency;
+            const limitBeforeTax = contract.clientGivingData?.addressClient?.clientCountry?.threshold_before_tax ?? 0;
+            const {taxPrice,totalePrice,taxValue} = await calculTotalPriceWithTva(contract.prestataireGivingData?.totalPrice.toString() ?? '0',limitBeforeTax,currency ?? 'USD',contract.clientGivingData?.addressClient?.clientCountry?.isoCode ?? '',contract.clientGivingData?.addressClient?.clientCountry?.clientState?.stateCode ?? null,contract.clientGivingData?.taxId ?? undefined,contract.clientGivingData?.addressClient?.clientCountry?.specficTo ?? "country",contract.clientGivingData?.clientType === 'company' ? parseInt(contract.clientGivingData.addressClient?.clientCountry?.taxB2B ?? '0') : parseInt(contract.clientGivingData?.addressClient?.clientCountry?.taxB2C ?? '0'));
             if (echelonement.length === 0) {
                 pageEchelonement = t.payment.singleEchelon;
                 const final = addHorizontalText([[{text:pageEchelonement,size:11,isBold:false},{text:totalePrice.toString(),size:14,isBold:true},{text:'EUR',size:11,isBold:false},{text:t.payment.ttc,size:9,isBold:true}],margin,yRef.current,false,margin,30,fontRegular,fontBold,textHorizontalOption,...lastParam])
@@ -416,7 +347,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             yRef.current = addText([payingLink,margin,margin,margin,20,{...addTextOption,size:11,isBold:false},...lastParam,rgb(0, 0, 0.55)])
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
-            return {blob:blob,taxValue:taxValue};
+            return {blob:blob,taxValue:taxValue,taxPrice:taxPrice,totalPrice:totalPrice};
         } catch (error) {
             console.error(error)
             return null;
@@ -441,9 +372,9 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         });
     }
 
-    const generedEnContractVersion = async()=>{
+    const generedFrContractVersion = async()=>{
         try {
-            const translation = await loadEnTranslation("en");
+            const translation = await loadTranslation("fr");
             const data = await handlePdf(translation)
             //console.log("translation",translation)
             return data;
@@ -453,9 +384,9 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         }
         
     }
-    const generedNotEnContractVersion = async(clientLang:string)=>{
+    const generedNotFrContractVersion = async(clientLang:"fr"|"de"|"en")=>{
         try {
-            const translation = await loadEnTranslation(clientLang);
+            const translation = await loadTranslation(clientLang);
             const data = await handlePdf(translation)
             //console.log("translation",translation)
             return data;
@@ -470,13 +401,13 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         const t = translated;
         const content = {
             para: t.header.para,
-            title: contract.contractType === 'service' ? t.header.titleService + contract.prestataireGivingData!.projectTitle : contract.contractType === 'maintenance' ? t.header.titleMaintenance + contract.prestataireGivingData!.projectTitle : t.header.titleServiceMaintenance + contract.prestataireGivingData!.projectTitle,
+            title: service.serviceType === 'service' ? t.header.titleService + contract.prestataireGivingData!.projectTitle : service.serviceType === 'maintenance' ? t.header.titleMaintenance + contract.prestataireGivingData!.projectTitle : t.header.titleServiceMaintenance + contract.prestataireGivingData!.projectTitle,
             sousTitle: t.header.subTitle,
-            clientName: `${contract.clientGivingData!.name}`,
+            clientName: `${contract.clientGivingData?.fname +' '+ contract.clientGivingData?.lname}`,
             freelanceName: `${contract.prestataireGivingData!.freelancerName}`,
-            preambleAdresseClient:`${t.header.home} ${contract.clientGivingData!.adresse.street} ${contract.clientGivingData!.adresse.postalCode} ${contract.clientGivingData!.adresse.city} ${contract.clientGivingData!.adresse.country.name} ${t.header.designation}`,
+            preambleaddressClient:`${t.header.home} ${contract.clientGivingData?.addressClient?.street} ${contract.clientGivingData?.addressClient?.postalCode} ${contract.clientGivingData?.addressClient?.city} ${contract.clientGivingData?.addressClient?.clientCountry?.name} ${t.header.designation}`,
             from:t.header.from,
-            preambleAdresseFreelance:`${t.header.home} ${contract.prestataireGivingData!.freelanceAddress} ${t.header.designation}`,
+            preambleAdresseFreelance:`${t.header.home} ${contract.prestataireGivingData!.freelancerAddress} ${t.header.designation}`,
             to:t.header.to,
             and:t.header.and
             // Ajoutez toutes les autres sections ici...
@@ -525,7 +456,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 },
                 2:{
                     id:2,
-                    param:[[[{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleAdresseClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
+                    param:[[[{text:content.clientName,size:11,isBold:true,color:rgb(0, 0, 0)},{text:content.preambleaddressClient,size:11,isBold:false,color:rgb(0, 0, 0)},{text:content.from,size:11,isBold:true,color:rgb(0, 0, 0)}],margin+30,yRef.current,true,margin,10,fontRegular,fontBold,textHorizontalOption,...lastParam]]
                 },
                 3:{
                     id:3,
@@ -553,8 +484,8 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 },
                 9:{
                     id:9,
-                    param:[[t.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[contract.contractType === 'service' ? t.sections["3"].sec3.paraService.replace("{startDate}",formatDate(contract.prestataireGivingData!.startDate)).replace("{endDate}",formatDate(contract.prestataireGivingData!.endDate)) : contract.contractType === 'maintenance' ? t.sections["3"].sec3.paraMaintenance : t.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",formatDate(contract.prestataireGivingData!.endDate)), margin, yRef.current,margin,15, addTextOption,...lastParam],[contract.contractType === 'service' ? t.sections["3"].sec4.titleService : contract.contractType === 'maintenance' ? t.sections["3"].sec4.titleMaintenance : t.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[contract.contractType === 'service' ? await getTotalPrice(t.sections["3"].sec4.paraService) : contract.contractType === 'maintenance' ? contract.clientGivingData!.typeMaintenance === 'perHour' ? t.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.sections["3"].sec4.paraMaintenance.peerYear.replace("{mprice}",contract.mprice) : `${t.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.prestataireGivingData!.totalPrice)} ${
-                    contract.clientGivingData!.typeMaintenance === 'perHour' ? t.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.mprice) : t.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract.mprice)} ${t.sections["3"].sec4.paraServiceMaintenance.para1}`
+                    param:[[t.sections["3"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[service.serviceType === 'service' ? t.sections["3"].sec3.paraService.replace("{startDate}",parseDate(contract.prestataireGivingData?.startDate ?? new Date(),locale)).replace("{endDate}",parseDate(contract.prestataireGivingData?.endDate ?? new Date(),locale)) : service.serviceType === 'maintenance' ? t.sections["3"].sec3.paraMaintenance : t.sections["3"].sec3.paraServiceMaintenance.replace("{endDate}",parseDate(contract.prestataireGivingData?.endDate ?? new Date(),locale)), margin, yRef.current,margin,15, addTextOption,...lastParam],[service.serviceType === 'service' ? t.sections["3"].sec4.titleService : service.serviceType === 'maintenance' ? t.sections["3"].sec4.titleMaintenance : t.sections["3"].sec4.titleServiceMaintenance, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[service.serviceType === 'service' ? await getTotalPrice(t.sections["3"].sec4.paraService) : service.serviceType === 'maintenance' ? contract.clientGivingData?.maintenanceType === 'perHour' ? t.sections["3"].sec4.paraMaintenance.peerHour.replace("{mprice}",contract.maintenancePrice) : t.sections["3"].sec4.paraMaintenance.peerYear.replace("{mprice}",contract.maintenancePrice) : `${t.sections["3"].sec4.paraServiceMaintenance.para.replace("{price}",contract.prestataireGivingData!.totalPrice)} ${
+                    contract.clientGivingData?.maintenanceType === 'perHour' ? t.sections["3"].sec4.paraServiceMaintenance.peerHour.replace("{mprice}",contract.maintenancePrice) : t.sections["3"].sec4.paraServiceMaintenance.peerYear.replace("{mprice}",contract.maintenancePrice ?? 0)} ${t.sections["3"].sec4.paraServiceMaintenance.para1}`
                     ,margin, yRef.current,margin,40, addTextOption,...lastParam],[t.sections["4"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.sections["4"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["4"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["4"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["4"].sec2.para, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.sections["4"].sec2.paraClose, margin, yRef.current,margin,40, {...addTextOption,size:9,isBold:true},...lastParam],[t.sections["5"].title, margin, yRef.current,margin,15, {...addTextOption,size:16,isBold:true},...lastParam],[t.sections["5"].sec1.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["5"].sec1.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["5"].sec2.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["5"].sec2.para1, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.sections["5"].sec2.para2, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["5"].sec3.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["5"].sec3.para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.sections["5"].sec3.paraA, margin, yRef.current,margin,8, addTextOption,...lastParam]]
                 },
                 10:{
@@ -680,7 +611,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                 },
                 40:{
                     id:40,
-                    param:[[t.sections["6"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["6"].sec13.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["6"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["6"].sec14.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["6"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["6"].sec15.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["6"].sec16.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["6"].sec16.para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.sections["7"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.sections["7"].para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.sections["8"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.sections["8"].para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.sections["8"].paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraD, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraE.replace("{day}",7), margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraF, margin, yRef.current,margin,10, addTextOption,...lastParam],[t.sections["8"].paraClose, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.sections["9"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.sections["9"].para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["9"].paraA, margin, yRef.current,margin,8,
+                    param:[[t.sections["6"].sec13.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["6"].sec13.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["6"].sec14.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["6"].sec14.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["6"].sec15.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["6"].sec15.para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["6"].sec16.title, margin, yRef.current,margin,10, {...addTextOption,size:13},...lastParam],[t.sections["6"].sec16.para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.sections["7"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.sections["7"].para, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.sections["8"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.sections["8"].para, margin, yRef.current,margin,20, addTextOption,...lastParam],[t.sections["8"].paraA, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraB, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraC, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraD.replace("{day}",7), margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraE, margin, yRef.current,margin,8, addTextOption,...lastParam],[t.sections["8"].paraClose, margin, yRef.current,margin,40, addTextOption,...lastParam],[t.sections["9"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam],[t.sections["9"].para, margin, yRef.current,margin,15, addTextOption,...lastParam],[t.sections["9"].paraA, margin, yRef.current,margin,8,
                     {...addTextOption,lineHeight:lineHeight+2,isBold:true},...lastParam],[t.sections["9"].paraB, margin, yRef.current,margin,8, {...addTextOption,isBold:true,lineHeight:lineHeight+2},...lastParam],[t.sections["9"].paraC, margin, yRef.current,margin,40, {...addTextOption,isBold:true,lineHeight:lineHeight+2},...lastParam],[t.sections["10"].title, margin, yRef.current,margin,15, {...addTextOption,isBold:true,size:16},...lastParam]]
                 },
                 41:{
@@ -709,7 +640,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                                 if (isDataStructureSignatureText(params)) {
                                     if (index === 1) {
                                         
-                                        params[1] = [{img:await pdfDoc.embedPng(freelanceSignatureLink),width:250,height:80},{img:await pdfDoc.embedPng(clientSignatureLink),width:250,height:80}]
+                                        params[1] = [{img:await pdfDoc.embedPng(freelanceSignatureLink),width:90,height:80},{img:await pdfDoc.embedPng(clientSignatureLink),width:250,height:80}]
                                            
                                     }
                                     yRef.current = signatureBloc(params);
@@ -725,11 +656,11 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
                         case 'addText':
                             if (item.id === 8) {
                                 const params = fonctionParam[item.id].param[0]
-                                contract.projectFonctionList.forEach((item,index)=>{
+                                parseProjectFonctionList(contract.prestataireGivingData?.projectFonctionList ?? []).forEach((item:{title:string,description:string,quantity:number,price:number},index:number)=>{
                                     if (isDataStructureSingleText(params)) {
                                         params[0] = `${item.title} - ${item.description} - ${item.price}`
                                         yRef.current = addText(params)
-                                        if (index === contract.projectFonctionList.length - 1) {
+                                        if (index === parseProjectFonctionList(contract.prestataireGivingData?.projectFonctionList ?? []).length - 1) {
                                             params[4] = 15
                                         }
                                     }
@@ -770,7 +701,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             // Génération du PDF final
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
-            return {blob:blob,taxValue:0};
+            return {blob:blob,taxValue:0,taxPrice:0,totalPrice:0};
             //return await pdfDoc.save();
         } catch (error) {
             console.error('Erreur lors de la génération du PDF:', error);
@@ -982,7 +913,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
         }
 
         if (imgBloc.length > 0) {
-            drawImgItem(imgBloc[0].img,marginLeft - 80,currentY - 25,imgBloc[0].width,imgBloc[0].height)
+            drawImgItem(imgBloc[0].img,marginLeft,currentY - 25,imgBloc[0].width,imgBloc[0].height)
             drawImgItem(imgBloc[1].img,marginLeft + itemWidth - 80 ,currentY - 25,imgBloc[1].width,imgBloc[1].height)
         }
     
@@ -1175,64 +1106,82 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
     }
     useEffect(()=>{
         const generedPdf = async()=>{
-            if(!service || !client) return
+            if(!service || !contract) return
             const allRequest = [
-                generedNotEnContractVersion(contract.contractLanguage),
+                generedFrContractVersion(),
                 generePaiementDoc(contract)
             ]
-            let notEnContract = null;
-            if (locale !== 'en') {
-                notEnContract = await generedEnContractVersion()
+            let notFrContract = null;
+            if (contract.clientGivingData?.clientLang !== 'fr') {
+                notFrContract = await generedNotFrContractVersion(contract.clientGivingData?.clientLang ?? "en")
             }
             
             const [blobContract,payment] = await Promise.all(allRequest)
             
             if (blobContract && payment) {
+                console.log("payment",payment)
                 const contractLink = URL.createObjectURL(blobContract.blob)
                 const paymentLink = URL.createObjectURL(payment.blob)
-                const notEnContractLink = notEnContract ? URL.createObjectURL(notEnContract.blob) : ''
+                const notFrContractLink = notFrContract ? URL.createObjectURL(notFrContract.blob) : ''
+                
                 /*window.open(contractLink, '_blank')
-                if (notEnContractLink) {
-                    window.open(notEnContractLink, '_blank')
+
+                if (notFrContractLink) {
+                    window.open(notFrContractLink, '_blank')
                 }
+
                 window.open(paymentLink, '_blank')*/
+                //console.log("paymentLink",paymentLink)
                 const contractBase64 = await blobToBase64(blobContract.blob) as string;
-                const base64NotEnContract = notEnContract ? await blobToBase64(notEnContract.blob) as string : null;
+                const base64NotFrContract = notFrContract ? await blobToBase64(notFrContract.blob) as string : null;
                 const paymentBase64 = await blobToBase64(payment.blob) as string;
-                const contractItem = enableCountryforLostRetraction.includes(contract.clientGivingData?.adresse.country.isoCode ?? '') ? {...contract,tax:payment.taxValue,saleTermeConditionValided:true,electronicContractSignatureAccepted:true,rigthRetractionLostAfterServiceBegin:true} : {
-                    ...contract,tax:payment.taxValue,saleTermeConditionValided:true,electronicContractSignatureAccepted:true
+
+                const filenameTranslatedOrOriginal = `${contract.clientGivingData?.clientLang !== 'fr' ? 'translated-' : 'original-'}signed-contract_${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_${((contract.clientGivingData?.fname ?? "")+(contract.clientGivingData?.lname ?? "")).replaceAll(" ","-")}`;
+                const filenameContract = `original-signed-contract_${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_${((contract.clientGivingData?.fname ?? "")+(contract.clientGivingData?.lname ?? "")).replaceAll(" ","-")}`;
+
+                const paymentFile = payment.blob.arrayBuffer()
+                
+                const prestataireGivingData:contractFormPrestataire = {taxPercent:payment.taxValue,totalPrice:payment.totalPrice,taxPrice:typeof(payment.taxPrice) === "string" ? parseFloat(payment.taxPrice) : payment.taxPrice,maintenanceCategory:contract?.prestataireGivingData?.maintenanceCategory,paymentSchedule:contract?.prestataireGivingData?.paymentSchedule ?? "",startDate:parseInputDate(contract?.prestataireGivingData?.startDate ?? new Date()),endDate:parseInputDate(contract.prestataireGivingData?.endDate ?? new Date()),projectTitle:contract.prestataireGivingData?.projectTitle ?? "",
+                    contractStatus:service.contractStatus ?? "unsigned",projectDescription:contract.prestataireGivingData?.projectDescription ?? "",freelancerTaxId:contract.prestataireGivingData?.freelancerTaxId ?? "",freelancerName:contract.prestataireGivingData?.freelancerName ?? "",freelancerAddress:contract.prestataireGivingData?.freelancerAddress ?? "",
+                    projectFonctionList:parseProjectFonctionList(contract.prestataireGivingData?.projectFonctionList ?? [])}
+
+                const clientGivingData:contractFormClient = {saveDate:contract.clientGivingData?.saveDate ?? new Date(),clientNumber:contract.clientGivingData?.clientNumber ?? 100,clientLang:contract.clientGivingData?.clientLang ?? "en",clientStatus:contract.clientGivingData?.clientStatus ?? "actived",modifDate:contract.clientGivingData?.modifDate ?? new Date(),email:contract.clientGivingData?.email,address:contract.clientGivingData?.address,addressClient:contract.clientGivingData?.addressClient,fname:contract.clientGivingData?.fname ?? "",lname:contract.clientGivingData?.lname ?? "",taxId:contract.clientGivingData?.taxId ?? '',phone:contract.clientGivingData?.phone,clientType:contract.clientGivingData?.clientType ?? "particular"}
+                const contractItem:Contract = enableCountryforLostRetraction.includes(contract.clientGivingData?.addressClient?.clientCountry?.isoCode ?? '') ? {clientGivingData:clientGivingData,prestataireGivingData:prestataireGivingData,saleTermeConditionValided:true,electronicContractSignatureAccepted:true,rigthRetractionLostAfterServiceBegin:true} : {
+                    clientGivingData:clientGivingData,prestataireGivingData:prestataireGivingData,saleTermeConditionValided:true,electronicContractSignatureAccepted:true
                 }
                 //console.log("contratc item",contractItem)
-                const parsedService = {...service,contractStatus:"signed",contract:contractItem}
-                const contractData = {service:parsedService,translatedOrOriginalBlobPdf:blobContract.blob,originalByDiffNotEnLangBlobPdf:notEnContract?.blob ?? null}
-                const locale = client.clientLang;
-                const updateClient = {...client,modifDate:new Date().toLocaleDateString(`${locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US'}`)}
-                const result = await saveContractDoc(contractData,updateClient,clientServiceId,locale)
+                const sendData:{serviceId:number,addressId:number,clientId:number,contractStatus:"pending"|"unsigned"|"signed",contract:Contract} = {serviceId:service.serviceId ?? 0,addressId:contract.clientGivingData?.address ?? 0,clientId:parseInt(clientId),contractStatus:"signed",contract:contractItem}
+                const contractData = {data:sendData,translatedOrOriginalFilePdf:{file:base64NotFrContract,name:filenameTranslatedOrOriginal},originalByDiffNotFrLangFilePdf:{file:contractBase64,name:filenameContract}}
+                const locale = contract.clientGivingData?.clientLang ?? 'fr';
+
+                const result = await saveContractDoc(contractData,locale,blobContract.blob.type || "application/pdf")
+
                 const email = {
-                    to:contract.clientGivingData!.clientEmail,
-                    name:contract.clientGivingData!.name,
+                    to:contract.clientGivingData?.email ?? "",
+                    name:contract.clientGivingData?.fname +" "+contract.clientGivingData?.lname,
                     subject:`${locale === 'fr' ? 'Contrat de prestation de services ou de maintenance' : locale === 'de' ? "Dienstleistungs- oder Wartungsvertrag" : 'Service or Maintenance Agreement'}`,
                     base64Contrat:contractBase64,
                     base64Payement:paymentBase64,
-                    base64NotEnContract:base64NotEnContract
+                    base64NotFrContract:base64NotFrContract
                 }
-                if (result === 'success') {
+
+                if (result) {
                     sessionStorage.clear()
                     await sendContract(email,locale);
                     const emitData:{translatedOrOriginalContractLink:string,
-                        paymentLink:string,notEnContractLink:string,status:"success" | "error"} = {
+                        paymentLink:string,notFrContractLink:string,status:"success" | "error"} = {
                         translatedOrOriginalContractLink:contractLink ?? 'test',
                         paymentLink:paymentLink ?? 'test',
-                        notEnContractLink:notEnContractLink ?? 'test',
+                        notFrContractLink:notFrContractLink ?? 'test',
                         status:"success"
                     }
                     onEmit(emitData)
                 } else {
                     const emitData:{translatedOrOriginalContractLink:string,
-                        paymentLink:string,notEnContractLink:string,status:"success" | "error"} = {
+                        paymentLink:string,notFrContractLink:string,status:"success" | "error"} = {
                         translatedOrOriginalContractLink:'',
                         paymentLink:'',
-                        notEnContractLink:'',
+                        notFrContractLink:'',
                         status:"error"
                     }
                     onEmit(emitData)
@@ -1240,7 +1189,7 @@ const GeneratePdfContract:React.FC<GeneredContractProps> = ({client,freelanceSig
             }
         }
         generedPdf() 
-    },[contract,client,clientSignatureLink,freelanceSignatureLink,locale])
+    },[contract,clientId,clientSignatureLink,freelanceSignatureLink,locale])
       
     return null
 };

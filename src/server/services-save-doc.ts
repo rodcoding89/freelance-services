@@ -1,15 +1,13 @@
 "use server"
-import { setDoc,doc, query, collection, where, getDocs, addDoc } from 'firebase/firestore';
-import firebase from '@/utils/firebase';
-
-import { drive_v3, google } from "googleapis";
-
-import mime from 'mime';
-import { Readable } from 'stream';
-
-import { GoogleAuth } from './google-auth';
+import { number } from 'framer-motion';
 import { getIp } from './services';
-import { use } from 'react';
+import { Contract } from '@/interfaces';
+import { saveContract, updateClientByContract,updateContractStatus } from './handle-database';
+import { cookies } from 'next/headers';
+import { generedToken } from './token-auth';
+import axios from 'axios';
+import FormData from 'form-data';
+
 
 interface UserSalesSchema {
   juridiction:string;
@@ -25,7 +23,7 @@ const CONTRACT_FOLDER = process.env.FOLDER_CONTRACT_ID
 const INVOICE_FOLDER = process.env.FOLDER_INVOICE_ID
 
 const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,serviceId:string,userTax:{saleTax:{amount:number,taxThreshold:number|undefined},stateIsoCode:string|undefined}|null)=>{
-  const auth = await GoogleAuth()
+  /*const auth = await GoogleAuth()
   if(!INVOICE_FOLDER || !SCOPE || !auth) return
   const drive = google.drive({ version: 'v3', auth });
   const clientFolderId = await getOrCreateFolder(`${client.name}_${client.id}`,INVOICE_FOLDER,drive)
@@ -59,11 +57,73 @@ const saveClientInvoice = async(data:{service:any,blobInvoice:Blob},client:any,s
     }
   } else {
     return "error"
+  }*/
+}
+
+const saveContractDoc = async (contractData:{data:{serviceId:number,addressId:number,clientId:number,contractStatus:"signed"|"unsigned"|"pending",contract:Contract},translatedOrOriginalFilePdf:{file:string|null,name:string},originalByDiffNotFrLangFilePdf:{file:string,name:string}},locale:string,contentType:string)=>{
+  
+  try {
+    let accessTocken = await getAccessTocken()
+
+    if (!accessTocken) {
+      accessTocken = await generedToken()
+    }
+
+    if (!accessTocken) {
+      return false
+    }
+
+    console.log("accessTocken",accessTocken)
+    const MAX_SIZE = 250 * 1024 * 1024;
+    
+    const contractBuffer = Buffer.from(contractData.originalByDiffNotFrLangFilePdf.file)
+
+    console.log("buffer",contractBuffer.length)
+    if(!contractBuffer) {console.log("arraybuffer null",contractBuffer);return false}
+    
+    if(contractBuffer.length > MAX_SIZE) {console.log("buffer sise greader",contractBuffer.length);return false}
+
+    const docInfo = new FormData();
+    docInfo.append("file",contractBuffer,{
+      filename:contractData.originalByDiffNotFrLangFilePdf.name,
+      contentType:contentType
+    })
+    docInfo.append("parent_id",process.env.FOLDER_CONTRACT_ID ?? "")
+    docInfo.append("override-name-exist","true")
+
+    const driveUrl = `${process.env.ZOHO_VASE_URL_DRIVE}/workdrive/api/v1/upload`
+
+    var config = {
+      method: 'post',
+      url: 'https://workdrive.zoho.com/api/v1/upload',
+      headers: { 
+        'Authorization': `Zoho-oauthtoken ${accessTocken}`, 
+        ...docInfo.getHeaders()
+      },
+      data : docInfo
+    };
+
+
+    const response = await axios(config)
+
+    console.log("response",response)
+
+    if (response.status === 200) {
+      return true
+    }
+
+    /*await saveContract(contractData.data.contract,contractData.data.clientId,contractData.data.addressId,contractData.data.serviceId,1,"update","client",contractData.data.contract.contractId);
+    await updateClientByContract(contractData.data.contract.clientGivingData,contractData.data.clientId,contractData.data.addressId);
+    await updateContractStatus(contractData.data.serviceId,contractData.data.contractStatus);*/
+    return false
+  } catch (error) {
+    console.log("erreur drive ",error)
+    return false
   }
 }
 
-const saveContractDoc = async(data:{service:any,translatedOrOriginalBlobPdf:Blob,originalByDiffNotEnLangBlobPdf:Blob|null},client:any,serviceId:string,locale:string)=>{
-  const auth = await GoogleAuth()
+/*const saveContractDoc = async(contractData{data:{serviceId:number,clientId:number,contractStatus:"signed",contract:Contract},translatedOrOriginalBlobPdf:Blob,originalByDiffNotFrLangBlobPdf:Blob},locale:string):Promise<"success"|"error">=>{
+  /*const auth = await GoogleAuth()
   if(!CONTRACT_FOLDER || !SCOPE || !auth) return
   const filenameTranslatedOrOriginal = `${locale !== 'en' ? 'translated-' : 'original-'}signed-contract_${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_${client.name.replaceAll(" ","-")}`;
   const filenameNotEnContract = `original-signed-contract_${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}_${client.name.replaceAll(" ","-")}`;
@@ -94,10 +154,11 @@ const saveContractDoc = async(data:{service:any,translatedOrOriginalBlobPdf:Blob
   } else {
     return "error"
   }
-}
+  return new Promise(resolve => "success")
+}*/
 
-async function loadDocOnDrive(filename:string,bufferStream:Readable,drive:drive_v3.Drive,mimeType:string,clientFolderId:string){
-  const response = await drive.files.create({
+async function loadDocOnDrive(filename:string,/*bufferStream:Readable,drive:drive_v3.Drive,mimeType:string,clientFolderId:string*/){
+  /*const response = await drive.files.create({
     requestBody: {
       name: filename,
       parents: [`${clientFolderId}`], // ID du dossier partagé avec le compte de service
@@ -107,12 +168,12 @@ async function loadDocOnDrive(filename:string,bufferStream:Readable,drive:drive_
       body: bufferStream,
     },
   });
-  return response
+  return response*/
 }
 
-async function getOrCreateFolder(name: string, parentId: string,drive:drive_v3.Drive): Promise<string> {
+async function getOrCreateFolder(name: string, /*parentId: string,drive:drive_v3.Drive*/){
   // Cherche un dossier avec ce nom dans le dossier parent
-  const res = await drive.files.list({
+  /*const res = await drive.files.list({
     q: `'${parentId}' in parents and name='${name}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
     fields: 'files(id, name)',
   });
@@ -132,11 +193,11 @@ async function getOrCreateFolder(name: string, parentId: string,drive:drive_v3.D
       fields: 'id',
     });
     return folder.data.id!;
-  }
+  }*/
 }
 
 const addUpdateSales = async(stateIsoCode:string|undefined,saleTax:{amount:number,taxThreshold:number|undefined})=>{
-  if(!stateIsoCode || !saleTax.taxThreshold) return
+  /*if(!stateIsoCode || !saleTax.taxThreshold) return
   try {
     const postsQuery = query(collection(firebase.db, 'saleTax'), where('clientId', '==', stateIsoCode));
     const postsSnapshot = await getDocs(postsQuery);
@@ -166,11 +227,11 @@ const addUpdateSales = async(stateIsoCode:string|undefined,saleTax:{amount:numbe
     }
   } catch (error) {
     console.error(error);
-  }
+  }*/
 }
 
 const updateClientWithData = async(clientServiceId:string,services:any,client:any)=>{
-  try{
+  /*try{
     const contractSignedDate = new Date().toISOString();
     const clientIP = await getIp()
     const updateService = {...services,contract:{...services.contract,contractSignedDate:contractSignedDate,clientIP:clientIP}}
@@ -186,7 +247,12 @@ const updateClientWithData = async(clientServiceId:string,services:any,client:an
   }catch(error:any){
     console.log("error",error)
     return false;
-  }
+  }*/
+}
+
+const getAccessTocken = async()=>{
+  const accessTocken = (await cookies()).get("access_token")?.value
+  return accessTocken
 }
 
 export {saveContractDoc,saveClientInvoice}
