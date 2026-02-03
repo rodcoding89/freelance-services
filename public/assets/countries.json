@@ -1,0 +1,17 @@
+{
+  "countries": [
+    {"name": "Afrique du Sud", "isoCode": "ZA", "specificTo": "country","state":null, "taxB2C": 15, "taxB2B": 15, "groupe": "Afrique", "threshold_before_tax": 1000000, "currency": "ZAR", "vat": "VAT","id":"1"},
+    {"name": "Belgique", "isoCode": "BE", "specificTo": "country", "state":null,"taxB2C": 21, "taxB2B": 21, "groupe": "ue", "threshold_before_tax": 10000, "currency": "EUR", "vat": "TVA","id":"5"},
+    
+    {"name": "Cameroun", "state":null,"isoCode": "CM", "specificTo": "country", "taxB2C": 19.25, "taxB2B": 19.25, "groupe": "Afrique", "threshold_before_tax": 0, "currency": "XAF", "vat": "TVA","id":"7"},
+    {"name": "Congo (Brazzaville)", "isoCode": "CG", "specificTo": "country", "state":null,"taxB2C": 18, "taxB2B": 18, "groupe": "Afrique", "threshold_before_tax": 0, "currency": "XAF", "vat": "TVA","id":"8"},
+    {"name": "Congo-Kinshasa", "isoCode": "CD", "specificTo": "country", "state":null,"taxB2C": 16, "taxB2B": 16, "groupe": "Afrique", "threshold_before_tax": 0, "currency": "USD", "vat": "TVA","id":"9"},
+    {"name": "Côte d'Ivoire", "isoCode": "CI", "specificTo": "country", "state":null,"taxB2C": 18, "taxB2B": 18, "groupe": "Afrique", "threshold_before_tax": 0, "currency": "XOF", "vat": "TVA","id":"10"},
+    {"name": "France", "isoCode": "FR", "specificTo": "country", "state":null,"taxB2C": 20, "taxB2B": 20, "groupe": "ue", "threshold_before_tax": 10000, "currency": "EUR", "vat": "TVA","id":"13"},
+    {"name": "Gabon", "isoCode": "GA", "specificTo": "country", "state":null,"taxB2C": 18, "taxB2B": 18, "groupe": "Afrique", "threshold_before_tax": 0, "currency": "XAF", "vat": "TVA","id":"14"},
+    {"name": "Nigéria", "isoCode": "NG", "specificTo": "country", "state":null,"taxB2C": 7.5, "taxB2B": 7.5, "groupe": "Afrique", "threshold_before_tax": 0, "currency": "NGN", "vat": "VAT","id":"16"},
+    {"name": "Royaume-Uni", "isoCode": "GB", "specificTo": "country", "state":null,"taxB2C": 20, "taxB2B": 20, "threshold_before_tax": 85000, "currency": "GBP", "groupe": "other", "vat": "VAT","id":"18"},
+    {"name": "Suisse", "isoCode": "CH", "specificTo": "country", "state":null,"taxB2C": 8.1, "taxB2B": 8.1, "threshold_before_tax": 100000, "currency": "CHF", "groupe": "sw", "vat": "TVA","id":"19"},
+    {"name": "Sénégal", "isoCode": "SN", "specificTo": "country", "state":null,"taxB2C": 18, "taxB2B": 18, "groupe": "Afrique", "threshold_before_tax": 0, "currency": "XOF", "vat": "TVA","id":"20"}
+  ]
+}

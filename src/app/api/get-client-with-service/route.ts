@@ -1,0 +1,17 @@
+// app/api/auth/login/route.ts
+import { getClientWithService } from '@/server/handle-database';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(req: NextRequest) {
+  try {
+    const clientId = req.nextUrl.searchParams.get("clientId") ?? "";
+    const result = await getClientWithService(clientId);
+    return NextResponse.json({ success: true,result: result});
+  } catch (error: any) {
+    console.log("Erreur",error)
+    return NextResponse.json(
+      { success: false, message: error },
+      { status: 500,statusText:error }
+    );
+  }
+}
