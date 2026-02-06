@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <urlset
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+              http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+  <url>
+    <loc>https://rodcoding.com/en</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rodcoding.com/en"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rodcoding.com/fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rodcoding.com/en"/>
+    <lastmod>2026-02-05T20:25:43+00:00</lastmod>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://rodcoding.com/en/legal-notice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rodcoding.com/en/legal-notice"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rodcoding.com/fr/legal-notice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rodcoding.com/en/legal-notice"/>
+    <lastmod>2026-02-05T20:25:43+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://rodcoding.com/en/privacy-policies</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rodcoding.com/en/privacy-policies"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rodcoding.com/fr/privacy-policies"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rodcoding.com/en/privacy-policies"/>
+    <lastmod>2026-02-05T20:25:43+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://rodcoding.com/en/terms-of-sale</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rodcoding.com/en/terms-of-sale"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rodcoding.com/fr/terms-of-sale"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rodcoding.com/en/terms-of-sale"/>
+    <lastmod>2026-02-05T20:25:43+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://rodcoding.com/fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rodcoding.com/en"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rodcoding.com/fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rodcoding.com/en"/>
+    <lastmod>2026-02-05T20:25:43+00:00</lastmod>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://rodcoding.com/fr/legal-notice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rodcoding.com/en/legal-notice"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rodcoding.com/fr/legal-notice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rodcoding.com/en/legal-notice"/>
+    <lastmod>2026-02-05T20:25:43+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://rodcoding.com/fr/privacy-policies</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rodcoding.com/en/privacy-policies"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rodcoding.com/fr/privacy-policies"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rodcoding.com/en/privacy-policies"/>
+    <lastmod>2026-02-05T20:25:43+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://rodcoding.com/fr/terms-of-sale</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://rodcoding.com/en/terms-of-sale"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://rodcoding.com/fr/terms-of-sale"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rodcoding.com/en/terms-of-sale"/>
+    <lastmod>2026-02-05T20:25:43+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+</urlset>

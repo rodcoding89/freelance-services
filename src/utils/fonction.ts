@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { Cipher, createCipheriv, createDecipheriv, randomBytes, randomFill, scrypt } from "crypto";
 import { clientAddress, clientCountry, clientServiceContractDB, clientServiceDb, clientState, ContractDb, features, freelancer, serviceDb, Services } from "@/interfaces";
 
 const validLocales = ['en', 'fr', 'de'];
@@ -55,6 +54,18 @@ export async function generateSeoMetadata({ params}: { params: { locale: string,
       index: true,
       follow: true,
     },
+    icons:{
+      icon: [
+        { url: '/favicon.ico' }, // Chemin vers public/favicon.ico
+        { url: '/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+        { url: '/favicon.svg', type: 'image/svg' },
+      ],
+      apple: [
+        { url: '/apple-touch-icon.png' },
+        { url: '/apple-touch-icon-96x96.png', sizes: '96x96', type: 'image/png' },
+      ],
+    },
+    manifest:'/site.webmanifest',
     keywords: t?.seo[page].keyWords,
     openGraph: {
       title: t?.seo[page].title,

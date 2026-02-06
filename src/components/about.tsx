@@ -110,7 +110,7 @@ const About:React.FC<AboutProps> = ({locale}) =>{
                         </div>
                     </div>
                 </div>
-                <span className='block ml-4 text-left italic text-[.8em] mt-5'>{t['moreEx']}<Link className='text-[#535bf2] hover:underline text-[ 0.875rem] not-italic ml-2' href={'https://portfolio.rodcoding.com'}>{t['portfolio']}</Link></span>
+                <span className='block ml-4 text-left italic text-[.8em] mt-5'>{t['moreEx']}<Link className='text-[#535bf2] hover:underline text-[ 0.875rem] not-italic ml-2' href={process.env.NEXT_PUBLIC_MODE ? process.env.NEXT_PUBLIC_MODE === "prodDocker" ? 'https://portfolio.rodcoding.com' : "http://portfolio.localhost" : ""}>{t['portfolio']}</Link></span>
                 <div className='w-full flex justify-center items-center'>
                     <div className="stat flex justify-start items-center flex-wrap gap-5 mt-4 max-485:justify-center">
                         {

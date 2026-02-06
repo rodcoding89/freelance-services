@@ -1,11 +1,10 @@
 
-import { DecoderData, encodeSecretEnvVar } from '@/utils/fonction';
 import nodemailer from 'nodemailer';
 
-const HOST = `${process.env.NEXT_PUBLIC_ZOHO_SMTP_SERVER}`
-const PORT = parseInt(process.env.NEXT_PUBLIC_ZOHO_SMTP_PORT ?? "465")
-const USER = process.env.MODE ? DecoderData(`${process.env.ZOHO_SMTP_CONSUMER}`) : `${process.env.ZOHO_SMTP_CONSUMER}`
-const PASS = process.env.MODE ? DecoderData(`${process.env.ZOHO_SMTP_PASSWORD}`) : `${process.env.ZOHO_SMTP_PASSWORD}`
+const HOST = `${process.env.ZOHO_SMTP_SERVER}`
+const PORT = parseInt(process.env.ZOHO_SMTP_PORT ?? "465")
+const USER = process.env.NEXT_PUBLIC_MODE ? process.env.ZOHO_SMTP_CONSUMER : `${process.env.ZOHO_SMTP_CONSUMER}`
+const PASS = process.env.NEXT_PUBLIC_MODE ? process.env.ZOHO_SMTP_PASSWORD : `${process.env.ZOHO_SMTP_PASSWORD}`
 
 console.log("host",HOST,"port",PORT,"user",USER,"pass",PASS)
 //console.log("ENCODING",encodeSecretEnvVar())

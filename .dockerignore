@@ -7,8 +7,8 @@ node_modules
 .gitignore
 
 # Environnements
-.env.dev
-.env.development
+#.env.dev
+#.env.development
 .env.test
 .env*.local
 

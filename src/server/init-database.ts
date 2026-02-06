@@ -9,8 +9,8 @@ sqlite3.verbose();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const parent = dirname(__dirname)
-console.log(process.env.MODE)
-const dbName = process.env.MODE ? process.env.MODE === "devDocker" ? 'freelance_customer_dev_docker.sqlite' : 'freelance_customer_prod.sqlite' : 'freelance_customer_dev.sqlite'
+console.log(process.env.NEXT_PUBLIC_MODE)
+const dbName = process.env.NEXT_PUBLIC_MODE ? process.env.NEXT_PUBLIC_MODE === "devDocker" ? 'freelance_customer_dev_docker.sqlite' : 'freelance_customer_prod_docker.sqlite' : 'freelance_customer_dev.sqlite'
 
 const dbPath = join(parent, 'db', dbName);
 const db = new sqlite3.Database(dbPath);

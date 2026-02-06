@@ -239,7 +239,7 @@ const PopUp:React.FC<PopupProps> = ({locale})=>{
                                     offset={-65} 
                                     duration={500} 
                                     to={`contact`} onClick={switchToStart}>{t["contact"]}</Link>
-                                    <a href="https://portfolio.rodcoding.com" className='cursor-pointer text-primary' target="_blank">{t["protfolio"]}</a>
+                                    <a href={process.env.NEXT_PUBLIC_MODE ? process.env.NEXT_PUBLIC_MODE === "prodDocker" ? 'https://portfolio.rodcoding.com' : "http://portfolio.localhost" : ""} className='cursor-pointer text-primary' target="_blank">{t["protfolio"]}</a>
                                 </nav>
                             </div>
                             <div className="w-full">

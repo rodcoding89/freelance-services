@@ -721,7 +721,7 @@ export const refDetailContent:refContent = {
                 cat:"devModeOfHand",
                 techno:['HTML5','React','JavaScirpt',"SCSS",'External Module'],
                 mode:'devModeOfHand',
-                link:'https://portfolio.rocoding.com/'
+                link:process.env.NEXT_PUBLIC_MODE ? process.env.NEXT_PUBLIC_MODE === "prodDocker" ? 'https://portfolio.rodcoding.com' : "http://portfolio.localhost" : ""
             },
             task:['websiteItem5TaskPara1','websiteItem5TaskPara2','websiteItem5TaskPara3','websiteItem5TaskPara4','websiteItem5TaskPara5','websiteItem5TaskPara6']
         },

@@ -85,15 +85,19 @@ const ClientsList: React.FC<CLientsListProps> = ({locale}) => {
                 
                 if (response.success) {
                     //alert("reponse "+id)
+                    alert(clientId)
                     setClientsService((prev)=>{
                         const clientItemIndex = prev.findIndex((item)=>item.clientId === clientId)
                         if (clientItemIndex > -1) {
+                            alert("item find")
                             //alert(clientItemIndex+' '+id)
-                            const updateClient:clientServiceList = {...prev[clientItemIndex],clientStatus:"desactived"}
-                            const updateClients = prev.splice(clientItemIndex,1,updateClient)
+                            const prevData = [...prev]
+                            const updateClient:clientServiceList = {...prevData[clientItemIndex],clientStatus:"desactived"}
+                            prevData[clientItemIndex] = updateClient
+                            //const updateClients = prev.splice(clientItemIndex,1,updateClient)
                             sessionStorage.clear()
-                            sessionStorage.setItem("clientData",JSON.stringify(updateClients))
-                            return updateClients
+                            sessionStorage.setItem("clientData",JSON.stringify(prevData))
+                            return prevData
                         }
                         return prev
                     })

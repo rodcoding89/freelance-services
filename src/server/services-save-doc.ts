@@ -8,7 +8,6 @@ import axios from 'axios';
 import FormData from 'form-data';
 import fs from 'fs'
 import fsp from "fs/promises";
-import { DecoderData } from '@/utils/fonction';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -22,8 +21,8 @@ interface UserSalesSchema {
   lastUpdated:string;
 }
 
-const CONTRACT_FOLDER = process.env.MODE ? DecoderData(process.env.FOLDER_CONTRACT_ID ?? "") : process.env.FOLDER_CONTRACT_ID 
-const INVOICE_FOLDER = process.env.MODE ? DecoderData(process.env.FOLDER_INVOICE_ID ?? "") : process.env.FOLDER_INVOICE_ID
+const CONTRACT_FOLDER = process.env.NEXT_PUBLIC_MODE ? process.env.FOLDER_CONTRACT_ID : process.env.FOLDER_CONTRACT_ID 
+const INVOICE_FOLDER = process.env.NEXT_PUBLIC_MODE ? process.env.FOLDER_INVOICE_ID : process.env.FOLDER_INVOICE_ID
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadDir = path.join(process.cwd(), 'upload');
@@ -93,7 +92,7 @@ const saveContractDoc = async (contractData:{data:{serviceId:number,addressId:nu
         docInfoNoFr.append('override-name-exist', 'true');
       }
 
-      const driveUrl = `${process.env.NEXT_PUBLIC_ZOHO_BASE_URL_DRIVE}/workdrive/api/v1/upload`
+      const driveUrl = `${process.env.ZOHO_BASE_URL_DRIVE}/workdrive/api/v1/upload`
 
       const config = {
         method: 'post',
@@ -223,7 +222,7 @@ const saveInvoiceDoc = async(data:invoiceSendData)=>{
       docInfo.append("parent_id",INVOICE_FOLDER)
       docInfo.append('override-name-exist', 'true');
 
-      const driveUrl = `${process.env.NEXT_PUBLIC_ZOHO_BASE_URL_DRIVE}/workdrive/api/v1/upload`
+      const driveUrl = `${process.env.ZOHO_BASE_URL_DRIVE}/workdrive/api/v1/upload`
 
       const config = {
         method: 'post',

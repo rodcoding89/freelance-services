@@ -343,7 +343,7 @@ const addUser = async(db:Database)=>{
 const addFreelanceData = async(db:Database)=>{
     return new Promise((resolve:any,reject:any)=>{
         db.run(`INSERT INTO freelancer(freelancerName,freelancerAddress,freelancerTaxId,createAt) VALUES(?,?,?,?)`,
-            [EnCoder("string",process.env.NEXT_PUBLIC_COMPANY_NAME ?? ""),EnCoder("string",`${process.env.NEXT_PUBLIC_COMPANY_LOCALE_ADRESS_STREET} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_CITY}, ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_POSTAL_CODE} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_STATE} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_COUNTRY}`), EnCoder("string",process.env.NEXT_PUBLIC_TAX_ID ?? ""), new Date()],
+            [EnCoder("string",process.env.NEXT_PUBLIC_COMPANY_NAME ?? ""),EnCoder("string",`${process.env.NEXT_PUBLIC_COMPANY_LOCALE_ADRESS_STREET} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_CITY} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_STATE} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_POSTAL_CODE} ${process.env.NEXT_PUBLIC_COMPANY_ADRESS_COUNTRY}`), EnCoder("string",process.env.NEXT_PUBLIC_TAX_ID ?? ""), new Date()],
             (err)=>{
             if (err) {
                 console.log("error add freelance",err.message)

@@ -111,7 +111,7 @@ const Header:React.FC<HeaderProps> = ({locale})=>{
                     offset={-100} 
                     duration={500} 
                     to={`contact`} onClick={switchToStart}>{t["contact"]}</Link>
-                    <a href="https://portfolio.rodcoding.com" className='cursor-pointer text-primary' target="_blank">{t["portfolio"]}</a>
+                    <a href={process.env.NEXT_PUBLIC_MODE ? process.env.NEXT_PUBLIC_MODE === "prodDocker" ? 'https://portfolio.rodcoding.com' : "http://portfolio.localhost" : ""} className='cursor-pointer text-primary' target="_blank">{t["portfolio"]}</a>
                 </nav>
                 <div className='relative flex justify-start items-center gap-6'>
                     <div className='flex justify-start items-center gap-2 max-485:hidden'>

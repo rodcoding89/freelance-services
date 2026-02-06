@@ -1,5 +1,3 @@
-import type { Metadata } from "next";
-
 import "./globals.css";
 import { TranslationProvider } from "../context/translation-context";
 import { AppProvider } from "../context/app-context";
